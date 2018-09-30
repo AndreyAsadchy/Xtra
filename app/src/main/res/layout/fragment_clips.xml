@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.exact.twitch.util.LayoutManagers"/>
+        <variable name="viewModel" type="com.exact.twitch.ui.clips.ClipsViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/sortByRl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:id="@+id/sortText"
+                android:text="@{viewModel.sortText}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/sortByImage"
+                android:layout_toLeftOf="@id/sortByImage" />
+
+            <ImageView
+                android:id="@+id/sortByImage"
+                android:src="@drawable/baseline_sort_black_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/sortByText"
+                android:layout_toLeftOf="@id/sortByText" />
+
+            <TextView
+                android:id="@+id/sortByText"
+                android:text="@string/sort_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/recyclerViewLayout"
+            layout="@layout/common_recycler_view_layout"
+            app:viewModel="@{(com.exact.twitch.ui.common.PagedListViewModel)viewModel}"
+            app:layoutManager="@{LayoutManagers.linear(context)}"/>
+
+    </LinearLayout>
+</layout>

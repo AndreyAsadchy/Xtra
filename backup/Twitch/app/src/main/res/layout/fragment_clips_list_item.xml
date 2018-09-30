@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_clips_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="7dp"
+    android:layout_marginEnd="7dp"
+    android:layout_marginBottom="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/fragment_clips_iv_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/fragment_clips_tv_date"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fragment_clips_tv_views"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/fragment_clips_tv_views"
+            android:layout_alignBottom="@id/fragment_clips_iv_thumbnail"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/fragment_clips_tv_length"
+            android:layout_alignEnd="@id/fragment_clips_iv_thumbnail"
+            android:layout_alignBottom="@id/fragment_clips_iv_thumbnail"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_alignRight="@id/fragment_clips_iv_thumbnail" />
+
+        <ImageView
+            android:id="@+id/fragment_clips_iv_user_avatar"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/fragment_clips_iv_thumbnail"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/fragment_clips_tv_title"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_clips_iv_thumbnail"
+            android:layout_toEndOf="@id/fragment_clips_iv_user_avatar"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/fragment_clips_iv_user_avatar" />
+
+        <TextView
+            android:id="@+id/fragment_clips_tv_username"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_clips_tv_title"
+            android:layout_toEndOf="@id/fragment_clips_iv_user_avatar"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/fragment_clips_iv_user_avatar" />
+
+        <TextView
+            android:id="@+id/fragment_clips_tv_game"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_clips_tv_username"
+            android:layout_toEndOf="@id/fragment_clips_iv_user_avatar"
+            android:layout_toRightOf="@id/fragment_clips_iv_user_avatar"
+            android:layout_marginLeft="5dp" />
+
+        <ImageButton
+            android:id="@+id/fragment_clips_ib_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/fragment_clips_iv_thumbnail"
+            android:src="@drawable/baseline_more_vert_black_24"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

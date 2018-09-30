@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <ImageButton
+        android:id="@id/exo_play"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        style="@style/ExoMediaButton.Play"/>
+
+    <ImageButton
+        android:id="@id/exo_pause"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        style="@style/ExoMediaButton.Pause"/>
+
+    <ImageButton
+        android:id="@+id/minimize"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/baseline_expand_more_black_48"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/profile"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:src="@drawable/baseline_person_black_24" />-->
+
+        <ImageButton
+            android:id="@+id/download"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_file_download_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/settings"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_settings_black_24" />
+
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/more"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:src="@drawable/baseline_more_vert_black_24" />-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end">
+
+        <SeekBar
+            android:id="@+id/player_video_seek_bar"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/player_minimize_player"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_unfold_less_black_24"
+            android:rotation="90"/>
+
+        <ImageButton
+            android:id="@+id/player_maximize_player"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_unfold_more_black_24"
+            android:rotation="90"/>
+
+        <ImageButton
+            android:id="@+id/player_hide_chat"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_speaker_notes_off_black_24" />
+
+
+        <ImageButton
+            android:id="@+id/player_show_chat"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_chat_black_24" />
+
+        <ImageButton
+            android:id="@+id/fullscreen_exit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/baseline_fullscreen_exit_black_24" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,120 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def androidx = '1.0.0'
+def paging = '2.0.0-rc01'
+def lifecycle = '2.0.0'
+def room = '2.0.0-rc01'
+def exoplayer = "2.8.4"
+def dagger = "2.16"
+def retrofit = "2.4.0"
+def glide = "4.8.0"
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.exact.twitch"
+        minSdkVersion 16
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.changeQuality.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    dataBinding {
+        enabled true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+
+    //Support library
+    implementation "com.google.android.material:material:$androidx"
+    implementation "androidx.appcompat:appcompat:$androidx"
+    implementation "androidx.legacy:legacy-support-v4:$androidx"
+    implementation "androidx.recyclerview:recyclerview:$androidx"
+    implementation "androidx.cardview:cardview:$androidx"
+    implementation "androidx.exifinterface:exifinterface:$androidx"
+
+    //Architecture components
+    implementation "androidx.paging:paging-runtime:$paging"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
+    implementation "androidx.room:room-runtime:$room"
+    implementation 'androidx.core:core-ktx:1.0.0'
+    kapt "androidx.room:room-compiler:$room"
+
+    //Misc
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.appyvet:materialrangebar:1.4.2'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
+
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
+
+    implementation "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+    implementation "com.google.dagger:dagger-android:$dagger"
+    implementation "com.google.dagger:dagger-android-support:$dagger"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.21'
+
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xmaxerrs" << "500"
+    }
+}
+
+kapt {
+    javacOptions {
+        option("-Xmaxerrs", 500)
+    }
+}

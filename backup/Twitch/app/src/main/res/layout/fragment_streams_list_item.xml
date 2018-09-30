@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_streams_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="7dp"
+    android:layout_marginEnd="7dp"
+    android:layout_marginBottom="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/fragment_streams_iv_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:id="@+id/fragment_streams_tv_viewers"
+            android:layout_alignBottom="@id/fragment_streams_iv_thumbnail"
+            android:layout_toEndOf="@id/fragment_streams_iv_stream_type"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/fragment_streams_iv_stream_type" />
+
+        <ImageView
+            android:id="@+id/fragment_streams_iv_stream_type"
+            android:layout_alignBottom="@id/fragment_streams_iv_thumbnail"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" />
+
+        <ImageView
+            android:id="@+id/fragment_streams_iv_user_avatar"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/fragment_streams_iv_thumbnail"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/fragment_streams_tv_username"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_streams_iv_thumbnail"
+            android:layout_toEndOf="@id/fragment_streams_iv_user_avatar"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/fragment_streams_iv_user_avatar" />
+
+        <TextView
+            android:id="@+id/fragment_streams_tv_title"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_streams_tv_username"
+            android:layout_toEndOf="@id/fragment_streams_iv_user_avatar"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/fragment_streams_iv_user_avatar" />
+
+        <TextView
+            android:id="@+id/fragment_streams_tv_game"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_streams_tv_title"
+            android:layout_toEndOf="@id/fragment_streams_iv_user_avatar"
+            android:layout_toRightOf="@id/fragment_streams_iv_user_avatar"
+            android:layout_marginLeft="5dp" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

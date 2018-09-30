@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="video" type="com.exact.twitch.model.OfflineVideo"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                app:imageUrl="@{video.thumbnail}"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"/>
+
+            <TextView
+                android:id="@+id/date"
+                android:text="@{@string/uploaded_date(video.uploadDate)}"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/downloadDate"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/downloadDate"
+                android:text="@{@string/downloaded_date(video.downloadDate)}"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/length"
+                android:text="@{String.valueOf(video.length)}"
+                android:layout_alignEnd="@id/thumbnail"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_alignRight="@id/thumbnail" />
+
+            <ImageView
+                android:id="@+id/userAvatar"
+                app:imageUrl="@{video.streamerAvatar}"
+                android:layout_marginStart="10dp"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/thumbnail"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:text="@{video.name}"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:layout_toEndOf="@id/userAvatar"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/userAvatar" />
+
+            <TextView
+                android:id="@+id/username"
+                android:text="@{video.channel}"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_toEndOf="@id/userAvatar"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/userAvatar" />
+
+            <TextView
+                android:id="@+id/game"
+                android:text="@{video.game}"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/username"
+                android:layout_toEndOf="@id/userAvatar"
+                android:layout_toRightOf="@id/userAvatar"
+                android:layout_marginLeft="5dp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

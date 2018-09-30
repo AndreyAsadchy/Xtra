@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="game" type="com.exact.twitch.model.game.Game"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/gameImage"
+                app:imageUrl="@{game.info.box.small}"
+                android:layout_width="40dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/gameName"
+                android:text="@{game.info.name}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toEndOf="@id/gameImage"
+                android:layout_toRightOf="@id/gameImage" />
+
+            <TextView
+                android:id="@+id/viewers"
+                android:text="@{@plurals/viewers(game.viewers, game.viewers)}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gameName"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toEndOf="@id/gameImage"
+                android:layout_toRightOf="@id/gameImage" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

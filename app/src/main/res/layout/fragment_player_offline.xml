@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.exact.twitch.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:DraggableView="http://schemas.android.com/apk/res-auto"
+    android:id="@id/draggableView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.player.BasePlayerFragment"
+    DraggableView:top_view_id="@id/playerView"
+    DraggableView:bottom_view_id="@id/dummyView"
+    DraggableView:enable_click_to_maximize_view="true"
+    DraggableView:enable_minimized_horizontal_alpha_effect="false"
+    DraggableView:top_view_margin_bottom="130dp"
+    DraggableView:top_view_margin_right="30dp" >
+
+    <View
+        android:id="@+id/dummyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/playerView"
+        android:background="@android:color/black" />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/black"
+        app:controller_layout_id="@layout/player_offline"
+        app:show_buffering="true"/>
+
+</com.exact.twitch.ui.view.draggableview.DraggableView>

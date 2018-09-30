@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.exact.twitch.util.TwitchApiHelper"/>
+        <import type="android.text.format.DateUtils"/>
+        <variable
+            name="video"
+            type="com.exact.twitch.model.video.Video"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                app:imageUrl="@{video.preview.medium}"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_margin="10dp"/>
+
+            <TextView
+                android:id="@+id/date"
+                android:text="@{TwitchApiHelper.parseIso8601Date(context, video.createdAt)}"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/views" />
+
+            <TextView
+                android:id="@+id/views"
+                android:text="@{@plurals/views(video.views, video.views)}"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/length"
+                android:text="@{DateUtils.formatElapsedTime(video.length)}"
+                android:layout_alignEnd="@id/thumbnail"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/thumbnail" />
+
+            <ImageView
+                android:id="@+id/userImage"
+                app:imageUrl="@{video.channel.logo}"
+                android:layout_marginStart="10dp"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/thumbnail"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:text="@{video.title}"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:layout_toEndOf="@id/userImage"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/userImage" />
+
+            <TextView
+                android:id="@+id/username"
+                android:text="@{video.channel.name}"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_toEndOf="@id/userImage"
+                android:layout_toRightOf="@id/userImage" />
+
+            <TextView
+                android:id="@+id/gameName"
+                android:text="@{video.game}"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/username"
+                android:layout_toEndOf="@id/userImage"
+                android:layout_toRightOf="@id/userImage"
+                android:layout_marginLeft="5dp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

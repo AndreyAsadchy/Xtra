@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/fragment_video_sort_dialog_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/order_by"/>
+
+        <RadioButton
+            android:id="@+id/fragment_video_sort_dialog_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_date"/>
+
+        <RadioButton
+            android:id="@+id/fragment_video_sort_dialog_views"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/view_count"/>
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/fragment_video_sort_dialog_period"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/period"/>
+
+        <RadioButton
+            android:id="@+id/fragment_video_sort_dialog_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/today"/>
+
+        <RadioButton
+            android:id="@+id/fragment_video_sort_dialog_week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/this_week"/>
+
+        <RadioButton
+            android:id="@+id/fragment_video_sort_dialog_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/this_month"/>
+
+        <RadioButton
+            android:id="@+id/fragment_video_sort_dialog_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/all_time"/>
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/fragment_video_sort_dialog_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/apply"/>
+
+</LinearLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+
+    <ProgressBar
+        android:layout_centerInParent="true"
+        android:id="@+id/fragment_streams_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_streams_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_streams_rv"
+            android:name="com.exact.twitch.ui.fragment.stream.BaseStreamsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.streams.BaseStreamsFragment"
+            tools:listitem="@layout/fragment_streams_list_item" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/fragment_streams_tv_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_above="@id/fragment_streams_btn_login"
+        android:text="Sign in to view your followed streams"/>
+
+    <Button
+        android:id="@+id/fragment_streams_btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:text="Sign in"/>
+
+</RelativeLayout>

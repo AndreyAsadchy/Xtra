@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_games_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/fragment_games_image"
+            android:layout_width="40dp"
+            android:layout_height="50dp"/>
+
+        <TextView
+            android:id="@+id/fragment_games_tv_name"
+            android:layout_marginStart="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/fragment_games_image"/>
+
+        <TextView
+            android:id="@+id/fragment_games_tv_viewers"
+            android:layout_marginStart="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_games_tv_name"
+            android:layout_toEndOf="@id/fragment_games_image"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
