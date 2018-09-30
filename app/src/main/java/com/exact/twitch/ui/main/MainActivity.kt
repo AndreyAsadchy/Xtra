@@ -124,35 +124,19 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun startStream(stream: Stream) {
-        val bundle = Bundle(1)
-        bundle.putParcelable("stream", stream)
-        val fragment = StreamPlayerFragment()
-        fragment.arguments = bundle
-        startPlayer(fragment)
+        startPlayer(StreamPlayerFragment().apply { arguments = bundleOf("stream" to stream) })
     }
 
     override fun startVideo(video: Video) {
-        val bundle = Bundle(1)
-        bundle.putParcelable("video", video)
-        val fragment = VideoPlayerFragment()
-        fragment.arguments = bundle
-        startPlayer(fragment)
+        startPlayer(VideoPlayerFragment().apply { arguments = bundleOf("video" to video) })
     }
 
     override fun startClip(clip: Clip) {
-        val bundle = Bundle(1)
-        bundle.putParcelable("clip", clip)
-        val fragment = ClipPlayerFragment()
-        fragment.arguments = bundle
-        startPlayer(fragment)
+        startPlayer(ClipPlayerFragment().apply { arguments = bundleOf("clip" to clip) })
     }
 
     override fun startOfflineVideo(video: OfflineVideo) {
-        val bundle = Bundle(1)
-        bundle.putParcelable("video", video)
-        val fragment = OfflinePlayerFragment()
-        fragment.arguments = bundle
-        startPlayer(fragment)
+        startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf("video" to video) })
     }
 
     override fun viewChannel(channelName: String) {
