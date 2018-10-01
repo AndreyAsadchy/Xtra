@@ -9,4 +9,7 @@ class MainActivityViewModel @Inject constructor(): ViewModel() {
     val isPlayerOpened = MutableLiveData<Boolean>()
     val isPlayerMaximized = MutableLiveData<Boolean>()
     val userToken = MutableLiveData<String>()
+    val username = MutableLiveData<String>()
+    val isUserLoggedIn
+        get() = userToken.value != null
 }

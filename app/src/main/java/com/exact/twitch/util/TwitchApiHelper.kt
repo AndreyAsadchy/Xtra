@@ -3,6 +3,7 @@ package com.exact.twitch.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.text.format.DateUtils
+import com.exact.twitch.model.User
 import com.exact.twitch.model.chat.SubscriberBadgesResponse
 import com.exact.twitch.tasks.LiveChatTask
 import com.exact.twitch.util.chat.MessageListenerImpl
@@ -42,11 +43,20 @@ object TwitchApiHelper {
         return ""
     }
 
-    fun getCurrentTimeFormatted(context: Context) =
+    fun getCurrentTimeFormatted(context: Context): String =
             DateUtils.formatDateTime(context, Calendar.getInstance().time.time, DateUtils.FORMAT_NO_YEAR)
 
-    fun getUserToken(context: Context): String? =
-            context.getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE).getString(C.TOKEN, null)
+    fun getUserData(context: Context): User? {
+        val prefs = context.getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
+        return with(prefs) {
+            val id = getString(C.USER_ID, null)
+            if (id != null) {
+                User(id, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!)
+            } else {
+                null
+            }
+        }
+    }
 
     fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse, newMessageCallback: OnChatMessageReceived): LiveChatTask {
         return LiveChatTask(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageCallback)).apply { start() }

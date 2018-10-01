@@ -18,7 +18,7 @@ class AuthRepository @Inject constructor(
     }
 
     fun validate(token: String): Single<ValidationResponse> {
-        return api.validateToken(token).observeOn(AndroidSchedulers.mainThread())
+        return api.validateToken("OAuth $token").observeOn(AndroidSchedulers.mainThread())
     }
 
     fun revoke(token: String): Single<ResponseBody> {

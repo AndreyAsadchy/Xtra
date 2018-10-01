@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 
 import com.exact.twitch.R
 
-abstract class MediaPagerAdapter(private val context: Context, fm: androidx.fragment.app.FragmentManager) : ItemAwareFragmentPagerAdapter(fm) {
+abstract class MediaPagerAdapter(private val context: Context, fm: FragmentManager) : ItemAwareFragmentPagerAdapter(fm) {
 
     override fun getPageTitle(position: Int): CharSequence? {
         val id = when (position) {

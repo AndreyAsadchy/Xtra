@@ -68,10 +68,6 @@ abstract class BaseStreamsFragment : LazyFragment(), Injectable, Scrollable, Loa
         }
     }
 
-    fun defaultOnActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onDetach() {
         super.onDetach()
         listener = null

@@ -14,7 +14,7 @@ abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwareP
     private lateinit var adapter: ItemAwareFragmentPagerAdapter
     private lateinit var viewPager: androidx.viewpager.widget.ViewPager
 
-    override val currentFragment: androidx.fragment.app.Fragment
+    override val currentFragment: Fragment
         get() = adapter.currentFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

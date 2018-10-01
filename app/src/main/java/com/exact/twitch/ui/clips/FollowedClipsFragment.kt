@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.exact.twitch.R
+import com.exact.twitch.model.User
 import com.exact.twitch.util.C
 import com.exact.twitch.util.FragmentUtils
 import com.exact.twitch.util.TwitchApiHelper
@@ -17,11 +18,11 @@ class FollowedClipsFragment : BaseClipsFragment() {
         const val TAG = "FollowedClips"
     }
 
-    private var userToken: String? = null
+    private lateinit var user: User
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userToken = TwitchApiHelper.getUserToken(requireActivity())
+        user = arguments!!.getParcelable(C.USER)!!
         sortByRl.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
     }
 
@@ -33,9 +34,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
     }
 
     override fun loadData(override: Boolean) {
-        if (userToken != null) { //TODO add if not authorized
-            viewModel.loadFollowedClips(userToken as String, override)
-        }
+        viewModel.loadFollowedClips(user.token, override)
     }
 
     override fun onSelect(index: Int, text: CharSequence, tag: Int?) {

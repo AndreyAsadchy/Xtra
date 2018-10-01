@@ -8,15 +8,15 @@ import com.exact.twitch.ui.clips.FollowedClipsFragment
 import com.exact.twitch.ui.streams.FollowedStreamsFragment
 import com.exact.twitch.ui.videos.FollowedVideosFragment
 
-class FollowPagerAdapter(context: Context, fm: androidx.fragment.app.FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
+class FollowPagerAdapter(context: Context, fm: FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
 
-    override fun getItem(position: Int): androidx.fragment.app.Fragment? {
-        val fragment: androidx.fragment.app.Fragment? = when (position) {
+    override fun getItem(position: Int): Fragment? {
+        val fragment: Fragment? = when (position) {
             0 -> FollowedStreamsFragment()
             1 -> FollowedVideosFragment()
             2 -> FollowedClipsFragment()
             else -> null
         }
-        return fragment?.also { it.arguments = args }
+        return fragment?.apply { arguments = args }
     }
 }

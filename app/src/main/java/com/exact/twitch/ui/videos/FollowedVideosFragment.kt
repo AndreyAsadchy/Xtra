@@ -1,14 +1,12 @@
 package com.exact.twitch.ui.videos
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
-
 import com.exact.twitch.R
+import com.exact.twitch.model.User
 import com.exact.twitch.ui.fragment.RadioButtonDialogFragment
 import com.exact.twitch.util.C
 import com.exact.twitch.util.FragmentUtils
-import com.exact.twitch.util.TwitchApiHelper
 import kotlinx.android.synthetic.main.fragment_videos.*
 
 class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnOptionSelectedListener {
@@ -19,11 +17,11 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
         const val TAG = "FollowedVideos"
     }
 
-    private var userToken: String? = null
+    private lateinit var user: User
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userToken = TwitchApiHelper.getUserToken(requireActivity())
+        user = arguments!!.getParcelable(C.USER)!!
         sortByRl.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
     }
 
@@ -39,9 +37,7 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
     }
 
     override fun loadData(override: Boolean) {
-        if (userToken != null) {
-            viewModel.loadFollowedVideos(userToken = userToken as String, reload = override)
-        }
+        viewModel.loadFollowedVideos(userToken = user.token, reload = override)
     }
 
     override fun onSelect(index: Int, text: CharSequence, tag: Int?) {

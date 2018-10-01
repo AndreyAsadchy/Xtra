@@ -53,11 +53,11 @@ interface KrakenApi {
     @GET("users/{id}")
     fun getUserById(@Path("id") id: Int): Single<User>
 
-    @GET("users/{login}")
-    fun getUserByLogin(@Path("login") login: String): Single<User>
+    @GET("users/{username}")
+    fun getUserByLogin(@Path("username") login: String): Single<User>
 
     @GET("users")
-    fun getUsers(@Query("login") logins: String): Single<UsersResponse>
+    fun getUsers(@Query("username") logins: String): Single<UsersResponse>
 
     @GET("users/{id}/emotes")
     fun getUserEmotes(@Path("id") userId: Int): Single<UserEmotesResponse>

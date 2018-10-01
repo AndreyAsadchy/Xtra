@@ -9,10 +9,10 @@ import com.exact.twitch.ui.clips.ClipsFragment
 import com.exact.twitch.ui.streams.StreamsFragment
 import com.exact.twitch.ui.videos.GameVideosFragment
 
-class GamePagerAdapter(context: Context, fm: androidx.fragment.app.FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
+class GamePagerAdapter(context: Context, fm: FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
 
     override fun getItem(position: Int): androidx.fragment.app.Fragment? {
-        val fragment: androidx.fragment.app.Fragment? = when (position) {
+        val fragment: Fragment? = when (position) {
             0 -> StreamsFragment()
             1 -> GameVideosFragment()
             2 -> ClipsFragment()

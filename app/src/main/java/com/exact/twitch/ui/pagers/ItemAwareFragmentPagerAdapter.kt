@@ -5,13 +5,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import android.view.ViewGroup
 
-abstract class ItemAwareFragmentPagerAdapter internal constructor(fm: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(fm) {
+abstract class ItemAwareFragmentPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    internal lateinit var currentFragment: androidx.fragment.app.Fragment
+    internal lateinit var currentFragment: Fragment
         private set
 
     override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
         super.setPrimaryItem(container, position, `object`)
-        currentFragment = `object` as androidx.fragment.app.Fragment
+        currentFragment = `object` as Fragment
     }
 }

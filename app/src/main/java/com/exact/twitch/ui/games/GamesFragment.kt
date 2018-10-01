@@ -39,9 +39,7 @@ class GamesFragment : androidx.fragment.app.Fragment(), Injectable, Scrollable {
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
         val adapter = GamesAdapter {
-            val bundle = Bundle(1)
-            bundle.putParcelable("game", it)
-//            (requireActivity() as MainActivity).fragNavController.pushFragment(GamePagerFragment(), R.id.fragmentContainer).navigate(R.id.action_game_selected, bundle)
+            (requireActivity() as MainActivity).fragNavController.pushFragment(GamePagerFragment.newInstance(it))
         }
         recyclerViewLayout.recyclerView.adapter = adapter
         viewModel.list.observe(this, Observer {
