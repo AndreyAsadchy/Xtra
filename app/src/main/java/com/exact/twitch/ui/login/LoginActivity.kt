@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
             }
         } else {
             initWebView()
-            setResult(Activity.RESULT)
+            setResult(2)
             repository.revoke(token)
                     .subscribe { _ -> prefs.edit { clear() } }
                     .addTo(compositeDisposable)

@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     @Inject lateinit var authRepository: AuthRepository
     private lateinit var viewModel: MainActivityViewModel
     private val compositeDisposable = CompositeDisposable()
+    private var restarted = false
     val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,17 +85,28 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 navBar.selectedItemId = R.id.fragment_follow
                 authRepository.validate(user.token)
                         .subscribe({
-                            viewModel.userToken.postValue(user.token)
+                            viewModel.userToken = user.token
                             viewModel.username.postValue(user.name)
-                            fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
+                            fragNavController.initialize(INDEX_FOLLOWED, if (!viewModel.restart) {
+                                savedInstanceState
+                            } else {
+                                viewModel.restart = false
+                                null
+                            })
                         }, {
                             getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
                             //TODO prompt to redo username
                         })
                         .addTo(compositeDisposable)
             } else {
+                println("out")
                 navBar.selectedItemId = R.id.fragment_top
-                fragNavController.initialize(INDEX_TOP, savedInstanceState)
+                fragNavController.initialize(INDEX_TOP, if (!viewModel.restart) {
+                    savedInstanceState
+                } else {
+                    viewModel.restart = false
+                    null
+                })
             }
             initNavBar()
         }
@@ -164,38 +176,63 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         }
     }
 
+    /**
+     * Result of LoginActivity
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) { //Result of Login Activity //TODO add requestcode 2 for clicking login after already launched
-            initFragNavController()
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    with (viewModel) {
-                        data?.getParcelableExtra<User>(C.USER)?.let {
-                            userToken.postValue(it.token)
-                            username.postValue(it.name)
-                        }
-                    }
-                    navBar.selectedItemId = R.id.fragment_follow
-                    if (fragNavController.size == 0) {
-                        fragNavController.initialize(INDEX_FOLLOWED)
-                    } else {
-                        fragNavController.switchTab(INDEX_FOLLOWED)
-                    }
-                }
-                Activity.RESULT_CANCELED -> {
-                    navBar.selectedItemId = R.id.fragment_top
-                    fragNavController.initialize(INDEX_TOP)
+
+        fun updateUserLiveData() {
+            data?.getParcelableExtra<User>(C.USER)?.let {
+                with (viewModel) {
+                    userToken = it.token
+                    username.postValue(it.name)
                 }
             }
-            initNavBar()
         }
+
+        when (requestCode) {
+            1 -> { //After first launch
+                initFragNavController()
+                when (resultCode) {
+                    RESULT_OK -> { //Logged in
+                        updateUserLiveData()
+                        navBar.selectedItemId = R.id.fragment_follow
+                        fragNavController.initialize(INDEX_FOLLOWED)
+                    }
+                    RESULT_CANCELED -> { //Skipped
+                        navBar.selectedItemId = R.id.fragment_top
+                        fragNavController.initialize(INDEX_TOP)
+                    }
+                }
+                initNavBar()
+            }
+            2 -> { //Other
+                println(resultCode)
+                when (resultCode) {
+                    RESULT_OK -> { //Logged in
+                        viewModel.restart = true
+                        recreate() //TODO instead change fragments and restart chatview in player if it's running
+                    }
+                    RESULT_CANCELED -> { //Canceled log in
+                    }
+                    2 -> { //Logged out
+                        println("log out")
+                        viewModel.restart = true
+                        recreate() //TODO instead change fragments and restart chatview in player if it's running
+                    }
+
+                }
+            }
+        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        if (fragNavController.size > 0)
+        if (fragNavController.size > 0 && !viewModel.restart) {
             fragNavController.onSaveInstanceState(outState)
+        }
     }
 
     override fun startStream(stream: Stream) {
