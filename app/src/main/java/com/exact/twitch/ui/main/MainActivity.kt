@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     @Inject lateinit var authRepository: AuthRepository
     private lateinit var viewModel: MainActivityViewModel
     private val compositeDisposable = CompositeDisposable()
-    private var restarted = false
     val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +74,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java)
         val prefs = getPreferences(Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean("first_launch", true)
+        viewModel.username.observe(this, Observer { println(it) })
         if (isFirstLaunch) {
             prefs.edit { putBoolean("first_launch", false) }
             startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra("first_launch", true) }, 1)
@@ -83,30 +83,20 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             val user = TwitchApiHelper.getUserData(this@MainActivity)
             if (user != null) {
                 navBar.selectedItemId = R.id.fragment_follow
-                authRepository.validate(user.token)
-                        .subscribe({
-                            viewModel.userToken = user.token
-                            viewModel.username.postValue(user.name)
-                            fragNavController.initialize(INDEX_FOLLOWED, if (!viewModel.restart) {
-                                savedInstanceState
-                            } else {
-                                viewModel.restart = false
-                                null
-                            })
-                        }, {
-                            getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
-                            //TODO prompt to redo username
-                        })
-                        .addTo(compositeDisposable)
+//                authRepository.validate(user.token)
+//                        .subscribe({
+                viewModel.username.postValue(user.name)
+                viewModel.isUserLoggedIn.observe(this, Observer {  }) //need to observe to make MediatorLiveData to work
+                fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
+//                        }, {
+//                            getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
+//                            TODO prompt to redo username
+//                        })
+//                        .addTo(compositeDisposable)
             } else {
-                println("out")
+                viewModel.username.postValue(null)
                 navBar.selectedItemId = R.id.fragment_top
-                fragNavController.initialize(INDEX_TOP, if (!viewModel.restart) {
-                    savedInstanceState
-                } else {
-                    viewModel.restart = false
-                    null
-                })
+                fragNavController.initialize(INDEX_TOP, savedInstanceState)
             }
             initNavBar()
         }
@@ -120,19 +110,12 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             })
             isPlayerMaximized.observe(this@MainActivity, Observer { if (it == true) navBar.post { hideNavigationBar() } }) //TODO post method
         }
-
     }
 
     private fun initFragNavController() {
         fragNavController.apply {
             rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())
             fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
-            navigationStrategy = UniqueTabHistoryStrategy(object : FragNavSwitchController {
-                override fun switchTab(index: Int, transactionOptions: FragNavTransactionOptions?) {
-                    println(index)
-                    navBar.selectedItemId = index
-                }
-            })
         }
     }
 
@@ -143,10 +126,10 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                     R.id.fragment_games -> INDEX_GAMES
                     R.id.fragment_top -> INDEX_TOP
                     R.id.fragment_follow -> {
-                        if (viewModel.isUserLoggedIn) {
+                        if (viewModel.isUserLoggedIn.value == true) {
                             INDEX_FOLLOWED
                         } else {
-                            INDEX_MENU
+                            INDEX_MENU //TODO create another screen instead of this
                         }
                     }
                     R.id.fragment_downloads -> INDEX_DOWNLOADS
@@ -184,10 +167,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
 
         fun updateUserLiveData() {
             data?.getParcelableExtra<User>(C.USER)?.let {
-                with (viewModel) {
-                    userToken = it.token
-                    username.postValue(it.name)
-                }
+                viewModel.username.postValue(it.name)
             }
         }
 
@@ -201,6 +181,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                         fragNavController.initialize(INDEX_FOLLOWED)
                     }
                     RESULT_CANCELED -> { //Skipped
+                        viewModel.username.postValue(null)
                         navBar.selectedItemId = R.id.fragment_top
                         fragNavController.initialize(INDEX_TOP)
                     }
@@ -208,20 +189,16 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 initNavBar()
             }
             2 -> { //Other
-                println(resultCode)
+                //TODO reset fragments and restart messageview in player if it's running
                 when (resultCode) {
                     RESULT_OK -> { //Logged in
-                        viewModel.restart = true
-                        recreate() //TODO instead change fragments and restart chatview in player if it's running
+                        updateUserLiveData()
+                        navBar.selectedItemId = R.id.fragment_follow
+                        fragNavController.switchTab(INDEX_FOLLOWED)
                     }
-                    RESULT_CANCELED -> { //Canceled log in
+                    RESULT_CANCELED -> { //Logged out
+                        viewModel.username.postValue(null)
                     }
-                    2 -> { //Logged out
-                        println("log out")
-                        viewModel.restart = true
-                        recreate() //TODO instead change fragments and restart chatview in player if it's running
-                    }
-
                 }
             }
         }
@@ -230,7 +207,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        if (fragNavController.size > 0 && !viewModel.restart) {
+        if (fragNavController.size > 0) {
             fragNavController.onSaveInstanceState(outState)
         }
     }
@@ -256,8 +233,24 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun onBackPressed() {
-        if (viewModel.isPlayerMaximized.value != true || (!fragNavController.isRootFragment && fragNavController.popFragment().not())) {
-            super.onBackPressed()
+        if (viewModel.isPlayerMaximized.value != true) {
+            if (fragNavController.isRootFragment) {
+                if (viewModel.isUserLoggedIn.value == true) {
+                    if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
+                        navBar.selectedItemId = R.id.fragment_follow
+                    } else {
+                        super.onBackPressed()
+                    }
+                } else {
+                    if (fragNavController.currentStackIndex != INDEX_TOP) {
+                        navBar.selectedItemId = R.id.fragment_top
+                    } else {
+                        super.onBackPressed()
+                    }
+                }
+            } else {
+                fragNavController.popFragment()
+            }
         } else {
             (supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment).minimize()
             viewModel.isPlayerMaximized.postValue(false)

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.exact.twitch.R
 import com.exact.twitch.ui.login.LoginActivity
@@ -21,7 +22,7 @@ class MenuFragment : androidx.fragment.app.Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity()
         val mainActivityViewModel = ViewModelProviders.of(activity).get(MainActivityViewModel::class.java)
-        login.text = if (mainActivityViewModel.isUserLoggedIn) "Log Out" else "Log In"
-        login.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 2) }
+        mainActivityViewModel.isUserLoggedIn.observe(this, Observer { login.text = if (it) "Log Out" else "Log In" })
+        login.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java).apply { putExtra("login", ((mainActivityViewModel.isUserLoggedIn.value != true))) }, 2) }
     }
 }

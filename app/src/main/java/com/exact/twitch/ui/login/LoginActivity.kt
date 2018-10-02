@@ -32,16 +32,18 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-//        val resultIntent = Intent().apply { putExtra(C.USER, User("42702359", "exact5", "xfnzwoygpiz3nvief5bsnviui9vhh5")) }
         prefs = getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
-//        prefs.edit {
-//            putString(C.TOKEN, "xfnzwoygpiz3nvief5bsnviui9vhh5")
-//            putString(C.USERNAME, "exact5")
-//            putString(C.USER_ID, "42702359")
-//        }
-//        setResult(Activity.RESULT_OK, resultIntent)
-//        finish()
-//        return
+        if (intent.getBooleanExtra("login", false).also { println(it) }) {
+            val resultIntent = Intent().apply { putExtra(C.USER, User("42702359", "exact5", "xoe8suvb31nadezrx6tofk68hbonxu")) }
+            prefs.edit {
+                putString(C.TOKEN, "xoe8suvb31nadezrx6tofk68hbonxu")
+                putString(C.USERNAME, "exact5")
+                putString(C.USER_ID, "42702359")
+            }
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+            return
+        }
         val token = prefs.getString(C.TOKEN, null)
         if (token == null) {
             if (intent.getBooleanExtra("first_launch", false)) {
@@ -52,11 +54,14 @@ class LoginActivity : AppCompatActivity() {
                 initWebView()
             }
         } else {
-            initWebView()
-            setResult(2)
-            repository.revoke(token)
-                    .subscribe { _ -> prefs.edit { clear() } }
-                    .addTo(compositeDisposable)
+//            initWebView()
+
+            prefs.edit { clear() }
+            setResult(Activity.RESULT_CANCELED)
+//            finish()
+//            repository.revoke(token)
+//                    .subscribe { _ -> prefs.edit { clear() } }
+//                    .addTo(compositeDisposable)
         }
     }
 
