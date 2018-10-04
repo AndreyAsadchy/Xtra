@@ -1,12 +1,10 @@
 package com.exact.twitch.ui.pagers
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.exact.twitch.R
 
 abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwarePagerFragment {
@@ -23,7 +21,7 @@ abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwareP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager = view.findViewById(R.id.fragment_media_pager_vp)
+        viewPager = view.findViewById(R.id.viewPager)
         viewPager.offscreenPageLimit = 2
     }
 
