@@ -1,17 +1,27 @@
 package com.exact.twitch.binding
 
-import androidx.databinding.BindingAdapter
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.exact.twitch.GlideApp
 
-@BindingAdapter("imageUrl")
-fun setImageUrl(imageView: ImageView, url: String?) {
-    GlideApp.with(imageView.context)
+@SuppressLint("CheckResult")
+@BindingAdapter("imageUrl", "fit", "circle", requireAll = false)
+fun loadImage(imageView: ImageView, url: String?, fit: Boolean, circle: Boolean) {
+    val request = GlideApp.with(imageView.context)
             .load(url)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .into(imageView)
+            .transition(DrawableTransitionOptions.withCrossFade())
+    if (fit) {
+        request.centerCrop()
+    }
+    if (circle) {
+        request.circleCrop()
+    }
+    request.into(imageView)
 }
 
 @BindingAdapter("visible")

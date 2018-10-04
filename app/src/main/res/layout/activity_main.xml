@@ -28,7 +28,8 @@
                     android:background="?android:colorBackground"
                     android:layout_alignParentBottom="true"
                     app:menu="@menu/navigation_bar"
-                    app:labelVisibilityMode="unlabeled"/>
+                    app:labelVisibilityMode="unlabeled"
+                    app:itemIconTint="@color/nav_bar" />
 
         </RelativeLayout>
 </layout>

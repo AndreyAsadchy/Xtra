@@ -12,10 +12,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="5dp">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,53 +21,50 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 app:imageUrl="@{clip.thumbnails.medium}"
+                app:fit="@{true}"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_margin="10dp"/>
+                android:layout_height="200dp"/>
 
             <TextView
                 android:id="@+id/date"
                 android:text="@{TwitchApiHelper.parseIso8601Date(context, clip.createdAt)}"
-                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/views"
-                android:layout_marginLeft="10dp" />
+                android:layout_below="@id/title"
+                android:layout_toRightOf="@id/views"
+                android:layout_toEndOf="@id/views" />
 
             <TextView
                 android:id="@+id/views"
                 android:text="@{@plurals/views(clip.views, clip.views)}"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp" />
+                android:layout_below="@id/title"
+                android:layout_toRightOf="@id/username"
+                android:layout_toEndOf="@id/username" />
 
             <TextView
                 android:id="@+id/length"
                 android:text="@{DateUtils.formatElapsedTime((long)clip.duration)}"
-                android:layout_alignEnd="@id/thumbnail"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
+                style="@style/VideoLength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/thumbnail" />
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_alignRight="@id/thumbnail"
+                android:layout_alignEnd="@id/thumbnail" />
 
             <ImageView
                 android:id="@+id/userImage"
                 app:imageUrl="@{clip.broadcaster.logo}"
-                android:layout_marginStart="10dp"
+                app:circle="@{true}"
                 android:layout_width="40dp"
-                android:layout_height="50dp"
-                android:layout_below="@id/thumbnail"
-                android:layout_marginLeft="10dp" />
+                android:layout_height="40dp"
+                android:layout_below="@id/thumbnail" />
 
             <TextView
                 android:id="@+id/title"
                 android:text="@{clip.title}"
+                style="@style/VideoTitle"
                 android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,12 +76,12 @@
             <TextView
                 android:id="@+id/username"
                 android:text="@{clip.broadcaster.name}"
-                android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
-                android:layout_toEndOf="@id/userImage"
+                android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
+                android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage" />
 
             <TextView
@@ -102,14 +96,14 @@
                 android:layout_marginLeft="5dp" />
 
             <!--<ImageButton-->
-                <!--android:id="@+id/moreImgBtn"-->
-                <!--android:src="@drawable/baseline_more_vert_black_24"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_alignParentEnd="true"-->
-                <!--android:layout_below="@id/thumbnailImage"-->
-                <!--android:visibility="gone"/>-->
+            <!--android:id="@+id/moreImgBtn"-->
+            <!--android:src="@drawable/baseline_more_vert_black_24"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_below="@id/thumbnailImage"-->
+            <!--android:visibility="gone"/>-->
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
