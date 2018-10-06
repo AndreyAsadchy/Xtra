@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.exact.twitch.repository.LoadingState"/>
+        <import type="com.exact.xtra.repository.LoadingState"/>
         <variable
             name="viewModel"
-            type="com.exact.twitch.ui.common.PagedListViewModel"/>
+            type="com.exact.xtra.ui.common.PagedListViewModel"/>
         
         <variable
             name="layoutManager"
@@ -24,26 +25,27 @@
             android:layout_centerInParent="true"
             app:visible="@{!safeUnbox(viewModel.loadedInitial)}"/>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:onRefreshListener="@{viewModel::refresh}"
-            app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/> <!-- TODO fix layout manager -->
+                android:layout_height="wrap_content"
+                app:onRefreshListener="@{viewModel::refresh}"
+                app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                    <!-- TODO fix layout manager -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/fragment_clips_list_item" />
 
-        <ProgressBar
-            android:id="@+id/loadMoreProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/swipeRefresh"
-            app:visible="@{viewModel.pagingState == LoadingState.LOADING}"/>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!--<ProgressBar-->
+            <!--android:id="@+id/loadMoreProgressBar"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:visible="@{viewModel.pagingState == LoadingState.LOADING}"/>-->
 
     </RelativeLayout>
 </layout>

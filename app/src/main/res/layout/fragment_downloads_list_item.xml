@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="video" type="com.exact.twitch.model.OfflineVideo"/>
+        <variable name="video" type="com.exact.xtra.model.OfflineVideo"/>
     </data>
 
     <androidx.cardview.widget.CardView

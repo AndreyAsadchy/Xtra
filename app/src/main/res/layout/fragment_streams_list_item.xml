@@ -5,7 +5,7 @@
     <data>
         <variable
             name="stream"
-            type="com.exact.twitch.model.stream.Stream"/>
+            type="com.exact.xtra.model.stream.Stream"/>
     </data>
 
     <androidx.cardview.widget.CardView

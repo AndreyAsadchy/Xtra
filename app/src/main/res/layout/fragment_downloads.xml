@@ -3,51 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.exact.twitch.util.LayoutManagers"/>
-        <variable name="viewModel" type="com.exact.twitch.ui.downloads.DownloadsViewModel" />
+        <import type="com.exact.xtra.util.LayoutManagers"/>
+        <variable name="viewModel" type="com.exact.xtra.ui.downloads.DownloadsViewModel" />
     </data>
 
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/sortByRl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:visibility="gone"
-            android:layout_marginRight="10dp">
-
-            <TextView
-                android:id="@+id/sort"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/sortByImage"
-                android:layout_toLeftOf="@id/sortByImage" />
-
-            <ImageView
-                android:id="@+id/sortByImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/sortByText"
-                android:src="@drawable/baseline_sort_black_24"
-                android:layout_toLeftOf="@id/sortByText" />
-
-            <TextView
-                android:id="@+id/sortByText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="@string/sort_by"
-                android:layout_alignParentRight="true" />
-        </RelativeLayout>
-
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            app:visible="@{!viewModel.loaded}"/>
+            app:visible="@{!safeUnbox(viewModel.loaded)}"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

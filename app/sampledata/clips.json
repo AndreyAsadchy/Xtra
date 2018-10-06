@@ -1,0 +1,590 @@
+{
+  "clips": [
+    {
+      "slug": "PlausibleArbitraryMartenNotATK",
+      "tracking_id": "320293408",
+      "url": "https://clips.twitch.tv/PlausibleArbitraryMartenNotATK?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=PlausibleArbitraryMartenNotATK&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=PlausibleArbitraryMartenNotATK&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "49652357",
+        "name": "vchee",
+        "display_name": "Vchee",
+        "channel_url": "https://www.twitch.tv/vchee",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/422dc2c3-5f7d-48b5-b7b7-9834113e519a-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "40198989",
+        "name": "theautistocrat",
+        "display_name": "TheAutistocrat",
+        "channel_url": "https://www.twitch.tv/theautistocrat",
+        "logo": "https://static-cdn.jtvnw.net/user-default-pictures/4cbf10f1-bb9f-4f57-90e1-15bf06cfe6f5-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "318261811",
+        "url": "https://www.twitch.tv/videos/318261811?t=6h33m43s",
+        "offset": 23623,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30631160336",
+      "game": "League of Legends",
+      "language": "en",
+      "title": "DOM TOXIC",
+      "views": 244463,
+      "duration": 45,
+      "created_at": "2018-10-04T19:39:22Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C320293408-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C320293408-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C320293408-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "RepleteLazySnakeWow",
+      "tracking_id": "318249657",
+      "url": "https://clips.twitch.tv/RepleteLazySnakeWow?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=RepleteLazySnakeWow&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=RepleteLazySnakeWow&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "116311210",
+        "name": "csruhub",
+        "display_name": "CSRuHub",
+        "channel_url": "https://www.twitch.tv/csruhub",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/76722b216a4f6285-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "23146558",
+        "name": "m1styck",
+        "display_name": "M1STYCK",
+        "channel_url": "https://www.twitch.tv/m1styck",
+        "logo": "https://static-cdn.jtvnw.net/user-default-pictures/27103734-3cda-44d6-a384-f2ab71e4bb85-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "316692991",
+        "url": "https://www.twitch.tv/videos/316692991?t=7h57m4s",
+        "offset": 28624,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30580459584",
+      "game": "Counter-Strike: Global Offensive",
+      "language": "en",
+      "title": "ChrisJ ace",
+      "views": 235566,
+      "duration": 28.76,
+      "created_at": "2018-09-30T22:43:22Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/30580459584-offset-28648-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/30580459584-offset-28648-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/30580459584-offset-28648-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "CovertCrazyPassionfruitWOOP",
+      "tracking_id": "320489054",
+      "url": "https://clips.twitch.tv/CovertCrazyPassionfruitWOOP?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=CovertCrazyPassionfruitWOOP&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=CovertCrazyPassionfruitWOOP&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "25725272",
+        "name": "vinesauce",
+        "display_name": "Vinesauce",
+        "channel_url": "https://www.twitch.tv/vinesauce",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/vinesauce-p rofile_image-37ada0f872b62e56-150x150.png"
+      },
+      "curator": {
+        "id": "41592529",
+        "name": "dspangs",
+        "display_name": "Dspangs",
+        "channel_url": "https://www.twitch.tv/dspangs",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/bd1b0aad-ca40-4f19-bb38-f795842f6c29-profile_image-150x150.png"
+      },
+      "vod": {
+        "id": "318554334",
+        "url": "https://www.twitch.tv/videos/318554334?t=9m56s",
+        "offset": 596,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30640179136",
+      "game": "Dead Cells",
+      "language": "en",
+      "title": "Someone paid the voice actor of Solid Snake to say \"squeeze my hog\"",
+      "views": 209888,
+      "duration": 25.78,
+      "created_at": "2018-10-05T03:39:39Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/30640179136-offset-622-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/30640179136-offset-622-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/30640179136-offset-622-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "TallColorfulHedgehogTheTarFu",
+      "tracking_id": "320162400",
+      "url": "https://clips.twitch.tv/TallColorfulHedgehogTheTarFu?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=TallColorfulHedgehogTheTarFu&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=TallColorfulHedgehogTheTarFu&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "36029255",
+        "name": "riotgames",
+        "display_name": "Riot Games",
+        "channel_url": "https://www.twitch.tv/riotgames",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/7033f472-a834-43ff-bf5c-c589e8e35593-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "43348637",
+        "name": "masternero2",
+        "display_name": "Masternero2",
+        "channel_url": "https://www.twitch.tv/masternero2",
+        "logo": "https://static-cdn.jtvnw.net/user-default-pictures/0ecbb6c3-fecb-4016-8115-aa467b7c36ed-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "318198689",
+        "url": "https://www.twitch.tv/videos/318198689?t=7h52m10s",
+        "offset": 28330,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30629136800",
+      "game": "League of Legends",
+      "language": "en",
+      "title": "BroBoy",
+      "views": 181932,
+      "duration": 29.75,
+      "created_at": "2018-10-04T14:24:17Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/30629136800-offset-28354-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/30629136800-offset-28354-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/30629136800-offset-28354-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "TalentedGleamingWaterHassanChop",
+      "tracking_id": "318228743",
+      "url": "https://clips.twitch.tv/TalentedGleamingWaterHassanChop?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=TalentedGleamingWaterHassanChop&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=TalentedGleamingWaterHassanChop&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "23936415",
+        "name": "jerma985",
+        "display_name": "Jerma985",
+        "channel_url": "https://www.twitch.tv/jerma985",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/jerma985-profile_image-447425e773e6fd5c-150x150.jpeg"
+      },
+      "curator": {
+        "id": "90881935",
+        "name": "xx_d3thlord69_xx",
+        "display_name": "xX_D3ThLoRd69_Xx",
+        "channel_url": "https://www.twitch.tv/xx_d3thlord69_xx",
+        "logo": "https://static-cdn.jtvnw.net/user-default-pictures/cd618d3e-f14d-4960-b7cf-094231b04735-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "316859202",
+        "url": "https://www.twitch.tv/videos/316859202?t=21m33s",
+        "offset": 1293,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30586352912",
+      "game": "Just Chatting",
+      "language": "en",
+      "title": "Jerma proposes to his girlfriend",
+      "views": 181548,
+      "duration": 58.8,
+      "created_at": "2018-09-30T21:59:39Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C318228743-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C318228743-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C318228743-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "AcceptableGeniusDragonKAPOW",
+      "tracking_id": "317955762",
+      "url": "https://clips.twitch.tv/AcceptableGeniusDragonKAPOW?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=AcceptableGeniusDragonKAPOW&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=AcceptableGeniusDragonKAPOW&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "85909658",
+        "name": "eloise",
+        "display_name": "Eloise",
+        "channel_url": "https://www.twitch.tv/eloise",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/eloise-profile_image-4cecafe024a820e6-150x150.png"
+      },
+      "curator": {
+        "id": "49779107",
+        "name": "swedish_remixer",
+        "display_name": "Swedish_Remixer",
+        "channel_url": "https://www.twitch.tv/swedish_remixer",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/4b1f606b-880c-4f3b-85bf-1673a1c4642e-profile_image-150x150.png"
+      },
+      "vod": {
+        "id": "316632918",
+        "url": "https://www.twitch.tv/videos/316632918?t=14m4s",
+        "offset": 844,
+        "preview_image_url": "https://static-cdn.jtvnw.net/s3_vods/b5f19377d94d0f99f0c7_eloise_30578316032_979770183/thumb/thumb0-320x240.jpg"
+      },
+      "broadcast_id": "30578316032",
+      "game": "Just Chatting",
+      "language": "zh-cn",
+      "title": "EU accent",
+      "views": 176163,
+      "duration": 16.4,
+      "created_at": "2018-09-30T13:16:51Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C317955762-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C317955762-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C317955762-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "PlainFineWatercressDoritosChip",
+      "tracking_id": "318564262",
+      "url": "https://clips.twitch.tv/PlainFineWatercressDoritosChip?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=PlainFineWatercressDoritosChip&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=PlainFineWatercressDoritosChip&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "55726613",
+        "name": "define",
+        "display_name": "DEFINE",
+        "channel_url": "https://www.twitch.tv/define",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/define-profile_image-f05883f82b1d8324-150x150.png"
+      },
+      "curator": {
+        "id": "94128329",
+        "name": "liutaurastv",
+        "display_name": "LiutaurasTV",
+        "channel_url": "https://www.twitch.tv/liutaurastv",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/44518c66-ca7e-45c8-8f44-9af3d37f42ac-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "317033198",
+        "url": "https://www.twitch.tv/videos/317033198?t=5h9m46s",
+        "offset": 18586,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30592214288",
+      "game": "Counter-Strike: Global Offensive",
+      "language": "sv",
+      "title": "LUL",
+      "views": 174910,
+      "duration": 26,
+      "created_at": "2018-10-01T15:09:11Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/30592214288-offset-18612-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/30592214288-offset-18612-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/30592214288-offset-18612-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "CuriousBumblingButterNomNom",
+      "tracking_id": "318538328",
+      "url": "https://clips.twitch.tv/CuriousBumblingButterNomNom?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=CuriousBumblingButterNomNom&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=CuriousBumblingButterNomNom&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "21390470",
+        "name": "singsing",
+        "display_name": "singsing",
+        "channel_url": "https://www.twitch.tv/singsing",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/singsing-profile_image-11f10df8952aee16-150x150.jpeg"
+      },
+      "curator": {
+        "id": "59322414",
+        "name": "zeroseventhree",
+        "display_name": "zeroseventhree",
+        "channel_url": "https://www.twitch.tv/zeroseventhree",
+        "logo": "https://static-cdn.jtvnw.net/user-default-pictures/cd618d3e-f14d-4960-b7cf-094231b04735-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "317045937",
+        "url": "https://www.twitch.tv/videos/317045937?t=2h31m46s",
+        "offset": 9106,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30592632016",
+      "game": "Dota 2",
+      "language": "en",
+      "title": "Streamer eats a green apple in front of his green screen",
+      "views": 161983,
+      "duration": 47.4,
+      "created_at": "2018-10-01T13:54:35Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C318538328-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C318538328-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C318538328-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "SmoggyPlayfulRamenEleGiggle",
+      "tracking_id": "318751221",
+      "url": "https://clips.twitch.tv/SmoggyPlayfulRamenEleGiggle?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=SmoggyPlayfulRamenEleGiggle&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=SmoggyPlayfulRamenEleGiggle&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "37402112",
+        "name": "shroud",
+        "display_name": "shroud",
+        "channel_url": "https://www.twitch.tv/shroud",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/7ed5e0c6-0191-4eef-8328-4af6e4ea5318-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "254743312",
+        "name": "fartboxing",
+        "display_name": "fartboxing",
+        "channel_url": "https://www.twitch.tv/fartboxing",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/a8cc9df0-5763-46e9-b06d-72899b115983-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "317158551",
+        "url": "https://www.twitch.tv/videos/317158551?t=3h20m35s",
+        "offset": 12035,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30596235296",
+      "game": "Fortnite",
+      "language": "en",
+      "title": "GOD LIKE",
+      "views": 149988,
+      "duration": 12.59,
+      "created_at": "2018-10-01T21:25:49Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C318751221-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C318751221-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C318751221-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "FurryAgreeableLegJKanStyle",
+      "tracking_id": "318707684",
+      "url": "https://clips.twitch.tv/FurryAgreeableLegJKanStyle?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=FurryAgreeableLegJKanStyle&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=FurryAgreeableLegJKanStyle&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "43131877",
+        "name": "savjz",
+        "display_name": "Savjz",
+        "channel_url": "https://www.twitch.tv/savjz",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/775427ebe6ec8284-profile_image-150x150.jpeg"
+      },
+      "curator": {
+        "id": "73925399",
+        "name": "louneri",
+        "display_name": "Louneri",
+        "channel_url": "https://www.twitch.tv/louneri",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/louneri-profile_image-6f69169f29feae15-150x150.jpeg"
+      },
+      "vod": {
+        "id": "317118430",
+        "url": "https://www.twitch.tv/videos/317118430?t=3h52m26s",
+        "offset": 13946,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30594968288",
+      "game": "Magic: The Gathering",
+      "language": "en",
+      "title": "Savjz on why he quit Hearthstone",
+      "views": 134057,
+      "duration": 54,
+      "created_at": "2018-10-01T20:09:14Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C318707684-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C318707684-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C318707684-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "SuspiciousThankfulWormBudStar",
+      "tracking_id": "319866027",
+      "url": "https://clips.twitch.tv/SuspiciousThankfulWormBudStar?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=SuspiciousThankfulWormBudStar&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=SuspiciousThankfulWormBudStar&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "18074328",
+        "name": "destiny",
+        "display_name": "Destiny",
+        "channel_url": "https://www.twitch.tv/destiny",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/destiny-profile_image-951fd53950bc2f8b-150x150.png"
+      },
+      "curator": {
+        "id": "153980230",
+        "name": "s0muchforsubtlety",
+        "display_name": "S0MuchForSubtlety",
+        "channel_url": "https://www.twitch.tv/s0muchforsubtlety",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/b254b501-94b6-4c5e-a97a-f8339b99cf40-profile_image-150x150.jpg"
+      },
+      "vod": {
+        "id": "318042576",
+        "url": "https://www.twitch.tv/videos/318042576?t=1m53s",
+        "offset": 113,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30624387280",
+      "game": "",
+      "language": "en",
+      "title": "we don't deserve nathan ",
+      "views": 132770,
+      "duration": 27.37,
+      "created_at": "2018-10-03T22:03:58Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C319866027-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C319866027-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C319866027-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "CorrectBrainyPeanutTTours",
+      "tracking_id": "318839695",
+      "url": "https://clips.twitch.tv/CorrectBrainyPeanutTTours?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=CorrectBrainyPeanutTTours&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=CorrectBrainyPeanutTTours&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "26490481",
+        "name": "summit1g",
+        "display_name": "summit1g",
+        "channel_url": "https://www.twitch.tv/summit1g",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/200cea12142f2384-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "49225169",
+        "name": "boahs",
+        "display_name": "Boahs",
+        "channel_url": "https://www.twitch.tv/boahs",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/boahs-profile_image-1def3af2a639e1b6-150x150.png"
+      },
+      "vod": {
+        "id": "317234107",
+        "url": "https://www.twitch.tv/videos/317234107?t=3h17m20s",
+        "offset": 11840,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30598668336",
+      "game": "Ring Of Elysium",
+      "language": "en",
+      "title": "Banned for the truth",
+      "views": 130473,
+      "duration": 14.95,
+      "created_at": "2018-10-02T00:51:32Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C318839695-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C318839695-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C318839695-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "RacyImpossiblePangolinItsBoshyTime",
+      "tracking_id": "318691864",
+      "url": "https://clips.twitch.tv/RacyImpossiblePangolinItsBoshyTime?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=RacyImpossiblePangolinItsBoshyTime&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=RacyImpossiblePangolinItsBoshyTime&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "7236692",
+        "name": "dansgaming",
+        "display_name": "DansGaming",
+        "channel_url": "https://www.twitch.tv/dansgaming",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/32b68813-ea70-43bf-a8e4-a55f3096f408-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "64244668",
+        "name": "big_boi_bison",
+        "display_name": "big_boi_bison",
+        "channel_url": "https://www.twitch.tv/big_boi_bison",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/big_boi_bison-profile_image-dc390a25ef8ee74c-150x150.jpeg"
+      },
+      "vod": {
+        "id": "317109582",
+        "url": "https://www.twitch.tv/videos/317109582?t=3h42m4s",
+        "offset": 13324,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30594689296",
+      "game": "Assassin's Creed Odyssey",
+      "language": "en",
+      "title": "HEY CYCLOPS!",
+      "views": 127763,
+      "duration": 59.99,
+      "created_at": "2018-10-01T19:41:11Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C318691864-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C318691864-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C318691864-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "IncredulousCloudyChimpanzeeNotLikeThis",
+      "tracking_id": "319522432",
+      "url": "https://clips.twitch.tv/IncredulousCloudyChimpanzeeNotLikeThis?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=IncredulousCloudyChimpanzeeNotLikeThis&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=IncredulousCloudyChimpanzeeNotLikeThis&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "23728142",
+        "name": "immortalhd",
+        "display_name": "ImmortalHD",
+        "channel_url": "https://www.twitch.tv/immortalhd",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/d98a4218-37fc-4043-b0c0-605b7a51e976-profile_image-150x150.png"
+      },
+      "curator": {
+        "id": "35056234",
+        "name": "drumbeat",
+        "display_name": "Drumbeat",
+        "channel_url": "https://www.twitch.tv/drumbeat",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/f9ecb68bd71c1b6d-profile_image-150x150.jpeg"
+      },
+      "vod": {
+        "id": "317730801",
+        "url": "https://www.twitch.tv/videos/317730801?t=6h39m50s",
+        "offset": 23990,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30614504832",
+      "game": "Fortnite",
+      "language": "en",
+      "title": "FBI OPEN UP",
+      "views": 127683,
+      "duration": 39.3,
+      "created_at": "2018-10-03T08:36:12Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C319522432-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C319522432-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C319522432-preview-86x45.jpg"
+      }
+    },
+    {
+      "slug": "PoisedMoldyWaspTheThing",
+      "tracking_id": "317607787",
+      "url": "https://clips.twitch.tv/PoisedMoldyWaspTheThing?tt_medium=clips_api&tt_content=url",
+      "embed_url": "https://clips.twitch.tv/embed?clip=PoisedMoldyWaspTheThing&tt_medium=clips_api&tt_content=embed",
+      "embed_html": "<iframe src='https://clips.twitch.tv/embed?clip=PoisedMoldyWaspTheThing&tt_medium=clips_api&tt_content=embed' width='640' height='360' frameborder='0' scrolling='no' allowfullscreen='true'></iframe>",
+      "broadcaster": {
+        "id": "7835731",
+        "name": "itsneryssa",
+        "display_name": "itsneryssa",
+        "channel_url": "https://www.twitch.tv/itsneryssa",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/itsneryssa-profile_image-4a5314daa3fd7b07-150x150.jpeg"
+      },
+      "curator": {
+        "id": "7835731",
+        "name": "itsneryssa",
+        "display_name": "itsneryssa",
+        "channel_url": "https://www.twitch.tv/itsneryssa",
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/itsneryssa-profile_image-4a5314daa3fd7b07-150x150.jpeg"
+      },
+      "vod": {
+        "id": "316380271",
+        "url": "https://www.twitch.tv/videos/316380271?t=3m26s",
+        "offset": 206,
+        "preview_image_url": "https://vod-secure.twitch.tv/_404/404_processing_320x240.png"
+      },
+      "broadcast_id": "30569247808",
+      "game": "World of Warcraft",
+      "language": "en",
+      "title": "New Animation - Draenei Shaman Totems",
+      "views": 125828,
+      "duration": 24.05,
+      "created_at": "2018-09-29T20:44:22Z",
+      "thumbnails": {
+        "medium": "https://clips-media-assets2.twitch.tv/AT-cm%7C317607787-preview-480x272.jpg",
+        "small": "https://clips-media-assets2.twitch.tv/AT-cm%7C317607787-preview-260x147.jpg",
+        "tiny": "https://clips-media-assets2.twitch.tv/AT-cm%7C317607787-preview-86x45.jpg"
+      }
+    }
+  ],
+  "_cursor": "MTU="
+}

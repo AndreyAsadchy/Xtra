@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.exact.twitch.util.LayoutManagers"/>
-        <variable name="viewModel" type="com.exact.twitch.ui.streams.StreamsViewModel" />
+        <import type="com.exact.xtra.util.LayoutManagers"/>
+        <variable name="viewModel" type="com.exact.xtra.ui.streams.StreamsViewModel" />
     </data>
 
     <LinearLayout
@@ -14,7 +14,7 @@
         <include
             android:id="@+id/recyclerViewLayout"
             layout="@layout/common_recycler_view_layout"
-            app:viewModel="@{(com.exact.twitch.ui.common.PagedListViewModel)viewModel}"
+            app:viewModel="@{(com.exact.xtra.ui.common.PagedListViewModel)viewModel}"
             app:layoutManager="@{LayoutManagers.linear(context)}"/>
 
     </LinearLayout>

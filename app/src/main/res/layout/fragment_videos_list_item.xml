@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.exact.twitch.util.TwitchApiHelper"/>
+        <import type="com.exact.xtra.util.TwitchApiHelper"/>
         <import type="android.text.format.DateUtils"/>
         <variable
             name="video"
-            type="com.exact.twitch.model.video.Video"/>
+            type="com.exact.xtra.model.video.Video"/>
     </data>
 
     <androidx.cardview.widget.CardView

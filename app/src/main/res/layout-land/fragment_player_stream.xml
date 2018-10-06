@@ -24,14 +24,14 @@
         android:layout_toEndOf="@+id/fragment_player_player_container"
         android:layout_toRightOf="@+id/fragment_player_player_container">
 
-        <com.exact.twitch.ui.view.ChatView
+        <com.exact.xtra.ui.view.ChatView
             android:id="@+id/chatView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
 
-        <com.exact.twitch.ui.view.MessageView
+        <com.exact.xtra.ui.view.MessageView
             android:id="@+id/messageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

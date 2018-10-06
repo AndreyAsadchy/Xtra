@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.exact.twitch.util.TwitchApiHelper"/>
+        <import type="com.exact.xtra.util.TwitchApiHelper"/>
         <import type="android.text.format.DateUtils"/>
         <variable
             name="clip"
-            type="com.exact.twitch.model.clip.Clip"/>
+            type="com.exact.xtra.model.clip.Clip"/>
     </data>
 
     <androidx.cardview.widget.CardView
@@ -21,13 +22,15 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 app:imageUrl="@{clip.thumbnails.medium}"
-                app:fit="@{true}"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/backgrounds/scenic"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"/>
 
             <TextView
                 android:id="@+id/date"
                 android:text="@{TwitchApiHelper.parseIso8601Date(context, clip.createdAt)}"
+                tools:text="April 20, 2017"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
@@ -37,6 +40,7 @@
             <TextView
                 android:id="@+id/views"
                 android:text="@{@plurals/views(clip.views, clip.views)}"
+                tools:text="133769 views"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
@@ -46,6 +50,7 @@
             <TextView
                 android:id="@+id/length"
                 android:text="@{DateUtils.formatElapsedTime((long)clip.duration)}"
+                tools:text="13:37"
                 style="@style/VideoLength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,6 +62,7 @@
                 android:id="@+id/userImage"
                 app:imageUrl="@{clip.broadcaster.logo}"
                 app:circle="@{true}"
+                tools:src="@tools:sample/backgrounds/scenic"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_below="@id/thumbnail" />
@@ -64,6 +70,7 @@
             <TextView
                 android:id="@+id/title"
                 android:text="@{clip.title}"
+                tools:text="@sample/clips.json/clips/title"
                 style="@style/VideoTitle"
                 android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
@@ -76,6 +83,7 @@
             <TextView
                 android:id="@+id/username"
                 android:text="@{clip.broadcaster.name}"
+                tools:text="@sample/clips.json/clips/broadcaster/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
@@ -87,6 +95,7 @@
             <TextView
                 android:id="@+id/gameName"
                 android:text="@{clip.game}"
+                tools:text="@sample/clips.json/clips/game"
                 android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

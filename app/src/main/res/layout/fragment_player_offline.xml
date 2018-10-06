@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.exact.twitch.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.exact.xtra.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:DraggableView="http://schemas.android.com/apk/res-auto"
@@ -29,4 +29,4 @@
         app:controller_layout_id="@layout/player_offline"
         app:show_buffering="true"/>
 
-</com.exact.twitch.ui.view.draggableview.DraggableView>
+</com.exact.xtra.ui.view.draggableview.DraggableView>

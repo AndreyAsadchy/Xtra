@@ -15,7 +15,7 @@ def glide = "4.8.0"
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.exact.twitch"
+        applicationId "com.exact.xtra"
         minSdkVersion 16
         versionCode 1
         versionName "1.0"

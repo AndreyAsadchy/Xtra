@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.exact.twitch.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.exact.xtra.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:DraggableView="http://schemas.android.com/apk/res-auto"
@@ -14,7 +14,7 @@
     DraggableView:top_view_margin_bottom="130dp"
     DraggableView:top_view_margin_right="30dp">
 
-    <com.exact.twitch.ui.view.ChatView
+    <com.exact.xtra.ui.view.ChatView
         android:id="@id/chatView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -31,4 +31,4 @@
         app:show_buffering="true"
         app:resize_mode="fill"/>
 
-</com.exact.twitch.ui.view.draggableview.DraggableView>
+</com.exact.xtra.ui.view.draggableview.DraggableView>

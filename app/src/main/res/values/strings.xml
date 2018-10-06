@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Twitch</string>
+    <string name="app_name">Xtra</string>
     <string name="navigation_bar_games">Games</string>
     <string name="navigation_bar_top_streams">Top streams</string>
     <string name="navigation_bar_followed_streams">My streams</string>

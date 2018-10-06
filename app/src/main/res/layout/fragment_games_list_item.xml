@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="game" type="com.exact.twitch.model.game.Game"/>
+        <variable name="game" type="com.exact.xtra.model.game.Game"/>
     </data>
 
     <androidx.cardview.widget.CardView
