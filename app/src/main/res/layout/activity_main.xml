@@ -20,7 +20,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-
                 <com.google.android.material.bottomnavigation.BottomNavigationView
                     android:id="@+id/navBar"
                     android:layout_width="match_parent"
@@ -29,7 +28,13 @@
                     android:layout_alignParentBottom="true"
                     app:menu="@menu/navigation_bar"
                     app:labelVisibilityMode="unlabeled"
-                    app:itemIconTint="@color/nav_bar" />
+                    app:itemIconTint="@color/nav_bar"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#FF424242"
+                    android:layout_above="@id/navBar"/>
 
         </RelativeLayout>
 </layout>

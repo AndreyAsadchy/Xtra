@@ -13,7 +13,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="?attr/cardStyle">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,7 +26,8 @@
                 android:scaleType="centerCrop"
                 tools:src="@tools:sample/backgrounds/scenic"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"/>
+                android:layout_height="200dp"
+                />
 
             <TextView
                 android:id="@+id/date"
@@ -33,9 +35,12 @@
                 tools:text="April 20, 2017"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_toRightOf="@id/views"
-                android:layout_toEndOf="@id/views" />
+                android:layout_alignRight="@id/thumbnail"
+                android:layout_alignEnd="@id/thumbnail"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp" />
 
             <TextView
                 android:id="@+id/views"
@@ -43,9 +48,10 @@
                 tools:text="133769 views"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_toRightOf="@id/username"
-                android:layout_toEndOf="@id/username" />
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="5dp"/>
 
             <TextView
                 android:id="@+id/length"
@@ -54,30 +60,34 @@
                 style="@style/VideoLength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_alignRight="@id/thumbnail"
-                android:layout_alignEnd="@id/thumbnail" />
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp" />
 
             <ImageView
                 android:id="@+id/userImage"
                 app:imageUrl="@{clip.broadcaster.logo}"
                 app:circle="@{true}"
                 tools:src="@tools:sample/backgrounds/scenic"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/thumbnail" />
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/thumbnail"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:id="@+id/title"
                 android:text="@{clip.title}"
                 tools:text="@sample/clips.json/clips/title"
                 style="@style/VideoTitle"
-                android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_below="@id/thumbnail"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/userImage" />
 
             <TextView
@@ -87,8 +97,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage" />
 
@@ -96,13 +106,14 @@
                 android:id="@+id/gameName"
                 android:text="@{clip.game}"
                 tools:text="@sample/clips.json/clips/game"
-                android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/username"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:paddingBottom="10dp"/>
 
             <!--<ImageButton-->
             <!--android:id="@+id/moreImgBtn"-->

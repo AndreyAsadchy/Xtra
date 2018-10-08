@@ -33,12 +33,13 @@
             android:src="@drawable/baseline_sort_black_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tint="@android:color/white"
             android:layout_toStartOf="@id/sortByText"
             android:layout_toLeftOf="@id/sortByText" />
 
         <TextView
             android:id="@+id/sortByText"
-            android:text="@string/sort_by"
+            android:text="@string/sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

@@ -1,7 +1,6 @@
 package com.exact.xtra.ui.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,12 +54,12 @@ class RadioButtonDialogFragment : com.google.android.material.bottomsheet.Bottom
             }
             val tags = it.getIntArray(TAGS)
             it.getCharSequenceArrayList(LABELS)?.forEachIndexed { index, label ->
-                val button = RadioButton(requireActivity())
-                button.id = index
-                button.text = label
-                button.tag = tags?.getOrNull(index)
-                button.setOnClickListener(clickListener)
-                button.setTextColor(Color.BLACK)
+                val button = RadioButton(requireActivity()).apply {
+                    id = index
+                    text = label
+                    tag = tags?.getOrNull(index)
+                    setOnClickListener(clickListener)
+                }
                 radioGroup.addView(button, MATCH_PARENT, WRAP_CONTENT)
             }
             radioGroup.check(it.getInt(CHECKED))

@@ -1,11 +1,17 @@
 <resources>
+
+    <attr name="cardStyle" format="reference"/>
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="cardStyle">@style/CardDark</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDark</item>
     </style>
 
     <style name="VideoTitle">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
@@ -18,4 +24,16 @@
         <item name="android:background">@android:color/black</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="CardDark">
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardBackgroundColor">@color/background</item>
+    </style>
+
+
+    <!--TODO color-->
+    <style name="BottomSheetDark" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

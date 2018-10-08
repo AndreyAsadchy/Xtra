@@ -2,4 +2,5 @@
 <resources>
     <color name="accent">#007DCA</color>
     <color name="nav_bar_item">#FF878787</color>
+    <color name="background">#2B2B2B</color>
 </resources>

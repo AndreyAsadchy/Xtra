@@ -7,7 +7,7 @@
     <string name="navigation_bar_menu">Menu</string>
     <string name="retry">Retry</string>
     <string name="connection_error">Error connecting to the server. Please try again</string>
-    <string name="sort_by">Sort by</string>
+    <string name="sort">Sort</string>
     <string name="upload_date">Upload date</string>
     <string name="today">Today</string>
     <string name="this_week">This week</string>

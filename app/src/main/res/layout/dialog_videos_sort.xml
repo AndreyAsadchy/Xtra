@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sort_by"/>
+            android:text="@string/sort"/>
 
         <RadioButton
             android:id="@+id/time"

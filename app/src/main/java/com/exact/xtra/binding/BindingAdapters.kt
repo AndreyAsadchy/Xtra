@@ -26,9 +26,6 @@ fun setVisible(view: View, visible: Boolean) {
     view.visibility = if (visible) View.VISIBLE else View.GONE
 }
 
-//@BindingAdapter("visible")
-//fun setVisible(view: View, liveData: MediatorLiveData)
-
 @BindingAdapter("enabled")
 fun setEnabled(view: View, enabled: Boolean) {
     view.isEnabled = enabled
