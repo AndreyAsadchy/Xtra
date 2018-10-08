@@ -1,0 +1,10 @@
+package com.exact.xtra.repository.datasource
+
+import androidx.lifecycle.MutableLiveData
+import com.exact.xtra.repository.LoadingState
+
+interface PagingDataSource {
+    val loadingState: MutableLiveData<LoadingState>
+    val pagingState: MutableLiveData<LoadingState>
+    fun retry()
+}
