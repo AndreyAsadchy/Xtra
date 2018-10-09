@@ -32,12 +32,13 @@
                 app:onRefreshListener="@{viewModel::refresh}"
                 app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
 
-                    <!-- TODO fix layout manager -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/fragment_clips_list_item" />
+                        tools:listitem="@layout/fragment_clips_list_item"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:divider="@{@drawable/divider}"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

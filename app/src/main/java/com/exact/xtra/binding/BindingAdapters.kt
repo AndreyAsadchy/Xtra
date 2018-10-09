@@ -1,9 +1,12 @@
 package com.exact.xtra.binding
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.exact.xtra.GlideApp
@@ -19,6 +22,14 @@ fun loadImage(imageView: ImageView, url: String?, circle: Boolean) {
         request.circleCrop()
     }
     request.into(imageView)
+}
+
+@BindingAdapter("divider")
+fun setDivider(recyclerView: RecyclerView, divider: Drawable) {
+    val context = recyclerView.context
+    recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
+        setDrawable(divider)
+    })
 }
 
 @BindingAdapter("visible")

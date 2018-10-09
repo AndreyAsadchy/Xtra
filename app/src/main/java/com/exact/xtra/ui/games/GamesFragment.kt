@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,21 +17,18 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_games.*
 import javax.inject.Inject
 
-class GamesFragment : androidx.fragment.app.Fragment(), Injectable, Scrollable {
+class GamesFragment : Fragment(), Injectable, Scrollable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: FragmentGamesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentGamesBinding.inflate(inflater, container, false).apply { setLifecycleOwner(this@GamesFragment) }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerViewLayout.recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireActivity())
-        recyclerViewLayout.recyclerView.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(requireActivity(), androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+        return FragmentGamesBinding.inflate(inflater, container, false).let {
+            binding = it
+            it.setLifecycleOwner(this@GamesFragment)
+            binding.root
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

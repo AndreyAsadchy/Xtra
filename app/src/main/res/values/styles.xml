@@ -1,13 +1,18 @@
 <resources>
 
     <attr name="cardStyle" format="reference"/>
+    <attr name="navBarStyle" format="reference"/>
+    <attr name="dividerColor" format="color"/>
+
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorAccent">@color/accent</item>
+        <item name="colorAccent">@color/accentDark</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:windowBackground">@color/background</item>
-        <item name="android:colorBackground">@color/background</item>
+        <item name="android:windowBackground">@color/backgroundDark</item>
+        <item name="android:colorBackground">@color/backgroundDark</item>
         <item name="cardStyle">@style/CardDark</item>
+        <item name="navBarStyle">@style/NavBarDark</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDark</item>
+        <item name="dividerColor">@color/dividerDark</item>
     </style>
 
     <style name="VideoTitle">
@@ -27,13 +32,17 @@
 
     <style name="CardDark">
         <item name="cardCornerRadius">0dp</item>
-        <item name="cardBackgroundColor">@color/background</item>
+        <item name="cardBackgroundColor">@color/backgroundDark</item>
+    </style>
+
+    <style name="NavBarDark">
+        <item name="android:background">@color/backgroundDark</item>
+        <item name="itemIconTint">@color/nav_bar_dark</item>
     </style>
 
 
-    <!--TODO color-->
     <style name="BottomSheetDark" parent="Theme.Design.BottomSheetDialog">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:colorBackground">@color/backgroundDark</item>
     </style>
 
 </resources>
