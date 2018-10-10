@@ -12,4 +12,10 @@
         <attr name="enable_click_to_maximize_view" format="boolean"/>
         <attr name="enable_click_to_minimize_view" format="boolean"/>
     </declare-styleable>
+
+    <attr name="cardStyle" format="reference"/>
+    <attr name="navBarStyle" format="reference"/>
+    <attr name="dividerColor" format="color"/>
+    <attr name="secondaryTextColor" format="color"/>
+
 </resources>

@@ -26,7 +26,7 @@
                 android:scaleType="centerCrop"
                 tools:src="@tools:sample/backgrounds/scenic"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="@dimen/thumbnailHeight"
                 />
 
             <TextView
@@ -69,12 +69,11 @@
                 app:imageUrl="@{clip.broadcaster.logo}"
                 app:circle="@{true}"
                 tools:src="@tools:sample/backgrounds/scenic"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="12dp"/>
 
             <TextView
                 android:id="@+id/title"
@@ -85,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="7dp"
                 android:layout_below="@id/thumbnail"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage" />
@@ -106,6 +105,7 @@
                 android:id="@+id/gameName"
                 android:text="@{clip.game}"
                 tools:text="@sample/clips.json/clips/game"
+                android:textColor="?attr/secondaryTextColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/username"

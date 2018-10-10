@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="game" type="com.exact.xtra.model.game.Game"/>
@@ -8,37 +9,46 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="?attr/cardStyle">
 
         <RelativeLayout
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
 
             <ImageView
                 android:id="@+id/gameImage"
-                app:imageUrl="@{game.info.box.small}"
-                android:layout_width="40dp"
-                android:layout_height="50dp" />
+                app:imageUrl="@{game.info.box.medium}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                android:layout_width="50dp"
+                android:layout_height="60dp"/>
 
             <TextView
                 android:id="@+id/gameName"
                 android:text="@{game.info.name}"
+                tools:text="@sample/games.json/top/game/name"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_toEndOf="@id/gameImage"
                 android:layout_toRightOf="@id/gameImage" />
 
             <TextView
                 android:id="@+id/viewers"
                 android:text="@{@plurals/viewers(game.viewers, game.viewers)}"
+                tools:text="123456 viewers"
+                android:textColor="?attr/secondaryTextColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/gameName"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/gameImage"
                 android:layout_toRightOf="@id/gameImage" />
 

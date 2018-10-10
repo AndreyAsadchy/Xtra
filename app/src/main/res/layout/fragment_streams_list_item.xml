@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -11,9 +12,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="5dp">
+        style="?attr/cardStyle">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,75 +20,94 @@
 
             <ImageView
                 android:id="@+id/thumbnail"
-                app:imageUrl="@{stream.preview.medium}"
+                app:imageUrl="@{stream.preview.large}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_margin="10dp"/>
+                android:layout_height="@dimen/thumbnailHeight"/>
 
             <TextView
                 android:id="@+id/viewers"
                 android:text="@{@plurals/viewers(stream.viewers, stream.viewers)}"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_toEndOf="@id/streamTypeImage"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
+                tools:text="133769 viewers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toEndOf="@id/streamTypeImage"
                 android:layout_toRightOf="@id/streamTypeImage" />
 
             <ImageView
                 android:id="@+id/streamTypeImage"
                 android:src="@{!stream.playlist ? @drawable/baseline_fiber_manual_record_black_24 : @drawable/baseline_replay_black_24 }"
                 android:tint="@{!stream.playlist ? @android:color/holo_red_dark : @android:color/darker_gray }"
+                tools:src="@drawable/baseline_fiber_manual_record_black_24"
+                tools:tint="@android:color/holo_red_dark"
+                android:layout_width="17dp"
+                android:layout_height="15dp"
+                android:scaleType="centerCrop"
                 android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginBottom="6dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp" />
 
             <ImageView
                 android:id="@+id/userImage"
                 app:imageUrl="@{stream.channel.logo}"
-                android:layout_marginStart="10dp"
-                android:layout_width="40dp"
-                android:layout_height="50dp"
+                app:circle="@{true}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp" />
 
             <TextView
                 android:id="@+id/username"
                 android:text="@{stream.channel.name}"
-                android:layout_marginStart="5dp"
+                tools:text="@sample/streams.json/streams/channel/name"
+                android:textStyle="bold"
+                android:textSize="15sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/thumbnail"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/userImage" />
 
             <TextView
                 android:id="@+id/title"
                 android:text="@{stream.channel.status}"
-                android:layout_marginStart="5dp"
+                tools:text="@sample/streams.json/streams/channel/status"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/username"
-                android:layout_toEndOf="@id/userImage"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginLeft="5dp"
+                android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage" />
 
             <TextView
                 android:id="@+id/gameName"
                 android:text="@{stream.game}"
-                android:layout_marginStart="5dp"
+                tools:text="@sample/games.json/top/game/name"
+                android:textColor="?attr/secondaryTextColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:paddingBottom="10dp"/>
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

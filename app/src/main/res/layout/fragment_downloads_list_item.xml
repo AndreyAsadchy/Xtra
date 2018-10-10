@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="video" type="com.exact.xtra.model.OfflineVideo"/>
@@ -8,7 +9,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="?attr/cardStyle">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -17,8 +19,10 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 app:imageUrl="@{video.thumbnail}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"/>
+                android:layout_height="200dp"/>
 
             <TextView
                 android:id="@+id/date"

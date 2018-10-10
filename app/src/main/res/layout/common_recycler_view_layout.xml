@@ -8,10 +8,6 @@
         <variable
             name="viewModel"
             type="com.exact.xtra.ui.common.PagedListViewModel"/>
-        
-        <variable
-            name="layoutManager"
-            type="androidx.recyclerview.widget.RecyclerView.LayoutManager"/>
     </data>
 
     <RelativeLayout
@@ -36,7 +32,7 @@
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/fragment_clips_list_item"
+                        tools:listitem="@layout/fragment_downloads_list_item"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:divider="@{@drawable/divider}"/>
 

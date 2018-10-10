@@ -1,18 +1,16 @@
 <resources>
 
-    <attr name="cardStyle" format="reference"/>
-    <attr name="navBarStyle" format="reference"/>
-    <attr name="dividerColor" format="color"/>
-
     <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">@color/accentDark</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:windowBackground">@color/backgroundDark</item>
-        <item name="android:colorBackground">@color/backgroundDark</item>
+        <item name="android:windowBackground">@color/primaryDark</item>
+        <item name="android:colorBackground">@color/primaryDark</item>
         <item name="cardStyle">@style/CardDark</item>
         <item name="navBarStyle">@style/NavBarDark</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDark</item>
         <item name="dividerColor">@color/dividerDark</item>
+        <item name="android:textColorSecondary">@color/secondaryDark</item>
+        <item name="secondaryTextColor">@color/secondaryDark</item>
     </style>
 
     <style name="VideoTitle">
@@ -30,19 +28,24 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="UserPicture">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+
     <style name="CardDark">
         <item name="cardCornerRadius">0dp</item>
-        <item name="cardBackgroundColor">@color/backgroundDark</item>
+        <item name="cardBackgroundColor">@color/primaryDark</item>
     </style>
 
     <style name="NavBarDark">
-        <item name="android:background">@color/backgroundDark</item>
+        <item name="android:background">@color/primaryDark</item>
         <item name="itemIconTint">@color/nav_bar_dark</item>
     </style>
 
 
     <style name="BottomSheetDark" parent="Theme.Design.BottomSheetDialog">
-        <item name="android:colorBackground">@color/backgroundDark</item>
+        <item name="android:colorBackground">@color/primaryDark</item>
     </style>
 
 </resources>

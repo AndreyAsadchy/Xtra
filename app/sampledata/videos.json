@@ -1,0 +1,2230 @@
+{
+  "vods": [
+    {
+      "title": "[Official PVP] BLDX Defense & Conquest Day 7 #RerunStreamer #REE // !ini !embedded",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30648398832,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 127382,
+      "url": "https://www.twitch.tv/videos/318805208",
+      "language": "en",
+      "created_at": "2018-10-05T20:11:09Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-05T20:11:09Z",
+      "_id": "v318805208",
+      "recorded_at": "2018-10-05T20:11:09Z",
+      "game": "ARK",
+      "communities": null,
+      "length": 41042,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/storyboards/318805208-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.95949043646154,
+        "360p30": 29.95949043646154,
+        "480p30": 29.95949043646154,
+        "720p60": 59.90488404686947,
+        "chunked": 59.90484251493967
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/19e36a9e0ec56b69478e_dvsr__30648398832_984150358/storyboards/318805208-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p60": "1280x720",
+        "chunked": "1280x720"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "[Official PVP] BLDX !Conquest Day 12 // Gotta PVE to PVP // !ini !embedded // !gfx // !rig ",
+        "broadcaster_language": "en",
+        "broadcaster_software": "watch_party_rerun",
+        "display_name": "DVSR_",
+        "game": "ARK",
+        "language": "en",
+        "_id": 54924000,
+        "name": "dvsr_",
+        "created_at": "2014-01-13T03:39:39.705579Z",
+        "updated_at": "2018-10-10T16:27:16.203496Z",
+        "partner": false,
+        "logo": "https://static-cdn.jtvnw.net/user-default-pictures/4cbf10f1-bb9f-4f57-90e1-15bf06cfe6f5-profile_image-300x300.jpg",
+        "video_banner": null,
+        "profile_banner": null,
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/dvsr_",
+        "views": 564633,
+        "followers": 822,
+        "broadcaster_type": "affiliate",
+        "description": "",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318805208%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Cyprien et Squeezie : on découvre la surprise de Mcfly & Carlito...",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30704062416,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 91122,
+      "url": "https://www.twitch.tv/videos/320405274",
+      "language": "fr",
+      "created_at": "2018-10-09T15:44:23Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-09T15:44:23Z",
+      "_id": "v320405274",
+      "recorded_at": "2018-10-09T15:44:23Z",
+      "game": "Talk Shows & Podcasts",
+      "communities": null,
+      "length": 2465,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/storyboards/320405274-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.988745703596308,
+        "360p30": 29.988745703596308,
+        "480p30": 29.988745703596308,
+        "720p30": 29.988745703596308,
+        "720p60": 59.97708584696185,
+        "chunked": 59.97708584696185
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/9d819a3a734d830cd12d_squeezielive_30704062416_987629332/storyboards/320405274-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "Cyprien et Squeezie : on découvre la surprise de Mcfly & Carlito...",
+        "broadcaster_language": "fr",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Squeezielive",
+        "game": "Talk Shows & Podcasts",
+        "language": "fr",
+        "_id": 52130765,
+        "name": "squeezielive",
+        "created_at": "2013-11-24T21:40:16.146103Z",
+        "updated_at": "2018-10-10T16:23:56.755759Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/squeezielive-profile_image-8ac640b6a1c398f8-300x300.jpeg",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/ab19f4a7-d8b8-4bdb-a10c-a705ad18b86f-channel_offline_image-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/f28eb442-c261-4702-8d3f-2e34408a7f2a-profile_banner-480.jpg",
+        "profile_banner_background_color": "#ffffff",
+        "url": "https://www.twitch.tv/squeezielive",
+        "views": 4692178,
+        "followers": 632438,
+        "broadcaster_type": "partner",
+        "description": "Le live streaming en direct se passe ici",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22320405274%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Fortnite #FallSkirmish - Week 3 | KING PIN (DUOS)\n",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30648243104,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 86414,
+      "url": "https://www.twitch.tv/videos/318800558",
+      "language": "en",
+      "created_at": "2018-10-05T20:00:14Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-05T20:00:14Z",
+      "_id": "v318800558",
+      "recorded_at": "2018-10-05T20:00:14Z",
+      "game": "Fortnite",
+      "communities": null,
+      "length": 15575,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/873329897bdeab6d70cf_fortnite_30648243104_984140625/storyboards/318800558-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/873329897bdeab6d70cf_fortnite_30648243104_984140625/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.97001630833926,
+        "360p30": 29.97001630833926,
+        "480p30": 29.97001630833926,
+        "720p30": 29.97001630833926,
+        "720p60": 59.93996841314613,
+        "chunked": 59.94005448821539
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/873329897bdeab6d70cf_fortnite_30648243104_984140625/storyboards/318800558-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "Fortnite #FallSkirmish - Week 3 | KING PIN (DUOS)\n",
+        "broadcaster_language": "en",
+        "broadcaster_software": "delay",
+        "display_name": "Fortnite",
+        "game": "Fortnite",
+        "language": "en",
+        "_id": 55125740,
+        "name": "fortnite",
+        "created_at": "2014-01-17T12:49:38.554458Z",
+        "updated_at": "2018-10-10T16:25:54.161452Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/4e606d41-b06d-4ca6-ad7e-8a4dda56a305-profile_image-300x300.jpg",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/b392a8d3-1b15-489d-8607-ece87829972f-channel_offline_image-1920x1080.jpg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/a8604497-290e-4150-a445-3e70b6bd2778-profile_banner-480.jpg",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/fortnite",
+        "views": 27011762,
+        "followers": 1394217,
+        "broadcaster_type": "partner",
+        "description": "Official Twitch for Fortnite, the 100-player Battle Royale game on PS4, XB1, PC, Mac, iOS, and Switch. Download and play Fortnite for FREE!",
+        "private_video": false,
+        "privacy_options_enabled": true
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318800558%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "In awe at the size of this lad, absolute unit",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30634359344,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 85356,
+      "url": "https://www.twitch.tv/videos/318366474",
+      "language": "en",
+      "created_at": "2018-10-04T18:40:20Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-04T18:40:20Z",
+      "_id": "v318366474",
+      "recorded_at": "2018-10-04T18:40:20Z",
+      "game": "League of Legends",
+      "communities": null,
+      "length": 14580,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/567632a58e48900e6a26_vaporadark_30634359344_983272890/storyboards/318366474-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/567632a58e48900e6a26_vaporadark_30634359344_983272890/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {},
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/567632a58e48900e6a26_vaporadark_30634359344_983272890/storyboards/318366474-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "[RERUN, NOT LIVE] !schedule !viewbot !discord | https://twitter.com/VaporaDark",
+        "broadcaster_language": "en",
+        "broadcaster_software": "watch_party_rerun",
+        "display_name": "VaporaDark",
+        "game": "League of Legends",
+        "language": "en-gb",
+        "_id": 38276909,
+        "name": "vaporadark",
+        "created_at": "2012-12-07T12:46:03.869695Z",
+        "updated_at": "2018-10-10T16:26:41.202673Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/ca358077-6680-44e6-b47f-0e37948bf120-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/2a5b2adb-1e73-41e0-a99d-bfddd5d48609-channel_offline_image-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/vaporadark-profile_banner-0cc2e7bcd923faea-480.png",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/vaporadark",
+        "views": 76189965,
+        "followers": 68051,
+        "broadcaster_type": "partner",
+        "description": "High Diamond ADC main, mostly Twitch",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318366474%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "A SOLO DIAS DE LA FINAL DE LA LEF... Conociendo a los Finalistas #3",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30696573696,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 79302,
+      "url": "https://www.twitch.tv/videos/320171015",
+      "language": "es",
+      "created_at": "2018-10-08T23:10:35Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-08T23:10:35Z",
+      "_id": "v320171015",
+      "recorded_at": "2018-10-08T23:10:35Z",
+      "game": "Talk Shows & Podcasts",
+      "communities": null,
+      "length": 9524,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/storyboards/320171015-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.99709488776891,
+        "360p30": 29.99709488776891,
+        "480p30": 29.99709488776891,
+        "720p30": 29.99709488776891,
+        "720p60": 59.99397979272386,
+        "chunked": 59.99397979272386
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/db8bdfbe31696ba6ab64_jaidefinichon_30696573696_987161287/storyboards/320171015-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "Ultimo dia antes de la Final de la LEF este 10 de Octubre en la Cupula! Conociendo a los finalistas #4 Hoy Ignacio Mendez de la UC",
+        "broadcaster_language": "es",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Jaidefinichon",
+        "game": "League of Legends",
+        "language": "es-mx",
+        "_id": 30610294,
+        "name": "jaidefinichon",
+        "created_at": "2012-05-17T22:18:23.711673Z",
+        "updated_at": "2018-10-10T16:24:29.841454Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/jaidefinichon-profile_image-086e5ddb212dff6f-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/031eabf46d2f44a8-channel_offline_image-1920x1080.jpeg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/b2bf10a1-82d7-4a58-a070-1ab764a1aa14-profile_banner-480.jpg",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/jaidefinichon",
+        "views": 63229857,
+        "followers": 217888,
+        "broadcaster_type": "partner",
+        "description": "",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22320171015%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Let us GAME",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30667839376,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 78560,
+      "url": "https://www.twitch.tv/videos/319352822",
+      "language": "en",
+      "created_at": "2018-10-07T00:15:58Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-07T00:15:58Z",
+      "_id": "v319352822",
+      "recorded_at": "2018-10-07T00:15:58Z",
+      "game": "Fortnite",
+      "communities": null,
+      "length": 18116,
+      "muted_segments": [
+        {
+          "duration": 363,
+          "offset": 1813
+        },
+        {
+          "duration": 363,
+          "offset": 16313
+        }
+      ],
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/04a54dd288c829bb084a_ninja_30667839376_985365392/storyboards/319352822-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/ 04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/04a54dd288c829bb084a_ninja_30667839376_985365392/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.9955558663916,
+        "360p30": 29.9955558663916,
+        "480p30": 29.9955558663916,
+        "720p30": 29.9955558663916,
+        "720p60": 59.98498455813991,
+        "chunked": 59.98498455813991
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/04a54dd288c829bb084a_ninja_30667839376_985365392/storyboards/319352822-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "!streamys NEW UPDATE O BABY | @Ninja @teamninja on socials",
+        "broadcaster_language": "en",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Ninja",
+        "game": "Fortnite",
+        "language": "en",
+        "_id": 19571641,
+        "name": "ninja",
+        "created_at": "2011-01-16T04:31:20.024666Z",
+        "updated_at": "2018-10-10T16:25:20.8472Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/cef31105-8a6e-4211-a74b-2f0bbd9791fb-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/8f5af87e-2062-46f8-9e74-ab20d0c2215e-channel_offline_image-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/3a3a6569-292f-489e-9046-3245a28be5c4-profile_banner-480.png",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/ninja",
+        "views": 339427670,
+        "followers": 11701422,
+        "broadcaster_type": "partner",
+        "description": "Professional Battle Royale player. Follow my twitter @Ninja and for more content subscribe to my Youtube.com/Ninja",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22319352822%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Gameboys [#12] : มาราธอนสุดแสบ แบบนี้ก็มีเหรอ",
+      "description": "GameBoys : หาเกมเล่นกับเพื่อน จะเก่าจะใหม่จะหามาเล่นให้หมด ขอแค่เล่นจอเดียวกัน เราจะตลุยมันทุกตำนานนนนน 555555\n\n\nติดต่อโฆษณาต่างๆนะครับ โทรหา ผจกสต. เลย :D\nTEL : 0854457888  หรือ EMAIL : media@bitrep.me\n[เฉพาะงานเด้อ]\n\n\nมีแฟนเพจแล้วครัชช\n\n\nwww.facebook.com/GGTKcastation\n\n\nwww.facebook.com/gg.kasemsarn\n\n\nhttps://instagram.com/gg.georgie\n\n\nhttps://instagram.com/tk.tonkla\n\n\nhttps://instagram.com/louisstryx\n\n\nhttps://instagram.com/jewsippothai\n\n\nhttps://instagram.com/J3cha\n\n\nhttps://instagram.com/umyanachai\n\n\nhttps://instagram.com/nuadrider\n\n\nhttps://instagram.com/isora.hata\n\n\nhttps://instagram.com/juii___\n\n\nhttps://instagram.com/ello_nino\n\n\nhttps://instagram.com/thachanyth\n\n\nhttps://instagram.com/johnmazworld\n\n\nhttps://instagram.com/nice_rupert\n\n\nhttps://instagram.com/genghis.khanz\n\n\nhttps://instagram.com/ ><br>มีแฟนเพจแล้วครัชช<br><br>www.facebook.com/GGTKcastation<br><br>www.facebook.com/gg.kasemsarn<br><br><a href=\"https://instagram.com/gg.georgie\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/gg.georgie</a><br><br><a href=\"https://instagram.com/tk.tonkla\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/tk.tonkla</a><br><br><a href=\"https://instagram.com/louisstryx\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/louisstryx</a><br><br><a href=\"https://instagram.com/jewsippothai\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/jewsippothai</a><br><br><a href=\"https://instagram.com/J3cha\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/J3cha</a><br><br><a href=\"https://instagram.com/umyanachai\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/umyanachai</a><br><br><a href=\"https://instagram.com/nuadrider\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/nuadrider</a><br><br><a href=\"https://instagram.com/isora.hata\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/isora.hata</a><br><br><a href=\"https://instagram.com/juii___\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/juii___</a><br><br><a href=\"https://instagram.com/ello_nino\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/ello_nino</a><br><br><a href=\"https://instagram.com/thachanyth\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/thachanyth</a><br><br><a href=\"https://instagram.com/johnmazworld\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/johnmazworld</a><br><br><a href=\"https://instagram.com/nice_rupert\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/nice_rupert</a><br><br><a href=\"https://instagram.com/genghis.khanz\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/genghis.khanz</a><br><br><a href=\"https://instagram.com/mickpsy\" rel=\"nofollow noreferrer noopener\" target=\"_blank\">https://instagram.com/mickpsy</a><br>",
+      "broadcast_id": 30655706720,
+      "broadcast_type": "past_premiere",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 74629,
+      "url": "https://www.twitch.tv/videos/318774500",
+      "language": "th",
+      "created_at": "2018-10-05T18:57:26Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-06T07:35:53Z",
+      "_id": "v318774500",
+      "recorded_at": "2018-10-05T18:57:26Z",
+      "game": "Nippon Marathon",
+      "communities": null,
+      "length": 2076,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/storyboards/318774500-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "custom",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000000-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000005-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000010-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000015-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "custom",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000000-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000005-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000010-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000015-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "custom",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000000-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000005-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000010-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000015-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "custom",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/custom-bb6505f0-a97f-49aa-ae3b-e20cac66f81c-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000000-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000005-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000010-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/thumb/index-0000000015-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "1080p60": 59.94019321377434,
+        "144p30": 29.97033741372493,
+        "360p30": 29.97033741372493,
+        "480p30": 29.97033741372493,
+        "720p30": 29.97033741372493,
+        "720p60": 59.94019321377434
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/rubsarb/318774500/b294b3ab-150c-45fd-9c2a-7214fe52d04b/storyboards/318774500-info.json",
+      "resolutions": {
+        "1080p60": "1920x1080",
+        "144p30": "256x144",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "คืนพุธ มุดผ้าห่ม : คืนที่ 31",
+        "broadcaster_language": "th",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Rubsarb",
+        "game": "Talk Shows & Podcasts",
+        "language": "en",
+        "_id": 125093246,
+        "name": "rubsarb",
+        "created_at": "2016-05-25T15:06:00.913196Z",
+        "updated_at": "2018-10-10T16:23:22.734956Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/9b59dba2e1d2a11f-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/29c1e8047af02621-channel_offline_image-1920x1080.jpeg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/668bc1aa4b7c7d32-profile_banner-480.png",
+        "profile_banner_background_color": "#ffffff",
+        "url": "https://www.twitch.tv/rubsarb",
+        "views": 6412279,
+        "followers": 242216,
+        "broadcaster_type": "partner",
+        "description": "ติดต่อโฆษณาต่างๆนะครับ โทรหา ผจกสต. เลย :D0935464497 , LINE : Rubsarb.productionหรือ EMAIL : rubsarbproduction@gmail.com",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318774500%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Fall Skirmish with KingRichard !tourney | 2 min delay | Join #TeamNinja!",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30648146960,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 71825,
+      "url": "https://www.twitch.tv/videos/318797731",
+      "language": "en",
+      "created_at": "2018-10-05T19:53:34Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-05T19:53:34Z",
+      "_id": "v318797731",
+      "recorded_at": "2018-10-05T19:53:34Z",
+      "game": "Fortnite",
+      "communities": null,
+      "length": 14115,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/3fcca74ba944a18f6467_ninja_30648146960_984134616/storyboards/318797731-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/3fcca74ba944a18f6467_ninja_30648146960_984134616/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.997462969521557,
+        "360p30": 29.997462969521557,
+        "480p30": 29.997462969521557,
+        "720p30": 29.997462969521557,
+        "720p60": 59.993863234290906,
+        "chunked": 59.991491613642744
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/3fcca74ba944a18f6467_ninja_30648146960_984134616/storyboards/318797731-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "!streamys NEW UPDATE O BABY | @Ninja @teamninja on socials",
+        "broadcaster_language": "en",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Ninja",
+        "game": "Fortnite",
+        "language": "en",
+        "_id": 19571641,
+        "name": "ninja",
+        "created_at": "2011-01-16T04:31:20.024666Z",
+        "updated_at": "2018-10-10T16:25:20.8472Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/cef31105-8a6e-4211-a74b-2f0bbd9791fb-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/8f5af87e-2062-46f8-9e74-ab20d0c2215e-channel_offline_image-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/3a3a6569-292f-489e-9046-3245a28be5c4-profile_banner-480.png",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/ninja",
+        "views": 339427670,
+        "followers": 11701422,
+        "broadcaster_type": "partner",
+        "description": "Professional Battle Royale player. Follow my twitter @Ninja and for more content subscribe to my Youtube.com/Ninja",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318797731%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "2018 World Championship: Play-In Knockouts Day 1",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30653240400,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 71699,
+      "url": "https://www.twitch.tv/videos/318948254",
+      "language": "en",
+      "created_at": "2018-10-06T02:30:38Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-06T02:30:38Z",
+      "_id": "v318948254",
+      "recorded_at": "2018-10-06T02:30:38Z",
+      "game": "League of Legends",
+      "communities": [
+        "ad14d4fc-1a7c-413f-aa32-4906ef3669ae"
+      ],
+      "length": 31248,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/106808854ad47d8cbe61_riotgames_30653240400_984452956/storyboards/318948254-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/106808854ad47d8cbe61_riotgames_30653240400_984452956/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 30.24516594807516,
+        "360p30": 30.24516594807516,
+        "480p30": 30.24516594807516,
+        "720p30": 30.245133885530922,
+        "720p60": 59.9999097560928,
+        "chunked": 59.99984639326588
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/106808854ad47d8cbe61_riotgames_30653240400_984452956/storyboards/318948254-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "(REBROADCAST) Worlds 2018: Group Stage Day 1",
+        "broadcaster_language": "en",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Riot Games",
+        "game": "League of Legends",
+        "language": "en",
+        "_id": 36029255,
+        "name": "riotgames",
+        "created_at": "2012-09-08T06:53:10.58539Z",
+        "updated_at": "2018-10-10T16:24:29.891035Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/7033f472-a834-43ff-bf5c-c589e8e35593-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/f4d420ca-e5b9-408b-9fbb-8265dee6a844-channel_offline_image-1920x1080.jpg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/a2f03c2f-84ec-4bbb-b1ed-0a7effb8452d-profile_banner-480.jpg",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/riotgames",
+        "views": 1046791367,
+        "followers": 3162822,
+        "broadcaster_type": "partner",
+        "description": "Welcome to the Riot Games Channel, home of LCS, LCK and LPL. For more information, schedules and stats, head to lolesports.com",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318948254%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Viernes!! Ultimos dias del sorteo https://gleam.io/k7jQ4/subtember-con-kapon",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30651844528,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 67801,
+      "url": "https://www.twitch.tv/videos/318905459",
+      "language": "es",
+      "created_at": "2018-10-06T00:39:40Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-06T00:39:40Z",
+      "_id": "v318905459",
+      "recorded_at": "2018-10-06T00:39:40Z",
+      "game": "Talk Shows & Podcasts",
+      "communities": [
+        "311c162f-2f5d-40a4-a840-277166c49990"
+      ],
+      "length": 38336,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/storyboards/318905459-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.99927249417871,
+        "360p30": 29.99927249417871,
+        "480p30": 29.99927249417871,
+        "720p30": 29.99927249417871,
+        "720p60": 59.99849281870369,
+        "chunked": 59.99849281870369
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/9de3cbd2e2c11d320146_mym_alkapone_30651844528_984365714/storyboards/318905459-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": true,
+        "status": "A Platicar! | HOY NO HAY GTA | ULTIMAS HORAS del sorteo https://gleam.io/k7jQ4/subtember-con-kapon",
+        "broadcaster_language": "es",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "MYM_ALKAPONE",
+        "game": "Red Dead Redemption",
+        "language": "es",
+        "_id": 31478096,
+        "name": "mym_alkapone",
+        "created_at": "2012-06-19T22:03:04.504875Z",
+        "updated_at": "2018-10-10T16:26:24.163976Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/412f6cc3-d274-4163-adb3-0f7e23ee071c-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/346ee6b8-2d36-426c-8401-237afe438188-channel_offline_image-1920x1080.jpg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/4a3caae9-1ad0-4eff-abb9-fdadf53c07fb-profile_banner-480.jpg",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/mym_alkapone",
+        "views": 30520171,
+        "followers": 522000,
+        "broadcaster_type": "partner",
+        "description": "Este es mi canal de Stream ven disfrutar muchos juegos en vivo pero sobre todo a echar desmadre con la Razita!!",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318905459%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "AWC Fall Cup #3 | Championship Sunday",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30677267328,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 66607,
+      "url": "https://www.twitch.tv/videos/319611857",
+      "language": "en",
+      "created_at": "2018-10-07T16:29:29Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-07T16:29:29Z",
+      "_id": "v319611857",
+      "recorded_at": "2018-10-07T16:29:29Z",
+      "game": "World of Warcraft",
+      "communities": null,
+      "length": 33931,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/95e19040e93ac06083e8_warcraft_30677267328_985954639/storyboards/319611857-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/95e19040e93ac06083e8_warcraft_30677267328_985954639/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.999931921418927,
+        "360p30": 29.999931921418927,
+        "480p30": 29.999931921418927,
+        "720p30": 30.00002033516058,
+        "720p60": 59.99998172782672,
+        "chunked": 59.99998172782672
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/95e19040e93ac06083e8_warcraft_30677267328_985954639/storyboards/319611857-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "AWC Fall Cup #3 | Blizzcon Bracket Reveal",
+        "broadcaster_language": "en",
+        "broadcaster_software": "watch_party_rerun",
+        "display_name": "Warcraft",
+        "game": "World of Warcraft",
+        "language": "en",
+        "_id": 37516578,
+        "name": "warcraft",
+        "created_at": "2012-11-07T23:07:32.104058Z",
+        "updated_at": "2018-10-10T16:24:09.779925Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/warcraft-profile_image-2a879ebd997a859b-300x300.jpeg",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/warcraft-channel_offline_image-0171e6ebf854619f-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/warcraft-profile_banner-0cf49389139d45ac-480.png",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/warcraft",
+        "views": 50615285,
+        "followers": 458468,
+        "broadcaster_type": "0cpm",
+        "description": "World of Warcraft is an online game where players from around the world assume the roles of heroic fantasy characters and explore a virtual world full of mystery, magic, and endless adventure.",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22319611857%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Critical Role: Campaign 2 Episode 37 Live From NYC #GNSLive",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30639197104,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 65301,
+      "url": "https://www.twitch.tv/videos/318521513",
+      "language": "en",
+      "created_at": "2018-10-05T01:46:14Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-05T01:46:14Z",
+      "_id": "v318521513",
+      "recorded_at": "2018-10-05T01:46:14Z",
+      "game": "Dungeons & Dragons",
+      "communities": [
+        "f261cf73-cbcc-4b08-af72-c6d2020f9ed4",
+        "fd0eab99-832a-4d7e-8cc0-04d73deb2e54",
+        "fe0a2769-352e-49c1-be71-e479a7a4b8e2"
+      ],
+      "length": 15595,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/storyboards/318521513-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 30.00005642832794,
+        "360p30": 30.00005642832794,
+        "480p30": 30.00005642832794,
+        "720p30": 30.00005642832794,
+        "chunked": 30.00005642832794
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/fb729733e18f1ce065cb_geekandsundry_30639197104_983575250/storyboards/318521513-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "Tuesday Rebroadcast: Game Engine and Nerdist News Talks Back with older stuff mixed in <3 !rbschedule for more info",
+        "broadcaster_language": "en",
+        "broadcaster_software": "watch_party_rerun",
+        "display_name": "GeekandSundry",
+        "game": "Talk Shows & Podcasts",
+        "language": "en",
+        "_id": 36619809,
+        "name": "geekandsundry",
+        "created_at": "2012-10-03T18:22:15.462252Z",
+        "updated_at": "2018-10-10T16:24:57.768298Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/geekandsundry-profile_image-8f736a31acffce15-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/bc4d8f69-0b8f-4cc9-a662-d2a735865492-channel_offline_image-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/66bf37c7135932b8-profile_banner-480.png",
+        "profile_banner_background_color": "#f2eaf2",
+        "url": "https://www.twitch.tv/geekandsundry",
+        "views": 43575615,
+        "followers": 539890,
+        "broadcaster_type": "partner",
+        "description": "From Felicia Day, Geek & Sundry brings you a daily dose of geekiness wherever you are on the web! http://www.geekandsundry.com",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318521513%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "2018 World Championship: Play-In Day 4",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30629136800,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 65252,
+      "url": "https://www.twitch.tv/videos/318198689",
+      "language": "en",
+      "created_at": "2018-10-04T06:31:24Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-04T06:31:24Z",
+      "_id": "v318198689",
+      "recorded_at": "2018-10-04T06:31:24Z",
+      "game": "League of Legends",
+      "communities": [
+        "ad14d4fc-1a7c-413f-aa32-4906ef3669ae"
+      ],
+      "length": 29324,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/storyboards/318198689-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 30.245059056702345,
+        "360p30": 30.245059056702345,
+        "480p30": 30.245059056702345,
+        "720p30": 30.245059056702345,
+        "720p60": 59.99987791712844,
+        "chunked": 59.99987791712844
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/e9d2bf5d0c66336eee1d_riotgames_30629136800_982946481/storyboards/318198689-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "(REBROADCAST) Worlds 2018: Group Stage Day 1",
+        "broadcaster_language": "en",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Riot Games",
+        "game": "League of Legends",
+        "language": "en",
+        "_id": 36029255,
+        "name": "riotgames",
+        "created_at": "2012-09-08T06:53:10.58539Z",
+        "updated_at": "2018-10-10T16:24:29.891035Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/7033f472-a834-43ff-bf5c-c589e8e35593-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/f4d420ca-e5b9-408b-9fbb-8265dee6a844-channel_offline_image-1920x1080.jpg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/a2f03c2f-84ec-4bbb-b1ed-0a7effb8452d-profile_banner-480.jpg",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/riotgames",
+        "views": 1046791367,
+        "followers": 3162822,
+        "broadcaster_type": "partner",
+        "description": "Welcome to the Riot Games Channel, home of LCS, LCK and LPL. For more information, schedules and stats, head to lolesports.com",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22318198689%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "Let's get some wins! Good morning! #teamninja",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30680929808,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 64410,
+      "url": "https://www.twitch.tv/videos/319714006",
+      "language": "en",
+      "created_at": "2018-10-07T20:34:45Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-07T20:34:45Z",
+      "_id": "v319714006",
+      "recorded_at": "2018-10-07T20:34:45Z",
+      "game": "fortnite",
+      "communities": null,
+      "length": 27286,
+      "muted_segments": [
+        {
+          "duration": 363,
+          "offset": 363
+        },
+        {
+          "duration": 363,
+          "offset": 1813
+        }
+      ],
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/9855818443388371274c_ninja_30680929808_986183544/storyboards/319714006-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/9855818443388371274c_ninja_30680929808_986183544/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 29.994981736459916,
+        "360p30": 29.994981736459916,
+        "480p30": 29.994981736459916,
+        "720p30": 29.994981736459916,
+        "720p60": 59.988913230913575,
+        "chunked": 59.988913230913575
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/9855818443388371274c_ninja_30680929808_986183544/storyboards/319714006-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "!streamys NEW UPDATE O BABY | @Ninja @teamninja on socials",
+        "broadcaster_language": "en",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Ninja",
+        "game": "Fortnite",
+        "language": "en",
+        "_id": 19571641,
+        "name": "ninja",
+        "created_at": "2011-01-16T04:31:20.024666Z",
+        "updated_at": "2018-10-10T16:25:20.8472Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/cef31105-8a6e-4211-a74b-2f0bbd9791fb-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/8f5af87e-2062-46f8-9e74-ab20d0c2215e-channel_offline_image-1920x1080.png",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/3a3a6569-292f-489e-9046-3245a28be5c4-profile_banner-480.png",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/ninja",
+        "views": 339427670,
+        "followers": 11701422,
+        "broadcaster_type": "partner",
+        "description": "Professional Battle Royale player. Follow my twitter @Ninja and for more content subscribe to my Youtube.com/Ninja",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22319714006%22%2C%22type%22%3A%22vod%22%7D"
+    },
+    {
+      "title": "2018 World Championship: Play-In Knockouts Day 2",
+      "description": null,
+      "description_html": null,
+      "broadcast_id": 30669489936,
+      "broadcast_type": "archive",
+      "status": "recorded",
+      "tag_list": "",
+      "views": 63451,
+      "url": "https://www.twitch.tv/videos/319399420",
+      "language": "en",
+      "created_at": "2018-10-07T02:30:32Z",
+      "viewable": "public",
+      "viewable_at": null,
+      "published_at": "2018-10-07T02:30:32Z",
+      "_id": "v319399420",
+      "recorded_at": "2018-10-07T02:30:32Z",
+      "game": "League of Legends",
+      "communities": [
+        "ad14d4fc-1a7c-413f-aa32-4906ef3669ae"
+      ],
+      "length": 34454,
+      "preview": {
+        "small": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-80x45.jpg",
+        "medium": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-320x180.jpg",
+        "large": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-640x360.jpg",
+        "template": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-{width}x{height}.jpg"
+      },
+      "animated_preview_url": "https://vod-storyboards.twitch.tv/c310632595e0d25c6a51_riotgames_30669489936_985468552/storyboards/319399420-strip-0.jpg",
+      "thumbnails": {
+        "small": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb1-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb2-80x45.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb3-80x45.jpg"
+          }
+        ],
+        "medium": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb1-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb2-320x180.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb3-320x180.jpg"
+          }
+        ],
+        "large": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb1-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb2-640x360.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb3-640x360.jpg"
+          }
+        ],
+        "template": [
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb0-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb1-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb2-{width}x{height}.jpg"
+          },
+          {
+            "type": "generated",
+            "url": "https://static-cdn.jtvnw.net/s3_vods/c310632595e0d25c6a51_riotgames_30669489936_985468552/thumb/thumb3-{width}x{height}.jpg"
+          }
+        ]
+      },
+      "fps": {
+        "160p30": 30.245712730205398,
+        "360p30": 30.245712730205398,
+        "480p30": 30.245712730205398,
+        "720p30": 30.245712730205398,
+        "720p60": 59.99984849578518,
+        "chunked": 59.99984965680684
+      },
+      "seek_previews_url": "https://vod-storyboards.twitch.tv/c310632595e0d25c6a51_riotgames_30669489936_985468552/storyboards/319399420-info.json",
+      "resolutions": {
+        "160p30": "284x160",
+        "360p30": "640x360",
+        "480p30": "852x480",
+        "720p30": "1280x720",
+        "720p60": "1280x720",
+        "chunked": "1920x1080"
+      },
+      "restriction": "",
+      "channel": {
+        "mature": false,
+        "status": "(REBROADCAST) Worlds 2018: Group Stage Day 1",
+        "broadcaster_language": "en",
+        "broadcaster_software": "unknown_rtmp",
+        "display_name": "Riot Games",
+        "game": "League of Legends",
+        "language": "en",
+        "_id": 36029255,
+        "name": "riotgames",
+        "created_at": "2012-09-08T06:53:10.58539Z",
+        "updated_at": "2018-10-10T16:24:29.891035Z",
+        "partner": true,
+        "logo": "https://static-cdn.jtvnw.net/jtv_user_pictures/7033f472-a834-43ff-bf5c-c589e8e35593-profile_image-300x300.png",
+        "video_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/f4d420ca-e5b9-408b-9fbb-8265dee6a844-channel_offline_image-1920x1080.jpg",
+        "profile_banner": "https://static-cdn.jtvnw.net/jtv_user_pictures/a2f03c2f-84ec-4bbb-b1ed-0a7effb8452d-profile_banner-480.jpg",
+        "profile_banner_background_color": "",
+        "url": "https://www.twitch.tv/riotgames",
+        "views": 1046791367,
+        "followers": 3162822,
+        "broadcaster_type": "partner",
+        "description": "Welcome to the Riot Games Channel, home of LCS, LCK and LPL. For more information, schedules and stats, head to lolesports.com",
+        "private_video": false,
+        "privacy_options_enabled": false
+      },
+      "increment_view_count_url": "https://countess.twitch.tv/ping.gif?u=%7B%22id%22%3A%22319399420%22%2C%22type%22%3A%22vod%22%7D"
+    }
+  ]
+}

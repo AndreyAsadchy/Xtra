@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.exact.xtra.util.LayoutManagers"/>
         <variable name="viewModel" type="com.exact.xtra.ui.games.GamesViewModel" />
     </data>
 
