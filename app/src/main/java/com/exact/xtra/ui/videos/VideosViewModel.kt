@@ -18,18 +18,18 @@ class VideosViewModel @Inject constructor(
     var period: Period? = null
 
     fun loadVideos(game: String? = null, broadcastType: BroadcastType = BroadcastType.ALL, language: String? = null, reload: Boolean) {
-        loadData(repository.loadVideos(game, period ?: Period.WEEK, broadcastType, language, if (this::sort.isInitialized) sort else Sort.VIEWS, compositeDisposable), reload)
+        loadData(repository.loadVideos(game, period ?: Period.WEEK, broadcastType, language, if (isInitialized()) sort else Sort.VIEWS, compositeDisposable), reload)
     }
 
     fun loadFollowedVideos(userToken: String, broadcastTypes: BroadcastType = BroadcastType.ALL, language: String? = null, reload: Boolean) {
-        loadData(repository.loadFollowedVideos(userToken, broadcastTypes, language, if (this::sort.isInitialized) sort else Sort.VIEWS, compositeDisposable), reload)
+        loadData(repository.loadFollowedVideos(userToken, broadcastTypes, language, if (isInitialized()) sort else Sort.VIEWS, compositeDisposable), reload)
     }
 
     fun loadChannelVideos(channelId: Any, broadcastTypes: BroadcastType = BroadcastType.ALL, reload: Boolean) {
-        loadData(repository.loadChannelVideos(channelId, broadcastTypes, if (this::sort.isInitialized) sort else Sort.TIME, compositeDisposable), reload)
+        loadData(repository.loadChannelVideos(channelId, broadcastTypes, if (isInitialized()) sort else Sort.TIME, compositeDisposable), reload)
     }
 
     override fun isInitialized(): Boolean {
-        return sortText.value == null && this::sort.isInitialized
+        return sortText.value != null && this::sort.isInitialized
     }
 }

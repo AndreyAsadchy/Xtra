@@ -42,9 +42,10 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loada
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if (isFragmentVisible) {
-            binding = FragmentClipsBinding.inflate(inflater, container, false).apply { setLifecycleOwner(this@BaseClipsFragment) }
-            binding.root
+        return if (isFragmentVisible) FragmentClipsBinding.inflate(inflater, container, false).let {
+            binding = it
+            it.setLifecycleOwner(this@BaseClipsFragment)
+            it.root
         } else {
             null
         }

@@ -17,8 +17,8 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
     private companion object {
         const val SORT_TAG = "GameVideosSort"
         const val PERIOD_TAG = "GameVideosPeriod"
-        const val DEFAULT_SORT_ID = R.id.views
-        const val DEFAULT_PERIOD_ID = R.id.week
+        val DEFAULT_SORT_ID = Sort.VIEWS.value
+        val DEFAULT_PERIOD_ID = Period.WEEK.value
     }
 
     private lateinit var game: Game
@@ -39,10 +39,32 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
         super.onActivityCreated(savedInstanceState)
         if (isFragmentVisible) {
             if (!viewModel.isInitialized()) {
-                viewModel.sortText.postValue(getString(R.string.view_count))
-                viewModel.sort = Sort.VIEWS
-                viewModel.periodText.postValue(getString(R.string.this_week))
-                viewModel.period = Period.WEEK //TODO init from shared preferences
+
+                viewModel.sort = Sort.valueOf(prefs.getString(SORT_TAG, DEFAULT_SORT_ID)!!)
+                val sortStringId = if (viewModel.sort == Sort.VIEWS) {
+                    R.string.view_count
+                } else {
+                    R.string.upload_date
+                }
+                viewModel.sortText.postValue(getString(sortStringId))
+
+                val periodStringId: Int
+                viewModel.period = when (prefs.getInt(PERIOD_TAG, DEFAULT_PERIOD_ID)) {
+                    R.id.week -> {
+                        periodStringId = R.string.this_week
+                        Period.WEEK
+                    }
+                    R.id.month -> {
+                        periodStringId = R.string.this_month
+                        Period.MONTH
+                    }
+                    R.id.all -> {
+                        periodStringId = R.string.all_time
+                        Period.ALL
+                    }
+                    else -> throw IllegalStateException("Unknown period")
+                }
+                viewModel.periodText.postValue(getString(periodStringId))
             }
             val observer = Observer<CharSequence> { sortBar.sortText.text = getString(R.string.sort_and_period, viewModel.sortText.value, viewModel.periodText.value) }
             viewModel.sortText.observe(this, observer)

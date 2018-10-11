@@ -19,7 +19,7 @@ abstract class PagedListViewModel<T> : ViewModel() {
         private set
     lateinit var pagingState: LiveData<LoadingState>
         private set
-    val loadedInitial = MediatorLiveData<Boolean>()
+    val loadedInitial = MediatorLiveData<Boolean?>()
 
     protected val compositeDisposable = CompositeDisposable()
 

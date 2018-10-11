@@ -23,6 +23,6 @@ class ClipsViewModel @Inject constructor(
     }
 
     override fun isInitialized(): Boolean {
-        return sortText.value == null
+        return sortText.value != null
     }
 }
