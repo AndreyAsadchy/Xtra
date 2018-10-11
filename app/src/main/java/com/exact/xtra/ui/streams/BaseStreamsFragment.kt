@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.exact.xtra.R
 import com.exact.xtra.databinding.FragmentStreamsBinding
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.model.stream.Stream
@@ -47,11 +46,6 @@ abstract class BaseStreamsFragment : LazyFragment(), Injectable, Scrollable, Loa
         } else {
             null
         }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerViewLayout.recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireActivity(), resources.getInteger(R.integer.media_columns))
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

@@ -22,7 +22,7 @@ abstract class PagedListViewModel<T> : ViewModel() {
     val loadedInitial = MediatorLiveData<Boolean?>()
 
     protected val compositeDisposable = CompositeDisposable()
-
+//TODO sometimes list doesn't show, probably because submits empty list
     internal fun loadData(listing: Listing<T>, override: Boolean = false) {
         if (result.value == null || override) {
             result.value = listing
