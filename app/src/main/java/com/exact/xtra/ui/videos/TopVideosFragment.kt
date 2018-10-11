@@ -1,10 +1,12 @@
 package com.exact.xtra.ui.videos
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 
 import com.exact.xtra.R
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
+import com.exact.xtra.util.C
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_videos.*
 
@@ -27,7 +29,7 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnOpti
             if (!viewModel.isInitialized()) {
                 viewModel.sort = Sort.VIEWS
                 viewModel.period = Period.WEEK
-                viewModel.periodText.postValue(getString(sortOptions[DEFAULT_INDEX]))
+                viewModel.sortText.postValue(getString(sortOptions[requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)]))
             }
             initDefaultSortTextObserver()
         }

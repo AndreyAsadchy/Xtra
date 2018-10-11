@@ -36,4 +36,8 @@
     <string name="download_error">Error downloading video</string>
     <string name="uploaded_date">Uploaded %s</string>
     <string name="downloaded_date">Downloaded %s</string>
+    <string name="welcome">Welcome</string>
+    <string name="login_prompt">Log in to Twitch to see your followed channels, or you can do it later</string>
+    <string name="login">Log in</string>
+    <string name="skip">Skip</string>
 </resources>

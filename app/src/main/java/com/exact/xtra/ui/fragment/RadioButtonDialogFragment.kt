@@ -1,6 +1,7 @@
 package com.exact.xtra.ui.fragment
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,10 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.core.content.edit
+import androidx.core.os.bundleOf
 import com.exact.xtra.R
+import com.exact.xtra.util.C
 
 class RadioButtonDialogFragment : com.google.android.material.bottomsheet.BottomSheetDialogFragment() {
 
@@ -19,17 +23,14 @@ class RadioButtonDialogFragment : com.google.android.material.bottomsheet.Bottom
 
     companion object {
 
+        private const val TAG = "tag"
         private const val LABELS = "labels"
         private const val TAGS = "tags"
         private const val CHECKED = "checked"
 
-        fun newInstance(labels: List<CharSequence>, tags: IntArray? = null, checkedIndex: Int): RadioButtonDialogFragment {
-            return RadioButtonDialogFragment().also {
-                val args = Bundle()
-                args.putCharSequenceArrayList(LABELS, ArrayList(labels))
-                args.putIntArray(TAGS, tags)
-                args.putInt(CHECKED, checkedIndex)
-                it.arguments = args
+        fun newInstance(tag: String, labels: List<CharSequence>, tags: IntArray? = null, checkedIndex: Int): RadioButtonDialogFragment {
+            return RadioButtonDialogFragment().apply {
+                arguments = bundleOf(TAG to tag, LABELS to ArrayList(labels), TAGS to tags, CHECKED to checkedIndex)
             }
         }
     }
@@ -50,6 +51,9 @@ class RadioButtonDialogFragment : com.google.android.material.bottomsheet.Bottom
         arguments?.let {
             val clickListener = View.OnClickListener { v ->
                 listener?.onSelect(v.id, (v as RadioButton).text, v.tag as Int?)
+                requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).edit {
+                    putInt(it.getString(TAG), v.id)
+                }
                 dismiss()
             }
             val tags = it.getIntArray(TAGS)

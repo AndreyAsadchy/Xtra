@@ -1,6 +1,5 @@
 package com.exact.xtra.ui.videos
 
-import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -24,47 +23,33 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
     private lateinit var game: Game
     private lateinit var prefs: SharedPreferences
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        prefs = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         game = arguments?.getParcelable("game")!!
-        sortBar.setOnClickListener { VideosSortDialog.newInstance(prefs.getInt(SORT_TAG, DEFAULT_SORT_ID), prefs.getInt(PERIOD_TAG, DEFAULT_PERIOD_ID)).show(childFragmentManager, null) }
+        sortBar.setOnClickListener { VideosSortDialog.newInstance(viewModel.sort, viewModel.period!!).show(childFragmentManager, null) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (isFragmentVisible) {
             if (!viewModel.isInitialized()) {
-
-                viewModel.sort = Sort.valueOf(prefs.getString(SORT_TAG, DEFAULT_SORT_ID)!!)
+                prefs = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
+                viewModel.sort = Sort.valueOf(prefs.getString(SORT_TAG, DEFAULT_SORT_ID)!!.toUpperCase())
                 val sortStringId = if (viewModel.sort == Sort.VIEWS) {
                     R.string.view_count
                 } else {
                     R.string.upload_date
                 }
-                viewModel.sortText.postValue(getString(sortStringId))
+                viewModel.sortText.value = getString(sortStringId)
 
-                val periodStringId: Int
-                viewModel.period = when (prefs.getInt(PERIOD_TAG, DEFAULT_PERIOD_ID)) {
-                    R.id.week -> {
-                        periodStringId = R.string.this_week
-                        Period.WEEK
-                    }
-                    R.id.month -> {
-                        periodStringId = R.string.this_month
-                        Period.MONTH
-                    }
-                    R.id.all -> {
-                        periodStringId = R.string.all_time
-                        Period.ALL
-                    }
-                    else -> throw IllegalStateException("Unknown period")
+                viewModel.period = Period.valueOf(prefs.getString(PERIOD_TAG, DEFAULT_PERIOD_ID)!!.toUpperCase())
+                val periodStringId = when (viewModel.period!!) {
+                    Period.DAY -> R.string.today
+                    Period.WEEK ->  R.string.this_week
+                    Period.MONTH -> R.string.this_month
+                    Period.ALL -> R.string.all_time
                 }
-                viewModel.periodText.postValue(getString(periodStringId))
+                viewModel.periodText.value = getString(periodStringId)
             }
             val observer = Observer<CharSequence> { sortBar.sortText.text = getString(R.string.sort_and_period, viewModel.sortText.value, viewModel.periodText.value) }
             viewModel.sortText.observe(this, observer)
@@ -76,25 +61,20 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
         viewModel.loadVideos(game = game.info.name, reload = override)
     }
 
-    override fun onApply(sortId: Int, sortText: CharSequence, periodId: Int, periodText: CharSequence) {
+    override fun onApply(sort: Sort, sortText: CharSequence, period: Period, periodText: CharSequence) {
         var shouldReload = false
         val editor = prefs.edit()
         if (viewModel.sortText.value != sortText) {
             shouldReload = true
-            viewModel.sort = if (sortId == R.id.time) Sort.TIME else Sort.VIEWS
-            viewModel.sortText.postValue(sortText)
-            editor.putInt(SORT_TAG, sortId)
+            viewModel.sort = sort
+            viewModel.sortText.value = sortText
+            editor.putString(SORT_TAG, sort.value)
         }
         if (viewModel.periodText.value != periodText) {
             shouldReload = true
-            viewModel.period = when (periodId) {
-                R.id.week -> Period.WEEK
-                R.id.month -> Period.MONTH
-                R.id.all -> Period.ALL
-                else -> null
-            }
-            viewModel.periodText.postValue(periodText)
-            editor.putInt(PERIOD_TAG, periodId)
+            viewModel.period = period
+            viewModel.periodText.value = periodText
+            editor.putString(PERIOD_TAG, period.value)
         }
         if (shouldReload) {
             editor.apply()

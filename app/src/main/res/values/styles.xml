@@ -8,9 +8,10 @@
         <item name="cardStyle">@style/CardDark</item>
         <item name="navBarStyle">@style/NavBarDark</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDark</item>
-        <item name="dividerColor">@color/dividerDark</item>
-        <item name="android:textColorSecondary">@color/secondaryDark</item>
-        <item name="secondaryTextColor">@color/secondaryDark</item>
+        <item name="dividerColor">@color/secondaryDark</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColorDark</item>
+        <item name="secondaryTextColor">@color/secondaryTextColorDark</item>
+        <item name="colorButtonNormal">@color/secondaryDark</item>
     </style>
 
     <style name="VideoTitle">

@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+<!--TODO fix theme doesn't apply here-->
     <RadioGroup
         android:id="@+id/sort"
         android:layout_width="match_parent"
@@ -12,7 +13,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sort"/>
+            android:text="@string/sort"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp" />
 
         <RadioButton
             android:id="@+id/time"
@@ -35,7 +39,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/period"/>
+            android:text="@string/period"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp" />
 
         <RadioButton
             android:id="@+id/today"

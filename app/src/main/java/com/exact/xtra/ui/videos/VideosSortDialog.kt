@@ -6,13 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.core.os.bundleOf
 import com.exact.xtra.R
+import com.exact.xtra.ui.videos.Period.ALL
+import com.exact.xtra.ui.videos.Period.DAY
+import com.exact.xtra.ui.videos.Period.MONTH
+import com.exact.xtra.ui.videos.Period.WEEK
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_videos_sort.*
 
-class VideosSortDialog : com.google.android.material.bottomsheet.BottomSheetDialogFragment() {
+class VideosSortDialog : BottomSheetDialogFragment() {
 
     interface OnFilterApplied {
-        fun onApply(sortId: Int, sortText: CharSequence, periodId: Int, periodText: CharSequence)
+        fun onApply(sort: Sort, sortText: CharSequence, period: Period, periodText: CharSequence)
     }
 
     companion object {
@@ -20,12 +26,9 @@ class VideosSortDialog : com.google.android.material.bottomsheet.BottomSheetDial
         private const val SORT = "sort"
         private const val PERIOD = "period"
 
-        fun newInstance(sortId: Int, periodId: Int): VideosSortDialog {
-            return VideosSortDialog().also {
-                val args = Bundle(2)
-                args.putInt(SORT, sortId)
-                args.putInt(PERIOD, periodId)
-                it.arguments = args
+        fun newInstance(sort: Sort, period: Period): VideosSortDialog {
+            return VideosSortDialog().apply {
+                arguments = bundleOf(SORT to sort, PERIOD to period)
             }
         }
     }
@@ -47,12 +50,27 @@ class VideosSortDialog : com.google.android.material.bottomsheet.BottomSheetDial
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sort.check(arguments?.getInt(SORT)!!)
-        period.check(arguments?.getInt(PERIOD)!!)
+        sort.check(if (arguments?.getSerializable(SORT) as Sort == Sort.TIME) R.id.time else R.id.views)
+        period.check(when (arguments?.getSerializable(PERIOD) as Period) {
+            DAY -> R.id.today
+            WEEK -> R.id.week
+            MONTH -> R.id.month
+            ALL -> R.id.all
+        })
         apply.setOnClickListener {
             val sortBtn = view.findViewById<RadioButton>(sort.checkedRadioButtonId)
             val periodBtn = view.findViewById<RadioButton>(period.checkedRadioButtonId)
-            listener!!.onApply(sortBtn.id, sortBtn.text, periodBtn.id, periodBtn.text)
+            listener!!.onApply(
+                    if (sortBtn.id == R.id.time) Sort.TIME else Sort.VIEWS,
+                    sortBtn.text,
+                    when (periodBtn.id) {
+                        R.id.today -> DAY
+                        R.id.week -> WEEK
+                        R.id.month -> MONTH
+                        R.id.all -> ALL
+                        else -> throw IllegalStateException()
+                    },
+                    periodBtn.text)
             dismiss()
         }
     }

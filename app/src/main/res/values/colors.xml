@@ -2,6 +2,6 @@
 <resources>
     <color name="accentDark">#007DCA</color>
     <color name="primaryDark">#2B2B2B</color>
-    <color name="secondaryDark">#FF878787</color>
-    <color name="dividerDark">#FF424242</color>
+    <color name="secondaryTextColorDark">#FF878787</color>
+    <color name="secondaryDark">#FF424242</color>
 </resources>

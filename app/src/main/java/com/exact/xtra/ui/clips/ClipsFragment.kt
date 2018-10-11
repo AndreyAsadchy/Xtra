@@ -1,9 +1,11 @@
 package com.exact.xtra.ui.clips
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import com.exact.xtra.R
 import com.exact.xtra.model.game.Game
+import com.exact.xtra.util.C
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_clips.*
 
@@ -27,8 +29,8 @@ class ClipsFragment : BaseClipsFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (isFragmentVisible && !viewModel.isInitialized()) {
-            viewModel.sortText.postValue(getString(sortOptions[DEFAULT_INDEX]))
+        if (isFragmentVisible && !viewModel.isInitialized()) { //TODO add init method in basefragment and only after that loaddata
+            viewModel.sortText.postValue(getString(sortOptions[requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)]))
             viewModel.period = Period.WEEK
         }
     }

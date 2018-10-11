@@ -1,5 +1,6 @@
 package com.exact.xtra.ui.clips
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import com.exact.xtra.R
@@ -27,7 +28,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (isFragmentVisible && !viewModel.isInitialized()) {
-            viewModel.sortText.postValue(getString(sortOptions[DEFAULT_INDEX]))
+            viewModel.sortText.postValue(getString(sortOptions[requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)]))
         }
     }
 
