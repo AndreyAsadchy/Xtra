@@ -19,23 +19,24 @@ abstract class PagedListViewModel<T> : ViewModel() {
         private set
     lateinit var pagingState: LiveData<LoadingState>
         private set
-    val loadedInitial = MediatorLiveData<Boolean?>()
+    val loadedInitial = MediatorLiveData<Boolean>()
 
     protected val compositeDisposable = CompositeDisposable()
-//TODO sometimes list doesn't show, probably because submits empty list
+    //TODO sometimes list doesn't show, probably because submits empty list <- TRUE
     internal fun loadData(listing: Listing<T>, override: Boolean = false) {
         if (result.value == null || override) {
-            result.value = listing
-            list = switchMap(result) { it.pagedList }
             if (loadedInitial.hasObservers()) {
                 loadedInitial.removeSource(loadingState)
             }
+            result.value = listing
+            list = switchMap(result) { it.pagedList }
             loadingState = switchMap(result) { it.loadingState }
             pagingState = switchMap(result) { it.pagingState }
             loadedInitial.apply {
                 addSource(loadingState) {
-                    if (value == null && it == LoadingState.LOADED) {
-                        postValue(true)
+                    if (value == null) {
+                        if (it == LoadingState.LOADED) postValue(true)
+                        else if (it == LoadingState.FAILED) postValue(false)
                     }
                 }
             }

@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.exact.xtra.R
 import com.exact.xtra.di.Injectable
@@ -14,7 +15,7 @@ import com.exact.xtra.ui.view.draggableview.DraggableListener
 import com.exact.xtra.ui.view.draggableview.DraggableView
 import javax.inject.Inject
 
-abstract class BasePlayerFragment : androidx.fragment.app.Fragment(), Injectable {
+abstract class BasePlayerFragment : Fragment(), Injectable {
 
     private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null

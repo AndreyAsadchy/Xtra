@@ -14,11 +14,11 @@ class ClipsViewModel @Inject constructor(
     var period: Period? = null
     var trending: Boolean = false
 
-    fun loadClips(channelName: String? = null, gameName: String? = null, languages: String? = null, reload: Boolean) {
+    fun loadClips(channelName: String? = null, gameName: String? = null, languages: String? = null, period: Period? = this.period, trending: Boolean = this.trending, reload: Boolean) {
         loadData(repository.loadClips(channelName, gameName, languages, period ?: Period.WEEK, trending, compositeDisposable), reload)
     }
 
-    fun loadFollowedClips(userToken: String, reload: Boolean) {
+    fun loadFollowedClips(userToken: String, trending: Boolean = this.trending, reload: Boolean) {
         loadData(repository.loadFollowedClips(userToken, trending, compositeDisposable), reload)
     }
 

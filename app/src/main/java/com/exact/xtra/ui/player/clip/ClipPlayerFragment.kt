@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
-class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnOptionSelectedListener, VideoDownloadDialog.OnDownloadClickListener {
+class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, VideoDownloadDialog.OnDownloadClickListener {
 
     private companion object {
         const val TAG = "ClipPlayer"
@@ -56,7 +56,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnOpt
         viewModel.download(quality)
     }
 
-    override fun onSelect(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index, text.toString())
     }
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(): ViewModel() {
+class MainViewModel @Inject constructor(): ViewModel() {
 
     val isPlayerOpened = MutableLiveData<Boolean>()
     val isPlayerMaximized = MutableLiveData<Boolean>()

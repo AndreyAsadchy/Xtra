@@ -25,22 +25,19 @@ class FollowedClipsFragment : BaseClipsFragment() {
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (isFragmentVisible && !viewModel.isInitialized()) {
-            viewModel.sortText.postValue(getString(sortOptions[requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)]))
-        }
+    override fun initializeViewModel() {
+        val index = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)
+        viewModel.sortText.postValue(getString(sortOptions[index]))
+        viewModel.trending = index == 0
     }
 
     override fun loadData(override: Boolean) {
-        viewModel.loadFollowedClips(user.token, override)
+        viewModel.loadFollowedClips(userToken = user.token, reload = override)
     }
 
-    override fun onSelect(index: Int, text: CharSequence, tag: Int?) {
-        if (viewModel.sortText.value != text) {
-            viewModel.trending = tag == R.string.trending
-            viewModel.sortText.postValue(text)
-            loadData(true)
-        }
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+        viewModel.trending = tag == R.string.trending
+        viewModel.sortText.postValue(text)
+        loadData(true)
     }
 }

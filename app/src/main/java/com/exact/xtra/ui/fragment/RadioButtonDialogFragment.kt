@@ -14,11 +14,12 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import com.exact.xtra.R
 import com.exact.xtra.util.C
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class RadioButtonDialogFragment : com.google.android.material.bottomsheet.BottomSheetDialogFragment() {
+class RadioButtonDialogFragment : BottomSheetDialogFragment() {
 
-    interface OnOptionSelectedListener {
-        fun onSelect(index: Int, text: CharSequence, tag: Int?)
+    interface OnSortOptionChanged {
+        fun onChange(index: Int, text: CharSequence, tag: Int?)
     }
 
     companion object {
@@ -35,24 +36,28 @@ class RadioButtonDialogFragment : com.google.android.material.bottomsheet.Bottom
         }
     }
 
-    private var listener: OnOptionSelectedListener? = null
+    private var listenerSort: OnSortOptionChanged? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (parentFragment is OnOptionSelectedListener) {
-            listener = parentFragment as OnOptionSelectedListener
+        if (parentFragment is OnSortOptionChanged) {
+            listenerSort = parentFragment as OnSortOptionChanged
         } else {
-            throw RuntimeException(parentFragment.toString() + " must implement RadioButtonDialogFragment.OnOptionSelectedListener")
+            throw RuntimeException(parentFragment.toString() + " must implement RadioButtonDialogFragment.OnSortOptionChanged")
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val radioGroup = inflater.inflate(R.layout.dialog_radio_button, container, false) as RadioGroup
         arguments?.let {
+            val checkedId = it.getInt(CHECKED)
             val clickListener = View.OnClickListener { v ->
-                listener?.onSelect(v.id, (v as RadioButton).text, v.tag as Int?)
-                requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).edit {
-                    putInt(it.getString(TAG), v.id)
+                val clickedId = v.id
+                if (clickedId != checkedId) {
+                    listenerSort?.onChange(clickedId, (v as RadioButton).text, v.tag as Int?)
+                    requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).edit {
+                        putInt(it.getString(TAG), clickedId)
+                    }
                 }
                 dismiss()
             }
@@ -66,13 +71,13 @@ class RadioButtonDialogFragment : com.google.android.material.bottomsheet.Bottom
                 }
                 radioGroup.addView(button, MATCH_PARENT, WRAP_CONTENT)
             }
-            radioGroup.check(it.getInt(CHECKED))
+            radioGroup.check(checkedId)
         }
         return radioGroup
     }
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        listenerSort = null
     }
 }

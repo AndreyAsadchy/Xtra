@@ -10,7 +10,7 @@ import com.exact.xtra.util.C
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_videos.*
 
-class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnOptionSelectedListener {
+class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
     private companion object {
         val sortOptions = listOf(R.string.upload_date, R.string.view_count)
@@ -26,27 +26,19 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (isFragmentVisible) {
-            if (!viewModel.isInitialized()) {
-                viewModel.sortText.postValue(getString(sortOptions[requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)]))
-                viewModel.sort = Sort.TIME
-            }
-            loadData()
-            initDefaultSortTextObserver()
-        }
+    override fun initializeViewModel() {
+        val index = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)
+        viewModel.sortText.postValue(getString(sortOptions[index]))
+        viewModel.sort = if (index == 0) Sort.TIME else Sort.VIEWS
     }
 
     override fun loadData(override: Boolean) {
         viewModel.loadChannelVideos(channelId = channelId, reload = override)
     }
 
-    override fun onSelect(index: Int, text: CharSequence, tag: Int?) {
-        if (viewModel.sortText != text) {
-            viewModel.sort = if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS
-            viewModel.sortText.postValue(text)
-            loadData(true)
-        }
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) { //TODO move this to viewmodel and update there
+        viewModel.sort = if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS
+        viewModel.sortText.postValue(text)
+        loadData(true)
     }
 }

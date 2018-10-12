@@ -2,8 +2,10 @@ package com.exact.xtra.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
@@ -59,17 +61,17 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     @Inject lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var authRepository: AuthRepository
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MainViewModel
     private val compositeDisposable = CompositeDisposable()
+    private var playerFragment: BasePlayerFragment? = null
     val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         val prefs = getPreferences(Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean("first_launch", true)
-        viewModel.username.observe(this, Observer { println(it) })
         if (isFirstLaunch) {
             prefs.edit { putBoolean("first_launch", false) }
             startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra("first_launch", true) }, 1)
@@ -95,17 +97,24 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             }
             initNavBar()
         }
-        with (viewModel) {
-            isPlayerOpened.observe(this@MainActivity, Observer {
-                if (it == true) {
-                    val playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
-                    if (viewModel.isPlayerMaximized.value != true)
-                        Handler().post { playerFragment?.minimize() } //TODO add minimize fast
+
+        viewModel.isPlayerMaximized.observe(this@MainActivity, Observer {
+            if (resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) //TODO
+            if (it == true) navBar.post { hideNavigationBar() }
+        })
+        viewModel.isPlayerOpened.observe(this@MainActivity, Observer {
+            if (it == true) {
+                playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
+                if (viewModel.isPlayerMaximized.value != true) {
+                    Handler().post { playerFragment?.minimize() } //TODO add minimize fast
                 }
-            })
-            isPlayerMaximized.observe(this@MainActivity, Observer { if (it == true) navBar.post { hideNavigationBar() } }) //TODO post method
-        }
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO
+                    navBarContainer.visibility = View.GONE
+                }
+            }
+        })
     }
+
 
     private fun initFragNavController() {
         fragNavController.apply {
@@ -228,6 +237,11 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun onBackPressed() {
+        if (viewModel.isPlayerOpened.value == true && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
+            supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
+            navBarContainer.visibility = View.VISIBLE
+            return
+        }
         if (viewModel.isPlayerMaximized.value != true) {
             if (fragNavController.isRootFragment) {
                 if (viewModel.isUserLoggedIn.value == true) {
@@ -247,7 +261,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 fragNavController.popFragment()
             }
         } else {
-            (supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment).minimize()
+            playerFragment?.minimize()
             viewModel.isPlayerMaximized.postValue(false)
         }
     }
@@ -269,24 +283,24 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun onMoved(horizontalDragOffset: Float, verticalDragOffset: Float) {
-        navBar.translationY = -verticalDragOffset * navBar.height + navBar.height
+        navBarContainer.translationY = -verticalDragOffset * navBarContainer.height + navBarContainer.height
     }
 
     private fun startPlayer(fragment: BasePlayerFragment) {
-        hideNavigationBar()
+        playerFragment = fragment
         supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
         viewModel.isPlayerOpened.postValue(true)
-        viewModel.isPlayerMaximized.postValue(true)
+        viewModel.isPlayerMaximized.setValue(true)
     }
 
     private fun closePlayer() {
-        supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentByTag(PLAYER_TAG)!!).commit()
+        supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
         viewModel.isPlayerOpened.postValue(false)
-        viewModel.isPlayerMaximized.postValue(false)
+        viewModel.isPlayerMaximized.setValue(false)
     }
 
     private fun hideNavigationBar() {
-        navBar.translationY = navBar.height.toFloat()
+        navBarContainer.translationY = navBarContainer.height.toFloat()
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {

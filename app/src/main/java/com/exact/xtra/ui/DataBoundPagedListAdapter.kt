@@ -37,7 +37,6 @@ abstract class DataBoundPagedListAdapter<T, V : ViewDataBinding>(
 
                     }
                 })
-
             }
         }
     }

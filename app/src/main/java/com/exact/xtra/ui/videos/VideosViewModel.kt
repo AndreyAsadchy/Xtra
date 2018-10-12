@@ -13,8 +13,6 @@ class VideosViewModel @Inject constructor(
 
     val sortText = MutableLiveData<CharSequence>()
     lateinit var sort: Sort
-
-    val periodText by lazy { MutableLiveData<CharSequence>() }
     var period: Period? = null
 
     fun loadVideos(game: String? = null, broadcastType: BroadcastType = BroadcastType.ALL, language: String? = null, reload: Boolean) {

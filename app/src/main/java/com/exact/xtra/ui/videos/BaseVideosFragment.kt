@@ -16,7 +16,6 @@ import com.exact.xtra.ui.Scrollable
 import com.exact.xtra.ui.fragment.LazyFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
-import kotlinx.android.synthetic.main.sort_bar.view.*
 import javax.inject.Inject
 
 abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scrollable {
@@ -42,8 +41,11 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scroll
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (isFragmentVisible) {
-            binding = FragmentVideosBinding.inflate(inflater, container, false).apply { setLifecycleOwner(this@BaseVideosFragment) }
-            binding.root
+            FragmentVideosBinding.inflate(inflater, container, false).let {
+                binding = it
+                it.setLifecycleOwner(this@BaseVideosFragment)
+                it.root
+            }
         } else {
             null
         }
@@ -56,6 +58,9 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scroll
             binding.viewModel = viewModel
             val adapter = VideosAdapter(listener!!)
             recyclerViewLayout.recyclerView.adapter = adapter
+            if (!viewModel.isInitialized()) {
+                initializeViewModel()
+            }
             loadData()
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)
@@ -68,11 +73,9 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scroll
         listener = null
     }
 
-    protected fun initDefaultSortTextObserver() {
-        viewModel.sortText.observe(this, Observer(sortBar.sortText::setText))
-    }
-
     override fun scrollToTop() {
         recyclerViewLayout.recyclerView.scrollToPosition(0)
     }
+
+    abstract fun initializeViewModel()
 }

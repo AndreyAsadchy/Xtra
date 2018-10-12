@@ -27,11 +27,13 @@ class ClipsFragment : BaseClipsFragment() {
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (isFragmentVisible && !viewModel.isInitialized()) { //TODO add init method in basefragment and only after that loaddata
-            viewModel.sortText.postValue(getString(sortOptions[requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)]))
-            viewModel.period = Period.WEEK
+    override fun initializeViewModel() {
+        val index = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)
+        viewModel.sortText.postValue(getString(sortOptions[index]))
+        if (index != 0) {
+            viewModel.period = Period.values()[index - 1]
+        } else {
+            viewModel.trending = true
         }
     }
 
@@ -39,21 +41,19 @@ class ClipsFragment : BaseClipsFragment() {
         viewModel.loadClips(channelName = channelName, gameName = game?.info?.name, reload = override)
     }
 
-    override fun onSelect(index: Int, text: CharSequence, tag: Int?) {
-        if (viewModel.sortText.value != text) {
-            var period: Period? = null
-            var trending = false
-            when (tag) {
-                R.string.trending -> trending = true
-                R.string.today -> period = Period.DAY
-                R.string.this_week -> period = Period.WEEK
-                R.string.this_month -> period = Period.MONTH
-                R.string.all_time -> period = Period.ALL
-            }
-            viewModel.period = period
-            viewModel.trending = trending
-            viewModel.sortText.postValue(text)
-            loadData(true)
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+        var period: Period? = null
+        var trending = false
+        when (tag) {
+            R.string.trending -> trending = true
+            R.string.today -> period = Period.DAY
+            R.string.this_week -> period = Period.WEEK
+            R.string.this_month -> period = Period.MONTH
+            R.string.all_time -> period = Period.ALL
         }
+        viewModel.period = period
+        viewModel.trending = trending
+        viewModel.sortText.postValue(text)
+        loadData(true)
     }
 }

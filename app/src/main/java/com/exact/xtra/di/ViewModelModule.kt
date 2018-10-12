@@ -6,7 +6,7 @@ import com.exact.xtra.ui.clips.ClipsViewModel
 import com.exact.xtra.ui.common.GenericViewModelFactory
 import com.exact.xtra.ui.downloads.DownloadsViewModel
 import com.exact.xtra.ui.games.GamesViewModel
-import com.exact.xtra.ui.main.MainActivityViewModel
+import com.exact.xtra.ui.main.MainViewModel
 import com.exact.xtra.ui.player.clip.ClipPlayerViewModel
 import com.exact.xtra.ui.player.offline.OfflinePlayerViewModel
 import com.exact.xtra.ui.player.stream.StreamPlayerViewModel
@@ -22,8 +22,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MainActivityViewModel::class)
-    abstract fun bindMainActivityViewModel(mainActivityViewModel: MainActivityViewModel): ViewModel
+    @ViewModelKey(MainViewModel::class)
+    abstract fun bindMainActivityViewModel(mainViewModel: MainViewModel): ViewModel
 
     @Binds
     @IntoMap

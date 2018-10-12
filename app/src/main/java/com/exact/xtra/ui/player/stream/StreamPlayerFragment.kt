@@ -17,9 +17,9 @@ import com.exact.xtra.util.FragmentUtils
 import com.exact.xtra.util.chat.OnChatConnectedListener
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
-import java.util.LinkedList
+import java.util.*
 
-class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnOptionSelectedListener {
+class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
     private companion object {
         const val TAG = "StreamPlayer"
@@ -72,7 +72,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnO
         }
     }
 
-    override fun onSelect(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         if (viewModel.helper.selectedQualityIndex != index) {
             viewModel.changeQuality(index, TAG)
             if (index >= viewModel.helper.qualities.value!!.lastIndex) {

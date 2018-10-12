@@ -22,14 +22,11 @@ class ClipsAdapter(
         }) {
 
     override fun createBinding(parent: ViewGroup): FragmentClipsListItemBinding {
-        val binding = DataBindingUtil.inflate<FragmentClipsListItemBinding>(
+        return DataBindingUtil.inflate<FragmentClipsListItemBinding>(
                 LayoutInflater.from(parent.context),
                 R.layout.fragment_clips_list_item,
                 parent,
-                false
-        )
-        binding.root.setOnClickListener { binding.clip?.let(clickCallback::startClip) }
-        return binding
+                false).apply { root.setOnClickListener { _ -> clip?.let(clickCallback::startClip) } }
     }
 
     override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {

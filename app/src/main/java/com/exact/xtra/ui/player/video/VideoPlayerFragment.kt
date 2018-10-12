@@ -14,9 +14,9 @@ import com.exact.xtra.util.FragmentUtils
 import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
-import java.util.LinkedList
+import java.util.*
 
-class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnOptionSelectedListener, VideoDownloadDialog.OnDownloadClickListener {
+class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, VideoDownloadDialog.OnDownloadClickListener {
 
     private companion object {
         const val TAG = "VideoPlayer"
@@ -60,7 +60,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnOp
         }
     }
 
-    override fun onSelect(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index, text.toString())
     }
 

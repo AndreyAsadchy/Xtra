@@ -5,6 +5,9 @@
 
     <data>
         <variable
+            name="liveData"
+            type="androidx.lifecycle.MutableLiveData&lt;CharSequence>"/>
+        <variable
             name="visible"
             type="androidx.lifecycle.MediatorLiveData&lt;Boolean>"/>
     </data>
@@ -18,6 +21,7 @@
 
         <TextView
             android:id="@+id/sortText"
+            android:text="@{liveData}"
             tools:text="@string/all_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

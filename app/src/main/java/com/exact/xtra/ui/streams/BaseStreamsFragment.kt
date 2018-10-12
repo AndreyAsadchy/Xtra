@@ -39,13 +39,17 @@ abstract class BaseStreamsFragment : LazyFragment(), Injectable, Scrollable, Loa
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        if (isFragmentVisible) {
-            binding = FragmentStreamsBinding.inflate(inflater, container, false).apply { setLifecycleOwner(this@BaseStreamsFragment) }
-            binding.root
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return if (isFragmentVisible) {
+            FragmentStreamsBinding.inflate(inflater, container, false).let {
+                binding = it
+                it.setLifecycleOwner(this@BaseStreamsFragment)
+                it.root
+            }
         } else {
             null
         }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

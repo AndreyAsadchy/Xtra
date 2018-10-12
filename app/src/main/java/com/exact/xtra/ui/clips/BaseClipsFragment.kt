@@ -17,10 +17,9 @@ import com.exact.xtra.ui.fragment.LazyFragment
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_clips.*
-import kotlinx.android.synthetic.main.sort_bar.view.*
 import javax.inject.Inject
 
-abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loadable, RadioButtonDialogFragment.OnOptionSelectedListener {
+abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loadable, RadioButtonDialogFragment.OnSortOptionChanged {
 
     interface OnClipSelectedListener {
         fun startClip(clip: Clip)
@@ -58,11 +57,13 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loada
             binding.viewModel = viewModel
             val adapter = ClipsAdapter(listener!!)
             recyclerViewLayout.recyclerView.adapter = adapter
+            if (!viewModel.isInitialized()) {
+                initializeViewModel()
+            }
             loadData()
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)
             })
-            viewModel.sortText.observe(this, Observer(sortBar.sortText::setText))
         }
     }
 
@@ -74,4 +75,6 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loada
     override fun scrollToTop() {
         recyclerViewLayout.recyclerView.scrollToPosition(0)
     }
+
+    abstract fun initializeViewModel()
 }
