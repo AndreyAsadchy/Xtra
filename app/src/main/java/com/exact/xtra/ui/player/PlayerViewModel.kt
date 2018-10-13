@@ -47,9 +47,11 @@ abstract class PlayerViewModel(
         player.addListener(this)
     }
 
-    open fun play() {
-        player.prepare(mediaSource)
-        player.playWhenReady = true
+    open fun startPlayer() {
+        if (isInitialized()) {
+            player.prepare(mediaSource)
+            player.playWhenReady = true
+        }
     }
 
     override fun onCleared() {
@@ -59,7 +61,7 @@ abstract class PlayerViewModel(
     }
 
     override fun isInitialized(): Boolean {
-        return this::mediaSource.isInitialized
+        return ::mediaSource.isInitialized
     }
 
     //Player.EventListener

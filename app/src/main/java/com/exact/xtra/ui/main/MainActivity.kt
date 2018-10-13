@@ -50,7 +50,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener {
 
     companion object {
-        private const val PLAYER_TAG = "player"
+        private const val PLAYER_TAG = "init"
         const val INDEX_GAMES = FragNavController.TAB1
         const val INDEX_TOP = FragNavController.TAB2
         const val INDEX_FOLLOWED = FragNavController.TAB3
@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 initNavBar()
             }
             2 -> { //Other
-                //TODO reset fragments and restart messageview in player if it's running
+                //TODO reset fragments and restart messageview in init if it's running
                 when (resultCode) {
                     RESULT_OK -> { //Logged in
                         updateUserLiveData()
@@ -215,7 +215,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun startStream(stream: Stream) {
-//        playerFragment?.play(stream)
+//        playerFragment?.startPlayer(stream)
         startPlayer(StreamPlayerFragment().apply { arguments = bundleOf("stream" to stream) })
     }
 

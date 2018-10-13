@@ -60,7 +60,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         if (!viewModel.isInitialized()) {
             viewModel.video = arguments!!.getParcelable("video")!!
-            viewModel.play()
+            viewModel.init()
         }
     }
 

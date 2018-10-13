@@ -18,34 +18,34 @@ class StreamPlayerViewModel @Inject constructor(
         private val repository: PlayerRepository) : HlsPlayerViewModel(context) {
 
     val chatTask = MutableLiveData<LiveChatTask>()
-    private lateinit var subscriberBadges: SubscriberBadgesResponse
+    private var subscriberBadges: SubscriberBadgesResponse? = null
     private var _stream: Stream? = null
     var stream: Stream
         get() = _stream!!
         set(value) {
             if (_stream != value) {
                 _stream = value
-                play()
+                init()
             }
         }
     var user: User? = null
         set(value) {
             field = value
-            if (this::subscriberBadges.isInitialized) {
+            if (isInitialized()) {
                 startChat()
             }
         }
 
-    override fun play() {
+    private fun init() {
         if (isInitialized()) {
-            super.play()
+            startPlayer()
             return
         }
         val channel = stream.channel
         repository.fetchStreamPlaylist(channel.name)
                 .subscribe({
                     mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
-                    super.play()
+                    startPlayer()
                 }, {
 
                 })
@@ -54,19 +54,23 @@ class StreamPlayerViewModel @Inject constructor(
                 .subscribe({
                     subscriberBadges = it
                     startChat()
-                }, {
-
+                }, { //no subscriber badges
+                    startChat()
                 })
                 .addTo(compositeDisposable)
     }
 
     fun startChat() {
-        if (this::subscriberBadges.isInitialized)
         chatTask.postValue(TwitchApiHelper.startChat(stream.channel.name, user?.name, user?.token, subscriberBadges, helper))
     }
 
+    fun stopChat() {
+        chatTask.value?.cancel()
+    }
+
     override fun onCleared() {
-        chatTask.value?.shutdown()
+        stopChat()
         super.onCleared()
     }
+
 }

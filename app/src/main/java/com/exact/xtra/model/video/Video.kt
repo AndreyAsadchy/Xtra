@@ -47,7 +47,7 @@ data class Video(
         @SerializedName("increment_view_count_url")
         val incrementViewCountUrl: String,
         @SerializedName("muted_segments")
-        val mutedSegments: List<MutedSegment>) : Parcelable {
+        val mutedSegments: List<MutedSegment>?) : Parcelable {
 
     @Parcelize
     data class MutedSegment(

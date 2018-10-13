@@ -5,11 +5,8 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProviders
 import com.exact.xtra.R
 import com.exact.xtra.model.stream.Stream
@@ -57,19 +54,20 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             }
             FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
         }
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun onMoveToForeground() {
         super.onMoveToForeground()
-        viewModel.startChat()
+        playerView?.player = viewModel.player
+        if (viewModel.isInitialized())
+            viewModel.startChat()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     override fun onMoveToBackground() {
         super.onMoveToBackground()
-        viewModel.chatTask.value?.shutdown()
+        viewModel.stopChat()
+        playerView?.player = null
     }
 
     override fun play(obj: Parcelable) {
@@ -86,7 +84,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         if (viewModel.helper.selectedQualityIndex != index) {
             viewModel.changeQuality(index, TAG)
             if (index >= viewModel.helper.qualities.value!!.lastIndex) {
-                //TODO hide player
+                //TODO hide init
             }
         }
     }

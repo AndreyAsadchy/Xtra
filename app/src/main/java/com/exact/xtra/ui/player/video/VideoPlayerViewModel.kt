@@ -5,13 +5,12 @@ import android.net.Uri
 import com.exact.xtra.db.VideosDao
 import com.exact.xtra.model.OfflineVideo
 import com.exact.xtra.model.video.Video
-
 import com.exact.xtra.repository.PlayerRepository
-import com.exact.xtra.repository.TwitchService
 import com.exact.xtra.ui.player.HlsPlayerViewModel
 import com.exact.xtra.util.DownloadUtils
 import com.exact.xtra.util.PlayerUtils
 import com.exact.xtra.util.TwitchApiHelper
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -21,27 +20,37 @@ import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.experimental.launch
-
 import javax.inject.Inject
 
 class VideoPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository,
-        private val twitchRepository: TwitchService,
         private val dao: VideosDao) : HlsPlayerViewModel(context) {
 
     lateinit var video: Video
     lateinit var segments: List<HlsMediaPlaylist.Segment>
     private val cacheDataSourceFactory = CacheDataSourceFactory(DownloadUtils.getCache(context), dataSourceFactory)
+    private var playbackProgress: Long = 0
 
-    fun play() {
+    fun init() {
         playerRepository.fetchVideoPlaylist(video.id)
                 .subscribe({
-                    play(HlsMediaSource.Factory(cacheDataSourceFactory).createMediaSource(it))
+                    mediaSource = HlsMediaSource.Factory(cacheDataSourceFactory).createMediaSource(it)
+                    startPlayer()
                 }, {
 
                 })
                 .addTo(compositeDisposable)
+    }
+
+    override fun startPlayer() {
+        super.startPlayer()
+        player.seekTo(playbackProgress)
+    }
+
+    override fun changeQuality(index: Int, tag: String) {
+        super.changeQuality(index, tag)
+        playbackProgress = player.currentPosition
     }
 
     fun download(quality: String, keys: List<RenditionKey>) {
@@ -61,6 +70,13 @@ class VideoPlayerViewModel @Inject constructor(
         super.onTimelineChanged(timeline, manifest, reason)
         if (!this::segments.isInitialized) {
             segments = (manifest as HlsManifest).mediaPlaylist.segments
+        }
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        super.onPlayerStateChanged(playWhenReady, playbackState)
+        when (playbackState) {
+            Player.STATE_IDLE -> playbackProgress = player.currentPosition
         }
     }
 }

@@ -52,7 +52,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         if (!viewModel.isInitialized()) {
             viewModel.clip = arguments!!.getParcelable("clip")!!
-            viewModel.play()
+            viewModel.init()
         }
     }
 

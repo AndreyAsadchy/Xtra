@@ -95,7 +95,7 @@ class LiveChatTask(
         writer.write(message + System.getProperty("line.separator"))
     }
 
-    fun shutdown() {
+    fun cancel() {
         running = false
     }
 

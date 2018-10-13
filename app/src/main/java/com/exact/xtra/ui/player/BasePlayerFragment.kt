@@ -11,13 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.exact.xtra.R
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.ui.common.OnChannelClickedListener
 import com.exact.xtra.ui.view.draggableview.DraggableListener
 import com.exact.xtra.ui.view.draggableview.DraggableView
-import kotlinx.android.synthetic.main.fragment_player_stream.*
 import javax.inject.Inject
 
 abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
@@ -26,6 +26,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
     private var dragListener: DraggableListener? = null
     private var isPortraitOrientation: Boolean = false
     private lateinit var draggableView: DraggableView
+    protected abstract val viewModel: PlayerViewModel
 
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -62,6 +63,11 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+    }
+
     override fun onDetach() {
         super.onDetach()
         channelListener = null
@@ -72,16 +78,13 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     open fun onMoveToForeground() {
-        playerView.player = viewModel.player
-        viewModel.play()
+        viewModel.startPlayer()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     open fun onMoveToBackground() {
         viewModel.player.stop()
     }
-
-    protected abstract val viewModel: PlayerViewModel
 
     fun minimize() {
         if (isPortraitOrientation) {

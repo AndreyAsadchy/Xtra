@@ -329,7 +329,7 @@ public class DraggableView extends RelativeLayout {
      * @param ev captured.
      * @return true if the touch event is realized over the drag or second view.
      */
-    @Override public boolean onTouchEvent(MotionEvent ev) { //TODO add onperformclick to not show player overlay when not clicked
+    @Override public boolean onTouchEvent(MotionEvent ev) { //TODO add onperformclick to not show init overlay when not clicked
         int actionMasked = ev.getAction();
         if ((actionMasked & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
             activePointerId = ev.getPointerId(actionMasked);

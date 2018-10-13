@@ -12,10 +12,14 @@ import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import java.util.LinkedList
 import java.util.regex.Pattern
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.forEach
+import kotlin.collections.lastIndex
+import kotlin.collections.set
 
 abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context, PlayerType.HLS), OnQualityChangeListener {
 
-    companion object {
+    private companion object {
         const val VIDEO_RENDERER = 0
         const val AUDIO_RENDERER = 1
     }
@@ -63,6 +67,7 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
 
     override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
         if (helper.qualities.value == null) {
+            if (manifest == null) return
             val masterPlaylist = (manifest as HlsManifest).masterPlaylist
             val tags = masterPlaylist.tags
             val urls = LinkedHashMap<CharSequence, String>(tags.size)
@@ -77,9 +82,10 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
                 }
             }
             helper.urls.putAll(urls)
-            val list = LinkedList(urls.keys)
-            list.add(list.removeAt(list.indexOf("Audio only"))) //move audio option to bottom
-            helper.qualities.postValue(list)
+            LinkedList(urls.keys).run {
+                add(removeAt(indexOf("Audio only"))) //move audio option to bottom
+                helper.qualities.postValue(this)
+            }
         }
     }
 }

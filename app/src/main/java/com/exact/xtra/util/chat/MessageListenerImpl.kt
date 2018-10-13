@@ -6,11 +6,16 @@ import com.exact.xtra.model.chat.LiveChatMessage
 import com.exact.xtra.model.chat.SubscriberBadge
 import com.exact.xtra.model.chat.SubscriberBadgesResponse
 import com.exact.xtra.tasks.LiveChatTask
-
 import java.util.HashMap
+import kotlin.collections.ArrayList
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.dropLastWhile
+import kotlin.collections.forEach
+import kotlin.collections.set
 
 class MessageListenerImpl(
-        private val subscriberBadges: SubscriberBadgesResponse,
+        private val subscriberBadges: SubscriberBadgesResponse?,
         private val callback: OnChatMessageReceived) : LiveChatTask.OnMessageReceivedListener {
 
     companion object {
@@ -48,7 +53,7 @@ class MessageListenerImpl(
             entries.forEach {
                 it.value?.let { value ->
                     badgesList.add(Badge(it.key, value))
-                    if (subscriberBadge == null && it.key == "subscriber") {
+                    if (subscriberBadge == null && subscriberBadges != null && it.key == "subscriber") {
                         subscriberBadge = subscriberBadges.getBadge(value.toInt())
                     }
                 }

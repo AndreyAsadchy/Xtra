@@ -27,7 +27,8 @@ class OfflinePlayerFragment : BasePlayerFragment() {
         playerView.player = viewModel.player
         if (!viewModel.isInitialized()) {
             viewModel.video = arguments!!.getParcelable("video")!!
-            viewModel.play()
+            viewModel.init()
         }
     }
+
 }

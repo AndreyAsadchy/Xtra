@@ -10,8 +10,7 @@ import com.exact.xtra.util.chat.MessageListenerImpl
 import com.exact.xtra.util.chat.OnChatMessageReceived
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 object TwitchApiHelper {
 
@@ -59,7 +58,7 @@ object TwitchApiHelper {
         }
     }
 
-    fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse, newMessageCallback: OnChatMessageReceived): LiveChatTask {
+    fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageCallback: OnChatMessageReceived): LiveChatTask {
         return LiveChatTask(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageCallback)).apply { start() }
     }
 }

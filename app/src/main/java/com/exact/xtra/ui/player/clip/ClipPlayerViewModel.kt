@@ -4,7 +4,6 @@ import android.app.Application
 import android.net.Uri
 import com.exact.xtra.db.VideosDao
 import com.exact.xtra.model.OfflineVideo
-
 import com.exact.xtra.model.clip.Clip
 import com.exact.xtra.repository.PlayerRepository
 import com.exact.xtra.ui.OnQualityChangeListener
@@ -14,12 +13,12 @@ import com.exact.xtra.ui.player.PlayerViewModel
 import com.exact.xtra.util.DownloadUtils
 import com.exact.xtra.util.PlayerUtils
 import com.exact.xtra.util.TwitchApiHelper
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.offline.ProgressiveDownloadAction
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.experimental.launch
-
 import javax.inject.Inject
 
 class ClipPlayerViewModel @Inject constructor(
@@ -39,7 +38,7 @@ class ClipPlayerViewModel @Inject constructor(
         }
     }
 
-    fun play() {
+    fun init() {
         playerRepository.fetchClipQualities(clip.slug)
                 .subscribe({
                     println(it)
@@ -66,8 +65,14 @@ class ClipPlayerViewModel @Inject constructor(
                 .addTo(compositeDisposable)
     }
 
+    override fun startPlayer() {
+        super.startPlayer()
+        player.seekTo(playbackProgress)
+    }
+
     private fun play(source: String) {
-        play(factory.createMediaSource(Uri.parse(source)))
+        mediaSource = factory.createMediaSource(Uri.parse(source))
+        startPlayer()
         player.seekTo(playbackProgress)
     }
 
@@ -80,6 +85,13 @@ class ClipPlayerViewModel @Inject constructor(
         OfflineVideo(url, clip.title, clip.broadcaster.name, clip.game, clip.duration.toLong(), currentDate, uploadDate, clip.thumbnails.medium, clip.broadcaster.logo).let {
             launch { dao::insert }
             PlayerUtils.startDownload(context, downloadAction, it)
+        }
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        super.onPlayerStateChanged(playWhenReady, playbackState)
+        when (playbackState) {
+            Player.STATE_IDLE -> playbackProgress = player.currentPosition
         }
     }
 }
