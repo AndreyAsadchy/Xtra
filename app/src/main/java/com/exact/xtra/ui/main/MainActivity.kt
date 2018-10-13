@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 navBar.selectedItemId = R.id.fragment_follow
 //                authRepository.validate(user.token)
 //                        .subscribe({
-                viewModel.username.postValue(user.name)
+                viewModel.user.postValue(user)
                 viewModel.isUserLoggedIn.observe(this, Observer {  }) //need to observe to make MediatorLiveData to work
                 fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
 //                        }, {
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
 //                        })
 //                        .addTo(compositeDisposable)
             } else {
-                viewModel.username.postValue(null)
+                viewModel.user.postValue(null)
                 navBar.selectedItemId = R.id.fragment_top
                 fragNavController.initialize(INDEX_TOP, savedInstanceState)
             }
@@ -170,9 +170,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         super.onActivityResult(requestCode, resultCode, data)
 
         fun updateUserLiveData() {
-            data?.getParcelableExtra<User>(C.USER)?.let {
-                viewModel.username.postValue(it.name)
-            }
+            data?.getParcelableExtra<User>(C.USER)?.let(viewModel.user::postValue)
         }
 
         when (requestCode) {
@@ -185,7 +183,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                         fragNavController.initialize(INDEX_FOLLOWED)
                     }
                     RESULT_CANCELED -> { //Skipped
-                        viewModel.username.postValue(null)
+                        viewModel.user.postValue(null)
                         navBar.selectedItemId = R.id.fragment_top
                         fragNavController.initialize(INDEX_TOP)
                     }
@@ -201,7 +199,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                         fragNavController.switchTab(INDEX_FOLLOWED)
                     }
                     RESULT_CANCELED -> { //Logged out
-                        viewModel.username.postValue(null)
+                        viewModel.user.postValue(null)
                     }
                 }
             }
@@ -217,6 +215,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun startStream(stream: Stream) {
+//        playerFragment?.play(stream)
         startPlayer(StreamPlayerFragment().apply { arguments = bundleOf("stream" to stream) })
     }
 
@@ -287,16 +286,18 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     private fun startPlayer(fragment: BasePlayerFragment) {
-        playerFragment = fragment
-        supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
+//        if (playerFragment == null) {
+            playerFragment = fragment
+            supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
+//        }
         viewModel.isPlayerOpened.postValue(true)
-        viewModel.isPlayerMaximized.setValue(true)
+        viewModel.isPlayerMaximized.value = true
     }
 
     private fun closePlayer() {
         supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
         viewModel.isPlayerOpened.postValue(false)
-        viewModel.isPlayerMaximized.setValue(false)
+        viewModel.isPlayerMaximized.value = false
     }
 
     private fun hideNavigationBar() {

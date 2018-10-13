@@ -16,7 +16,7 @@ class ChatView : RelativeLayout {
         private const val SCROLL_THRESHOLD = 5
     }
 
-    private lateinit var adapter: ChatAdapter
+    lateinit var adapter: ChatAdapter
     private lateinit var layoutManager: androidx.recyclerview.widget.LinearLayoutManager
     private var isChatTouched: Boolean = false
 

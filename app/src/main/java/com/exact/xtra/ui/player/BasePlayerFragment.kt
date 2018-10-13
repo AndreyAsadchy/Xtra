@@ -4,18 +4,23 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import com.exact.xtra.R
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.ui.common.OnChannelClickedListener
 import com.exact.xtra.ui.view.draggableview.DraggableListener
 import com.exact.xtra.ui.view.draggableview.DraggableView
+import kotlinx.android.synthetic.main.fragment_player_stream.*
 import javax.inject.Inject
 
-abstract class BasePlayerFragment : Fragment(), Injectable {
+abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
@@ -46,8 +51,8 @@ abstract class BasePlayerFragment : Fragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
         if (isPortraitOrientation) {
+            view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
             draggableView = view as DraggableView
             draggableView.setDraggableListener(dragListener)
             view.findViewById<ImageButton>(R.id.fullscreen).setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
@@ -62,6 +67,21 @@ abstract class BasePlayerFragment : Fragment(), Injectable {
         channelListener = null
         dragListener = null
     }
+
+    abstract fun play(obj: Parcelable)
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    open fun onMoveToForeground() {
+        playerView.player = viewModel.player
+        viewModel.play()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    open fun onMoveToBackground() {
+        viewModel.player.stop()
+    }
+
+    protected abstract val viewModel: PlayerViewModel
 
     fun minimize() {
         if (isPortraitOrientation) {

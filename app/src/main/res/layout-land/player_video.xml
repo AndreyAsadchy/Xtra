@@ -18,11 +18,11 @@
         android:layout_gravity="center"
         style="@style/ExoMediaButton.Pause"/>
 
-    <ImageButton
-        android:id="@+id/minimize"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/baseline_expand_more_black_48"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/minimize"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:src="@drawable/baseline_expand_more_black_48"/>-->
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -61,11 +61,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end">
 
-        <SeekBar
-            android:id="@+id/player_video_seek_bar"
+        <TextView
+            android:id="@id/exo_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <com.google.android.exoplayer2.ui.DefaultTimeBar
+            android:id="@id/exo_progress"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"/>
+
+        <TextView
+            android:id="@id/exo_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
 
         <ImageButton
             android:id="@+id/player_minimize_player"
@@ -81,18 +93,18 @@
             android:src="@drawable/baseline_unfold_more_black_24"
             android:rotation="90"/>
 
-        <ImageButton
-            android:id="@+id/player_hide_chat"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/baseline_speaker_notes_off_black_24" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/player_hide_chat"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:src="@drawable/baseline_speaker_notes_off_black_24" />-->
 
 
-        <ImageButton
-            android:id="@+id/player_show_chat"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/baseline_chat_black_24" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/player_show_chat"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:src="@drawable/baseline_chat_black_24" />-->
 
         <ImageButton
             android:id="@+id/fullscreen_exit"

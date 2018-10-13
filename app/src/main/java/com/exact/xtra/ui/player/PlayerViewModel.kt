@@ -30,6 +30,7 @@ abstract class PlayerViewModel(
     protected val dataSourceFactory: DataSource.Factory
     protected val trackSelector: DefaultTrackSelector
     protected val compositeDisposable = CompositeDisposable()
+    protected lateinit var mediaSource: MediaSource
 
     init {
         var bandwidthMeter: DefaultBandwidthMeter? = null
@@ -46,20 +47,19 @@ abstract class PlayerViewModel(
         player.addListener(this)
     }
 
-    protected fun play(mediaSource: MediaSource) {
+    open fun play() {
         player.prepare(mediaSource)
         player.playWhenReady = true
     }
 
     override fun onCleared() {
-        super.onCleared()
         player.release()
         compositeDisposable.clear()
+        super.onCleared()
     }
 
-
     override fun isInitialized(): Boolean {
-        return compositeDisposable.size() != 0
+        return this::mediaSource.isInitialized
     }
 
     //Player.EventListener

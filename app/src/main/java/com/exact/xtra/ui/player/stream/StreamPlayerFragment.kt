@@ -1,31 +1,33 @@
 package com.exact.xtra.ui.player.stream
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProviders
 import com.exact.xtra.R
-import com.exact.xtra.tasks.LiveChatTask
+import com.exact.xtra.model.stream.Stream
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
+import com.exact.xtra.ui.main.MainViewModel
 import com.exact.xtra.ui.player.BasePlayerFragment
-import com.exact.xtra.util.C
 import com.exact.xtra.util.FragmentUtils
-import com.exact.xtra.util.chat.OnChatConnectedListener
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
 import java.util.*
 
-class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
+class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, LifecycleObserver {
 
     private companion object {
         const val TAG = "StreamPlayer"
     }
 
-    private lateinit var viewModel: StreamPlayerViewModel
+    override lateinit var viewModel: StreamPlayerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_stream, container, false)
@@ -34,28 +36,20 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
-        playerView.player = viewModel.player
+        val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.user.observe(this, Observer {
+            messageView.visibility = if (it != null) View.VISIBLE else View.GONE
+            viewModel.user = it
+        })
         if (!viewModel.isInitialized()) {
             settings.isEnabled = false
-            val prefs = requireActivity().getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
-            val userName = prefs.getString(C.USERNAME, null)
-            val userToken = prefs.getString(C.TOKEN, null)
-            viewModel.userToken = userToken
-            viewModel.play(arguments!!.getParcelable("stream")!!, userName, userToken, object: OnChatConnectedListener {
-                override fun onConnect(chatTask: LiveChatTask) {
-                    if (viewModel.isUserAuthorized()) {
-                        messageView.setCallback(chatTask)
-                    }
-                }
-            })
-        }
-        if (viewModel.isUserAuthorized()) {
-            messageView.visibility = VISIBLE
+            viewModel.stream = arguments!!.getParcelable("stream")!!
         }
         val qualities = viewModel.helper.qualities
         qualities.observe(this, Observer { settings.isEnabled = it != null })
         viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
         viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
+        viewModel.chatTask.observe(this, Observer(messageView::setCallback))
         settings.setOnClickListener {
             val list = LinkedList(qualities.value).apply {
                 addFirst(getString(R.string.auto))
@@ -63,13 +57,29 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             }
             FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
         }
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (!requireActivity().isChangingConfigurations) {
-            playerView.player = null
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun onMoveToForeground() {
+        super.onMoveToForeground()
+        viewModel.startChat()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    override fun onMoveToBackground() {
+        super.onMoveToBackground()
+        viewModel.chatTask.value?.shutdown()
+    }
+
+    override fun play(obj: Parcelable) {
+        val stream = obj as Stream
+        if (viewModel.stream != stream) {
+            viewModel.player.playWhenReady = false
+            chatView.adapter.submitList(null)
         }
+        viewModel.stream = stream
+        draggableView?.maximize()
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

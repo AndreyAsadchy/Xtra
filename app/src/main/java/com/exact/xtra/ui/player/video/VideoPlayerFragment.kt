@@ -1,6 +1,7 @@
 package com.exact.xtra.ui.player.video
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +18,15 @@ import kotlinx.android.synthetic.main.player_video.*
 import java.util.*
 
 class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, VideoDownloadDialog.OnDownloadClickListener {
+    override fun play(obj: Parcelable) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private companion object {
         const val TAG = "VideoPlayer"
     }
 
-    private lateinit var viewModel: VideoPlayerViewModel
+    override lateinit var viewModel: VideoPlayerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_video, container, false)

@@ -24,6 +24,7 @@ class LiveChatTask(
     private lateinit var writer: BufferedWriter
     private val hashChannelName: String = "#$channelName"
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
+    private var running = false
 
     companion object {
         private const val TAG = "LiveChatTask"
@@ -31,37 +32,23 @@ class LiveChatTask(
 
     override fun run() {
         connect()
-        //        var serverMessage: String? = null
         try {
-            reader.lineSequence().forEach {
-                when {
-                    it.contains("PRIVMSG") -> listener.onMessage(it)
-                    it.contains("USERNOTICE") -> listener.onUserNotice(it)
-                    it.contains("NOTICE") -> listener.onNotice(it)
-                    it.contains("ROOMSTATE") -> listener.onRoomState(it)
-                    it.contains("JOIN") -> listener.onJoin(it)
-                    it.startsWith("PING") -> {
-                        write("PONG :tmi.twitch.tv")
-                        writer.flush()
+            while (running) {
+                val line = reader.readLine() ?: break
+                line.run {
+                    when {
+                        contains("PRIVMSG") -> listener.onMessage(this)
+                        contains("USERNOTICE") -> listener.onUserNotice(this)
+                        contains("NOTICE") -> listener.onNotice(this)
+                        contains("ROOMSTATE") -> listener.onRoomState(this)
+                        contains("JOIN") -> listener.onJoin(this)
+                        startsWith("PING") -> {
+                            write("PONG :tmi.twitch.tv")
+                            writer.flush()
+                        }
                     }
                 }
             }
-//            while (reader?.readLine().let { serverMessage = it; it != null }) {
-//                    if (serverMessage.contains("PRIVMSG")) {
-//                        listener.onMessage(serverMessage)
-//                    } else if (serverMessage.contains("USERNOTICE")) {
-//                        listener.onUserNotice(serverMessage)
-//                    } else if (serverMessage.contains("NOTICE")) {
-//                        listener.onNotice(serverMessage)
-//                    } else if (serverMessage.contains("ROOMSTATE")) {
-//                        listener.onRoomState(serverMessage)
-//                    } else if (serverMessage.startsWith("PING")) {
-//                        write("PONG :tmi.twitch.tv")
-//                        writer!!.flush()
-//                    } else if (serverMessage.contains("JOIN")) {
-//                        listener.onJoin(serverMessage)
-//                }
-//            }
         } catch (e: IOException) {
             Log.e(TAG, "Connection error", e)
         } finally {
@@ -86,6 +73,7 @@ class LiveChatTask(
             write("JOIN $hashChannelName")
             writer.flush()
             Log.d(TAG, "Successfully connected to channel - $hashChannelName")
+            running = true
         } catch (e: IOException) {
             Log.e(TAG, "Error connecting to Twitch IRC", e)
         }
@@ -107,7 +95,9 @@ class LiveChatTask(
         writer.write(message + System.getProperty("line.separator"))
     }
 
-    fun shutdown() {}
+    fun shutdown() {
+        running = false
+    }
 
     override fun send(message: String) {
         messageSenderExecutor.execute {
