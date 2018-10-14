@@ -8,7 +8,7 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
-        android:layout_width="500dp"
+        android:layout_width="475dp"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         app:controller_layout_id="@layout/player_stream"
@@ -20,9 +20,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:colorBackground"
-        android:layout_toEndOf="@+id/fragment_player_player_container"
-        android:layout_toRightOf="@+id/fragment_player_player_container">
+        android:background="?android:colorBackground">
 
         <com.exact.xtra.ui.view.ChatView
             android:id="@+id/chatView"

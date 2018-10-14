@@ -48,5 +48,12 @@
     <style name="BottomSheetDark" parent="Theme.Design.BottomSheetDialog">
         <item name="android:colorBackground">@color/primaryDark</item>
     </style>
+    
+    <style name="PlayerControl">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
 
 </resources>

@@ -80,14 +80,14 @@
             android:layout_gravity="center"/>
 
         <ImageButton
-            android:id="@+id/player_minimize_player"
+            android:id="@+id/minimizePlayer"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/baseline_unfold_less_black_24"
             android:rotation="90"/>
 
         <ImageButton
-            android:id="@+id/player_maximize_player"
+            android:id="@+id/maximizePlayer"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/baseline_unfold_more_black_24"
@@ -107,7 +107,7 @@
             <!--android:src="@drawable/baseline_chat_black_24" />-->
 
         <ImageButton
-            android:id="@+id/fullscreen_exit"
+            android:id="@+id/fullscreenExit"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/baseline_fullscreen_exit_black_24" />

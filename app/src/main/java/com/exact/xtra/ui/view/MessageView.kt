@@ -34,21 +34,21 @@ class MessageView : LinearLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        view_chat_et_message.setOnEditorActionListener { v, actionId, _ ->
+        editText.setOnEditorActionListener { v, actionId, _ ->
             var handled = false
             if (callback != null) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                if (actionId == EditorInfo.IME_ACTION_SEND && v.text.isNotEmpty()) {
                     callback!!.send(v.text.toString())
-                    v.text = ""
+                    editText.text.clear()
                     handled = true
                 }
             }
             handled
         }
-        view_chat_btn_send.setOnClickListener {
-            if (callback != null) {
-                callback!!.send(view_chat_et_message.text.toString())
-                view_chat_et_message.setText("")
+        send.setOnClickListener {
+            if (callback != null && editText.text.isNotEmpty()) {
+                callback!!.send(editText.text.toString())
+                editText.text.clear()
             }
         }
     }

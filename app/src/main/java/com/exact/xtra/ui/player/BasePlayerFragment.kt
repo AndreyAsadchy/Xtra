@@ -6,20 +6,21 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import com.exact.xtra.R
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.ui.common.OnChannelClickedListener
 import com.exact.xtra.ui.view.draggableview.DraggableListener
 import com.exact.xtra.ui.view.draggableview.DraggableView
+import com.google.android.exoplayer2.Player
+import kotlinx.android.synthetic.main.player_stream.*
 import javax.inject.Inject
 
+@Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     private var channelListener: OnChannelClickedListener? = null
@@ -53,13 +54,13 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isPortraitOrientation) {
-            view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
+            minimize.setOnClickListener { minimize() }
             draggableView = view as DraggableView
             draggableView.setDraggableListener(dragListener)
-            view.findViewById<ImageButton>(R.id.fullscreen).setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            fullscreenEnter.setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
             //            slidingView = view.findViewById(R.id.fragment_player_sv);
-            view.findViewById<ImageButton>(R.id.fullscreen_exit).setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
+            fullscreenExit.setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
         }
     }
 
@@ -76,21 +77,25 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     abstract fun play(obj: Parcelable)
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     open fun onMoveToForeground() {
-        viewModel.startPlayer()
+        if (viewModel.player.playbackState != Player.STATE_READY) {
+            viewModel.startPlayer()
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     open fun onMoveToBackground() {
-        viewModel.player.stop()
+        if (viewModel.player.playbackState != Player.STATE_IDLE || viewModel.player.playbackState != Player.STATE_ENDED) {
+            viewModel.player.stop()
+        }
     }
 
     fun minimize() {
         if (isPortraitOrientation) {
             draggableView.minimize()
         } else {
-            //            slidingView.minimize();
+//                        slidingView.minimize();
         }
     }
 }

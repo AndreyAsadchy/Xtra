@@ -20,6 +20,10 @@ import com.exact.xtra.model.chat.ChatMessage
 import com.exact.xtra.model.chat.Emote
 import com.exact.xtra.ui.DataBoundViewHolder
 import java.util.Random
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.forEach
+import kotlin.collections.map
 
 
 class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBinding>>(
@@ -79,13 +83,13 @@ class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBin
             }
         }
         //TODO add if mentions user make message red
-        builder.append(chatMessage.userName).append(": ").append(chatMessage.message)
+        builder.append(chatMessage.displayName).append(": ").append(chatMessage.message)
         val userColor = chatMessage.color
         val color = when (userColor) {
             null -> getRandomColor().also { chatMessage.color = it.toString() }
             else -> if (userColor.startsWith("#")) Color.parseColor(userColor) else userColor.toInt()
         }
-        val userNameLength = chatMessage.userName.length
+        val userNameLength = chatMessage.displayName.length
         builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         chatMessage.emotes?.let {
             val copy = it.map { e -> e.copy() }

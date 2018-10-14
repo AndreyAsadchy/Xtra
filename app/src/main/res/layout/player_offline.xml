@@ -68,7 +68,7 @@
             android:layout_gravity="center"/>
 
         <ImageButton
-            android:id="@+id/fullscreen"
+            android:id="@+id/fullscreenEnter"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/baseline_fullscreen_black_24"/>

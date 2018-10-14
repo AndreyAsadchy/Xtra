@@ -14,6 +14,6 @@ data class LiveChatMessage(
         override val subscriberBadge: SubscriberBadge?,
         val userId: Int,
         val userType: String?,
-        val displayName: String,
+        override val displayName: String,
         val roomId: String,
         val timestamp: Long) : ChatMessage, Parcelable

@@ -8,24 +8,23 @@
     android:layout_height="wrap_content">
 <!--TODO WEIGHT 9-->
     <EditText
-        android:id="@+id/view_chat_et_message"
+        android:id="@+id/editText"
         android:layout_weight="5"
         android:layout_width="0dp"
         android:inputType="textCapSentences|textAutoCorrect"
         android:imeOptions="actionSend"
         android:layout_height="match_parent"/>
 
-    <ImageButton
-        android:id="@+id/view_chat_btn_emotes"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:src="@drawable/ic_tag_faces_black_24dp"
-        android:visibility="gone"
-        android:background="?android:selectableItemBackground"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/emotes"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="2"-->
+        <!--android:src="@drawable/ic_tag_faces_black_24dp"-->
+        <!--android:background="?android:selectableItemBackground"/>-->
 
     <ImageButton
-        android:id="@+id/view_chat_btn_send"
+        android:id="@+id/send"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"

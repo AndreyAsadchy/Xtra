@@ -30,9 +30,13 @@ class StreamPlayerViewModel @Inject constructor(
         }
     var user: User? = null
         set(value) {
-            field = value
-            if (isInitialized()) {
-                startChat()
+            if (field != value) {
+                field = value
+                if (isInitialized()) {
+                    if (chatTask.value != null)
+                    stopChat()
+                    startChat()
+                }
             }
         }
 

@@ -19,9 +19,12 @@ class LiveChatTask(
         channelName: String,
         private val listener: OnMessageReceivedListener) : Thread(), MessageView.MessageSenderCallback {
 
-    private var socket: Socket? = null
-    private lateinit var reader: BufferedReader
-    private lateinit var writer: BufferedWriter
+    private var socketListener: Socket? = null
+    private var socketSender: Socket? = null
+    private lateinit var readerListener: BufferedReader
+    private var readerSender: BufferedReader? = null
+    private lateinit var writerListener: BufferedWriter
+    private var writerSender: BufferedWriter? = null
     private val hashChannelName: String = "#$channelName"
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
     private var running = false
@@ -31,21 +34,32 @@ class LiveChatTask(
     }
 
     override fun run() {
+
+        fun handlePing(writer: BufferedWriter) {
+            write("PONG :tmi.twitch.tv", writer)
+            writer.flush()
+        }
+
         connect()
         try {
             while (running) {
-                val line = reader.readLine() ?: break
-                line.run {
+                val lineListener = readerListener.readLine() ?: break
+                println(lineListener)
+                lineListener.run {
                     when {
                         contains("PRIVMSG") -> listener.onMessage(this)
                         contains("USERNOTICE") -> listener.onUserNotice(this)
                         contains("NOTICE") -> listener.onNotice(this)
                         contains("ROOMSTATE") -> listener.onRoomState(this)
                         contains("JOIN") -> listener.onJoin(this)
-                        startsWith("PING") -> {
-                            write("PONG :tmi.twitch.tv")
-                            writer.flush()
-                        }
+                        startsWith("PING") -> handlePing(writerListener)
+                    }
+                }
+
+                if (userName != null) {
+                    val lineSender = readerSender?.readLine() ?: break
+                    if (lineSender.startsWith("PING")) {
+                        handlePing(writerSender!!)
                     }
                 }
             }
@@ -54,26 +68,31 @@ class LiveChatTask(
         } finally {
             disconnect()
         }
+
+
     }
 
     private fun connect() {
         Log.d(TAG, "Connecting to Twitch IRC")
         try {
-            socket = Socket("irc.twitch.tv", 6667)
-            reader = BufferedReader(InputStreamReader(socket!!.getInputStream()))
-            writer = BufferedWriter(OutputStreamWriter(socket!!.getOutputStream()))
-            if (userName == null) {
-                write("NICK justinfan3896") //random numbers //TODO change to Random()
-            } else {
-                write("PASS oauth:" + userToken!!)
-                write("NICK $userName")
+            socketListener = Socket("irc.twitch.tv", 6667)
+            readerListener = BufferedReader(InputStreamReader(socketListener!!.getInputStream()))
+            writerListener = BufferedWriter(OutputStreamWriter(socketListener!!.getOutputStream()))
+            if (userName != null) {
+                socketSender = Socket("irc.twitch.tv", 6667)
+                readerSender = BufferedReader(InputStreamReader(socketSender!!.getInputStream()))
+                writerSender = BufferedWriter(OutputStreamWriter(socketSender!!.getOutputStream()))
+                write("PASS oauth:" + userToken!!, writerSender)
+                write("NICK $userName", writerSender)
             }
-            write("CAP REQ :twitch.tv/tags")
-            write("CAP REQ :twitch.tv/commands")
-            write("JOIN $hashChannelName")
-            writer.flush()
-            Log.d(TAG, "Successfully connected to channel - $hashChannelName")
+            write("NICK justinfan3896", writerListener) //random numbers //TODO change to Random()
+            write("CAP REQ :twitch.tv/tags", writerListener, writerSender)
+            write("CAP REQ :twitch.tv/commands", writerListener, writerSender)
+            write("JOIN $hashChannelName", writerListener, writerSender)
+            writerListener.flush()
+            writerSender?.flush()
             running = true
+            Log.d(TAG, "Successfully connected to channel - $hashChannelName")
         } catch (e: IOException) {
             Log.e(TAG, "Error connecting to Twitch IRC", e)
         }
@@ -83,7 +102,8 @@ class LiveChatTask(
     private fun disconnect() {
         Log.d(TAG, "Disconnecting from $hashChannelName")
         try {
-            socket?.close()
+            socketListener?.close()
+            socketSender?.close()
         } catch (e: IOException) {
             Log.e(TAG, "Error while disconnecting", e)
         }
@@ -91,8 +111,8 @@ class LiveChatTask(
     }
 
     @Throws(IOException::class)
-    private fun write(message: String) {
-        writer.write(message + System.getProperty("line.separator"))
+    private fun write(message: String, vararg writers: BufferedWriter?) {
+        writers.forEach { it?.write(message + System.getProperty("line.separator")) }
     }
 
     fun cancel() {
@@ -102,8 +122,8 @@ class LiveChatTask(
     override fun send(message: String) {
         messageSenderExecutor.execute {
             try {
-                write("PRIVMSG $hashChannelName :$message")
-                writer.flush()
+                write("PRIVMSG $hashChannelName :$message", writerSender)
+                writerSender?.flush()
                 Log.d(TAG, "Sent message to $hashChannelName: $message")
             } catch (e: IOException) {
                 Log.e(TAG, "Error sending message", e)

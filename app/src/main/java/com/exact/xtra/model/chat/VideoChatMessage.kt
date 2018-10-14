@@ -46,6 +46,9 @@ data class VideoChatMessage(
     override val subscriberBadge: SubscriberBadge?
         get() = null
 
+    override val displayName: String
+        get() = commenter.displayName
+
     @Parcelize
     data class Commenter(
             @SerializedName("display_name")

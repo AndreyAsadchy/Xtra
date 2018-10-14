@@ -16,6 +16,7 @@ import com.exact.xtra.ui.player.BasePlayerFragment
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
+import kotlinx.android.synthetic.main.view_chat_message.view.*
 import java.util.*
 
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, LifecycleObserver {
@@ -54,14 +55,14 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             }
             FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
         }
-
     }
 
     override fun onMoveToForeground() {
         super.onMoveToForeground()
+        if (messageView?.editText?.length() == 0) {
+            messageView.editText.clearFocus()
+        }
         playerView?.player = viewModel.player
-        if (viewModel.isInitialized())
-            viewModel.startChat()
     }
 
     override fun onMoveToBackground() {
