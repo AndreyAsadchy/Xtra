@@ -56,8 +56,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
             settings.isEnabled = loaded
             download.isEnabled = loaded
         })
-        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
-        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
+//        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
+//        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         if (!viewModel.isInitialized()) {
             viewModel.video = arguments!!.getParcelable("video")!!
             viewModel.init()

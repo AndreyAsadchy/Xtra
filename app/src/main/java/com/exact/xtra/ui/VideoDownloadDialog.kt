@@ -3,19 +3,17 @@ package com.exact.xtra.ui
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.Window
 import android.widget.ArrayAdapter
-
+import androidx.fragment.app.Fragment
 import com.exact.xtra.R
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
 import kotlinx.android.synthetic.main.dialog_video_download.*
-
-import java.util.ArrayList
+import java.util.*
 
 class VideoDownloadDialog(
-        fragment: androidx.fragment.app.Fragment,
+        fragment: Fragment,
         private val qualities: List<CharSequence>,
         private val segments: List<HlsMediaPlaylist.Segment>?) : Dialog(fragment.requireActivity()), View.OnClickListener {
 
@@ -34,7 +32,6 @@ class VideoDownloadDialog(
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_video_download)
-        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         spinner.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, qualities)
         defaultRange = context.getString(R.string.entire_video)
         //        tvRange.setText(defaultRange); //TODO change to start with "Download"

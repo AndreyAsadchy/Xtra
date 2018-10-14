@@ -19,28 +19,25 @@
 
     <ImageButton
         android:id="@+id/minimize"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        android:tint="@android:color/white"
-        android:src="@drawable/baseline_expand_more_black_48"/>
+        android:src="@drawable/baseline_expand_more_black_48"
+        style="@style/PlayerControl"/>
 
     <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="end">-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="end">-->
 
-        <!--<ImageButton-->
-            <!--android:id="@id/profile"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:src="@drawable/baseline_person_black_24" />-->
+    <!--<ImageButton-->
+    <!--android:id="@id/profile"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:src="@drawable/baseline_person_black_24" />-->
 
-        <!--<ImageButton-->
-            <!--android:id="@id/more"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:src="@drawable/baseline_more_vert_black_24" />-->
+    <!--<ImageButton-->
+    <!--android:id="@id/more"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:src="@drawable/baseline_more_vert_black_24" />-->
 
     <!--</LinearLayout>-->
 
@@ -53,7 +50,9 @@
             android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp" />
 
         <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@id/exo_progress"
@@ -69,8 +68,7 @@
 
         <ImageButton
             android:id="@+id/fullscreenEnter"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="@style/PlayerControl"
             android:src="@drawable/baseline_fullscreen_black_24"/>
 
     </LinearLayout>

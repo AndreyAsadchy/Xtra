@@ -11,12 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:controller_layout_id="@layout/player_offline"
-        app:show_buffering="true"/>
+        app:show_buffering="true"
+        app:resize_mode="fill"/>
 
-    <View
-        android:id="@+id/dummyView"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:layout_below="@id/playerView"/>
+    <!--<View-->
+        <!--android:id="@+id/dummyView"-->
+        <!--android:layout_width="1dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_below="@id/playerView"/>-->
 
 </RelativeLayout>

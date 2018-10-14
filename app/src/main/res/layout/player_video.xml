@@ -21,8 +21,7 @@
 
         <ImageButton
             android:id="@+id/minimize"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="@style/PlayerControl"
             android:src="@drawable/baseline_expand_more_black_48" />
 
         <LinearLayout
@@ -32,8 +31,7 @@
 
             <ImageButton
                 android:id="@+id/download"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/PlayerControl"
                 android:src="@drawable/ic_file_download_black_24dp" />
 
             <!--<ImageButton-->
@@ -45,8 +43,7 @@
 
             <ImageButton
                 android:id="@+id/settings"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/PlayerControl"
                 android:src="@drawable/baseline_settings_black_24" />
 
             <!--<ImageButton-->
@@ -67,7 +64,9 @@
                 android:id="@id/exo_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp" />
 
             <com.google.android.exoplayer2.ui.DefaultTimeBar
                 android:id="@id/exo_progress"
@@ -83,8 +82,7 @@
 
             <ImageButton
                 android:id="@+id/fullscreenEnter"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/PlayerControl"
                 android:src="@drawable/baseline_fullscreen_black_24"/>
 
         </LinearLayout>

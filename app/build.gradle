@@ -18,7 +18,7 @@ android {
         applicationId "com.exact.xtra"
         minSdkVersion 16
         versionCode 1
-        versionName "1.0"
+        versionName "0.9"
         testInstrumentationRunner "android.support.changeQuality.runner.AndroidJUnitRunner"
     }
     buildTypes {

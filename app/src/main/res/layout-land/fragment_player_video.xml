@@ -8,19 +8,20 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@id/playerView"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         app:controller_layout_id="@layout/player_video"
-        app:show_buffering="true"/>
+        app:show_buffering="true"
+        app:resize_mode="fill"/>
 
-    <com.exact.xtra.ui.view.ChatView
-        android:id="@id/chatView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="?android:colorBackground"
-        android:layout_toEndOf="@id/playerView"
-        android:layout_toRightOf="@id/playerView"/>
+    <!--<com.exact.xtra.ui.view.ChatView-->
+        <!--android:id="@id/chatView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="?android:colorBackground"-->
+        <!--android:layout_toEndOf="@id/playerView"-->
+        <!--android:layout_toRightOf="@id/playerView"/>-->
 
 </RelativeLayout>

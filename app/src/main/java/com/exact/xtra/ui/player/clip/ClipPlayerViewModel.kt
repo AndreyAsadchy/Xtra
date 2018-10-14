@@ -41,7 +41,6 @@ class ClipPlayerViewModel @Inject constructor(
     fun init() {
         playerRepository.fetchClipQualities(clip.slug)
                 .subscribe({
-                    println(it)
                     val qualities = ArrayList<CharSequence>(it.size)
                     it.forEach { option ->
                         qualities.add(option.quality)

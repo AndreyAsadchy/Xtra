@@ -44,7 +44,6 @@ class LiveChatTask(
         try {
             while (running) {
                 val lineListener = readerListener.readLine() ?: break
-                println(lineListener)
                 lineListener.run {
                     when {
                         contains("PRIVMSG") -> listener.onMessage(this)

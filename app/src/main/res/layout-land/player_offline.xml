@@ -20,8 +20,6 @@
 
     <!--<ImageButton-->
         <!--android:id="@+id/minimize"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
         <!--android:src="@drawable/baseline_expand_more_black_48"/>-->
 
     <LinearLayout
@@ -52,7 +50,9 @@
             android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp" />
 
         <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@id/exo_progress"
@@ -68,8 +68,7 @@
 
         <ImageButton
             android:id="@+id/fullscreenExit"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="@style/PlayerControl"
             android:src="@drawable/baseline_fullscreen_exit_black_24" />
 
     </LinearLayout>

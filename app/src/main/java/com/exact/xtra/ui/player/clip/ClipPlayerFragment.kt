@@ -35,6 +35,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         super.onViewCreated(view, savedInstanceState)
         //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(clip.getBroadcaster().getName()));
         //TODO morebtn
+        settings.isEnabled = false
+        download.isEnabled = false
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, TAG) }
         download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, null).show() }
     }
@@ -48,8 +50,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             settings.isEnabled = loaded
             download.isEnabled = loaded
         })
-        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
-        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
+//        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
+//        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         if (!viewModel.isInitialized()) {
             viewModel.clip = arguments!!.getParcelable("clip")!!
             viewModel.init()

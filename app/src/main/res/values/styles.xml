@@ -12,6 +12,8 @@
         <item name="android:textColorSecondary">@color/secondaryTextColorDark</item>
         <item name="secondaryTextColor">@color/secondaryTextColorDark</item>
         <item name="colorButtonNormal">@color/secondaryDark</item>
+        <item name="android:dialogTheme">@style/DialogDark</item>
+        <item name="android:radioButtonStyle">@style/RadioButtonDark</item>
     </style>
 
     <style name="VideoTitle">
@@ -48,12 +50,19 @@
     <style name="BottomSheetDark" parent="Theme.Design.BottomSheetDialog">
         <item name="android:colorBackground">@color/primaryDark</item>
     </style>
+
+    <style name="DialogDark" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@color/primaryDark</item>
+    </style>
     
     <style name="PlayerControl">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="RadioButtonDark" parent="Widget.AppCompat.CompoundButton.RadioButton">
     </style>
 
 </resources>
