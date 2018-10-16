@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.ui.common.OnChannelClickedListener
@@ -66,7 +65,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     override fun onResume() {
         super.onResume()
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        lifecycle.addObserver(this)
     }
 
     override fun onDetach() {

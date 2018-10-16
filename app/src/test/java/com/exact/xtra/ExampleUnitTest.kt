@@ -3,6 +3,7 @@ package com.exact.xtra
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+
 /**
  * Example local unit changeQuality, which will execute on the development machine (host).
  *
@@ -17,5 +18,6 @@ class ExampleUnitTest {
 
     @Test
     fun test() {
+        
     }
 }

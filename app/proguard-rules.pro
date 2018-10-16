@@ -26,3 +26,7 @@
   **[] $VALUES;
   public *;
 }
+
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}

@@ -44,7 +44,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
                 FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
             }
         }
-        download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, viewModel.segments).show() }
+        download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, null).show() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -69,6 +69,6 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onClick(quality: String, keys: List<RenditionKey>) {
-        viewModel.download(quality, keys)
+        viewModel.download(quality, 0, 2)
     }
 }

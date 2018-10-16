@@ -2,11 +2,9 @@ package com.exact.xtra.util
 
 import android.content.Context
 import android.content.Intent
-
 import com.exact.xtra.model.OfflineVideo
 import com.exact.xtra.service.MediaDownloadService
 import com.google.android.exoplayer2.offline.DownloadAction
-
 import com.google.android.exoplayer2.offline.DownloadService.ACTION_ADD
 import com.google.android.exoplayer2.offline.DownloadService.KEY_DOWNLOAD_ACTION
 import com.google.android.exoplayer2.offline.DownloadService.KEY_FOREGROUND
