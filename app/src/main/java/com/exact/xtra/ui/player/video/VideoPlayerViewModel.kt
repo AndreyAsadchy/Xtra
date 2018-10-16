@@ -1,6 +1,7 @@
 package com.exact.xtra.ui.player.video
 
 import android.app.Application
+import android.content.Context
 import com.exact.xtra.db.VideosDao
 import com.exact.xtra.model.video.Video
 import com.exact.xtra.repository.PlayerRepository
@@ -66,7 +67,7 @@ class VideoPlayerViewModel @Inject constructor(
                         println(it)
                         val request = Request.Builder().url(it).build()
                         val response = okHttpClient.newCall(request).execute()
-                        val file = File(context.getExternalFilesDir(video.id), "${index++}.ts")
+                        val file = File(context.getDir(video.id, Context.MODE_PRIVATE), "${index++}.ts")
                         response.body()?.byteStream()!!.copyTo(FileOutputStream(file))
                     }.subscribeOn(Schedulers.io())
                 }
