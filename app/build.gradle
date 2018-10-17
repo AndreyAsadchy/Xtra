@@ -71,6 +71,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
+    implementation 'com.googlecode.mp4parser:isoparser:1.1.21'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"
