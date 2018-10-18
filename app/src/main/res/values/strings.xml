@@ -25,7 +25,7 @@
     <string name="auto">Auto</string>
     <string name="audio_only">Audio only</string>
     <string name="chat_only">Chat only</string>
-    <string name="quality">Quality</string>
+    <string name="select_quality">Select quality</string>
     <string name="segment">Segment</string>
     <string name="cancel">Cancel</string>
     <string name="download">Download</string>

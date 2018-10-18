@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.text.format.DateUtils"/>
+        <import type="com.exact.xtra.util.TwitchApiHelper"/>
         <variable name="video" type="com.exact.xtra.model.OfflineVideo"/>
     </data>
 
@@ -26,7 +28,7 @@
 
             <TextView
                 android:id="@+id/date"
-                android:text="@{@string/uploaded_date(video.uploadDate)}"
+                android:text="@{@string/uploaded_date(TwitchApiHelper.parseIso8601Date(context, video.uploadDate))}"
                 tools:text="Uploaded: July 16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +52,7 @@
 
             <TextView
                 android:id="@+id/length"
-                android:text="@{String.valueOf(video.length)}"
+                android:text="@{DateUtils.formatElapsedTime(video.length)}"
                 tools:text="13:37"
                 style="@style/VideoLength"
                 android:layout_width="wrap_content"

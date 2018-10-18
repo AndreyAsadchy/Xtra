@@ -69,6 +69,6 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onClick(quality: String, keys: List<RenditionKey>) {
-        viewModel.download(quality, 0, 2)
+        viewModel.download(quality, 0, 3)
     }
 }

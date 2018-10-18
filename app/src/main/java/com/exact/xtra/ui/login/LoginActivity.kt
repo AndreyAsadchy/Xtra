@@ -18,6 +18,7 @@ import com.exact.xtra.util.C
 import com.exact.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -33,17 +34,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         prefs = getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
-        if (intent.getBooleanExtra("login", false).also { println(it) }) {
-            val resultIntent = Intent().apply { putExtra(C.USER, User("42702359", "exact5", "xoe8suvb31nadezrx6tofk68hbonxu")) }
-            prefs.edit {
-                putString(C.TOKEN, "xoe8suvb31nadezrx6tofk68hbonxu")
-                putString(C.USERNAME, "exact5")
-                putString(C.USER_ID, "42702359")
-            }
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
-            return
-        }
         val token = prefs.getString(C.TOKEN, null)
         if (token == null) {
             if (intent.getBooleanExtra("first_launch", false)) {
@@ -54,14 +44,11 @@ class LoginActivity : AppCompatActivity() {
                 initWebView()
             }
         } else {
-//            initWebView()
-
-            prefs.edit { clear() }
+            initWebView()
             setResult(Activity.RESULT_CANCELED)
-//            finish()
-//            repository.revoke(token)
-//                    .subscribe { _ -> prefs.edit { clear() } }
-//                    .addTo(compositeDisposable)
+            repository.revoke(token)
+                    .subscribeBy(onSuccess = { prefs.edit { clear() } })
+                    .addTo(compositeDisposable)
         }
     }
 
