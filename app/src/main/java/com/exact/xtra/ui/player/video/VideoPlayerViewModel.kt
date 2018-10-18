@@ -5,6 +5,7 @@ import android.content.Context
 import com.exact.xtra.GlideApp
 import com.exact.xtra.db.VideosDao
 import com.exact.xtra.model.OfflineVideo
+import com.exact.xtra.model.VideoInfo
 import com.exact.xtra.model.video.Video
 import com.exact.xtra.repository.PlayerRepository
 import com.exact.xtra.ui.player.HlsPlayerViewModel
@@ -44,6 +45,8 @@ class VideoPlayerViewModel @Inject constructor(
     private val cacheDataSourceFactory = CacheDataSourceFactory(DownloadUtils.getCache(context), dataSourceFactory)
     private var playbackProgress: Long = 0
     private val mediaPlaylist by lazy { (player.currentManifest as HlsManifest).mediaPlaylist }
+    val videoInfo: VideoInfo
+        get() = VideoInfo(helper.qualities.value!!, mediaPlaylist.segments, toSeconds(mediaPlaylist.durationUs), toSeconds(mediaPlaylist.targetDurationUs))
 
     fun init() {
         playerRepository.fetchVideoPlaylist(video.id)
@@ -87,7 +90,7 @@ class VideoPlayerViewModel @Inject constructor(
                             copyTo(out)
                             close()
                             out.close()
-                            val trackDuration = it.durationUs / 1000000f
+                            val trackDuration = toSeconds(it.durationUs).toFloat()
                             totalDuration += trackDuration.toLong()
                             tracks.add(TrackData.Builder()
                                     .withUri(file.absolutePath)
@@ -100,7 +103,7 @@ class VideoPlayerViewModel @Inject constructor(
                 .subscribeBy(onComplete = {
                     println("Downloading done. Creating playlist")
                     val mediaPlaylist = MediaPlaylist.Builder()
-                            .withTargetDuration((this.mediaPlaylist.targetDurationUs / 1000000L).toInt())
+                            .withTargetDuration((toSeconds(this.mediaPlaylist.targetDurationUs)).toInt())
                             .withTracks(tracks)
                             .build()
                     val playlist = Playlist.Builder()
@@ -135,4 +138,5 @@ class VideoPlayerViewModel @Inject constructor(
         }
     }
 
+    private fun toSeconds(value: Long) = value / 1000000L
 }

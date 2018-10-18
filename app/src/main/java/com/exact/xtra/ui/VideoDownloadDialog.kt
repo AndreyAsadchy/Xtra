@@ -1,73 +1,106 @@
 package com.exact.xtra.ui
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
-import android.view.View
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.format.DateUtils
 import android.view.Window
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.exact.xtra.R
-import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
-import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
+import com.exact.xtra.model.VideoInfo
 import kotlinx.android.synthetic.main.dialog_video_download.*
-import java.util.*
 
 class VideoDownloadDialog(
         fragment: Fragment,
-        private val qualities: List<CharSequence>,
-        private val segments: List<HlsMediaPlaylist.Segment>?) : Dialog(fragment.requireActivity()), View.OnClickListener {
+        private val videoInfo: VideoInfo) : Dialog(fragment.requireActivity()) {
 
-    private val listener: OnDownloadClickListener
-    private lateinit var defaultRange: String
+    private val listener = fragment as OnDownloadClickListener
 
     interface OnDownloadClickListener {
-        fun onClick(quality: String, keys: List<RenditionKey>)
+        fun onClick(quality: String, segmentFrom: Int, segmentTo: Int)
     }
 
-    init {
-        listener = fragment as OnDownloadClickListener
-    }
-
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_video_download)
-        spinner.adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, qualities)
-        defaultRange = context.getString(R.string.entire_video)
-        //        tvRange.setText(defaultRange); //TODO change to start with "Download"
-        //        rangeBar.setTickEnd(segments.size());
-        //        rangeBar.setOnRangeBarChangeListener((rb, leftPinIndex, rightPinIndex, leftPinValue, rightPinValue) -> {
-        //            String range;
-        //            if (leftPinIndex != 0 && rightPinIndex != segments.size() - 1) {
-        //                long from = 0;
-        //                for (int i = 0; i < leftPinIndex; i++) {
-        //                    from += segments.get(i).durationUs / 1000000;
-        //                }
-        //                long to = from;
-        //                for (int i = leftPinIndex; i < rightPinIndex; i++) {
-        //                    to += segments.get(i).durationUs / 1000000;
-        //                }
-        //                range = DateUtils.formatElapsedTime(from) + " - " + DateUtils.formatElapsedTime(to);
-        //            } else {
-        //                range = defaultRange;
-        //            }
-        //            tvRange.setText(getContext().getString(R.string.download_range, range));
-        //        });
-        cancel.setOnClickListener(this)
-        download.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.cancel -> dismiss()
-            R.id.download -> {
-                val keys = ArrayList<RenditionKey>()
-                //                for (int i = rangeBar.getLeftIndex(); i < rangeBar.getRightIndex(); i++) {
-                //                    keys.add(new RenditionKey(RenditionKey.TYPE_VARIANT, i));
-                //                }
-                listener.onClick(spinner.selectedItem.toString(), keys)
-                dismiss()
+        spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, videoInfo.qualities)
+        val duration = DateUtils.formatElapsedTime(videoInfo.totalDuration)
+        length.text = context.getString(R.string.length, duration) //TODO maybe move to data binding?
+        timeTo.hint = duration
+        timeFrom.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                timeFrom.error = null
+            }
+        })
+        timeTo.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                timeTo.error = null
+            }
+        })
+        cancel.setOnClickListener { dismiss() }
+        download.setOnClickListener {
+            validate(timeFrom)?.let { from ->
+                validate(timeTo)?.let { to_ ->
+                    when {
+                        from < to_ -> {
+                            val fromIndex = if (from == 0L) {
+                                0
+                            } else {
+                                videoInfo.segments.binarySearch(fromIndex = 1, comparison = { segment ->
+                                    (segment.relativeStartTimeUs / 1000000L).coerceIn(from - videoInfo.targetDuration, from).compareTo(from) //TODO change to comparator and if coerce close return true
+                                })
+                            }
+                            val toIndex = if (to_ == videoInfo.totalDuration) {
+                                videoInfo.segments.size - 1
+                            } else {
+                                videoInfo.segments.binarySearch(comparison = { segment ->
+                                    (segment.relativeStartTimeUs / 1000000L).coerceIn(to_, to_ + videoInfo.targetDuration).compareTo(to_)
+                                })
+                            }
+                            println("From index $fromIndex To index $toIndex")
+                            println("From seg ${videoInfo.segments[fromIndex].relativeStartTimeUs} To seg ${videoInfo.segments[toIndex].relativeStartTimeUs}")
+//                            listener.onClick(spinner.selectedItem.toString(), keys)
+//                            dismiss()
+                        }
+                        from >= to_ -> {
+                            timeFrom.error = context.getString(R.string.from_is_bigger)
+                        }
+                        else -> {
+                            timeTo.error = context.getString(R.string.to_is_smaller)
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun validate(textView: TextView): Long? {
+        with (textView) {
+            val value = if (text.isEmpty()) hint else text
+            val time = value.split(":")
+            if (time.size != 3) {
+                error = context.getString(R.string.invalid_time)
+                return null
+            }
+            try {
+                val hours = time[0].toLong()
+                val minutes = time[1].toLong().also { if (it > 60) throw IllegalArgumentException()}
+                val seconds = time[2].toLong().also { if (it > 60) throw IllegalArgumentException()}
+                return (hours * 3600) + (minutes * 60) + seconds
+            } catch (ex: IllegalArgumentException) {
+                error = context.getString(R.string.invalid_time)
+            }
+        }
+        return null
     }
 }

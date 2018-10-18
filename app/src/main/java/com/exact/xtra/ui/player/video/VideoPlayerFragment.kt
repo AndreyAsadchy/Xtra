@@ -12,7 +12,6 @@ import com.exact.xtra.ui.VideoDownloadDialog
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
 import com.exact.xtra.ui.player.BasePlayerFragment
 import com.exact.xtra.util.FragmentUtils
-import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 import java.util.*
@@ -44,7 +43,10 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
                 FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
             }
         }
-        download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, null).show() }
+//        download.setOnClickListener { MyTimePickerDialog(requireActivity(), MyTimePickerDialog.OnTimeSetListener { view, hourOfDay, minute, seconds ->
+//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//        }, 1, 1, 1, true).show() }
+        download.setOnClickListener { VideoDownloadDialog(this, viewModel.videoInfo).show() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -68,7 +70,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         viewModel.changeQuality(index, text.toString())
     }
 
-    override fun onClick(quality: String, keys: List<RenditionKey>) {
+    override fun onClick(quality: String, segmentFrom: Int, segmentTo: Int) {
         viewModel.download(quality, 0, 3)
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center"
     android:layout_width="wrap_content"
@@ -19,9 +20,59 @@
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="@string/specify_time"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from"/>
+
+        <EditText
+            android:id="@+id/timeFrom"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="time"
+            android:maxLength="8"
+            android:hint="00:00:00"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp" />
+
+        <EditText
+            android:id="@+id/timeTo"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="time"
+            android:maxLength="8"/>
+    </LinearLayout>
+
 
     <LinearLayout
         android:orientation="horizontal"
@@ -45,6 +96,5 @@
             style="?android:buttonBarButtonStyle"/>
 
     </LinearLayout>
-
 
 </LinearLayout>

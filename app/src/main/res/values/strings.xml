@@ -40,4 +40,11 @@
     <string name="login_prompt">Log in to Twitch to see your followed channels, or you can do it later</string>
     <string name="login">Log in</string>
     <string name="skip">Skip</string>
+    <string name="specify_time">Specify time</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
+    <string name="length">Length: %s</string>
+    <string name="invalid_time">Invalid time</string>
+    <string name="from_is_bigger">Time From must be less than To</string>
+    <string name="to_is_smaller">Time To must be greater than From</string>
 </resources>

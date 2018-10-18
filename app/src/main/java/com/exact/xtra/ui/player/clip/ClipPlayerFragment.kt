@@ -12,7 +12,6 @@ import com.exact.xtra.ui.VideoDownloadDialog
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
 import com.exact.xtra.ui.player.BasePlayerFragment
 import com.exact.xtra.util.FragmentUtils
-import com.google.android.exoplayer2.source.hls.playlist.RenditionKey
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
@@ -38,7 +37,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         settings.isEnabled = false
         download.isEnabled = false
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, TAG) }
-        download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, null).show() }
+//        download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, null!!).show() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -58,7 +57,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         }
     }
 
-    override fun onClick(quality: String, keys: List<RenditionKey>) {
+    override fun onClick(quality: String, segmentFrom: Int, segmentTo: Int) {
         viewModel.download(quality)
     }
 
