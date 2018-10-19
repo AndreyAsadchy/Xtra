@@ -49,8 +49,8 @@ class VideoDownloadDialog(
         })
         cancel.setOnClickListener { dismiss() }
         download.setOnClickListener {
-            validate(timeFrom)?.let { from ->
-                validate(timeTo)?.let { to_ ->
+            parseTime(timeFrom)?.let { from ->
+                parseTime(timeTo)?.let { to_ ->
                     when {
                         from < to_ -> {
                             val fromIndex = if (from == 0L) {
@@ -84,7 +84,7 @@ class VideoDownloadDialog(
         }
     }
 
-    private fun validate(textView: TextView): Long? {
+    private fun parseTime(textView: TextView): Long? {
         with (textView) {
             val value = if (text.isEmpty()) hint else text
             val time = value.split(":")
@@ -94,8 +94,8 @@ class VideoDownloadDialog(
             }
             try {
                 val hours = time[0].toLong()
-                val minutes = time[1].toLong().also { if (it > 60) throw IllegalArgumentException()}
-                val seconds = time[2].toLong().also { if (it > 60) throw IllegalArgumentException()}
+                val minutes = time[1].toLong().also { if (it > 59) throw IllegalArgumentException()}
+                val seconds = time[2].toLong().also { if (it > 59) throw IllegalArgumentException()}
                 return (hours * 3600) + (minutes * 60) + seconds
             } catch (ex: IllegalArgumentException) {
                 error = context.getString(R.string.invalid_time)
