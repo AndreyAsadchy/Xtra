@@ -56,20 +56,30 @@ class VideoDownloadDialog(
                             val fromIndex = if (from == 0L) {
                                 0
                             } else {
+                                val min = from - videoInfo.targetDuration
                                 videoInfo.segments.binarySearch(fromIndex = 1, comparison = { segment ->
-                                    (segment.relativeStartTimeUs / 1000000L).coerceIn(from - videoInfo.targetDuration, from).compareTo(from) //TODO change to comparator and if coerce close return true
+                                    val offset = segment.relativeStartTimeUs / 1000000L
+                                    when {
+                                        offset > from -> 1
+                                        offset < min -> -1
+                                        else -> 0
+                                    }
                                 })
                             }
                             val toIndex = if (to_ == videoInfo.totalDuration) {
                                 videoInfo.segments.size - 1
                             } else {
+                                val max = to_ + videoInfo.targetDuration
                                 videoInfo.segments.binarySearch(comparison = { segment ->
-                                    (segment.relativeStartTimeUs / 1000000L).coerceIn(to_, to_ + videoInfo.targetDuration).compareTo(to_)
+                                    val offset = segment.relativeStartTimeUs / 1000000L
+                                    when {
+                                        offset > max -> 1
+                                        offset < to_ -> -1
+                                        else -> 0
+                                    }
                                 })
                             }
-                            println("From index $fromIndex To index $toIndex")
-                            println("From seg ${videoInfo.segments[fromIndex].relativeStartTimeUs} To seg ${videoInfo.segments[toIndex].relativeStartTimeUs}")
-//                            listener.onClick(spinner.selectedItem.toString(), keys)
+//                            listener.onClick(spinner.selectedItem.toString(), fromIndex, toIndex)
 //                            dismiss()
                         }
                         from >= to_ -> {

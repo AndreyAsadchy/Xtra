@@ -109,7 +109,7 @@ class VideoPlayerViewModel @Inject constructor(
                     val playlist = Playlist.Builder()
                             .withMediaPlaylist(mediaPlaylist)
                             .build()
-                    val playlistPath = directory.absolutePath + "/index.m3u8"
+                    val playlistPath = directory.absolutePath + "/index.m3u8" //TODO unique name
                     val out = FileOutputStream(playlistPath)
                     val writer = PlaylistWriter(out, Format.EXT_M3U, Encoding.UTF_8)
                     writer.write(playlist)

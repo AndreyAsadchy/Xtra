@@ -38,6 +38,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         settings.isEnabled = false
         download.isEnabled = false
         settings.setOnClickListener {
+            println(viewModel.videoInfo.targetDuration)
             LinkedList(viewModel.helper.qualities.value).also { list ->
                 list.addFirst(getString(R.string.auto))
                 FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
@@ -71,6 +72,6 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onClick(quality: String, segmentFrom: Int, segmentTo: Int) {
-        viewModel.download(quality, 0, 3)
+        viewModel.download(quality, segmentFrom, segmentTo)
     }
 }
