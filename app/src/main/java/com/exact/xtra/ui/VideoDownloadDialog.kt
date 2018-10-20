@@ -53,12 +53,17 @@ class VideoDownloadDialog(
                 parseTime(timeTo)?.let { to_ ->
                     when {
                         from < to_ -> {
+                            if (to_ > videoInfo.totalDuration) {
+                                timeTo.error = context.getString(R.string.to_is_longer)
+                                return@setOnClickListener
+                            }
                             val fromIndex = if (from == 0L) {
                                 0
                             } else {
                                 val min = from - videoInfo.targetDuration
-                                videoInfo.segments.binarySearch(fromIndex = 1, comparison = { segment ->
+                                videoInfo.segments.binarySearch(comparison = { segment ->
                                     val offset = segment.relativeStartTimeUs / 1000000L
+                                    println("offset $offset min $min from $from index")
                                     when {
                                         offset > from -> 1
                                         offset < min -> -1
@@ -79,14 +84,15 @@ class VideoDownloadDialog(
                                     }
                                 })
                             }
-//                            listener.onClick(spinner.selectedItem.toString(), fromIndex, toIndex)
-//                            dismiss()
+                            println("Index from $fromIndex  to $toIndex ${videoInfo.segments[fromIndex].relativeStartTimeUs / 1000000L}")
+                            listener.onClick(spinner.selectedItem.toString(), fromIndex, toIndex)
+                            dismiss()
                         }
                         from >= to_ -> {
-                            timeFrom.error = context.getString(R.string.from_is_bigger)
+                            timeFrom.error = context.getString(R.string.from_is_greater)
                         }
                         else -> {
-                            timeTo.error = context.getString(R.string.to_is_smaller)
+                            timeTo.error = context.getString(R.string.to_is_lesser)
                         }
                     }
                 }

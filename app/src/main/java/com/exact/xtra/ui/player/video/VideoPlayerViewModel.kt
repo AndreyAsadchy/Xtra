@@ -28,6 +28,8 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -74,61 +76,59 @@ class VideoPlayerViewModel @Inject constructor(
         val url = helper.urls[quality]!!.substringBeforeLast('/') + "/"
         val okHttpClient = OkHttpClient()
         val directory = context.getDir(video.id + quality, Context.MODE_PRIVATE)
-        val executor = Executors.newFixedThreadPool(5)
-        val tracks = arrayListOf<TrackData>()
         var totalDuration = 0L
-        mediaPlaylist.segments.subList(segmentFrom, segmentTo).toObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap {
-                    Observable.fromCallable {
-                        val request = Request.Builder().url(url + it.url).build()
-                        val response = okHttpClient.newCall(request).execute()
-                        response.body()!!.byteStream()!!.run {
-                            val file = File(directory, it.url)
-                            val out = FileOutputStream(file)
-                            copyTo(out)
-                            close()
-                            out.close()
-                            val trackDuration = toSeconds(it.durationUs).toFloat()
-                            totalDuration += trackDuration.toLong()
-                            tracks.add(TrackData.Builder()
-                                    .withUri(file.absolutePath)
-                                    .withTrackInfo(TrackInfo(trackDuration, it.url))
-                                    .build())
-                        }
+        val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
+            fun parse(trackData: TrackData) = trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).toInt()
 
-                    }.subscribeOn(Schedulers.from(executor))
-                }
-                .subscribeBy(onComplete = {
-                    println("Downloading done. Creating playlist")
-                    val mediaPlaylist = MediaPlaylist.Builder()
-                            .withTargetDuration((toSeconds(this.mediaPlaylist.targetDurationUs)).toInt())
-                            .withTracks(tracks)
-                            .build()
-                    val playlist = Playlist.Builder()
-                            .withMediaPlaylist(mediaPlaylist)
-                            .build()
-                    val playlistPath = directory.absolutePath + "/index.m3u8" //TODO unique name
-                    val out = FileOutputStream(playlistPath)
-                    val writer = PlaylistWriter(out, Format.EXT_M3U, Encoding.UTF_8)
-                    writer.write(playlist)
+            val index1 = parse(o1)
+            val index2 = parse(o2)
+            when {
+                index1 > index2 -> 1
+                index1 < index2 -> -1
+                else -> 0
+            }
+        })
+        val download = async {
+            mediaPlaylist.segments.subList(segmentFrom, segmentTo).forEach {
+                val request = Request.Builder().url(url + it.url).build()
+                val response = okHttpClient.newCall(request).execute()
+                response.body()!!.byteStream()!!.run {
+                    val file = File(directory, it.url)
+                    val out = FileOutputStream(file)
+                    copyTo(out)
+                    close()
                     out.close()
-                    println("Playlist created. Saving video...")
-                    val currentDate = TwitchApiHelper.getCurrentTimeFormatted(context)
-                    val glide = GlideApp.with(context)
-                    val thumbnail = glide.downloadOnly().load(video.preview.medium).submit().get().absolutePath
-                    val logo = glide.downloadOnly().load(video.channel.logo).submit().get().absolutePath
-                    launch { dao.insert(OfflineVideo(playlistPath, video.title, video.channel.name, video.game, totalDuration, currentDate, video.createdAt, thumbnail, logo))}
-                }, onNext = {
-
-                }, onError = {
-
-                })
-                .addTo(compositeDisposable)
-
-
-
+                    val trackDuration = toSeconds(it.durationUs).toFloat()
+                    totalDuration += trackDuration.toLong()
+                    tracks.add(TrackData.Builder()
+                            .withUri(file.absolutePath)
+                            .withTrackInfo(TrackInfo(trackDuration, it.url))
+                            .build())
+                }
+            }
+        }
+        launch {
+            download.await()
+            println("Downloading done. Creating playlist")
+            val mediaPlaylist = MediaPlaylist.Builder()
+                    .withTargetDuration((toSeconds(mediaPlaylist.targetDurationUs)).toInt())
+                    .withTracks(tracks.toList())
+                    .build()
+            val playlist = Playlist.Builder()
+                    .withMediaPlaylist(mediaPlaylist)
+                    .build()
+            val playlistPath = directory.absolutePath + "/${System.currentTimeMillis()}.m3u8"
+            val out = FileOutputStream(playlistPath)
+            val writer = PlaylistWriter(out, Format.EXT_M3U, Encoding.UTF_8)
+            writer.write(playlist)
+            out.close()
+            println("Playlist created. Saving video...")
+            val currentDate = TwitchApiHelper.getCurrentTimeFormatted(context)
+            val glide = GlideApp.with(context)
+            val thumbnail = glide.downloadOnly().load(video.preview.medium).submit().get().absolutePath
+            val logo = glide.downloadOnly().load(video.channel.logo).submit().get().absolutePath
+            dao.insert(OfflineVideo(playlistPath, video.title, video.channel.name, video.game, totalDuration, currentDate, video.createdAt, thumbnail, logo))
+        }
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

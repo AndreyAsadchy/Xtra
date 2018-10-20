@@ -45,6 +45,7 @@
     <string name="to">To:</string>
     <string name="length">Length: %s</string>
     <string name="invalid_time">Invalid time</string>
-    <string name="from_is_bigger">Time From must be less than To</string>
-    <string name="to_is_smaller">Time To must be greater than From</string>
+    <string name="from_is_greater">Time From must be less than To</string>
+    <string name="to_is_lesser">Time To must be greater than From</string>
+    <string name="to_is_longer">To can\'t be greater than video length</string>
 </resources>
