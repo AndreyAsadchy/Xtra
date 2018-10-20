@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.login.LoginActivity" />
-        <service android:name=".service.MediaDownloadService"/>
+        <service android:name=".service.VideoDownloadService"/>
     </application>
 
 </manifest>

@@ -31,8 +31,8 @@
     <string name="download">Download</string>
     <string name="download_range">Download %s</string>
     <string name="entire_video">entire video</string>
-    <string name="downloading">Downloading %s</string>
-    <string name="downloaded">Video %s has been successfully downloaded</string>
+    <string name="downloading">Downloading</string>
+    <string name="downloaded">Video has been successfully downloaded</string>
     <string name="download_error">Error downloading video</string>
     <string name="uploaded_date">Uploaded %s</string>
     <string name="downloaded_date">Downloaded %s</string>

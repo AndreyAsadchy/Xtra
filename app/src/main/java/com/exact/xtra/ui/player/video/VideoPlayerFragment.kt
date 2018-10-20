@@ -44,10 +44,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
                 FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
             }
         }
-//        download.setOnClickListener { MyTimePickerDialog(requireActivity(), MyTimePickerDialog.OnTimeSetListener { view, hourOfDay, minute, seconds ->
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//        }, 1, 1, 1, true).show() }
-        download.setOnClickListener { VideoDownloadDialog(this, viewModel.videoInfo).show() }
+        download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
