@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
@@ -44,6 +45,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -72,35 +74,38 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         val prefs = getPreferences(Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean("first_launch", true)
-        if (isFirstLaunch) {
-            prefs.edit { putBoolean("first_launch", false) }
-            startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra("first_launch", true) }, 1)
-        } else {
-            initFragNavController()
+        if (!isFirstLaunch) {
             val user = TwitchApiHelper.getUserData(this@MainActivity)
             if (user != null) {
-                navBar.selectedItemId = R.id.fragment_follow
-//                authRepository.validate(user.token)
-//                        .subscribe({
-                viewModel.user.postValue(user)
-                viewModel.isUserLoggedIn.observe(this, Observer {  }) //need to observe to make MediatorLiveData to work
-                fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
-//                        }, {
-//                            getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
-//                            TODO prompt to redo username
-//                        })
-//                        .addTo(compositeDisposable)
+                authRepository.validate(user.token)
+                        .subscribe({
+                            initFragNavController()
+                            viewModel.user.value = user
+                            navBar.selectedItemId = R.id.fragment_follow
+                            fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
+                        }, {
+                            viewModel.user.value = null
+                            getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
+                            Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                            startActivityForResult(Intent(this, LoginActivity::class.java), 1)
+                        })
+                        .addTo(compositeDisposable)
             } else {
-                viewModel.user.postValue(null)
+                initFragNavController()
+                viewModel.user.value = null
                 navBar.selectedItemId = R.id.fragment_top
                 fragNavController.initialize(INDEX_TOP, savedInstanceState)
             }
             initNavBar()
-        }
 
+        } else {
+            prefs.edit { putBoolean("first_launch", false) }
+            startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra("first_launch", true) }, 1)
+
+        }
         viewModel.isPlayerMaximized.observe(this@MainActivity, Observer {
             if (resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) //TODO
-            if (it == true) navBar.post { hideNavigationBar() }
+                if (it == true) navBar.post { hideNavigationBar() }
         })
         viewModel.isPlayerOpened.observe(this@MainActivity, Observer {
             if (it == true) {
@@ -130,7 +135,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                     R.id.fragment_games -> INDEX_GAMES
                     R.id.fragment_top -> INDEX_TOP
                     R.id.fragment_follow -> {
-                        if (viewModel.isUserLoggedIn.value == true) {
+                        if (viewModel.user.value != null) {
                             INDEX_FOLLOWED
                         } else {
                             INDEX_MENU //TODO create another screen instead of this
@@ -170,7 +175,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         super.onActivityResult(requestCode, resultCode, data)
 
         fun updateUserLiveData() {
-            data?.getParcelableExtra<User>(C.USER)?.let(viewModel.user::postValue)
+            data?.getParcelableExtra<User>(C.USER)?.let(viewModel.user::setValue)
         }
 
         when (requestCode) {
@@ -183,7 +188,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                         fragNavController.initialize(INDEX_FOLLOWED)
                     }
                     RESULT_CANCELED -> { //Skipped
-                        viewModel.user.postValue(null)
+                        viewModel.user.value = null
                         navBar.selectedItemId = R.id.fragment_top
                         fragNavController.initialize(INDEX_TOP)
                     }
@@ -199,12 +204,12 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                         fragNavController.switchTab(INDEX_FOLLOWED)
                     }
                     RESULT_CANCELED -> { //Logged out
-                        viewModel.user.postValue(null)
+                        viewModel.user.value = null
+                        navBar.selectedItemId = R.id.fragment_top
                     }
                 }
             }
         }
-
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -243,7 +248,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         }
         if (viewModel.isPlayerMaximized.value != true) {
             if (fragNavController.isRootFragment) {
-                if (viewModel.isUserLoggedIn.value == true) {
+                if (viewModel.user.value != null) {
                     if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
                         navBar.selectedItemId = R.id.fragment_follow
                     } else {
@@ -261,16 +266,16 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             }
         } else {
             playerFragment?.minimize()
-            viewModel.isPlayerMaximized.postValue(false)
+            viewModel.isPlayerMaximized.value = false
         }
     }
 
     override fun onMaximized() {
-        viewModel.isPlayerMaximized.postValue(true)
+        viewModel.isPlayerMaximized.value = true
     }
 
     override fun onMinimized() {
-        viewModel.isPlayerMaximized.postValue(false)
+        viewModel.isPlayerMaximized.value = false
     }
 
     override fun onClosedToLeft() {
@@ -287,16 +292,16 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {
-            playerFragment = fragment
-            supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
+        playerFragment = fragment
+        supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
 //        }
-        viewModel.isPlayerOpened.postValue(true)
+        viewModel.isPlayerOpened.value = true
         viewModel.isPlayerMaximized.value = true
     }
 
     private fun closePlayer() {
         supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
-        viewModel.isPlayerOpened.postValue(false)
+        viewModel.isPlayerOpened.value = false
         viewModel.isPlayerMaximized.value = false
     }
 

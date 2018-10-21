@@ -18,7 +18,6 @@ import com.exact.xtra.util.C
 import com.exact.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -41,13 +40,15 @@ class LoginActivity : AppCompatActivity() {
                 login.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
             } else {
+                setResult(2) //if cancelled do nothing
                 initWebView()
             }
         } else {
             initWebView()
+            prefs.edit { clear() }
             setResult(Activity.RESULT_CANCELED)
             repository.revoke(token)
-                    .subscribeBy(onSuccess = { prefs.edit { clear() } })
+                    .subscribe { _ -> prefs.edit { clear() } }
                     .addTo(compositeDisposable)
         }
     }
@@ -85,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
                     return super.shouldOverrideUrlLoading(view, url)
                 }
             }
-            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_read user_subscriptions") //TODO scopes
+            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_read user_subscriptions")
         }
     }
 

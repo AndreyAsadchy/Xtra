@@ -50,4 +50,5 @@
     <string name="to_is_longer">To can\'t be greater than video length</string>
     <string name="delete">Delete</string>
     <string name="are_you_sure">Are you sure you want to delete this video?</string>
+    <string name="token_expired">Your session has expired. Please log in again</string>
 </resources>
