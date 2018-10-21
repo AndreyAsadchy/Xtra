@@ -1,33 +1,26 @@
 package com.exact.xtra.ui.player.clip
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
-import com.exact.xtra.db.VideosDao
-import com.exact.xtra.model.OfflineVideo
 import com.exact.xtra.model.clip.Clip
 import com.exact.xtra.repository.PlayerRepository
+import com.exact.xtra.service.ClipDownloadService
 import com.exact.xtra.ui.OnQualityChangeListener
 import com.exact.xtra.ui.player.PlayerHelper
 import com.exact.xtra.ui.player.PlayerType
 import com.exact.xtra.ui.player.PlayerViewModel
-import com.exact.xtra.util.DownloadUtils
-import com.exact.xtra.util.PlayerUtils
-import com.exact.xtra.util.TwitchApiHelper
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.offline.ProgressiveDownloadAction
 import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import io.reactivex.rxkotlin.addTo
-import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository,
-        private val dao: VideosDao) : PlayerViewModel(context, PlayerType.VIDEO), OnQualityChangeListener {
+        private val playerRepository: PlayerRepository) : PlayerViewModel(context, PlayerType.VIDEO), OnQualityChangeListener {
 
     lateinit var clip: Clip
-    private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(CacheDataSourceFactory(DownloadUtils.getCache(context), dataSourceFactory))
+    private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(dataSourceFactory)
     private var playbackProgress: Long = 0
     val helper = PlayerHelper()
 
@@ -77,13 +70,11 @@ class ClipPlayerViewModel @Inject constructor(
 
     fun download(quality: String) {
         val context = getApplication<Application>()
-        val url = helper.urls[quality]!!
-        val downloadAction = ProgressiveDownloadAction(Uri.parse(url), false, null, null)
-        val uploadDate = TwitchApiHelper.parseIso8601Date(context, clip.createdAt)
-        val currentDate = TwitchApiHelper.getCurrentTimeFormatted(context)
-        OfflineVideo(url, clip.title, clip.broadcaster.name, clip.game, clip.duration.toLong(), currentDate, uploadDate, clip.thumbnails.medium, clip.broadcaster.logo).let {
-            launch { dao::insert }
-            PlayerUtils.startDownload(context, downloadAction, it)
+        Intent(context, ClipDownloadService::class.java).apply {
+            putExtra("clip", clip)
+            putExtra("quality", quality)
+            putExtra("url", helper.urls[quality]!!)
+            context.startService(this)
         }
     }
 

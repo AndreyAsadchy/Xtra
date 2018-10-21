@@ -43,7 +43,7 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(DownloadsViewModel::class.java)
         binding.viewModel = viewModel
-        val adapter = DownloadsAdapter(listener!!)
+        val adapter = DownloadsAdapter(listener!!, viewModel::delete)
         viewModel.load().observe(this, Observer(adapter::submitList))
         recyclerView.adapter = adapter
     }

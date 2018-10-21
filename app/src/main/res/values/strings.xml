@@ -32,7 +32,7 @@
     <string name="download_range">Download %s</string>
     <string name="entire_video">entire video</string>
     <string name="downloading">Downloading</string>
-    <string name="downloaded">Video has been successfully downloaded</string>
+    <string name="downloaded">Video has been downloaded</string>
     <string name="download_error">Error downloading video</string>
     <string name="uploaded_date">Uploaded %s</string>
     <string name="downloaded_date">Downloaded %s</string>
@@ -48,4 +48,6 @@
     <string name="from_is_greater">Time From must be less than To</string>
     <string name="to_is_lesser">Time To must be greater than From</string>
     <string name="to_is_longer">To can\'t be greater than video length</string>
+    <string name="delete">Delete</string>
+    <string name="are_you_sure">Are you sure you want to delete this video?</string>
 </resources>

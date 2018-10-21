@@ -23,7 +23,6 @@ class VideoPlayerViewModel @Inject constructor(
         private val playerRepository: PlayerRepository) : HlsPlayerViewModel(context) {
 
     lateinit var video: Video
-    private val cacheDataSourceFactory = CacheDataSourceFactory(DownloadUtils.getCache(context), dataSourceFactory)
     private var playbackProgress: Long = 0
     private val mediaPlaylist by lazy { (player.currentManifest as HlsManifest).mediaPlaylist }
     val videoInfo: VideoInfo
@@ -32,7 +31,7 @@ class VideoPlayerViewModel @Inject constructor(
     fun init() {
         playerRepository.fetchVideoPlaylist(video.id)
                 .subscribe({
-                    mediaSource = HlsMediaSource.Factory(cacheDataSourceFactory).createMediaSource(it)
+                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                     startPlayer()
                 }, {
 

@@ -6,7 +6,16 @@
     <RelativeLayout
         android:id="@+id/welcomeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/welcome"
@@ -15,7 +24,7 @@
             android:text="@string/welcome"
             android:textSize="45sp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="150dp"/>
+            android:layout_below="@id/logo"/>
 
         <TextView
             android:id="@+id/loginPrompt"

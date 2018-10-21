@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.exact.xtra.R
+import com.exact.xtra.ui.ClipDownloadDialog
 import com.exact.xtra.ui.VideoDownloadDialog
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
 import com.exact.xtra.ui.player.BasePlayerFragment
@@ -15,7 +16,7 @@ import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
-class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, VideoDownloadDialog.OnDownloadClickListener {
+class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, ClipDownloadDialog.OnDownloadClickListener {
     override fun play(obj: Parcelable) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -37,7 +38,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         settings.isEnabled = false
         download.isEnabled = false
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, TAG) }
-//        download.setOnClickListener { VideoDownloadDialog(this, viewModel.helper.qualities.value!!, null!!).show() }
+        download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.helper.qualities.value!!).show(childFragmentManager, null) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -57,7 +58,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         }
     }
 
-    override fun onClick(quality: String, segmentFrom: Int, segmentTo: Int) {
+    override fun onClick(quality: String) {
         viewModel.download(quality)
     }
 

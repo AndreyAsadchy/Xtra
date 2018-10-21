@@ -85,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
                     return super.shouldOverrideUrlLoading(view, url)
                 }
             }
-            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_read user_subscriptions")
+            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_read user_subscriptions") //TODO scopes
         }
     }
 

@@ -59,7 +59,7 @@ class VideoDownloadService : Service() {
                 setContentTitle(getString(R.string.downloading))
                 setContentText(video.title)
                 setOngoing(true)
-                setSmallIcon(R.mipmap.ic_launcher)
+                setSmallIcon(R.drawable.ic_notification)
                 priority = NotificationCompat.PRIORITY_HIGH
             }
             notificationManager = NotificationManagerCompat.from(this@VideoDownloadService)

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -21,6 +22,11 @@ data class OfflineVideo(
     val thumbnail: String,
     val streamerAvatar: String) : Parcelable {
 
+    @IgnoredOnParcel
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
+
+    @IgnoredOnParcel
+    @ColumnInfo(name = "is_vod")
+    var vod = url.endsWith(".m3u8")
 }

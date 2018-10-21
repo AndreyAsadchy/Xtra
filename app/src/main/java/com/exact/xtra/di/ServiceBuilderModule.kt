@@ -1,5 +1,6 @@
 package com.exact.xtra.di
 
+import com.exact.xtra.service.ClipDownloadService
 import com.exact.xtra.service.VideoDownloadService
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -8,5 +9,8 @@ import dagger.android.ContributesAndroidInjector
 abstract class ServiceBuilderModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeMediaDownloadService(): VideoDownloadService
+    abstract fun contributeVideoDownloadService(): VideoDownloadService
+
+    @ContributesAndroidInjector
+    abstract fun contributeClipDownloadService(): ClipDownloadService
 }
