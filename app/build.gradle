@@ -4,9 +4,9 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 def androidx = '1.0.0'
-def paging = '2.0.0-rc01'
+def paging = '2.1.0-alpha01'
 def lifecycle = '2.0.0'
-def room = '2.0.0-rc01'
+def room = '2.1.0-alpha01'
 def exoplayer = "2.8.4"
 def dagger = "2.16"
 def retrofit = "2.4.0"
@@ -20,6 +20,7 @@ android {
         versionCode 1
         versionName "0.9"
         testInstrumentationRunner "android.support.changeQuality.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -59,10 +60,10 @@ dependencies {
     //Architecture components
     implementation "androidx.paging:paging-runtime:$paging"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
-    implementation 'androidx.core:core-ktx:1.0.0'
     kapt "androidx.room:room-compiler:$room"
+    implementation 'androidx.core:core-ktx:1.0.0'
 
     //Misc
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -71,7 +72,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
     implementation 'com.iheartradio.m3u8:open-m3u8:0.2.4'
-    implementation 'com.kovachcode:timePickerWithSeconds:1.0.1'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"

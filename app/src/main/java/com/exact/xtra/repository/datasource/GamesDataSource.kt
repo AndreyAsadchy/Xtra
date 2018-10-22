@@ -4,7 +4,6 @@ import androidx.paging.DataSource
 import androidx.paging.PositionalDataSource
 import com.exact.xtra.api.KrakenApi
 import com.exact.xtra.model.game.Game
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.Executor
@@ -17,15 +16,13 @@ class GamesDataSource(
     override fun loadInitial(params: PositionalDataSource.LoadInitialParams, callback: PositionalDataSource.LoadInitialCallback<Game>) {
         super.loadInitial(params, callback)
         api.getTopGames(params.requestedLoadSize, 0)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ callback.onSuccess(it.games) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }
 
     override fun loadRange(params: PositionalDataSource.LoadRangeParams, callback: PositionalDataSource.LoadRangeCallback<Game>) {
         super.loadRange(params, callback)
-        api.getTopGames(params.loadSize, params.startPosition)
-                .observeOn(AndroidSchedulers.mainThread())
+        api.getTopGames(params.loadSize, params.startPosition + 1) //+ 1 because twitch returns less than specified
                 .subscribe({ callback.onSuccess(it.games) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }

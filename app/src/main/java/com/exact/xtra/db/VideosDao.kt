@@ -4,7 +4,6 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.exact.xtra.model.OfflineVideo
 
@@ -14,10 +13,7 @@ interface VideosDao {
     @Query("SELECT * FROM videos ORDER BY download_date DESC")
     fun getAll(): DataSource.Factory<Int, OfflineVideo>
 
-//    @Query("SELECT * FROM videos WHERE id > :offset ORDER BY download_date LIMIT :limit")
-//    fun getAfter(offset: Int, limit: Int): Single<List<OfflineVideo>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insert(video: OfflineVideo)
 
     @Delete

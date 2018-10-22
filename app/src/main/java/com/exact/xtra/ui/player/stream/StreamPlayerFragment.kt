@@ -5,8 +5,10 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProviders
 import com.exact.xtra.R
 import com.exact.xtra.model.stream.Stream
@@ -65,6 +67,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         playerView?.player = viewModel.player
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     override fun onMoveToBackground() {
         super.onMoveToBackground()
         viewModel.stopChat()

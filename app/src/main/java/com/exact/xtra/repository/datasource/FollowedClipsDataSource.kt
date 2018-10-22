@@ -4,7 +4,6 @@ import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import com.exact.xtra.api.KrakenApi
 import com.exact.xtra.model.clip.Clip
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.Executor
@@ -21,7 +20,6 @@ class FollowedClipsDataSource(
     override fun loadInitial(params: PageKeyedDataSource.LoadInitialParams<String>, callback: PageKeyedDataSource.LoadInitialCallback<String, Clip>) {
         super.loadInitial(params, callback)
         api.getFollowedClips(userToken, trending, params.requestedLoadSize, null)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ callback.onSuccess(it.clips, it.cursor) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }
@@ -29,7 +27,6 @@ class FollowedClipsDataSource(
     override fun loadAfter(params: PageKeyedDataSource.LoadParams<String>, callback: PageKeyedDataSource.LoadCallback<String, Clip>) {
         super.loadAfter(params, callback)
         api.getFollowedClips(userToken, trending, params.requestedLoadSize, params.key)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ callback.onSuccess(it.clips, it.cursor) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }

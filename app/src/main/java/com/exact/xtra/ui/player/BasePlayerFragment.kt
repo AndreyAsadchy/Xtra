@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.ui.common.OnChannelClickedListener
@@ -48,6 +49,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isPortraitOrientation = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +67,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     override fun onResume() {
         super.onResume()
-        lifecycle.addObserver(this)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
     override fun onDetach() {
@@ -78,6 +80,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     open fun onMoveToForeground() {
+        println("resume")
         if (viewModel.player.playbackState != Player.STATE_READY) {
             viewModel.startPlayer()
         }
@@ -85,9 +88,8 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     open fun onMoveToBackground() {
-        if (viewModel.player.playbackState != Player.STATE_IDLE || viewModel.player.playbackState != Player.STATE_ENDED) {
-            viewModel.player.stop()
-        }
+        println("stop")
+        viewModel.player.stop()
     }
 
     fun minimize() {

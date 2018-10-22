@@ -13,15 +13,13 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class PagedListViewModel<T> : ViewModel() {
 
     private val result = MutableLiveData<Listing<T>>()
-    lateinit var list: LiveData<PagedList<T>>
-        private set
-    lateinit var loadingState: LiveData<LoadingState>
-        private set
-    lateinit var pagingState: LiveData<LoadingState>
-        private set
+    val list: LiveData<PagedList<T>> = switchMap(result) { it.pagedList }
+    val loadingState: LiveData<LoadingState> = switchMap(result) { it.loadingState }
+    val pagingState: LiveData<LoadingState> = switchMap(result) { it.pagingState }
     val loadedInitial = MediatorLiveData<Boolean>()
 
     protected val compositeDisposable = CompositeDisposable()
+
     //TODO sometimes list doesn't show, probably because submits empty list <- TRUE
     internal fun loadData(listing: Listing<T>, override: Boolean = false) {
         if (result.value == null || override) {
@@ -29,14 +27,11 @@ abstract class PagedListViewModel<T> : ViewModel() {
                 loadedInitial.removeSource(loadingState)
             }
             result.value = listing
-            list = switchMap(result) { it.pagedList }
-            loadingState = switchMap(result) { it.loadingState }
-            pagingState = switchMap(result) { it.pagingState }
             loadedInitial.apply {
                 addSource(loadingState) {
                     if (value == null) {
-                        if (it == LoadingState.LOADED) postValue(true)
-                        else if (it == LoadingState.FAILED) postValue(false)
+                        if (it == LoadingState.LOADED) value = true
+                        else if (it == LoadingState.FAILED) value = false
                     }
                 }
             }

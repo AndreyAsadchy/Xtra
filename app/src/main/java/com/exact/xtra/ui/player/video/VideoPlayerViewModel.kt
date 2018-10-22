@@ -7,15 +7,10 @@ import com.exact.xtra.model.video.Video
 import com.exact.xtra.repository.PlayerRepository
 import com.exact.xtra.service.VideoDownloadService
 import com.exact.xtra.ui.player.HlsPlayerViewModel
-import com.exact.xtra.util.DownloadUtils
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import io.reactivex.rxkotlin.addTo
-import kotlinx.android.parcel.RawValue
-import java.io.Serializable
 import javax.inject.Inject
 
 class VideoPlayerViewModel @Inject constructor(

@@ -1,6 +1,5 @@
 package com.exact.xtra.repository
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.exact.xtra.api.KrakenApi
 import com.exact.xtra.model.clip.Clip
@@ -21,7 +20,7 @@ import com.exact.xtra.ui.streams.StreamType
 import com.exact.xtra.ui.videos.BroadcastType
 import com.exact.xtra.ui.videos.Period
 import com.exact.xtra.ui.videos.Sort
-import com.exact.xtra.util.toLiveData
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.Executor
@@ -125,22 +124,19 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadUserById(id: Int): LiveData<User> {
+    override fun loadUserById(id: Int): Single<User>? {
         return api.getUserById(id)
                 .observeOn(AndroidSchedulers.mainThread())
-                .toLiveData() //TODO decide single or livedata
     }
 
-    override fun loadUserByLogin(login: String): LiveData<User> {
+    override fun loadUserByLogin(login: String): Single<User>? {
         return api.getUserByLogin(login)
                 .observeOn(AndroidSchedulers.mainThread())
-                .toLiveData()
     }
 
-    override fun loadUserEmotes(userId: Int): LiveData<List<Emote>> {
+    override fun loadUserEmotes(userId: Int): Single<List<Emote>>? {
         return api.getUserEmotes(userId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.emotes }
-                .toLiveData()
     }
 }

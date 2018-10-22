@@ -103,17 +103,18 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra("first_launch", true) }, 1)
 
         }
-        viewModel.isPlayerMaximized.observe(this@MainActivity, Observer {
-            if (resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) //TODO
-                if (it == true) navBar.post { hideNavigationBar() }
-        })
-        viewModel.isPlayerOpened.observe(this@MainActivity, Observer {
-            if (it == true) {
-                playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
-                if (viewModel.isPlayerMaximized.value != true) {
-                    Handler().post { playerFragment?.minimize() } //TODO add minimize fast
-                }
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO
+        viewModel.getPlayerStatus().observe(this@MainActivity, Observer {
+            val isOpened = it.first
+            if (isOpened) {
+                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
+                if (!isLandscape) {
+                    val isMaximized = it.second
+                    if (isMaximized) {
+                        navBar.post { hideNavigationBar() }
+                    } else {
+                        Handler().post { playerFragment?.minimize() } //TODO add minimize fast
+                    }
+                } else {
                     navBarContainer.visibility = View.GONE
                 }
             }
@@ -219,6 +220,12 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         }
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
+        println(playerFragment)
+    }
+
     override fun startStream(stream: Stream) {
 //        playerFragment?.startPlayer(stream)
         startPlayer(StreamPlayerFragment().apply { arguments = bundleOf("stream" to stream) })
@@ -241,12 +248,12 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun onBackPressed() {
-        if (viewModel.isPlayerOpened.value == true && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
+        if (viewModel.isPlayerOpened && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
             supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
             navBarContainer.visibility = View.VISIBLE
             return
         }
-        if (viewModel.isPlayerMaximized.value != true) {
+        if (!viewModel.isPlayerMaximized) {
             if (fragNavController.isRootFragment) {
                 if (viewModel.user.value != null) {
                     if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
@@ -266,16 +273,16 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             }
         } else {
             playerFragment?.minimize()
-            viewModel.isPlayerMaximized.value = false
+            viewModel.isPlayerMaximized = false
         }
     }
 
     override fun onMaximized() {
-        viewModel.isPlayerMaximized.value = true
+        viewModel.isPlayerMaximized = true
     }
 
     override fun onMinimized() {
-        viewModel.isPlayerMaximized.value = false
+//        viewModel.isPlayerMaximized = false
     }
 
     override fun onClosedToLeft() {
@@ -295,14 +302,14 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         playerFragment = fragment
         supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
 //        }
-        viewModel.isPlayerOpened.value = true
-        viewModel.isPlayerMaximized.value = true
+        viewModel.isPlayerOpened = true
+        viewModel.isPlayerMaximized = true
     }
 
     private fun closePlayer() {
         supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
-        viewModel.isPlayerOpened.value = false
-        viewModel.isPlayerMaximized.value = false
+        viewModel.isPlayerOpened = false
+        viewModel.isPlayerMaximized = false
     }
 
     private fun hideNavigationBar() {

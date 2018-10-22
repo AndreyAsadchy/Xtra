@@ -26,11 +26,11 @@ abstract class DataBoundPagedListAdapter<T, V : ViewDataBinding>(
             } else {
                 it.addWeakCallback(pagedList.snapshot(), object : PagedList.Callback() {
                     override fun onChanged(position: Int, count: Int) {
-
                     }
 
                     override fun onInserted(position: Int, count: Int) {
                         super@DataBoundPagedListAdapter.submitList(it)
+
                     }
 
                     override fun onRemoved(position: Int, count: Int) {

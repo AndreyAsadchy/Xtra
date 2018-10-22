@@ -6,7 +6,6 @@ import com.exact.xtra.api.KrakenApi
 import com.exact.xtra.model.video.Video
 import com.exact.xtra.ui.videos.BroadcastType
 import com.exact.xtra.ui.videos.Sort
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.Executor
@@ -25,7 +24,6 @@ class FollowedVideosDataSource(
     override fun loadInitial(params: PositionalDataSource.LoadInitialParams, callback: PositionalDataSource.LoadInitialCallback<Video>) {
         super.loadInitial(params, callback)
         api.getFollowedVideos(userToken, broadcastTypes, language, sort, params.requestedLoadSize, 0)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ callback.onSuccess(it.videos) }, { callback.onFailure(it, params)} )
                 .addTo(compositeDisposable)
     }
@@ -33,7 +31,6 @@ class FollowedVideosDataSource(
     override fun loadRange(params: PositionalDataSource.LoadRangeParams, callback: PositionalDataSource.LoadRangeCallback<Video>) {
         super.loadRange(params, callback)
         api.getFollowedVideos(userToken, broadcastTypes, language, sort, params.loadSize, params.startPosition)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ callback.onSuccess(it.videos) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }
