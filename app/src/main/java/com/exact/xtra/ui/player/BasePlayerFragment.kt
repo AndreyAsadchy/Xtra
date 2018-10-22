@@ -7,21 +7,17 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.exact.xtra.di.Injectable
 import com.exact.xtra.ui.common.OnChannelClickedListener
 import com.exact.xtra.ui.view.draggableview.DraggableListener
 import com.exact.xtra.ui.view.draggableview.DraggableView
-import com.google.android.exoplayer2.Player
+import com.exact.xtra.util.LifecycleListener
 import kotlinx.android.synthetic.main.player_stream.*
 import javax.inject.Inject
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
+abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
     private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
@@ -49,7 +45,6 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isPortraitOrientation = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,13 +56,12 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
             fullscreenEnter.setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
             //            slidingView = view.findViewById(R.id.fragment_player_sv);
-            fullscreenExit.setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
+            fullscreenExit.setOnClickListener {
+                val activity = requireActivity()
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
     override fun onDetach() {
@@ -76,21 +70,15 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleObserver {
         dragListener = null
     }
 
-    abstract fun play(obj: Parcelable)
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    open fun onMoveToForeground() {
-        println("resume")
-        if (viewModel.player.playbackState != Player.STATE_READY) {
-            viewModel.startPlayer()
-        }
+    override fun onMovedToForeground() {
+        viewModel.play()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    open fun onMoveToBackground() {
-        println("stop")
+    override fun onMovedToBackground() {
         viewModel.player.stop()
     }
+
+    abstract fun play(obj: Parcelable)
 
     fun minimize() {
         if (isPortraitOrientation) {

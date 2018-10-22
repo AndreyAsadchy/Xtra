@@ -17,13 +17,16 @@ object FragmentUtils {
     /**
      * Use this when result should be an index
      */
-    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<CharSequence>, tag: String) {
-       show(context = context, fragmentManager = fragmentManager, labels = labels, tag = tag)
+    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<CharSequence>, index: Int) {
+        RadioButtonDialogFragment.newInstance(
+                labels,
+                null,
+                index
+        ).show(fragmentManager, null)
     }
 
-    private fun show(context: Context, fragmentManager: FragmentManager, labels: List<CharSequence>, tags: IntArray? = null, defaultIndex: Int = 0, tag: String) {
+    private fun show(context: Context, fragmentManager: FragmentManager, labels: List<CharSequence>, tags: IntArray? = null, defaultIndex: Int = 0, tag: String? = null) {
         RadioButtonDialogFragment.newInstance(
-                tag,
                 labels,
                 tags,
                 context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(tag, defaultIndex)

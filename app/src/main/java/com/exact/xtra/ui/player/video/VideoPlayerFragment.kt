@@ -41,7 +41,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
             println(viewModel.videoInfo.targetDuration)
             LinkedList(viewModel.helper.qualities.value).also { list ->
                 list.addFirst(getString(R.string.auto))
-                FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, TAG)
+                FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, viewModel.helper.selectedQualityIndex)
             }
         }
         download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }
@@ -65,7 +65,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
-        viewModel.changeQuality(index, text.toString())
+        viewModel.changeQuality(index)
     }
 
     override fun onClick(quality: String, segmentFrom: Int, segmentTo: Int) {

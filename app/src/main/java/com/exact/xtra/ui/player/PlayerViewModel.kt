@@ -12,12 +12,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.FixedTrackSelection
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.disposables.CompositeDisposable
@@ -33,25 +30,18 @@ abstract class PlayerViewModel(
     protected lateinit var mediaSource: MediaSource
 
     init {
-        var bandwidthMeter: DefaultBandwidthMeter? = null
-        val trackSelectionFactory = when (playerType) {
-            PlayerType.HLS -> {
-                bandwidthMeter = DefaultBandwidthMeter()
-                AdaptiveTrackSelection.Factory(bandwidthMeter)
-            }
-            PlayerType.VIDEO -> FixedTrackSelection.Factory()
+        dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
+        trackSelector = DefaultTrackSelector()
+        if (playerType == PlayerType.VIDEO) {
+            trackSelector.parameters = trackSelector.buildUponParameters().setForceHighestSupportedBitrate(true).build()
         }
-        dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)), bandwidthMeter)
-        trackSelector = DefaultTrackSelector(trackSelectionFactory)
         player = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
         player.addListener(this)
     }
 
-    open fun startPlayer() {
-        if (isInitialized()) {
-            player.prepare(mediaSource)
-            player.playWhenReady = true
-        }
+    fun play() {
+        player.prepare(mediaSource)
+        player.playWhenReady = true
     }
 
     override fun onCleared() {

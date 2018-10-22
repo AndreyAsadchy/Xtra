@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         app:controller_layout_id="@layout/player_video"
-        app:show_buffering="true"
+        app:show_buffering="always"
         app:resize_mode="fill"/>
 
     <!--<com.exact.xtra.ui.view.ChatView-->

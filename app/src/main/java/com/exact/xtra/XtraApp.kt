@@ -2,8 +2,11 @@ package com.exact.xtra
 
 import android.app.Activity
 import android.app.Service
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import com.exact.xtra.di.AppInjector
+import com.exact.xtra.util.AppLifecycleObserver
+import com.exact.xtra.util.LifecycleListener
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -14,10 +17,13 @@ class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector {
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
+    private val appLifecycleObserver = AppLifecycleObserver()
+
 
     override fun onCreate() {
         super.onCreate()
         AppInjector.init(this)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> {
@@ -26,5 +32,9 @@ class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector {
 
     override fun serviceInjector(): AndroidInjector<Service> {
         return dispatchingServiceInjector
+    }
+
+    fun setLifecycleListener(listener: LifecycleListener) {
+        appLifecycleObserver.setLifecycleListener(listener)
     }
 }

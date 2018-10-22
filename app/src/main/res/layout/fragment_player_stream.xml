@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:controller_layout_id="@layout/player_stream"
-        app:show_buffering="true"
+        app:show_buffering="always"
         app:resize_mode="fill"/>
 
 </com.exact.xtra.ui.view.draggableview.DraggableView>

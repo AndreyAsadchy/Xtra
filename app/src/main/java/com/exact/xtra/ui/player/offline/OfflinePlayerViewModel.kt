@@ -25,13 +25,13 @@ class OfflinePlayerViewModel @Inject constructor(
             ExtractorMediaSource.Factory(dataSourceFactory)
         }
         mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
-        startPlayer()
+        play()
     }
 
-    override fun startPlayer() {
-        super.startPlayer()
-        player.seekTo(playbackProgress)
-    }
+//    override fun play() {
+//        super.play()
+//        player.seekTo(playbackProgress)
+//    }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         super.onPlayerStateChanged(playWhenReady, playbackState)

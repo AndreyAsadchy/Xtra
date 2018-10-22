@@ -1,7 +1,6 @@
 package com.exact.xtra.ui.fragment
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import com.exact.xtra.R
-import com.exact.xtra.util.C
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class RadioButtonDialogFragment : BottomSheetDialogFragment() {
@@ -24,14 +21,13 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
 
-        private const val TAG = "tag"
         private const val LABELS = "labels"
         private const val TAGS = "tags"
         private const val CHECKED = "checked"
 
-        fun newInstance(tag: String, labels: List<CharSequence>, tags: IntArray? = null, checkedIndex: Int): RadioButtonDialogFragment {
+        fun newInstance(labels: List<CharSequence>, tags: IntArray? = null, checkedIndex: Int): RadioButtonDialogFragment {
             return RadioButtonDialogFragment().apply {
-                arguments = bundleOf(TAG to tag, LABELS to ArrayList(labels), TAGS to tags, CHECKED to checkedIndex)
+                arguments = bundleOf(LABELS to ArrayList(labels), TAGS to tags, CHECKED to checkedIndex)
             }
         }
     }
@@ -52,13 +48,7 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
         arguments?.let {
             val checkedId = it.getInt(CHECKED)
             val clickListener = View.OnClickListener { v ->
-                val clickedId = v.id
-                if (clickedId != checkedId) {
-                    listenerSort?.onChange(clickedId, (v as RadioButton).text, v.tag as Int?)
-                    requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).edit {
-                        putInt(it.getString(TAG), clickedId)
-                    }
-                }
+                listenerSort?.onChange(v.id, (v as RadioButton).text, v.tag as Int?)
                 dismiss()
             }
             val tags = it.getIntArray(TAGS)

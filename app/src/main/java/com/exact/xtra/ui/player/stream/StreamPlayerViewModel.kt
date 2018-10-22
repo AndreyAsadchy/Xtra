@@ -42,14 +42,14 @@ class StreamPlayerViewModel @Inject constructor(
 
     private fun init() {
         if (isInitialized()) {
-            startPlayer()
+            play()
             return
         }
         val channel = stream.channel
         repository.fetchStreamPlaylist(channel.name)
                 .subscribe({
                     mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
-                    startPlayer()
+                    play()
                 }, {
 
                 })

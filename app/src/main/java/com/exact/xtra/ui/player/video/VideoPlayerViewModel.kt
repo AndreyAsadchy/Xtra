@@ -27,20 +27,20 @@ class VideoPlayerViewModel @Inject constructor(
         playerRepository.fetchVideoPlaylist(video.id)
                 .subscribe({
                     mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
-                    startPlayer()
+                    play()
                 }, {
 
                 })
                 .addTo(compositeDisposable)
     }
 
-    override fun startPlayer() {
-        super.startPlayer()
-        player.seekTo(playbackProgress)
-    }
+//    override fun play() {
+//        super.play()
+//        player.seekTo(playbackProgress)
+//    }
 
-    override fun changeQuality(index: Int, tag: String) {
-        super.changeQuality(index, tag)
+    override fun changeQuality(index: Int) {
+        super.changeQuality(index)
         playbackProgress = player.currentPosition
     }
 

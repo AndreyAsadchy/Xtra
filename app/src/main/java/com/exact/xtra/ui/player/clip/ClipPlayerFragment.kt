@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.exact.xtra.R
 import com.exact.xtra.ui.ClipDownloadDialog
-import com.exact.xtra.ui.VideoDownloadDialog
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
 import com.exact.xtra.ui.player.BasePlayerFragment
 import com.exact.xtra.util.FragmentUtils
@@ -37,7 +36,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
-        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, TAG) }
+        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
         download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.helper.qualities.value!!).show(childFragmentManager, null) }
     }
 
@@ -63,6 +62,6 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
-        viewModel.changeQuality(index, text.toString())
+        viewModel.changeQuality(index)
     }
 }

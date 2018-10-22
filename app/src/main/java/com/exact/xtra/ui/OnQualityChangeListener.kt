@@ -1,5 +1,5 @@
 package com.exact.xtra.ui
 
 interface OnQualityChangeListener {
-    fun changeQuality(index: Int, tag: String)
+    fun changeQuality(index: Int)
 }

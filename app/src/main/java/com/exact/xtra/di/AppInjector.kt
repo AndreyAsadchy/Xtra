@@ -3,8 +3,12 @@ package com.exact.xtra.di
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.exact.xtra.XtraApp
 import com.exact.xtra.ui.login.LoginActivity
+import com.exact.xtra.util.LifecycleListener
 import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
@@ -15,7 +19,7 @@ object AppInjector {
         DaggerXtraComponent.builder().application(xtraApp).build().inject(xtraApp)
         xtraApp.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                handleActivity(activity)
+                handleActivity(activity, xtraApp)
             }
 
             override fun onActivityStarted(activity: Activity) {
@@ -44,15 +48,18 @@ object AppInjector {
         })
     }
 
-    private fun handleActivity(activity: Activity) {
+    private fun handleActivity(activity: Activity, xtraApp: XtraApp) {
         if (activity is HasSupportFragmentInjector || activity is LoginActivity) { //TODO change
             AndroidInjection.inject(activity)
         }
-        if (activity is androidx.fragment.app.FragmentActivity) {
-            activity.supportFragmentManager.registerFragmentLifecycleCallbacks(object : androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentCreated(fm: androidx.fragment.app.FragmentManager, f: androidx.fragment.app.Fragment, savedInstanceState: Bundle?) {
+        if (activity is FragmentActivity) {
+            activity.supportFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
                     if (f is Injectable) {
                         AndroidSupportInjection.inject(f)
+                    }
+                    if (f is LifecycleListener) {
+                        xtraApp.setLifecycleListener(f)
                     }
                 }
             }, true)

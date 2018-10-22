@@ -227,7 +227,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     }
 
     override fun startStream(stream: Stream) {
-//        playerFragment?.startPlayer(stream)
+//        playerFragment?.play(stream)
         startPlayer(StreamPlayerFragment().apply { arguments = bundleOf("stream" to stream) })
     }
 

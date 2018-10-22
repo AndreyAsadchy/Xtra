@@ -22,9 +22,9 @@ class ClipPlayerViewModel @Inject constructor(
     lateinit var clip: Clip
     private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(dataSourceFactory)
     private var playbackProgress: Long = 0
-    val helper = PlayerHelper()
+    val helper = PlayerHelper(0)
 
-    override fun changeQuality(index: Int, tag: String) {
+    override fun changeQuality(index: Int) {
         if (helper.selectedQualityIndex != index) {
             playbackProgress = player.currentPosition
             play(helper.urls[helper.qualities.value!![index]]!!)
@@ -57,14 +57,14 @@ class ClipPlayerViewModel @Inject constructor(
                 .addTo(compositeDisposable)
     }
 
-    override fun startPlayer() {
-        super.startPlayer()
-        player.seekTo(playbackProgress)
-    }
+//    override fun play() {
+//        super.play()
+//        player.seekTo(playbackProgress)
+//    }
 
     private fun play(source: String) {
         mediaSource = factory.createMediaSource(Uri.parse(source))
-        startPlayer()
+        play()
         player.seekTo(playbackProgress)
     }
 
