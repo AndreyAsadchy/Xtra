@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebView
@@ -90,18 +89,26 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (event.action == KeyEvent.ACTION_DOWN) {
-            when (keyCode) {
-                KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
-                    webView.goBack()
-                    return true
-                }
-            }
+    override fun onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
         }
-        return super.onKeyDown(keyCode, event)
     }
+
+//
+//    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+//        if (event.action == KeyEvent.ACTION_DOWN) {
+//            when (keyCode) {
+//                KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
+//                    webView.goBack()
+//                    return true
+//                }
+//            }
+//        }
+//        return super.onKeyDown(keyCode, event)
+//    }
 
     override fun onDestroy() {
         compositeDisposable.clear()

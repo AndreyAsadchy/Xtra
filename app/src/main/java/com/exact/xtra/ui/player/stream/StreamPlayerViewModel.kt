@@ -54,11 +54,13 @@ class StreamPlayerViewModel @Inject constructor(
 
                 })
                 .addTo(compositeDisposable)
-        repository.fetchSubscriberBadges(stream.id.toInt())
+        repository.fetchSubscriberBadges(stream.channel.id)
                 .subscribe({
+                    println("with badges ${stream.id.toInt()} ${stream.id.toInt()}")
                     subscriberBadges = it
                     startChat()
                 }, { //no subscriber badges
+                    println("no badges")
                     startChat()
                 })
                 .addTo(compositeDisposable)

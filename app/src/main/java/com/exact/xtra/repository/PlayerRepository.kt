@@ -10,8 +10,7 @@ import com.exact.xtra.model.clip.ClipStatusResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.HashMap
-import java.util.Random
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -68,7 +67,7 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchSubscriberBadges(channelId: Int): Single<SubscriberBadgesResponse> {
+    fun fetchSubscriberBadges(channelId: String): Single<SubscriberBadgesResponse> {
         return misc.getSubscriberBadges(channelId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

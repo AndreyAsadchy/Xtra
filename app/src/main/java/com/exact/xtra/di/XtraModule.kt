@@ -16,7 +16,6 @@ import com.exact.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -112,7 +111,7 @@ class XtraModule {
     @Singleton
     @Provides
     fun providesRxJavaCallAdapterFactory(): RxJava2CallAdapterFactory {
-        return RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
+        return RxJava2CallAdapterFactory.create()
     }
 
     @Singleton

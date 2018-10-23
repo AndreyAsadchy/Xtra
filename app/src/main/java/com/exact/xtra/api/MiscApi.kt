@@ -12,5 +12,5 @@ interface MiscApi {
     fun getClipStatus(@Path("slug") slug: String): Single<ClipStatusResponse>
 
     @GET("https://badges.twitch.tv/v1/badges/channels/{channelId}/display")
-    fun getSubscriberBadges(@Path("channelId") channelId: Int): Single<SubscriberBadgesResponse>
+    fun getSubscriberBadges(@Path("channelId") channelId: String): Single<SubscriberBadgesResponse>
 }

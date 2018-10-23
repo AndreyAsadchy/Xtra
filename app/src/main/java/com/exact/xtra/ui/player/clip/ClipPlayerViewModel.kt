@@ -42,7 +42,7 @@ class ClipPlayerViewModel @Inject constructor(
                     play(helper.urls[qualities[helper.selectedQualityIndex]]!!)
                     helper.qualities.postValue(qualities)
                     if (clip.vod != null) {
-                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id.toInt())
+                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id)
                                 .subscribe({ response ->
 
                                 }, { t ->

@@ -52,7 +52,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener {
 
     companion object {
-        private const val PLAYER_TAG = "init"
+        private const val PLAYER_TAG = "player"
         const val INDEX_GAMES = FragNavController.TAB1
         const val INDEX_TOP = FragNavController.TAB2
         const val INDEX_FOLLOWED = FragNavController.TAB3
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     private lateinit var viewModel: MainViewModel
     private val compositeDisposable = CompositeDisposable()
     private var playerFragment: BasePlayerFragment? = null
+    private val handler by lazy { Handler() }
     val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,21 +76,31 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         val prefs = getPreferences(Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean("first_launch", true)
         if (!isFirstLaunch) {
-            val user = TwitchApiHelper.getUserData(this@MainActivity)
+            val user = TwitchApiHelper.getUserData(this)
             if (user != null) {
-                authRepository.validate(user.token)
-                        .subscribe({
-                            initFragNavController()
-                            viewModel.user.value = user
-                            navBar.selectedItemId = R.id.fragment_follow
-                            fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
-                        }, {
-                            viewModel.user.value = null
-                            getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
-                            Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                            startActivityForResult(Intent(this, LoginActivity::class.java), 1)
-                        })
-                        .addTo(compositeDisposable)
+                navBar.selectedItemId = R.id.fragment_follow
+
+                fun init() {
+                    initFragNavController()
+                    viewModel.user.value = user
+                    fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
+                }
+
+                if (viewModel.hasValidated) {
+                    init()
+                } else {
+                    viewModel.hasValidated = true
+                    authRepository.validate(user.token + " a")
+                            .subscribe({
+                                init()
+                            }, {
+                                viewModel.user.value = null
+                                getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
+                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                                startActivityForResult(Intent(this, LoginActivity::class.java), 1)
+                            })
+                            .addTo(compositeDisposable)
+                }
             } else {
                 initFragNavController()
                 viewModel.user.value = null
@@ -103,20 +114,19 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra("first_launch", true) }, 1)
 
         }
-        viewModel.getPlayerStatus().observe(this@MainActivity, Observer {
-            val isOpened = it.first
-            if (isOpened) {
-                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
-                if (!isLandscape) {
-                    val isMaximized = it.second
-                    if (isMaximized) {
-                        navBar.post { hideNavigationBar() }
-                    } else {
-                        Handler().post { playerFragment?.minimize() } //TODO add minimize fast
-                    }
+        if (viewModel.isPlayerOpened) {
+            playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
+        }
+        viewModel.playerMaximized().observe(this, Observer {
+            val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
+            if (!isLandscape) {
+                if (it == true) {
+                    handler.post { hideNavigationBar() }
                 } else {
-                    navBarContainer.visibility = View.GONE
+                    handler.post { playerFragment!!.minimize() } //TODO add minimize fast without callback
                 }
+            } else {
+                navBarContainer.visibility = View.GONE
             }
         })
     }
@@ -176,7 +186,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         super.onActivityResult(requestCode, resultCode, data)
 
         fun updateUserLiveData() {
-            data?.getParcelableExtra<User>(C.USER)?.let(viewModel.user::setValue)
+            data?.getParcelableExtra<User>(C.USER)?.let(viewModel.user::postValue)
         }
 
         when (requestCode) {
@@ -185,13 +195,13 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 when (resultCode) {
                     RESULT_OK -> { //Logged in
                         updateUserLiveData()
-                        navBar.selectedItemId = R.id.fragment_follow
                         fragNavController.initialize(INDEX_FOLLOWED)
+                        navBar.selectedItemId = R.id.fragment_follow
                     }
-                    RESULT_CANCELED -> { //Skipped
+                    RESULT_CANCELED, 2 -> { //Skipped first time or after token expiration
                         viewModel.user.value = null
-                        navBar.selectedItemId = R.id.fragment_top
                         fragNavController.initialize(INDEX_TOP)
+                        navBar.selectedItemId = R.id.fragment_top
                     }
                 }
                 initNavBar()
@@ -218,12 +228,6 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         if (fragNavController.size > 0) {
             fragNavController.onSaveInstanceState(outState)
         }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
-        println(playerFragment)
     }
 
     override fun startStream(stream: Stream) {
@@ -273,16 +277,15 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             }
         } else {
             playerFragment?.minimize()
-            viewModel.isPlayerMaximized = false
         }
     }
 
     override fun onMaximized() {
-        viewModel.isPlayerMaximized = true
+        viewModel.onMaximize()
     }
 
     override fun onMinimized() {
-//        viewModel.isPlayerMaximized = false
+        viewModel.onMinimize()
     }
 
     override fun onClosedToLeft() {
@@ -302,14 +305,12 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         playerFragment = fragment
         supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
 //        }
-        viewModel.isPlayerOpened = true
-        viewModel.isPlayerMaximized = true
+        viewModel.onPlayerStarted()
     }
 
     private fun closePlayer() {
         supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
-        viewModel.isPlayerOpened = false
-        viewModel.isPlayerMaximized = false
+        viewModel.onPlayerClosed()
     }
 
     private fun hideNavigationBar() {

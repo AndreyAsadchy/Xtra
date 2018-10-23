@@ -23,6 +23,7 @@ import com.exact.xtra.ui.videos.Sort
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.Executor
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -126,16 +127,19 @@ class KrakenRepository @Inject constructor(
 
     override fun loadUserById(id: Int): Single<User>? {
         return api.getUserById(id)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun loadUserByLogin(login: String): Single<User>? {
         return api.getUserByLogin(login)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun loadUserEmotes(userId: Int): Single<List<Emote>>? {
         return api.getUserEmotes(userId)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.emotes }
     }

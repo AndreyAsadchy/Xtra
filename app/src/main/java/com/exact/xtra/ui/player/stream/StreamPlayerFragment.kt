@@ -41,19 +41,17 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             settings.isEnabled = false
             viewModel.stream = arguments!!.getParcelable("stream")!!
         }
-        val qualities = viewModel.helper.qualities
-        qualities.observe(this, Observer { settings.isEnabled = it != null })
-
-        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
-        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-        viewModel.chatTask.observe(this, Observer(messageView::setCallback))
-        settings.setOnClickListener {
-            val list = LinkedList(qualities.value).apply {
+        viewModel.helper.qualities.observe(this, Observer {
+            settings.isEnabled = true
+            (it as LinkedList).apply {
                 addFirst(getString(R.string.auto))
                 addLast(getString(R.string.chat_only))
             }
-            FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, viewModel.helper.selectedQualityIndex)
-        }
+        })
+        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
+        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
+        viewModel.chatTask.observe(this, Observer(messageView::setCallback))
+        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
     }
 
     override fun onMovedToForeground() {
@@ -61,12 +59,12 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 //        if (messageView?.editText?.length() == 0) {
 //            messageView.editText.clearFocus()
 //        }
-
+        viewModel.startChat()
     }
-//
+    //
     override fun onMovedToBackground() {
         super.onMovedToBackground()
-//        viewModel.stopChat()
+        viewModel.stopChat()
     }
 
     override fun play(obj: Parcelable) {
@@ -80,7 +78,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
-            viewModel.changeQuality(index)
+        viewModel.changeQuality(index)
 //            if (index >= viewModel.helper.qualities.value!!.lastIndex) {
 //                TODO hide player
 //            }
