@@ -34,17 +34,13 @@ class StreamPlayerViewModel @Inject constructor(
                 field = value
                 if (isInitialized()) {
                     if (chatTask.value != null)
-                    stopChat()
+                        stopChat()
                     startChat()
                 }
             }
         }
 
     private fun init() {
-        if (isInitialized()) {
-            play()
-            return
-        }
         val channel = stream.channel
         repository.fetchStreamPlaylist(channel.name)
                 .subscribe({

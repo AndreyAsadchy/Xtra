@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
@@ -45,7 +44,6 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -90,16 +88,16 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                     init()
                 } else {
                     viewModel.hasValidated = true
-                    authRepository.validate(user.token + " a")
-                            .subscribe({
+//                    authRepository.validate(user.token)
+//                            .subscribe({
                                 init()
-                            }, {
-                                viewModel.user.value = null
-                                getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
-                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                                startActivityForResult(Intent(this, LoginActivity::class.java), 1)
-                            })
-                            .addTo(compositeDisposable)
+//                            }, {
+//                                viewModel.user.value = null
+//                                getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
+//                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+//                                startActivityForResult(Intent(this, LoginActivity::class.java), 1)
+//                            })
+//                            .addTo(compositeDisposable)
                 }
             } else {
                 initFragNavController()

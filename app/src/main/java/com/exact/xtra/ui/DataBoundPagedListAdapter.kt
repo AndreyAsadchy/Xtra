@@ -38,6 +38,8 @@ abstract class DataBoundPagedListAdapter<T, V : ViewDataBinding>(
                     }
                 })
             }
+            return@submitList
         }
+        super.submitList(pagedList)
     }
 }

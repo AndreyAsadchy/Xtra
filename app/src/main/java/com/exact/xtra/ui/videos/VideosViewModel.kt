@@ -14,6 +14,7 @@ class VideosViewModel @Inject constructor(
     val sortText = MutableLiveData<CharSequence>()
     lateinit var sort: Sort
     var period: Period? = null
+    var selectedIndex = 0
 
     fun loadVideos(game: String? = null, broadcastType: BroadcastType = BroadcastType.ALL, language: String? = null, reload: Boolean) {
         loadData(repository.loadVideos(game, period ?: Period.WEEK, broadcastType, language, if (isInitialized()) sort else Sort.VIEWS, compositeDisposable), reload)

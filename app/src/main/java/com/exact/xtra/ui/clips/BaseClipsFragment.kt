@@ -28,6 +28,7 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loada
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
     protected lateinit var viewModel: ClipsViewModel
+    protected lateinit var adapter: ClipsAdapter
     private lateinit var binding: FragmentClipsBinding
     private var listener: OnClipSelectedListener? = null
 
@@ -55,7 +56,7 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loada
         if (isFragmentVisible) {
             viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
             binding.viewModel = viewModel
-            val adapter = ClipsAdapter(listener!!)
+            adapter = ClipsAdapter(listener!!)
             recyclerViewLayout.recyclerView.adapter = adapter
             if (!viewModel.isInitialized()) {
                 initializeViewModel()

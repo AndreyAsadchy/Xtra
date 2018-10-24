@@ -1,7 +1,6 @@
 package com.exact.xtra.util
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import androidx.fragment.app.FragmentManager
 import com.exact.xtra.ui.fragment.RadioButtonDialogFragment
 
@@ -10,26 +9,22 @@ object FragmentUtils {
     /**
      * Use this when result should be a string resource id
      */
-    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<Int>, defaultIndex: Int, tag: String) {
-       show(context,fragmentManager, ArrayList(labels.map(context::getString)), labels.toIntArray(), defaultIndex, tag)
-    }
-
-    /**
-     * Use this when result should be an index
-     */
-    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<CharSequence>, index: Int) {
+    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<Int>, checkedIndex: Int) {
         RadioButtonDialogFragment.newInstance(
-                labels,
-                null,
-                index
+                labels.map(context::getString),
+                labels.toIntArray(),
+                checkedIndex
         ).show(fragmentManager, null)
     }
 
-    private fun show(context: Context, fragmentManager: FragmentManager, labels: List<CharSequence>, tags: IntArray? = null, defaultIndex: Int = 0, tag: String? = null) {
+    /**
+     * Use this when result should be an checkedIndex
+     */
+    fun showRadioButtonDialogFragment(fragmentManager: FragmentManager, labels: List<CharSequence>, checkedIndex: Int) {
         RadioButtonDialogFragment.newInstance(
                 labels,
-                tags,
-                context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(tag, defaultIndex)
+                null,
+                checkedIndex
         ).show(fragmentManager, null)
     }
 }

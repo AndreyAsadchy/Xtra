@@ -36,7 +36,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
-        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
+        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
         download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.helper.qualities.value!!).show(childFragmentManager, null) }
     }
 

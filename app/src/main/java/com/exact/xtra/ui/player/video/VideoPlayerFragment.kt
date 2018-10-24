@@ -41,7 +41,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
             println(viewModel.videoInfo.targetDuration)
             LinkedList(viewModel.helper.qualities.value).also { list ->
                 list.addFirst(getString(R.string.auto))
-                FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, list, viewModel.helper.selectedQualityIndex)
+                FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
             }
         }
         download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }

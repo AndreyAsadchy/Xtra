@@ -13,6 +13,7 @@ class ClipsViewModel @Inject constructor(
     val sortText = MutableLiveData<CharSequence>()
     var period: Period? = null
     var trending: Boolean = false
+    var selectedIndex = 0
 
     fun loadClips(channelName: String? = null, gameName: String? = null, languages: String? = null, period: Period? = this.period, trending: Boolean = this.trending, reload: Boolean) {
         loadData(repository.loadClips(channelName, gameName, languages, period ?: Period.WEEK, trending, compositeDisposable), reload)

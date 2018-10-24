@@ -1,6 +1,5 @@
 package com.exact.xtra.ui.videos
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import com.exact.xtra.R
@@ -15,7 +14,6 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
     private companion object {
         val sortOptions = listOf(R.string.upload_date, R.string.view_count)
         const val DEFAULT_INDEX = 0
-        const val TAG = "FollowedVideos"
     }
 
     private lateinit var user: User
@@ -23,13 +21,12 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         user = arguments!!.getParcelable(C.USER)!!
-        sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
+        sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, viewModel.selectedIndex) }
     }
 
     override fun initializeViewModel() {
-        val index = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)
-        viewModel.sortText.postValue(getString(sortOptions[index]))
-        viewModel.sort = if (index == 0) Sort.TIME else Sort.VIEWS
+        viewModel.sortText.value = getString(sortOptions[DEFAULT_INDEX])
+        viewModel.sort = Sort.TIME
     }
 
     override fun loadData(override: Boolean) {
@@ -38,7 +35,10 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.sort = if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS
-        viewModel.sortText.postValue(text)
+        viewModel.sortText.value = text
+        viewModel.selectedIndex = index
+        viewModel.loadedInitial.value = false
+        adapter.submitList(null)
         loadData(true)
     }
 }

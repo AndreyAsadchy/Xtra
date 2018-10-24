@@ -27,7 +27,6 @@ class LiveChatTask(
     private var writerOut: BufferedWriter? = null
     private val hashChannelName: String = "#$channelName"
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
-    private var running = false
 
     companion object {
         private const val TAG = "LiveChatTask"
@@ -42,7 +41,7 @@ class LiveChatTask(
 
         connect()
         try {
-            while (running) { //TODO it won't stop until a message is received
+            while (true) {
                 val lineListener = readerIn.readLine() ?: break
                 lineListener.run {
                     when {
@@ -90,7 +89,6 @@ class LiveChatTask(
             write("JOIN $hashChannelName", writerIn, writerOut)
             writerIn.flush()
             writerOut?.flush()
-            running = true
             Log.d(TAG, "Successfully connected to channel - $hashChannelName")
         } catch (e: IOException) {
             Log.e(TAG, "Error connecting to Twitch IRC", e)
@@ -115,7 +113,6 @@ class LiveChatTask(
     }
 
     fun cancel() {
-        running = false
         socketOut?.shutdownOutput()
         socketIn?.shutdownInput()
     }

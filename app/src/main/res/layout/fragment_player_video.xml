@@ -18,7 +18,7 @@
         android:id="@id/chatView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
+        android:background="@android:color/black"
         android:layout_below="@id/playerView"/>
 
     <com.google.android.exoplayer2.ui.PlayerView

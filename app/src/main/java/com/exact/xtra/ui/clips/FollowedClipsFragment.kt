@@ -1,6 +1,5 @@
 package com.exact.xtra.ui.clips
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import com.exact.xtra.R
@@ -14,7 +13,6 @@ class FollowedClipsFragment : BaseClipsFragment() {
     private companion object {
         val sortOptions = listOf(R.string.trending, R.string.view_count)
         const val DEFAULT_INDEX = 1
-        const val TAG = "FollowedClips"
     }
 
     private lateinit var user: User
@@ -22,13 +20,12 @@ class FollowedClipsFragment : BaseClipsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         user = arguments!!.getParcelable(C.USER)!!
-        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
+        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, viewModel.selectedIndex) }
     }
 
     override fun initializeViewModel() {
-        val index = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)
-        viewModel.sortText.postValue(getString(sortOptions[index]))
-        viewModel.trending = index == 0
+        viewModel.selectedIndex = DEFAULT_INDEX
+        viewModel.sortText.value = getString(sortOptions[DEFAULT_INDEX])
     }
 
     override fun loadData(override: Boolean) {
@@ -38,6 +35,8 @@ class FollowedClipsFragment : BaseClipsFragment() {
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.trending = tag == R.string.trending
         viewModel.sortText.postValue(text)
+        viewModel.selectedIndex = index
+        adapter.submitList(null)
         loadData(true)
     }
 }

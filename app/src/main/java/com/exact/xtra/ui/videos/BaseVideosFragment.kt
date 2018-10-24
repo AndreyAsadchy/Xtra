@@ -27,6 +27,7 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scroll
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
     protected lateinit var viewModel: VideosViewModel
+    protected lateinit var adapter: VideosAdapter
     private lateinit var binding: FragmentVideosBinding
     private var listener: OnVideoSelectedListener? = null
 
@@ -56,7 +57,7 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scroll
         if (isFragmentVisible) {
             viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideosViewModel::class.java)
             binding.viewModel = viewModel
-            val adapter = VideosAdapter(listener!!)
+            adapter = VideosAdapter(listener!!)
             recyclerViewLayout.recyclerView.adapter = adapter
             if (!viewModel.isInitialized()) {
                 initializeViewModel()

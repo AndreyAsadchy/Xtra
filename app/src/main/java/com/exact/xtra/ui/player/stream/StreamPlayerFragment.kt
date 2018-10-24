@@ -14,6 +14,7 @@ import com.exact.xtra.ui.player.BasePlayerFragment
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
+import kotlinx.android.synthetic.main.view_chat_message.view.*
 import java.util.*
 
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -43,25 +44,28 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         }
         viewModel.helper.qualities.observe(this, Observer {
             settings.isEnabled = true
-            (it as LinkedList).apply {
-                addFirst(getString(R.string.auto))
-                addLast(getString(R.string.chat_only))
-            }
         })
         viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
         viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         viewModel.chatTask.observe(this, Observer(messageView::setCallback))
-        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
+        settings.setOnClickListener {
+            val list = LinkedList(viewModel.helper.qualities.value)
+            list.apply {
+                addFirst(getString(R.string.auto))
+                addLast(getString(R.string.chat_only))
+            }
+            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
+        }
     }
 
     override fun onMovedToForeground() {
         super.onMovedToForeground()
-//        if (messageView?.editText?.length() == 0) {
-//            messageView.editText.clearFocus()
-//        }
+        if (messageView?.editText?.length() == 0) {
+            messageView.editText.clearFocus()
+        }
         viewModel.startChat()
     }
-    //
+
     override fun onMovedToBackground() {
         super.onMovedToBackground()
         viewModel.stopChat()

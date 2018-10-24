@@ -1,11 +1,9 @@
 package com.exact.xtra.ui.clips
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import com.exact.xtra.R
 import com.exact.xtra.model.game.Game
-import com.exact.xtra.util.C
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_clips.*
 
@@ -14,7 +12,6 @@ class ClipsFragment : BaseClipsFragment() {
     private companion object {
         val sortOptions = listOf(R.string.trending, R.string.today, R.string.this_week, R.string.this_month, R.string.all_time)
         const val DEFAULT_INDEX = 2
-        const val TAG = "Clips"
     }
 
     private var channelName: String? = null
@@ -24,17 +21,13 @@ class ClipsFragment : BaseClipsFragment() {
         super.onViewCreated(view, savedInstanceState)
         channelName = arguments?.getString("channel")
         game = arguments?.getParcelable("game")
-        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, DEFAULT_INDEX, TAG) }
+        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, sortOptions, viewModel.selectedIndex) }
     }
 
     override fun initializeViewModel() {
-        val index = requireActivity().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, DEFAULT_INDEX)
-        viewModel.sortText.postValue(getString(sortOptions[index]))
-        if (index != 0) {
-            viewModel.period = Period.values()[index - 1]
-        } else {
-            viewModel.trending = true
-        }
+        viewModel.period = Period.WEEK
+        viewModel.selectedIndex = DEFAULT_INDEX
+        viewModel.sortText.value = getString(sortOptions[DEFAULT_INDEX])
     }
 
     override fun loadData(override: Boolean) {
@@ -54,6 +47,9 @@ class ClipsFragment : BaseClipsFragment() {
         viewModel.period = period
         viewModel.trending = trending
         viewModel.sortText.postValue(text)
+        viewModel.selectedIndex = index
+        viewModel.loadedInitial.value = false
+        adapter.submitList(null)
         loadData(true)
     }
 }
