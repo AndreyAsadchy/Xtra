@@ -22,7 +22,7 @@ class ClipPlayerViewModel @Inject constructor(
     lateinit var clip: Clip
     private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(dataSourceFactory)
     private var playbackProgress: Long = 0
-    val helper = PlayerHelper(0)
+    val helper = PlayerHelper()
 
     override fun changeQuality(index: Int) {
         if (helper.selectedQualityIndex != index) {

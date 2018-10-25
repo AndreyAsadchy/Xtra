@@ -40,7 +40,7 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
         }
         viewModel.sortText.postValue(text)
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = false
+        viewModel.loadedInitial.value = null
         adapter.submitList(null)
         loadData(true)
     }

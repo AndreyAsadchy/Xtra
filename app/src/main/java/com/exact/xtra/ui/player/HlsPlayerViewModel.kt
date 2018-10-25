@@ -24,23 +24,26 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
         const val TAG = "HlsPlayerViewModel"
     }
 
-    val helper = PlayerHelper(context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).getInt(TAG, 0))
+    private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
+    val helper = PlayerHelper()
 
     override fun changeQuality(index: Int) {
+        if (helper.selectedQualityIndex == index) {
+            return
+        }
+        helper.selectedQualityIndex = index
         when (index) {
-            helper.selectedQualityIndex -> return
-            in 0 until helper.qualities.value!!.lastIndex -> {
+            in 0..helper.qualities.value!!.lastIndex -> {
                 val parametersBuilder = trackSelector.buildUponParameters()
                 when (index) {
                     0 -> parametersBuilder.clearSelectionOverrides() //Auto
                     else -> parametersBuilder.setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, index - 1))
                 }
                 trackSelector.setParameters(parametersBuilder)
-                helper.selectedQualityIndex = index
                 changePlayerMode(NORMAL)
-                getApplication<Application>().getSharedPreferences(C.USER_PREFS, MODE_PRIVATE).edit { putInt(TAG, index) }
+                prefs.edit { putInt(TAG, index) }
             }
-            helper.qualities.value!!.lastIndex -> changePlayerMode(AUDIO_ONLY)
+            helper.qualities.value!!.lastIndex + 1 -> changePlayerMode(AUDIO_ONLY)
             else -> changePlayerMode(DISABLED)
         }
     }
@@ -82,9 +85,18 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
                 }
             }
             helper.urls.putAll(urls)
-            LinkedList(urls.keys).run {
+            val qualities = LinkedList(urls.keys)
+            qualities.run {
                 add(removeAt(indexOf("Audio only"))) //move audio option to bottom
-                helper.qualities.postValue(this)
+                helper.qualities.value = this
+                val index = prefs.getInt(TAG, 0).let {
+                    if (it < lastIndex) {
+                        it
+                    } else {
+                        lastIndex - 1
+                    }
+                }
+                changeQuality(index)
             }
         }
     }

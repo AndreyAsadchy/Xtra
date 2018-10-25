@@ -14,7 +14,6 @@
         <include
             android:id="@+id/sortBar"
             layout="@layout/sort_bar"
-            app:visible="@{viewModel.loadedInitial}"
             app:liveData="@{viewModel.sortText}"/>
 
         <include

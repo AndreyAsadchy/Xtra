@@ -38,7 +38,7 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
         }
         if (shouldReload) {
             setSortText(sortText, periodText)
-            viewModel.loadedInitial.value = false
+            viewModel.loadedInitial.value = null
             adapter.submitList(null)
             loadData(true)
         }

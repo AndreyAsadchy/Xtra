@@ -35,7 +35,7 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
         viewModel.sort = if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS
         viewModel.sortText.value = text
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = false
+        viewModel.loadedInitial.value = null
         adapter.submitList(null)
         loadData(true)
     }

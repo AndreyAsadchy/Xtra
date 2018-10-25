@@ -22,7 +22,7 @@ class GamesDataSource(
 
     override fun loadRange(params: PositionalDataSource.LoadRangeParams, callback: PositionalDataSource.LoadRangeCallback<Game>) {
         super.loadRange(params, callback)
-        api.getTopGames(params.loadSize, params.startPosition + 1) //+ 1 because twitch returns less than specified
+        api.getTopGames(params.loadSize, params.startPosition)
                 .subscribe({ callback.onSuccess(it.games) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }

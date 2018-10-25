@@ -36,6 +36,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
         viewModel.trending = tag == R.string.trending
         viewModel.sortText.postValue(text)
         viewModel.selectedIndex = index
+        viewModel.loadedInitial.value = null
         adapter.submitList(null)
         loadData(true)
     }

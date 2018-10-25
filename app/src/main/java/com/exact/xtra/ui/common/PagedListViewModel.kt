@@ -16,7 +16,7 @@ abstract class PagedListViewModel<T> : ViewModel() {
     val list: LiveData<PagedList<T>> = switchMap(result) { it.pagedList }
     val loadingState: LiveData<LoadingState> = switchMap(result) { it.loadingState }
     val pagingState: LiveData<LoadingState> = switchMap(result) { it.pagingState }
-    val loadedInitial = MediatorLiveData<Boolean>().apply {
+    val loadedInitial = MediatorLiveData<Boolean?>().apply {
         addSource(loadingState) {
             if (value == null) {
                 if (it == LoadingState.LOADED) value = true

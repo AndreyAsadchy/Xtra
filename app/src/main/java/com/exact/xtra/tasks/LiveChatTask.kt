@@ -1,15 +1,14 @@
 package com.exact.xtra.tasks
 
 import android.util.Log
-
 import com.exact.xtra.ui.view.MessageView
-
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
+import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -83,7 +82,7 @@ class LiveChatTask(
                 write("PASS oauth:" + userToken!!, writerOut)
                 write("NICK $userName", writerOut)
             }
-            write("NICK justinfan3896", writerIn) //random numbers //TODO change to Random()
+            write("NICK justinfan${Random().nextInt(((9999 - 1000) + 1)) + 1000}", writerIn) //random number between 1000 and 9999
             write("CAP REQ :twitch.tv/tags", writerIn, writerOut)
             write("CAP REQ :twitch.tv/commands", writerIn, writerOut)
             write("JOIN $hashChannelName", writerIn, writerOut)
@@ -113,8 +112,16 @@ class LiveChatTask(
     }
 
     fun cancel() {
-        socketOut?.shutdownOutput()
-        socketIn?.shutdownInput()
+        fun shutdown(socket: Socket?) {
+            socket?.let {
+                if (!it.isClosed) {
+                    it.shutdownInput()
+                    it.shutdownOutput()
+                }
+            }
+        }
+        shutdown(socketIn)
+        shutdown(socketOut)
     }
 
     override fun send(message: String) {
