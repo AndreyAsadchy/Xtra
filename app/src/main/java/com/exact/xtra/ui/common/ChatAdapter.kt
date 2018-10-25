@@ -21,9 +21,6 @@ import com.exact.xtra.model.chat.Emote
 import com.exact.xtra.ui.DataBoundViewHolder
 import java.util.Random
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.forEach
-import kotlin.collections.map
 
 
 class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBinding>>(
@@ -78,8 +75,9 @@ class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBin
                 else -> null
             }
             url?.let {
-                builder.append(" ")
-                images.add(Emote(url, index, ++index))
+                builder.append("   ")
+                images.add(Emote(url, index, index + 3))
+                index += 3
             }
         }
         //TODO add if mentions user make message red
@@ -96,7 +94,7 @@ class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBin
             index += userNameLength + 2
             val emotesUrl = "https://static-cdn.jtvnw.net/emoticons/v1/"
             for (e in copy) {
-                builder.replace(index + e.begin, index + e.end + 1, " ")
+                builder.replace(index + e.begin, index + e.end + 1, "   ")
                 val length = e.end - e.begin
                 for (e1 in copy) {
                     if (e.begin < e1.begin) {
@@ -106,13 +104,14 @@ class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBin
                 }
                 e.end -= length
             }
-            copy.forEach { (id, begin, end) -> images.add(Emote("$emotesUrl$id/2.0", index + begin, index + end + 1)) }
+            copy.forEach { (id, begin, end) -> images.add(Emote("$emotesUrl$id/2.0", index + begin, index + end + 3)) }
         }
-        holder.binding.message = builder
-        loadImages(holder.binding, images)
+        holder.binding.textView.text = builder
+        loadImages(holder.binding, images, builder)
     }
 
-    private fun loadImages(binding: ChatListItemBinding, images: List<Emote>) {
+    private fun loadImages(binding: ChatListItemBinding, images: List<Emote>, builder: SpannableStringBuilder) {
+        var left = images.size
         images.forEach { (id, begin, end) ->
             GlideApp.with(binding.textView)
                     .load(id)
@@ -120,8 +119,9 @@ class ChatAdapter : ListAdapter<ChatMessage, DataBoundViewHolder<ChatListItemBin
                     .into(object : SimpleTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                             resource.setBounds(0, 0, resource.intrinsicWidth, resource.intrinsicHeight)
-                            binding.message?.setSpan(ImageSpan(resource), begin, end, SPAN_EXCLUSIVE_EXCLUSIVE)
-                            binding.textView.text = binding.message//TODO notify differently
+                            builder.setSpan(ImageSpan(resource), begin, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                            if (--left == 0)
+                                binding.textView.text = builder //TODO watch pocket plays
                         }
                     })
         }

@@ -28,9 +28,6 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
     val helper = PlayerHelper()
 
     override fun changeQuality(index: Int) {
-        if (helper.selectedQualityIndex == index) {
-            return
-        }
         helper.selectedQualityIndex = index
         when (index) {
             in 0..helper.qualities.value!!.lastIndex -> {
@@ -89,7 +86,7 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
             qualities.run {
                 add(removeAt(indexOf("Audio only"))) //move audio option to bottom
                 helper.qualities.value = this
-                val index = prefs.getInt(TAG, 0).let {
+                val index = prefs.getInt(TAG, 0).let { //TODO change to number based not index
                     if (it < lastIndex) {
                         it
                     } else {

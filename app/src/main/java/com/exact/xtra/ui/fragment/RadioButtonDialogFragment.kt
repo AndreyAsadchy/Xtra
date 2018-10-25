@@ -48,7 +48,10 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
         arguments?.let {
             val checkedId = it.getInt(CHECKED)
             val clickListener = View.OnClickListener { v ->
-                listenerSort?.onChange(v.id, (v as RadioButton).text, v.tag as Int?)
+                val clickedId = v.id
+                if (clickedId != checkedId) {
+                    listenerSort?.onChange(clickedId, (v as RadioButton).text, v.tag as Int?)
+                }
                 dismiss()
             }
             val tags = it.getIntArray(TAGS)

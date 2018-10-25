@@ -40,7 +40,7 @@ class VideoDownloadService : Service() {
     @Inject
     lateinit var dao: VideosDao
     private lateinit var downloadTask: Deferred<Unit>
-    private lateinit var notificationBuilder: NotificationCompat.Builder 
+    private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManagerCompat
     private val notificationId = System.currentTimeMillis().toInt()
 
@@ -116,32 +116,37 @@ class VideoDownloadService : Service() {
                 }
             }
             launch {
-                downloadTask.await()
-                Log.d(TAG, "Downloading done. Creating playlist")
-                val mediaPlaylist = MediaPlaylist.Builder()
-                        .withTargetDuration(targetDuration)
-                        .withTracks(tracks.toList())
-                        .build()
-                val playlist = Playlist.Builder()
-                        .withMediaPlaylist(mediaPlaylist)
-                        .build()
-                val playlistPath = directory.absolutePath + "/${System.currentTimeMillis()}.m3u8"
-                val out = FileOutputStream(playlistPath)
-                val writer = PlaylistWriter(out, Format.EXT_M3U, Encoding.UTF_8)
-                writer.write(playlist)
-                out.close()
-                Log.d(TAG, "Playlist created. Saving video")
-                val currentDate = TwitchApiHelper.getCurrentTimeFormatted(this@VideoDownloadService)
-                val glide = GlideApp.with(this@VideoDownloadService)
-                val thumbnail = glide.downloadOnly().load(video.preview.medium).submit().get().absolutePath
-                val logo = glide.downloadOnly().load(video.channel.logo).submit().get().absolutePath
-                dao.insert(OfflineVideo(playlistPath, video.title, video.channel.name, video.game, totalDuration, currentDate, video.createdAt, thumbnail, logo))
-                notificationBuilder
-                        .setAutoCancel(true)
-                        .setContentTitle(getString(R.string.downloaded))
-                        .setProgress(0, 0 , false)
-                        .setOngoing(false)
-                notify(notificationId, notificationBuilder.build())
+                try {
+                    downloadTask.await()
+                    Log.d(TAG, "Downloading done. Creating playlist")
+                    val mediaPlaylist = MediaPlaylist.Builder()
+                            .withTargetDuration(targetDuration)
+                            .withTracks(tracks.toList())
+                            .build()
+                    val playlist = Playlist.Builder()
+                            .withMediaPlaylist(mediaPlaylist)
+                            .build()
+                    val playlistPath = directory.absolutePath + "/${System.currentTimeMillis()}.m3u8"
+                    val out = FileOutputStream(playlistPath)
+                    val writer = PlaylistWriter(out, Format.EXT_M3U, Encoding.UTF_8)
+                    writer.write(playlist)
+                    out.close()
+                    Log.d(TAG, "Playlist created. Saving video")
+                    val currentDate = TwitchApiHelper.getCurrentTimeFormatted(this@VideoDownloadService)
+                    val glide = GlideApp.with(this@VideoDownloadService)
+                    val thumbnail = glide.downloadOnly().load(video.preview.medium).submit().get().absolutePath
+                    val logo = glide.downloadOnly().load(video.channel.logo).submit().get().absolutePath
+                    dao.insert(OfflineVideo(playlistPath, video.title, video.channel.name, video.game, totalDuration, currentDate, video.createdAt, thumbnail, logo))
+                    notificationBuilder
+                            .setAutoCancel(true)
+                            .setContentTitle(getString(R.string.downloaded))
+                            .setProgress(0, 0 , false)
+                            .setOngoing(false)
+                    notify(notificationId, notificationBuilder.build())
+                } catch (ex: IllegalArgumentException) {
+                    println("stopped1")
+                    directory.deleteRecursively()
+                }
             }
         }
     }
