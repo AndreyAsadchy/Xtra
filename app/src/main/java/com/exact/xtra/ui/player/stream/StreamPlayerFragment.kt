@@ -14,7 +14,6 @@ import com.exact.xtra.ui.player.BasePlayerFragment
 import com.exact.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
-import kotlinx.android.synthetic.main.view_chat_message.view.*
 import java.util.*
 
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -60,9 +59,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     override fun onMovedToForeground() {
         super.onMovedToForeground()
-        if (messageView?.editText?.length() == 0) {
-            messageView.editText.clearFocus()
-        }
         viewModel.startChat()
     }
 

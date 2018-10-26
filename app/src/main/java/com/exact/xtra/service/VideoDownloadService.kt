@@ -144,7 +144,7 @@ class VideoDownloadService : Service() {
                             .setOngoing(false)
                     notify(notificationId, notificationBuilder.build())
                 } catch (ex: IllegalArgumentException) {
-                    println("stopped1")
+                    println("stopped1") //TODO change notification and change in clips service
                     directory.deleteRecursively()
                 }
             }

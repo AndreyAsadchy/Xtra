@@ -29,6 +29,7 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
 
     override fun changeQuality(index: Int) {
         helper.selectedQualityIndex = index
+        println(index)
         when (index) {
             in 0..helper.qualities.value!!.lastIndex -> {
                 val parametersBuilder = trackSelector.buildUponParameters()
@@ -87,7 +88,7 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
                 add(removeAt(indexOf("Audio only"))) //move audio option to bottom
                 helper.qualities.value = this
                 val index = prefs.getInt(TAG, 0).let { //TODO change to number based not index
-                    if (it < lastIndex) {
+                    if (it < lastIndex + 1) {
                         it
                     } else {
                         lastIndex - 1

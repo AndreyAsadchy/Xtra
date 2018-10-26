@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 if (it == true) {
                     handler.post { hideNavigationBar() }
                 } else {
-                    handler.post { playerFragment!!.minimize() } //TODO add minimize fast without callback
+                    handler.post { playerFragment?.minimize() } //TODO add minimize fast without callback
                 }
             } else {
                 navBarContainer.visibility = View.GONE

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.exact.xtra.R
 import com.exact.xtra.model.chat.ChatMessage
 import com.exact.xtra.ui.common.ChatAdapter
@@ -38,10 +39,8 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        adapter = ChatAdapter()
-        recyclerView.adapter = adapter
         recyclerView.itemAnimator = null
-        layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        layoutManager = LinearLayoutManager(context)
         layoutManager.stackFromEnd = true
         recyclerView.layoutManager = layoutManager
         recyclerView.setOnTouchListener { _, event ->
@@ -73,8 +72,9 @@ class ChatView : RelativeLayout {
         }
     }
 
-    fun submitList(list: MutableList<ChatMessage>?) {
-        adapter.submitList(list)
+    fun submitList(list: MutableList<ChatMessage>) {
+        adapter = ChatAdapter(list)
+        recyclerView.adapter = adapter
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1

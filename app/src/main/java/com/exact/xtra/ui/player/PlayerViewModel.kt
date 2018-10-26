@@ -32,9 +32,9 @@ abstract class PlayerViewModel(
     init {
         dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
         trackSelector = DefaultTrackSelector()
-        if (playerType == PlayerType.VIDEO) {
-            trackSelector.parameters = trackSelector.buildUponParameters().setForceHighestSupportedBitrate(true).build()
-        }
+//        if (playerType == PlayerType.VIDEO) {
+//            trackSelector.parameters = trackSelector.buildUponParameters().setForceHighestSupportedBitrate(true).build()
+//        }
         player = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
         player.addListener(this)
     }

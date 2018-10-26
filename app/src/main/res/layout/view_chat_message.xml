@@ -13,7 +13,8 @@
         android:layout_width="0dp"
         android:inputType="textCapSentences|textAutoCorrect"
         android:imeOptions="actionSend"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:windowSoftInputMode="adjustResize|stateUnchanged"/>
 
     <!--<ImageButton-->
         <!--android:id="@+id/emotes"-->
