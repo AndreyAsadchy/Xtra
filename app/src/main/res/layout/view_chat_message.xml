@@ -11,7 +11,7 @@
         android:id="@+id/editText"
         android:layout_weight="5"
         android:layout_width="0dp"
-        android:inputType="textCapSentences|textAutoCorrect"
+        android:inputType="textCapSentences|textAutoComplete"
         android:imeOptions="actionSend"
         android:layout_height="match_parent"
         android:windowSoftInputMode="adjustResize|stateUnchanged"/>

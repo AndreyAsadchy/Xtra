@@ -1,15 +1,17 @@
 package com.exact.xtra.ui.player.clip
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.content.edit
 import com.exact.xtra.model.clip.Clip
 import com.exact.xtra.repository.PlayerRepository
 import com.exact.xtra.service.ClipDownloadService
 import com.exact.xtra.ui.OnQualityChangeListener
 import com.exact.xtra.ui.player.PlayerHelper
-import com.exact.xtra.ui.player.PlayerType
 import com.exact.xtra.ui.player.PlayerViewModel
+import com.exact.xtra.util.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import io.reactivex.rxkotlin.addTo
@@ -17,18 +19,29 @@ import javax.inject.Inject
 
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository) : PlayerViewModel(context, PlayerType.VIDEO), OnQualityChangeListener {
+        private val playerRepository: PlayerRepository) : PlayerViewModel(context), OnQualityChangeListener {
+
+    private companion object {
+        const val TAG = "ClipPlayerViewModel"
+    }
 
     lateinit var clip: Clip
     private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(dataSourceFactory)
     private var playbackProgress: Long = 0
     val helper = PlayerHelper()
+    private val prefs = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
 
     override fun changeQuality(index: Int) {
-        if (helper.selectedQualityIndex != index) {
-            playbackProgress = player.currentPosition
-            play(helper.urls[helper.qualities.value!![index]]!!)
-        }
+        playbackProgress = player.currentPosition
+        val quality = helper.qualities.value!![index]
+        play(helper.urls[quality]!!)
+        prefs.edit { putString(TAG, quality.toString()) }
+        helper.selectedQualityIndex = index
+    }
+
+    override fun play() {
+        super.play()
+        player.seekTo(playbackProgress)
     }
 
     fun init() {
@@ -36,21 +49,23 @@ class ClipPlayerViewModel @Inject constructor(
                 .subscribe({
                     val qualities = ArrayList<CharSequence>(it.size)
                     it.forEach { option ->
-                        qualities.add(option.quality)
-                        helper.urls[option.quality] = option.source
+                        val quality = option.quality + "p"
+                        qualities.add(quality)
+                        helper.urls[quality] = option.source
                     }
-                    play(helper.urls[qualities[helper.selectedQualityIndex]]!!)
+                    play(helper.urls[qualities[0]]!!)
                     helper.qualities.postValue(qualities)
-                    if (clip.vod != null) {
-                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id)
-                                .subscribe({ response ->
-
-                                }, { t ->
-
-                                })
-                                .addTo(compositeDisposable)
-
-                    }
+                    helper.selectedQualityIndex = 0
+//                    if (clip.vod != null) {
+//                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id)
+//                                .subscribe({ response ->
+//
+//                                }, { t ->
+//
+//                                })
+//                                .addTo(compositeDisposable)
+//
+//                    }
                 }, {
 
                 })

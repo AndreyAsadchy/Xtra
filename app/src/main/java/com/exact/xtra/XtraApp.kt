@@ -1,9 +1,9 @@
 package com.exact.xtra
 
 import android.app.Activity
+import android.app.Application
 import android.app.Service
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.multidex.MultiDexApplication
 import com.exact.xtra.di.AppInjector
 import com.exact.xtra.util.AppLifecycleObserver
 import com.exact.xtra.util.LifecycleListener
@@ -13,7 +13,7 @@ import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
 import javax.inject.Inject
 
-class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector {
+class XtraApp : Application(), HasActivityInjector, HasServiceInjector {
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>

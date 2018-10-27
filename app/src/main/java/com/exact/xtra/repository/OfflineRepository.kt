@@ -5,7 +5,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.exact.xtra.db.VideosDao
 import com.exact.xtra.model.OfflineVideo
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 

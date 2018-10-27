@@ -34,6 +34,11 @@ class VideoPlayerViewModel @Inject constructor(
                 .addTo(compositeDisposable)
     }
 
+    override fun play() {
+        super.play()
+        player.seekTo(playbackProgress)
+    }
+
 //    override fun play() {
 //        super.play()
 //        player.seekTo(playbackProgress)

@@ -14,32 +14,20 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class PlayerViewModel(
-        context: Application,
-        playerType: PlayerType) : AndroidViewModel(context), Player.EventListener, Initializable {
+abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, Initializable {
 
-    val player: SimpleExoPlayer
-    protected val dataSourceFactory: DataSource.Factory
-    protected val trackSelector: DefaultTrackSelector
+    protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
+    protected val trackSelector = DefaultTrackSelector()
     protected val compositeDisposable = CompositeDisposable()
     protected lateinit var mediaSource: MediaSource
+    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
 
-    init {
-        dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
-        trackSelector = DefaultTrackSelector()
-//        if (playerType == PlayerType.VIDEO) {
-//            trackSelector.parameters = trackSelector.buildUponParameters().setForceHighestSupportedBitrate(true).build()
-//        }
-        player = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
+    open fun play() {
         player.addListener(this)
-    }
-
-    fun play() {
         player.prepare(mediaSource)
         player.playWhenReady = true
     }

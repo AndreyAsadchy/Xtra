@@ -9,14 +9,16 @@ import com.exact.xtra.ui.player.PlayerMode.DISABLED
 import com.exact.xtra.ui.player.PlayerMode.NORMAL
 import com.exact.xtra.util.C
 import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import java.util.LinkedList
 import java.util.regex.Pattern
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
-abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context, PlayerType.HLS), OnQualityChangeListener {
+abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context), OnQualityChangeListener {
 
     private companion object {
         const val VIDEO_RENDERER = 0
@@ -25,24 +27,59 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
     }
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
-    val helper = PlayerHelper()
+    private lateinit var tempList: List<CharSequence>
 
+    val helper = PlayerHelper()
     override fun changeQuality(index: Int) {
         helper.selectedQualityIndex = index
-        println(index)
         when (index) {
             in 0..helper.qualities.value!!.lastIndex -> {
                 val parametersBuilder = trackSelector.buildUponParameters()
-                when (index) {
-                    0 -> parametersBuilder.clearSelectionOverrides() //Auto
-                    else -> parametersBuilder.setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, index - 1))
+                val quality = when (index) {
+                    0 -> {
+                        parametersBuilder.clearSelectionOverrides()
+                        "Auto"
+                    }
+                    else -> {
+                        parametersBuilder.setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, index - 1))
+                        helper.qualities.value!![index - 1].toString()
+                    }
                 }
                 trackSelector.setParameters(parametersBuilder)
                 changePlayerMode(NORMAL)
-                prefs.edit { putInt(TAG, index) }
+                prefs.edit { putString(TAG, quality) }
             }
             helper.qualities.value!!.lastIndex + 1 -> changePlayerMode(AUDIO_ONLY)
             else -> changePlayerMode(DISABLED)
+        }
+    }
+
+    private var initialized = false
+
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+        if (!initialized) {
+            trackSelector.currentMappedTrackInfo?.let {
+                initialized = true
+                val index = prefs.getString(TAG, "Auto").let { quality: String ->
+                    if (quality == "Auto") {
+                        0
+                    } else {
+                        val index = tempList.indexOf(quality)
+                        if (index != -1) {
+                            index + 1
+                        } else {
+                            0
+                        }
+                    }
+                }
+                helper.selectedQualityIndex = index
+                if (index != 0) {
+                    val parametersBuilder = trackSelector.buildUponParameters()
+                            .setSelectionOverride(VIDEO_RENDERER, it.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, index - 1))
+                    trackSelector.setParameters(parametersBuilder)
+                }
+                helper.qualities.value = tempList
+            }
         }
     }
 
@@ -83,18 +120,8 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
                 }
             }
             helper.urls.putAll(urls)
-            val qualities = LinkedList(urls.keys)
-            qualities.run {
+            tempList = LinkedList(urls.keys).apply {
                 add(removeAt(indexOf("Audio only"))) //move audio option to bottom
-                helper.qualities.value = this
-                val index = prefs.getInt(TAG, 0).let { //TODO change to number based not index
-                    if (it < lastIndex + 1) {
-                        it
-                    } else {
-                        lastIndex - 1
-                    }
-                }
-                changeQuality(index)
             }
         }
     }

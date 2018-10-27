@@ -4,7 +4,6 @@ import android.app.Application
 import android.net.Uri
 
 import com.exact.xtra.model.OfflineVideo
-import com.exact.xtra.ui.player.PlayerType
 import com.exact.xtra.ui.player.PlayerViewModel
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -13,7 +12,7 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import javax.inject.Inject
 
 class OfflinePlayerViewModel @Inject constructor(
-        context: Application) : PlayerViewModel(context, PlayerType.VIDEO) {
+        context: Application) : PlayerViewModel(context) {
 
     lateinit var video: OfflineVideo
     private var playbackProgress: Long = 0

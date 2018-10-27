@@ -21,9 +21,10 @@ import com.iheartradio.m3u8.data.Playlist
 import com.iheartradio.m3u8.data.TrackData
 import com.iheartradio.m3u8.data.TrackInfo
 import dagger.android.AndroidInjection
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -94,7 +95,7 @@ class VideoDownloadService : Service() {
         notificationManager.apply {
             notificationBuilder.setProgress(maxProgress, currentProgress, false)
             notify(notificationId, notificationBuilder.build())
-            downloadTask = async {
+            downloadTask = GlobalScope.async {
                 segments.forEach {
                     val request = Request.Builder().url(url + it.first).build()
                     val response = okHttpClient.newCall(request).execute()
@@ -115,7 +116,7 @@ class VideoDownloadService : Service() {
                     }
                 }
             }
-            launch {
+            GlobalScope.launch {
                 try {
                     downloadTask.await()
                     Log.d(TAG, "Downloading done. Creating playlist")
