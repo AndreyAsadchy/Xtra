@@ -3,6 +3,8 @@
     package="com.exact.xtra">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
 
     <application
         android:name=".XtraApp"
@@ -21,6 +23,7 @@
         <activity android:name=".ui.login.LoginActivity" />
         <service android:name=".service.VideoDownloadService"/>
         <service android:name=".service.ClipDownloadService"/>
+        <receiver android:name=".service.VideoDownloadService$CancelReceiver"/>
     </application>
 
 </manifest>
