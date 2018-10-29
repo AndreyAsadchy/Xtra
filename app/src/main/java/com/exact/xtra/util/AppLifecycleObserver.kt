@@ -18,7 +18,7 @@ class AppLifecycleObserver : LifecycleObserver {
         listener?.onMovedToBackground()
     }
 
-    fun setLifecycleListener(listener: LifecycleListener) {
+    fun setLifecycleListener(listener: LifecycleListener?) {
         this.listener = listener
     }
 }

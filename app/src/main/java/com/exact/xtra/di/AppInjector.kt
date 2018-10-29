@@ -62,6 +62,12 @@ object AppInjector {
                         xtraApp.setLifecycleListener(f)
                     }
                 }
+
+                override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                    if (f is LifecycleListener) {
+                        xtraApp.setLifecycleListener(null)
+                    }
+                }
             }, true)
         }
     }

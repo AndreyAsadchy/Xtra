@@ -12,9 +12,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.util.LongSparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
+import androidx.core.util.keyIterator
 import com.exact.xtra.GlideApp
 import com.exact.xtra.R
 import com.exact.xtra.db.VideosDao
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
 class VideoDownloadService : Service() {
@@ -41,18 +44,20 @@ class VideoDownloadService : Service() {
     private companion object {
         const val TAG = "VideoDownloadService"
         const val CHANNEL_ID = "download_channel"
-        val idsMap = HashMap<Long, Int>()
+        val idsMap = LongSparseArray<Int>()
         var canceled = false
     }
+
     @Inject
     lateinit var dao: VideosDao
-    private var isDownloading = false
-    private val downloadQueue: Queue<Pair<Bundle, Int>> = LinkedList()
+    private val downloadQueue: Queue<Bundle> = LinkedList()
 
     private lateinit var downloadManager: DownloadManager
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManagerCompat
+    private val notificationId = System.currentTimeMillis().toInt() //TODO change to video id and handle notification clicks
     private lateinit var cancelAction: NotificationCompat.Action
+    private var countDownLatch = CountDownLatch(0)
 
     private lateinit var video: Video
     private lateinit var quality: String
@@ -76,23 +81,90 @@ class VideoDownloadService : Service() {
     })
     private var maxProgress = 0
     private var currentProgress = 0
+    private var processedCount = 0
     private var totalDuration = 0L
     private lateinit var directoryUri: Uri
     private lateinit var directoryPath: String
 
+
     override fun onCreate() {
         super.onCreate()
         AndroidInjection.inject(this)
+        downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        notificationManager = NotificationManagerCompat.from(this)
+        notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
+            setSmallIcon(R.drawable.ic_notification)
+            priority = NotificationCompat.PRIORITY_HIGH
+        }
+        val cancelIntent = PendingIntent.getBroadcast(this, 0, Intent(this, CancelReceiver::class.java), 0)
+        cancelAction = NotificationCompat.Action(0, getString(R.string.cancel), cancelIntent)
+        val receiver = object : BroadcastReceiver() {
+
+            private var stopped = false
+
+            fun process(intent: Intent) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                val segmentIndex = idsMap.get(id)
+                val segment = segments[segmentIndex]
+                val trackDuration = segment.second
+                totalDuration += trackDuration
+                tracks.add(TrackData.Builder()
+                        .withUri(directoryPath + File.separator + segment.first)
+                        .withTrackInfo(TrackInfo(trackDuration.toFloat(), segment.first))
+                        .build())
+            }
+
+            @SuppressLint("RestrictedApi")
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.apply {
+                    processedCount++
+                    if (!canceled) {
+                        if (++currentProgress != maxProgress) {
+                            enqueueNext()
+                            process(intent)
+                            notificationBuilder.setProgress(maxProgress, currentProgress, false)
+                            notificationManager.notify(notificationId, notificationBuilder.build())
+                        } else {
+                            process(intent)
+                            onDownloadCompleted()
+                        }
+                    } else {
+                        if (!stopped) {
+                            stopped = true
+                            Log.d(TAG, "Canceled download")
+                            notificationManager.cancel(notificationId)
+                            reset()
+                            if (processedCount == maxProgress) {
+                                stopped = false
+                                canceled = false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "unchecked_cast")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val downloadRequest = intent!!.extras to System.currentTimeMillis().toInt() //TODO implement download queue
+        val downloadRequest = intent!!.extras
         downloadQueue.add(downloadRequest)
-        if (!isDownloading)
-        with (intent.extras) {
+        Log.d(TAG, "Adding download to queue")
+        GlobalScope.launch {
+            countDownLatch.await()
+            if (init(downloadQueue.poll())) {
+                startDownload()
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "unchecked_cast")
+    private fun init(bundle: Bundle?): Boolean {
+        if (bundle == null) return false
+        with (bundle) {
             video = getParcelable("video") as Video
             quality = getString("quality")
             url = getString("url")
@@ -104,59 +176,21 @@ class VideoDownloadService : Service() {
             directoryPath = absolutePath
         }
         maxProgress = segments.size
-        downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val cancelIntent = PendingIntent.getBroadcast(this, 0, Intent(this, CancelReceiver::class.java).putExtra("id", notificationId), Intent.FILL_IN_DATA)
-        cancelAction = NotificationCompat.Action(0, getString(R.string.cancel), cancelIntent)
-        notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
+        notificationBuilder.apply {
             setContentTitle(getString(R.string.downloading))
             setContentText(video.title)
             setOngoing(true)
-            setSmallIcon(R.drawable.ic_notification)
-            priority = NotificationCompat.PRIORITY_HIGH
             addAction(cancelAction)
         }
-        notificationManager = NotificationManagerCompat.from(this)
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent?.run {
-                    if (!canceled) {
-                        val id = getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                        val segmentIndex = idsMap[id]!!
-                        val segment = segments[segmentIndex]
-                        val trackDuration = segment.second
-                        totalDuration += trackDuration
-                        tracks.add(TrackData.Builder()
-                                .withUri(directoryPath + File.separator + segment.first)
-                                .withTrackInfo(TrackInfo(trackDuration.toFloat(), segment.first))
-                                .build())
-                        if (++currentProgress != maxProgress) {
-                            notificationBuilder.setProgress(maxProgress, currentProgress, false)
-                        } else {
-                            onDownloadCompleted()
-                        }
-                        notificationManager.notify(notificationId, notificationBuilder.build())
-                    }
-                }
-            }
-        }
-        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        startDownload()
-        return super.onStartCommand(intent, flags, startId)
-
+        countDownLatch = CountDownLatch(1)
+        return true
     }
 
     private fun startDownload() {
         Log.d(TAG, "Starting download")
         notificationBuilder.setProgress(maxProgress, currentProgress, false)
         notificationManager.notify(notificationId, notificationBuilder.build())
-        segments.forEachIndexed { index, pair ->
-            val request = DownloadManager.Request((url + pair.first).toUri()).apply {
-                setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-                setVisibleInDownloadsUi(false)
-                setDestinationUri(Uri.withAppendedPath(directoryUri, pair.first))
-            }
-            idsMap[downloadManager.enqueue(request)] = index
-        }
+        enqueueNext()
     }
 
     @SuppressLint("RestrictedApi")
@@ -182,14 +216,37 @@ class VideoDownloadService : Service() {
                 val thumbnail = glide.downloadOnly().load(preview.medium).submit().get().absolutePath
                 val logo = glide.downloadOnly().load(channel.logo).submit().get().absolutePath
                 dao.insert(OfflineVideo(playlistPath, title, channel.name, game, totalDuration, currentDate, createdAt, thumbnail, logo))
+                reset()
             }
         }
-        notificationBuilder
-                .setAutoCancel(true)
-                .setContentTitle(getString(R.string.downloaded))
-                .setProgress(0, 0, false)
-                .setOngoing(false)
-                .mActions.remove(cancelAction)
+        notificationBuilder.apply {
+            setAutoCancel(true)
+            setContentTitle(getString(R.string.downloaded))
+            setProgress(0, 0, false)
+            setOngoing(false)
+            mActions.remove(cancelAction)
+        }
+        notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
+        notificationManager.cancel(notificationId)
+    }
+
+    private fun enqueueNext() {
+        val pair = segments[currentProgress]
+        val request = DownloadManager.Request((url + pair.first).toUri()).apply {
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+            setVisibleInDownloadsUi(false)
+            setDestinationUri(Uri.withAppendedPath(directoryUri, pair.first))
+        }
+        idsMap.put(downloadManager.enqueue(request), currentProgress)
+    }
+
+    private fun reset() {
+        idsMap.clear()
+        tracks.clear()
+        currentProgress = 0
+        processedCount = 0
+        totalDuration = 0L
+        countDownLatch.countDown()
     }
 
     class CancelReceiver : BroadcastReceiver() {
@@ -197,17 +254,15 @@ class VideoDownloadService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             context?.let {
                 canceled = true
-                val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                downloadManager.remove(*idsMap.keys.toLongArray())
-                val notificationBuilder = NotificationCompat.Builder(it, CHANNEL_ID).apply {
-                    setAutoCancel(true)
-                    setContentTitle(it.getString(R.string.canceled))
-                    setProgress(0, 0 , false)
-                    setOngoing(false)
-                    setSmallIcon(R.drawable.ic_notification)
-                    priority = NotificationCompat.PRIORITY_HIGH
+                val downloadManager = it.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val array = LongArray(idsMap.size()).apply {
+                    var i = 0
+                    val iterator = idsMap.keyIterator()
+                    while (iterator.hasNext()) {
+                        this[i++] = iterator.next()
+                    }
                 }
-                NotificationManagerCompat.from(it).notify(intent!!.getIntExtra("id", -1), notificationBuilder.build())
+                downloadManager.remove(*array)
             }
         }
     }

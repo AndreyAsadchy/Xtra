@@ -34,7 +34,7 @@ class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector {
         return dispatchingServiceInjector
     }
 
-    fun setLifecycleListener(listener: LifecycleListener) {
+    fun setLifecycleListener(listener: LifecycleListener?) {
         appLifecycleObserver.setLifecycleListener(listener)
     }
 }
