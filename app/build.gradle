@@ -99,12 +99,6 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 androidExtensions {
     experimental = true
 }

@@ -49,10 +49,13 @@
 
     <style name="BottomSheetDark" parent="Theme.Design.BottomSheetDialog">
         <item name="android:colorBackground">@color/primaryDark</item>
+        <item name="colorAccent">@color/accentDark</item>
+        <item name="colorButtonNormal">@color/secondaryDark</item>
     </style>
 
     <style name="DialogDark" parent="Theme.AppCompat.Dialog">
         <item name="android:background">@color/primaryDark</item>
+        <item name="colorAccent">@color/accentDark</item>
     </style>
     
     <style name="PlayerControl">
