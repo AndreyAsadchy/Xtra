@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.exact.xtra.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.exact7.xtra.ui.view.draggableview.DraggableView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:DraggableView="http://schemas.android.com/apk/res-auto"
@@ -22,14 +22,14 @@
         android:background="?android:colorBackground"
         android:layout_below="@id/playerView">
 
-        <com.exact.xtra.ui.view.ChatView
+        <com.github.exact7.xtra.ui.view.ChatView
             android:id="@+id/chatView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
 
-        <com.exact.xtra.ui.view.MessageView
+        <com.github.exact7.xtra.ui.view.MessageView
             android:id="@+id/messageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,4 +45,4 @@
         app:show_buffering="always"
         app:resize_mode="fill"/>
 
-</com.exact.xtra.ui.view.draggableview.DraggableView>
+</com.github.exact7.xtra.ui.view.draggableview.DraggableView>

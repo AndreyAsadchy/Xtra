@@ -5,8 +5,8 @@
 
     <data>
         <import type="android.text.format.DateUtils"/>
-        <import type="com.exact.xtra.util.TwitchApiHelper"/>
-        <variable name="video" type="com.exact.xtra.model.OfflineVideo"/>
+        <import type="com.github.exact7.xtra.util.TwitchApiHelper"/>
+        <variable name="video" type="com.github.exact7.xtra.model.OfflineVideo"/>
     </data>
 
     <androidx.cardview.widget.CardView

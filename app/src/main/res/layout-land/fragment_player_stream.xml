@@ -22,14 +22,14 @@
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
 
-        <com.exact.xtra.ui.view.ChatView
+        <com.github.exact7.xtra.ui.view.ChatView
             android:id="@+id/chatView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
 
-        <com.exact.xtra.ui.view.MessageView
+        <com.github.exact7.xtra.ui.view.MessageView
             android:id="@+id/messageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

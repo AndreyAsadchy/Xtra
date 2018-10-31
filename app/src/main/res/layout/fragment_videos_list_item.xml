@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.exact.xtra.util.TwitchApiHelper"/>
+        <import type="com.github.exact7.xtra.util.TwitchApiHelper"/>
         <import type="android.text.format.DateUtils"/>
         <variable
             name="video"
-            type="com.exact.xtra.model.video.Video"/>
+            type="com.github.exact7.xtra.model.video.Video"/>
     </data>
 
     <androidx.cardview.widget.CardView

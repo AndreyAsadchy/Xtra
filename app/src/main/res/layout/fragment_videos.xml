@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="viewModel" type="com.exact.xtra.ui.videos.VideosViewModel" />
+        <variable name="viewModel" type="com.github.exact7.xtra.ui.videos.VideosViewModel" />
     </data>
 
     <LinearLayout
@@ -19,7 +19,7 @@
         <include
             android:id="@+id/recyclerViewLayout"
             layout="@layout/common_recycler_view_layout"
-            app:viewModel="@{(com.exact.xtra.ui.common.PagedListViewModel)viewModel}"/>
+            app:viewModel="@{(com.github.exact7.xtra.ui.common.PagedListViewModel)viewModel}"/>
 
     </LinearLayout>
 </layout>

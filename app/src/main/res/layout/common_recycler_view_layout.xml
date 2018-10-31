@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.exact.xtra.repository.LoadingState"/>
+        <import type="com.github.exact7.xtra.repository.LoadingState"/>
         <variable
             name="viewModel"
-            type="com.exact.xtra.ui.common.PagedListViewModel"/>
+            type="com.github.exact7.xtra.ui.common.PagedListViewModel"/>
     </data>
 
     <RelativeLayout

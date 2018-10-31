@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="viewModel" type="com.exact.xtra.ui.downloads.DownloadsViewModel" />
+        <variable name="viewModel" type="com.github.exact7.xtra.ui.downloads.DownloadsViewModel" />
     </data>
 
     <RelativeLayout

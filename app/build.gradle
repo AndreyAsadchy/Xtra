@@ -13,19 +13,32 @@ def retrofit = "2.4.0"
 def glide = "4.8.0"
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'D@)^C%$&%'
+            storeFile file('C:/Users/Sampe/Desktop/keystore.jks')
+            storePassword 'd206c5475'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.exact.xtra"
+        applicationId "com.github.exact7.xtra"
         minSdkVersion 16
         versionCode 1
         versionName "0.9"
-        testInstrumentationRunner "android.support.changeQuality.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
     externalNativeBuild {
@@ -43,10 +56,12 @@ android {
     dataBinding {
         enabled true
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
 
     //Support library
@@ -64,7 +79,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
     implementation 'androidx.core:core-ktx:1.0.0'
-
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    
     //Misc
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
@@ -89,7 +105,7 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2-eap13'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
 
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
