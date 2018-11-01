@@ -3,21 +3,21 @@
     <item
         android:id="@+id/fragment_games"
         android:icon="@drawable/ic_games_black_24dp"
-        android:title="@string/navigation_bar_games" />
+        android:title="@string/nav_bar_games" />
     <item
         android:id="@+id/fragment_top"
         android:icon="@drawable/ic_trending_up_black_24dp"
-        android:title="@string/navigation_bar_top_streams" />
+        android:title="@string/nav_bar_popular" />
     <item
         android:id="@+id/fragment_follow"
         android:icon="@drawable/ic_favorite_black_24dp"
-        android:title="@string/navigation_bar_followed_streams" />
+        android:title="@string/nav_bar_following" />
     <item
         android:id="@+id/fragment_downloads"
         android:icon="@drawable/ic_file_download_black_24dp"
-        android:title="@string/navigation_bar_downloads" />
+        android:title="@string/nav_bar_downloads" />
     <item
         android:id="@+id/fragment_menu"
         android:icon="@drawable/ic_menu_black_24dp"
-        android:title="@string/navigation_bar_menu" />
+        android:title="@string/nav_bar_menu" />
 </menu>

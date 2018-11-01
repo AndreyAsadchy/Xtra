@@ -13,8 +13,9 @@ import kotlinx.android.synthetic.main.view_chat.view.*
 
 class ChatView : RelativeLayout {
 
-    companion object {
-        private const val SCROLL_THRESHOLD = 5
+    private companion object {
+        const val SCROLL_THRESHOLD = 5
+        const val MAX_MESSAGE_COUNT = 100
     }
 
     lateinit var adapter: ChatAdapter
@@ -65,10 +66,13 @@ class ChatView : RelativeLayout {
     }
 
     fun notifyAdapter() {
-        val lastItemPosition = getLastItemPosition()
-        adapter.notifyItemInserted(lastItemPosition)
+        adapter.notifyItemInserted(getLastItemPosition())
+        if (adapter.itemCount > MAX_MESSAGE_COUNT) {
+            adapter.messages.removeAt(0)
+            adapter.notifyItemRemoved(0)
+        }
         if (!isChatTouched && getScrollOffsetItemCount() < SCROLL_THRESHOLD) {
-            recyclerView.scrollToPosition(lastItemPosition)
+            recyclerView.scrollToPosition(getLastItemPosition())
         }
     }
 

@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Xtra</string>
-    <string name="navigation_bar_games">Games</string>
-    <string name="navigation_bar_top_streams">Top streams</string>
-    <string name="navigation_bar_followed_streams">My streams</string>
-    <string name="navigation_bar_downloads">Downloads</string>
-    <string name="navigation_bar_menu">Menu</string>
+    <string name="nav_bar_games">Games</string>
+    <string name="nav_bar_popular">Popular</string>
+    <string name="nav_bar_following">Following</string>
+    <string name="nav_bar_downloads">Downloads</string>
+    <string name="nav_bar_menu">Menu</string>
     <string name="retry">Retry</string>
     <string name="connection_error">Error connecting to the server. Please try again</string>
     <string name="sort">Sort</string>
@@ -26,11 +26,8 @@
     <string name="audio_only">Audio only</string>
     <string name="chat_only">Chat only</string>
     <string name="select_quality">Select quality</string>
-    <string name="segment">Segment</string>
     <string name="cancel">Cancel</string>
     <string name="download">Download</string>
-    <string name="download_range">Download %s</string>
-    <string name="entire_video">entire video</string>
     <string name="downloading">Downloading</string>
     <string name="downloaded">Video has been downloaded</string>
     <string name="download_error">Error downloading video</string>
@@ -38,7 +35,8 @@
     <string name="downloaded_date">Downloaded %s</string>
     <string name="welcome">Welcome</string>
     <string name="login_prompt">Log in to Twitch to see your followed channels, or you can do it later</string>
-    <string name="login">Log in</string>
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
     <string name="skip">Skip</string>
     <string name="specify_time">Specify time</string>
     <string name="from">From:</string>

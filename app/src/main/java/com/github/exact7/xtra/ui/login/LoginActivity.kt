@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.webkit.CookieManager
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -84,20 +86,19 @@ class LoginActivity : AppCompatActivity() {
                     }
                     return super.shouldOverrideUrlLoading(view, url)
                 }
+
+                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                    view?.apply {
+                        val html ="<html><body><div align=\"center\" >No internet connection</div></body>"
+                        loadUrl("about:blank")
+                        loadDataWithBaseURL(null , html, "text/html", "UTF-8", null)
+                    }
+                }
             }
-            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_read user_subscriptions")
+            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read")
         }
     }
 
-    override fun onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-//
 //    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
 //        if (event.action == KeyEvent.ACTION_DOWN) {
 //            when (keyCode) {

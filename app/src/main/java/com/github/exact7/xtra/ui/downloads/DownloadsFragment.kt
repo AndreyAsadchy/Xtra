@@ -11,10 +11,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.OfflineVideo
+import com.github.exact7.xtra.ui.Scrollable
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
 
-class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable {
+class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollable {
 
     interface OnVideoSelectedListener {
         fun startOfflineVideo(video: OfflineVideo)
@@ -51,5 +52,9 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    override fun scrollToTop() {
+        recyclerView.scrollToPosition(0)
     }
 }

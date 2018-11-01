@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.ui.Scrollable
 
-abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwarePagerFragment {
+abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwarePagerFragment, Scrollable {
 
     private lateinit var adapter: ItemAwareFragmentPagerAdapter
     private lateinit var viewPager: androidx.viewpager.widget.ViewPager
@@ -28,5 +29,9 @@ abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwareP
     protected fun setAdapter(adapter: ItemAwareFragmentPagerAdapter) {
         this.adapter = adapter
         viewPager.adapter = adapter
+    }
+
+    override fun scrollToTop() {
+        (currentFragment as Scrollable).scrollToTop()
     }
 }

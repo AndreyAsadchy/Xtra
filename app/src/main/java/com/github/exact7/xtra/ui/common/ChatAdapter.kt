@@ -22,11 +22,8 @@ import com.github.exact7.xtra.model.chat.Image
 import java.util.Random
 import kotlin.collections.ArrayList
 
-class ChatAdapter(private val messages: List<ChatMessage>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
-    private companion object {
-        const val MAX_MESSAGE_COUNT = 100
-    }
 
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
@@ -105,7 +102,7 @@ class ChatAdapter(private val messages: List<ChatMessage>) : RecyclerView.Adapte
         loadImages(holder, images, builder)
     }
 
-    override fun getItemCount(): Int = Math.min(messages.size, MAX_MESSAGE_COUNT)
+    override fun getItemCount(): Int = messages.size
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
         images.forEach { (url, start, end, isEmote) ->

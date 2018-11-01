@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                     viewModel.hasValidated = true
 //                    authRepository.validate(user.token)
 //                            .subscribe({
-                                init()
+                    init()
 //                            }, {
 //                                viewModel.user.value = null
 //                                getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
 
     override fun onBackPressed() {
         if (viewModel.isPlayerOpened && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
-            supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
+            closePlayer()
             navBarContainer.visibility = View.VISIBLE
             return
         }

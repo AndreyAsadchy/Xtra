@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <ImageButton
         android:id="@id/exo_play"
@@ -18,10 +19,10 @@
         style="@style/ExoMediaButton.Pause"/>
 
     <!--<ImageButton-->
-        <!--android:id="@+id/minimize"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:src="@drawable/baseline_expand_more_black_48"/>-->
+    <!--android:id="@+id/minimize"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:src="@drawable/baseline_expand_more_black_48"/>-->
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -29,11 +30,11 @@
         android:layout_gravity="end">
 
         <!--<ImageButton-->
-            <!--android:id="@+id/player_profile"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:src="@drawable/baseline_person_black_24"-->
-            <!--android:visibility="gone"/>-->
+        <!--android:id="@+id/player_profile"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:src="@drawable/baseline_person_black_24"-->
+        <!--android:visibility="gone"/>-->
 
         <ImageButton
             android:id="@+id/settings"
@@ -41,15 +42,15 @@
             style="@style/PlayerControl"/>
 
         <!--<ImageButton-->
-            <!--android:id="@+id/player_more"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:visibility="gone"-->
-            <!--android:src="@drawable/baseline_more_vert_black_24" />-->
+        <!--android:id="@+id/player_more"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:visibility="gone"-->
+        <!--android:src="@drawable/baseline_more_vert_black_24" />-->
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end">
@@ -58,34 +59,30 @@
             android:id="@+id/minimizePlayer"
             android:src="@drawable/baseline_unfold_less_black_24"
             android:rotation="90"
-            style="@style/PlayerControl"
-            android:layout_toLeftOf="@id/fullscreenExit"
-            android:layout_toStartOf="@id/fullscreenExit"/>
+            style="@style/PlayerControl" />
 
         <ImageButton
             android:id="@+id/maximizePlayer"
             android:src="@drawable/baseline_unfold_more_black_24"
             android:rotation="90"
-            style="@style/PlayerControl"
-            android:layout_toLeftOf="@id/fullscreenExit"
-            android:layout_toStartOf="@id/fullscreenExit" />
+            style="@style/PlayerControl" />
 
         <!--<ImageButton-->
-            <!--android:id="@+id/player_hide_chat"-->
-            <!--android:visibility="gone"-->
-            <!--android:src="@drawable/baseline_speaker_notes_off_black_24" />-->
+        <!--android:id="@+id/player_hide_chat"-->
+        <!--android:visibility="gone"-->
+        <!--android:src="@drawable/baseline_speaker_notes_off_black_24" />-->
 
 
         <!--<ImageButton-->
-            <!--android:id="@+id/player_show_chat"-->
-            <!--android:visibility="gone"-->
-            <!--android:src="@drawable/baseline_chat_black_24" />-->
+        <!--android:id="@+id/player_show_chat"-->
+        <!--android:visibility="gone"-->
+        <!--android:src="@drawable/baseline_chat_black_24" />-->
 
         <ImageButton
             android:id="@+id/fullscreenExit"
             android:src="@drawable/baseline_fullscreen_exit_black_24"
             style="@style/PlayerControl"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </FrameLayout>

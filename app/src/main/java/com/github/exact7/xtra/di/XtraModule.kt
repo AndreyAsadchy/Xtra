@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.di
 
 import android.os.AsyncTask
+import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.IdApi
 import com.github.exact7.xtra.api.KrakenApi
@@ -118,7 +119,12 @@ class XtraModule {
     @Provides
     @Named("okHttpDefault")
     fun providesDefaultOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }).build()
+        val builder = OkHttpClient.Builder().apply {
+            if (BuildConfig.DEBUG) {
+                addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+            }
+        }
+        return builder.build()
     }
 
     @Singleton

@@ -22,7 +22,7 @@ class MenuFragment : androidx.fragment.app.Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity()
         val mainActivityViewModel = ViewModelProviders.of(activity).get(MainViewModel::class.java)
-        mainActivityViewModel.user.observe(this, Observer { login.text = if (it != null) "Log Out" else "Log In" })
+        mainActivityViewModel.user.observe(this, Observer { login.text = if (it != null) getString(R.string.log_out) else getString(R.string.log_in) })
         login.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 2) }
     }
 }

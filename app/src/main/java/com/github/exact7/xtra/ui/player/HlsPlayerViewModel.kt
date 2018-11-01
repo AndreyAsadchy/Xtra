@@ -3,6 +3,7 @@ package com.github.exact7.xtra.ui.player
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
@@ -111,17 +112,18 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
             val urls = LinkedHashMap<CharSequence, String>(tags.size)
             val pattern = Pattern.compile("NAME=\"(.+)\"")
             var trackIndex = 0
+            val audioOnly = getApplication<Application>().getString(R.string.audio_only)
             tags.forEach {
                 val matcher = pattern.matcher(it)
                 if (matcher.find()) {
                     val quality = matcher.group(1)
                     val url = masterPlaylist.variants[trackIndex++].url
-                    urls[if (!quality.startsWith("audio", true)) quality else "Audio only"] = url
+                    urls[if (!quality.startsWith("audio", true)) quality else audioOnly] = url
                 }
             }
             helper.urls.putAll(urls)
             tempList = LinkedList(urls.keys).apply {
-                add(removeAt(indexOf("Audio only"))) //move audio option to bottom
+                add(removeAt(indexOf(audioOnly))) //move audio option to bottom
             }
         }
     }

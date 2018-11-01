@@ -71,7 +71,6 @@ class VideoDownloadService : Service() {
     private val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
         fun parse(trackData: TrackData) =
                 trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).let { trackName ->
-                    println(trackName)
                     if (!trackName.endsWith("muted")) trackName.toInt() else trackName.substringBefore('-').toInt().also { println("after $it") }
                 }
 

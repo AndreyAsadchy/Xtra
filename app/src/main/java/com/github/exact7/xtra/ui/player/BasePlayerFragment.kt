@@ -21,9 +21,9 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
     private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
-    private var isPortraitOrientation: Boolean = false
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
+    protected var isPortraitOrientation: Boolean = false
 
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -66,6 +66,9 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
     override fun onDetach() {
         super.onDetach()
+        if (!isPortraitOrientation) {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         channelListener = null
         dragListener = null
     }

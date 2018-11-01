@@ -4,12 +4,13 @@
     android:id="@+id/fragment_player_sv"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true">
+    android:orientation="horizontal">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
-        android:layout_width="475dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="@android:color/black"
         app:controller_layout_id="@layout/player_stream"
         app:show_buffering="always"/>
@@ -18,7 +19,7 @@
     <LinearLayout
         android:id="@+id/chatContainer"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="175dp"
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
 
