@@ -51,13 +51,15 @@ class VideoPlayerViewModel @Inject constructor(
 
     fun download(quality: String, segmentFrom: Int, segmentTo: Int) {
         val context = getApplication<Application>()
-        Intent(context, VideoDownloadService::class.java).apply {
-            putExtra("video", video)
-            putExtra("quality", quality)
-            putExtra("url", helper.urls[quality]!!.substringBeforeLast('/') + "/")
-            putExtra("segments", ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }))
-            putExtra("target", toSeconds(mediaPlaylist.targetDurationUs).toInt())
-            context.startService(this)
+        VideoDownloadService.addToQueue(
+                video,
+                quality,
+                helper.urls[quality]!!.substringBeforeLast('/') + "/",
+                ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
+                toSeconds(mediaPlaylist.targetDurationUs).toInt()
+        )
+        Intent(context, VideoDownloadService::class.java).let {
+            context.startService(it)
         }
     }
 

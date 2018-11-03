@@ -15,6 +15,9 @@ import com.github.exact7.xtra.ui.view.draggableview.DraggableView
 import com.github.exact7.xtra.util.LifecycleListener
 import kotlinx.android.synthetic.main.player_stream.*
 import javax.inject.Inject
+import android.os.Build
+
+
 
 @Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
@@ -24,6 +27,12 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
     protected var isPortraitOrientation: Boolean = false
+    private val flags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,10 +54,30 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isPortraitOrientation = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        if (!isPortraitOrientation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            val decorView = requireActivity().window.decorView
+            decorView.systemUiVisibility = flags
+
+            // Code below is to handle presses of Volume up or Volume down.
+            // Without this, after pressing volume buttons, the navigation bar will
+            // show up and won't hide
+            decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+                if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+                    decorView.systemUiVisibility = flags
+                }
+            }
+        }
+    }
+
+    fun onWindowFocusChanged(hasFocus:Boolean) {
+        if (!isPortraitOrientation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && hasFocus) {
+            requireActivity().window.decorView.systemUiVisibility = flags
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.keepScreenOn = true
         if (isPortraitOrientation) {
             minimize.setOnClickListener { minimize() }
             draggableView = view as DraggableView
@@ -61,6 +90,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             }
+            requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION and View.SYSTEM_UI_FLAG_FULLSCREEN and View.SYSTEM_UI_FLAG_IMMERSIVE
         }
     }
 

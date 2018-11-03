@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.OfflineVideo
@@ -46,6 +48,13 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
         binding.viewModel = viewModel
         val adapter = DownloadsAdapter(listener!!, viewModel::delete)
         viewModel.load().observe(this, Observer(adapter::submitList))
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    recyclerView.smoothScrollToPosition(0)
+                }
+            }
+        })
         recyclerView.adapter = adapter
     }
 

@@ -58,7 +58,11 @@ class VideoDownloadDialog : DialogFragment() {
                 it
             }
         }
-        timeTo.hint = duration
+        timeTo.hint = if (duration.length != 5) {
+            duration
+        } else {
+            "00:$duration"
+        }
         timeFrom.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -83,11 +87,12 @@ class VideoDownloadDialog : DialogFragment() {
                                 timeTo.error = context.getString(R.string.to_is_longer)
                                 return@setOnClickListener
                             }
+                            val times = videoInfo.relativeStartTimes
                             val fromIndex = if (from == 0L) {
                                 0
                             } else {
                                 val min = from - videoInfo.targetDuration
-                                videoInfo.relativeStartTimes.binarySearch(comparison = { time ->
+                                times.binarySearch(comparison = { time ->
                                     val offset = time / 1000000L
                                     when {
                                         offset > from -> 1
@@ -96,11 +101,11 @@ class VideoDownloadDialog : DialogFragment() {
                                     }
                                 })
                             }
-                            val toIndex = if (to_ == videoInfo.totalDuration) {
-                                videoInfo.relativeStartTimes.size - 1
+                            val toIndex = if (to_ in times.last() / 1000000L..videoInfo.totalDuration) {
+                                times.size - 1
                             } else {
                                 val max = to_ + videoInfo.targetDuration
-                                videoInfo.relativeStartTimes.binarySearch(comparison = { time ->
+                                times.binarySearch(comparison = { time ->
                                     val offset = time / 1000000L
                                     when {
                                         offset > max -> 1

@@ -15,6 +15,7 @@ import android.util.LongSparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
+import androidx.core.util.contains
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.db.VideosDao
@@ -44,6 +45,7 @@ class ClipDownloadService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
                 val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if (!notifications.contains(id)) return //if it's from video download  TODO
                 val query = DownloadManager.Query().setFilterById(id)
                 val cursor = downloadManager.query(query)
                 if (cursor.moveToFirst()) {
@@ -84,7 +86,6 @@ class ClipDownloadService : Service() {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
-
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 

@@ -47,6 +47,8 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
+
+
 class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener {
 
     companion object {
@@ -317,5 +319,10 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return dispatchingFragmentInjector
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        playerFragment?.onWindowFocusChanged(hasFocus)
     }
 }

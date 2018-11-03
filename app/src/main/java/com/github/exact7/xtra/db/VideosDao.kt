@@ -10,7 +10,7 @@ import com.github.exact7.xtra.model.OfflineVideo
 @Dao
 interface VideosDao {
 
-    @Query("SELECT * FROM videos ORDER BY download_date DESC")
+    @Query("SELECT * FROM videos ORDER BY id DESC")
     fun getAll(): DataSource.Factory<Int, OfflineVideo>
 
     @Insert
