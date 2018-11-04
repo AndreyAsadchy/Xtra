@@ -65,8 +65,6 @@ class LiveChatTask(
         } finally {
             disconnect()
         }
-
-
     }
 
     private fun connect() {
@@ -116,6 +114,8 @@ class LiveChatTask(
             socket?.let {
                 if (!it.isClosed) {
                     it.shutdownOutput()
+                }
+                if (!it.isClosed) {
                     it.shutdownInput()
                 }
             }

@@ -153,10 +153,12 @@ class VideoDownloadService : Service() {
         notificationManager = NotificationManagerCompat.from(this)
         notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
             setSmallIcon(R.drawable.ic_notification)
-            priority = NotificationCompat.PRIORITY_DEFAULT
+            priority = NotificationCompat.PRIORITY_LOW
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "Xtra", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel(CHANNEL_ID, "Xtra", NotificationManager.IMPORTANCE_LOW).apply {
+                setSound(null, null)
+            }
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }

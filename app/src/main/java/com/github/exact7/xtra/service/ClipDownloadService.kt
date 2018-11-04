@@ -82,7 +82,9 @@ class ClipDownloadService : Service() {
         downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         notificationManager = NotificationManagerCompat.from(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "Xtra", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel(CHANNEL_ID, "Xtra", NotificationManager.IMPORTANCE_LOW).apply {
+                setSound(null, null)
+            }
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
@@ -109,7 +111,7 @@ class ClipDownloadService : Service() {
                 setContentText(clip.title)
                 setSmallIcon(R.drawable.ic_notification)
                 setOngoing(true)
-                priority = NotificationCompat.PRIORITY_HIGH
+                priority = NotificationCompat.PRIORITY_LOW
             }
             notificationManager.notify(id.toInt(), builder.build())
             notifications.put(id, builder)
