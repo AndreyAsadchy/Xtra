@@ -8,6 +8,7 @@ import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +22,20 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Image
 import java.util.Random
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.set
 
 class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
 
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
+    private val userColors = HashMap<String, Int>()
+    private val savedColors = HashMap<String, Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -70,13 +79,16 @@ class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter
             }
         }
         //TODO add if mentions user make message red
-        builder.append(chatMessage.displayName).append(": ").append(chatMessage.message)
-        val userColor = chatMessage.color
-        val color = when (userColor) {
-            null -> getRandomColor().also { chatMessage.color = it.toString() }
-            else -> if (userColor.startsWith("#")) Color.parseColor(userColor) else userColor.toInt()
+        val userName = chatMessage.displayName
+        builder.append(userName).append(": ").append(chatMessage.message)
+        val color = chatMessage.color.let { userColor ->
+            if (userColor == null) {
+                userColors[userName] ?: getRandomColor().also { userColors[userName] = it }
+            } else {
+                savedColors[userColor] ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
+            }
         }
-        val userNameLength = chatMessage.displayName.length
+        val userNameLength = userName.length
         builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         chatMessage.emotes?.let {
@@ -105,12 +117,15 @@ class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter
     override fun getItemCount(): Int = messages.size
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
+        val context = holder.itemView.context
+        fun convertDpToPixels(dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
+
         images.forEach { (url, start, end, isEmote) ->
-            GlideApp.with(holder.itemView.context)
+            GlideApp.with(context)
                     .load(url)
                     .into(object : SimpleTarget<Drawable>() {
                         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            val size = if (isEmote) 45 else 35
+                            val size = if (isEmote) convertDpToPixels(22f) else convertDpToPixels(17f)
                             resource.setBounds(0, 0, size, size)
                             builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                             holder.bind(builder)

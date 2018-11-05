@@ -41,3 +41,11 @@ fun setVisible(view: View, visible: Boolean?) {
 fun setEnabled(view: View, enabled: Boolean) {
     view.isEnabled = enabled
 }
+
+//@BindingAdapter("enabled")
+//fun setEnabled(imageView: ImageView, enabled: Boolean) {
+//    imageView.apply {
+//        isEnabled = enabled
+//        setColorFilter(if (enabled) Color.WHITE else Color.GRAY)
+//    }
+//}

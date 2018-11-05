@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.player.video
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -37,6 +38,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
+        settings.setColorFilter(Color.GRAY) //TODO
+        download.setColorFilter(Color.GRAY)
         settings.setOnClickListener {
             println(viewModel.videoInfo.targetDuration)
             LinkedList(viewModel.helper.qualities.value).also { list ->
@@ -55,6 +58,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
             val loaded = it != null
             settings.isEnabled = loaded
             download.isEnabled = loaded
+            settings.setColorFilter(Color.WHITE)
+            download.setColorFilter(Color.WHITE)
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })

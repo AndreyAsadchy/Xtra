@@ -118,15 +118,17 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
             playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
         }
         viewModel.playerMaximized().observe(this, Observer {
-            val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
-            if (!isLandscape) {
-                if (it == true) {
-                    handler.post { hideNavigationBar() }
+            if (viewModel.isPlayerOpened) {
+                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
+                if (!isLandscape) {
+                    if (it == true) {
+                        handler.post { hideNavigationBar() }
+                    } else {
+                        handler.post { playerFragment?.minimize() } //TODO add minimize fast without callback
+                    }
                 } else {
-                    handler.post { playerFragment?.minimize() } //TODO add minimize fast without callback
+                    navBarContainer.visibility = View.GONE
                 }
-            } else {
-                navBarContainer.visibility = View.GONE
             }
         })
     }

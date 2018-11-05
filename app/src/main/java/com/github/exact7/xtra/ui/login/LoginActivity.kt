@@ -1,9 +1,11 @@
 package com.github.exact7.xtra.ui.login
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebResourceError
@@ -54,9 +56,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
         webViewContainer.visibility = View.VISIBLE
-        CookieManager.getInstance().removeAllCookie()
+        CookieManager.getInstance().removeAllCookies(null)
         with(webView) {
             settings.javaScriptEnabled = true
             webViewClient = object : WebViewClient() {
@@ -99,17 +102,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-//        if (event.action == KeyEvent.ACTION_DOWN) {
-//            when (keyCode) {
-//                KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
-//                    webView.goBack()
-//                    return true
-//                }
-//            }
-//        }
-//        return super.onKeyDown(keyCode, event)
-//    }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (event.action == KeyEvent.ACTION_DOWN) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
+                    webView.goBack()
+                    return true
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
     override fun onDestroy() {
         compositeDisposable.clear()

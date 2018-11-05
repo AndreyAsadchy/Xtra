@@ -2,6 +2,7 @@ package com.github.exact7.xtra.ui.player.stream
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -82,10 +83,12 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         })
         if (!viewModel.isInitialized()) {
             settings.isEnabled = false
+            settings.setColorFilter(Color.GRAY) //TODO
             viewModel.stream = arguments!!.getParcelable("stream")!!
         }
         viewModel.helper.qualities.observe(this, Observer {
             settings.isEnabled = true
+            settings.setColorFilter(Color.WHITE)
         })
         viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
         viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })

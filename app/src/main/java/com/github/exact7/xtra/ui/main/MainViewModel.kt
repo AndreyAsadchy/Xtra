@@ -31,12 +31,12 @@ class MainViewModel @Inject constructor(): ViewModel() {
     }
 
     fun onPlayerStarted() {
-        _playerMaximized.value = true
         isPlayerOpened = true
+        _playerMaximized.value = true
     }
 
     fun onPlayerClosed() {
-        _playerMaximized.value = false
         isPlayerOpened = false
+        _playerMaximized.value = false
     }
 }

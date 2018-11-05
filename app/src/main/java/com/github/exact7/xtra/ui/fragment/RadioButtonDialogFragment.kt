@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.fragment
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.core.os.bundleOf
 import com.github.exact7.xtra.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 class RadioButtonDialogFragment : BottomSheetDialogFragment() {
 
@@ -33,6 +38,16 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
     }
 
     private var listenerSort: OnSortOptionChanged? = null
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        dialog.setOnShowListener {
+            val d = it as BottomSheetDialog
+            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        return dialog
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

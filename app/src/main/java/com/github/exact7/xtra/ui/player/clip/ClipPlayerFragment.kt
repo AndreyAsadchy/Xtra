@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.player.clip
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -36,6 +37,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
+        settings.setColorFilter(Color.GRAY) //TODO
+        download.setColorFilter(Color.GRAY)
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
         download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.helper.qualities.value!!).show(childFragmentManager, null) }
     }
@@ -48,6 +51,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             val loaded = it != null
             settings.isEnabled = loaded
             download.isEnabled = loaded
+            settings.setColorFilter(Color.WHITE)
+            download.setColorFilter(Color.WHITE)
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
