@@ -2,7 +2,7 @@ package com.github.exact7.xtra.model.user
 
 import com.google.gson.annotations.SerializedName
 
-class UsersResponse(
+data class UsersResponse(
     @SerializedName("_total")
     val total: Int,
     val users: List<User>)

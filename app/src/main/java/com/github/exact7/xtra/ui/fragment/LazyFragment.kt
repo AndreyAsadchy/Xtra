@@ -1,6 +1,8 @@
 package com.github.exact7.xtra.ui.fragment
 
-open class LazyFragment : androidx.fragment.app.Fragment() {
+import androidx.fragment.app.Fragment
+
+open class LazyFragment : Fragment() {
 
     var isFragmentVisible: Boolean = false
         private set

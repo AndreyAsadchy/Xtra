@@ -1,6 +1,6 @@
 package com.github.exact7.xtra.db
 
-import androidx.paging.DataSource
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,7 +11,7 @@ import com.github.exact7.xtra.model.OfflineVideo
 interface VideosDao {
 
     @Query("SELECT * FROM videos ORDER BY id DESC")
-    fun getAll(): DataSource.Factory<Int, OfflineVideo>
+    fun getAll(): LiveData<List<OfflineVideo>>
 
     @Insert
     fun insert(video: OfflineVideo)

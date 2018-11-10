@@ -65,7 +65,7 @@ class VideoDownloadService : Service() {
     }
 
     @Inject
-    lateinit var dao: VideosDao
+    lateinit var dao: VideosDao //TODO change to repository
 
     private lateinit var downloadManager: DownloadManager
     private lateinit var notificationBuilder: NotificationCompat.Builder

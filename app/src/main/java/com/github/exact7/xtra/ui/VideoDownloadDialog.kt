@@ -112,7 +112,7 @@ class VideoDownloadDialog : DialogFragment() {
                                         offset < to_ -> -1
                                         else -> 0
                                     }
-                                }) + 1
+                                }) + 1 //todo if length is good don't add
                             }
                             listener.onClick(spinner.selectedItem.toString(), fromIndex, toIndex)
                             dismiss()

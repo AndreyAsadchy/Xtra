@@ -7,12 +7,16 @@
         <variable
             name="stream"
             type="com.github.exact7.xtra.model.stream.Stream"/>
+        <variable
+            name="listener"
+            type="com.github.exact7.xtra.ui.streams.BaseStreamsFragment.OnStreamSelectedListener"/>
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?attr/cardStyle">
+        style="?attr/cardStyle"
+        android:onClick="@{() -> listener.startStream(stream)}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,10 +38,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
                 android:layout_marginBottom="5dp"
-                android:layout_toEndOf="@id/streamTypeImage"
-                android:layout_toRightOf="@id/streamTypeImage" />
+                android:layout_toEndOf="@id/streamTypeImage" />
 
             <ImageView
                 android:id="@+id/streamTypeImage"
@@ -50,8 +52,7 @@
                 android:scaleType="centerCrop"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="6dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginStart="5dp" />
 
             <ImageView
                 android:id="@+id/userImage"
@@ -61,8 +62,7 @@
                 style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginStart="10dp" />
 
             <TextView
                 android:id="@+id/username"
@@ -75,10 +75,7 @@
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="7dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
-
+                android:layout_toEndOf="@id/userImage"/>
             <TextView
                 android:id="@+id/title"
                 android:text="@{stream.channel.status}"
@@ -90,9 +87,7 @@
                 android:layout_below="@id/username"
                 android:layout_marginTop="1dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toEndOf="@id/userImage"/>
 
             <TextView
                 android:id="@+id/gameName"
@@ -103,10 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
                 android:layout_marginTop="1dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:paddingBottom="10dp"/>
 
         </RelativeLayout>

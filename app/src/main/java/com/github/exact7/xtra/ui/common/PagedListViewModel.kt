@@ -16,7 +16,7 @@ abstract class PagedListViewModel<T> : ViewModel() {
     val list: LiveData<PagedList<T>> = switchMap(result) { it.pagedList }
     val loadingState: LiveData<LoadingState> = switchMap(result) { it.loadingState }
     val pagingState: LiveData<LoadingState> = switchMap(result) { it.pagingState }
-    val loadedInitial = MediatorLiveData<Boolean?>().apply {
+    private val _loadedInitial = MediatorLiveData<Boolean?>().apply {
         addSource(loadingState) {
             if (value == null) {
                 if (it == LoadingState.LOADED) value = true
@@ -24,10 +24,12 @@ abstract class PagedListViewModel<T> : ViewModel() {
             }
         }
     }
+    val loadedInitial: LiveData<Boolean?>
+        get() = _loadedInitial
 
     protected val compositeDisposable = CompositeDisposable()
 
-    internal fun loadData(listing: Listing<T>, override: Boolean = false) {
+    protected fun loadData(listing: Listing<T>, override: Boolean = false) {
         if (result.value == null || override) {
             result.value = listing
         }

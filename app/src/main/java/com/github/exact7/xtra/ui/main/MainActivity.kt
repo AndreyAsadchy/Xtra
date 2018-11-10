@@ -133,7 +133,6 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         })
     }
 
-
     private fun initFragNavController() {
         fragNavController.apply {
             rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())

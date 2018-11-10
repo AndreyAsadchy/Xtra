@@ -11,14 +11,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentStreamsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.stream.Stream
-import com.github.exact7.xtra.ui.Loadable
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.fragment.LazyFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_streams.*
 import javax.inject.Inject
 
-abstract class BaseStreamsFragment : LazyFragment(), Injectable, Scrollable, Loadable {
+abstract class BaseStreamsFragment : LazyFragment(), Injectable, Scrollable {
 
     interface OnStreamSelectedListener {
         fun startStream(stream: Stream)
@@ -57,7 +56,7 @@ abstract class BaseStreamsFragment : LazyFragment(), Injectable, Scrollable, Loa
             viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamsViewModel::class.java)
             binding.viewModel = viewModel
             loadData()
-            val adapter = StreamsAdapter(listener!!)
+            val adapter = StreamsAdapter()
             recyclerViewLayout.recyclerView.adapter = adapter
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)

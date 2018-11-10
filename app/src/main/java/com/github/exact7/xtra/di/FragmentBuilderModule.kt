@@ -8,8 +8,8 @@ import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
-import com.github.exact7.xtra.ui.streams.FollowedStreamsFragment
 import com.github.exact7.xtra.ui.streams.StreamsFragment
+import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
 import com.github.exact7.xtra.ui.videos.FollowedVideosFragment
 import com.github.exact7.xtra.ui.videos.GameVideosFragment
 import com.github.exact7.xtra.ui.videos.TopVideosFragment

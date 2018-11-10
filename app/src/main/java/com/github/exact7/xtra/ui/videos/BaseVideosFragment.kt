@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentVideosBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.video.Video
-import com.github.exact7.xtra.ui.Loadable
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.fragment.LazyFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*

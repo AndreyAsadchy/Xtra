@@ -1,8 +1,5 @@
 package com.github.exact7.xtra.repository
 
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.model.OfflineVideo
 import kotlinx.coroutines.GlobalScope
@@ -14,8 +11,7 @@ import javax.inject.Singleton
 class OfflineRepository @Inject constructor(
         private val videosDao: VideosDao) {
 
-    fun loadAll(): LiveData<PagedList<OfflineVideo>> =
-            LivePagedListBuilder(videosDao.getAll(), 15).build()
+    fun loadAll() = videosDao.getAll()
 
     fun insert(video: OfflineVideo) {
         GlobalScope.launch { videosDao.insert(video) }

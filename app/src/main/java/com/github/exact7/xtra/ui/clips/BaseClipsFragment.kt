@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentClipsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.clip.Clip
-import com.github.exact7.xtra.ui.Loadable
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.fragment.LazyFragment
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment

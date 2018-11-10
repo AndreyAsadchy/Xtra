@@ -39,7 +39,7 @@ class GamesFragment : Fragment(), Injectable, Scrollable {
             (requireActivity() as MainActivity).fragNavController.pushFragment(GamePagerFragment.newInstance(it))
         }
         recyclerViewLayout.recyclerView.adapter = adapter
-        viewModel.list.observe(this, Observer {
+        viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }
