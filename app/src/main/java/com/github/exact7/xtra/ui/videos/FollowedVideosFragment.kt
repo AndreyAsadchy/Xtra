@@ -29,16 +29,16 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
         viewModel.sort = Sort.TIME
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadFollowedVideos(userToken = user.token, reload = override)
-    }
+//    override fun loadData(override: Boolean) {
+//        viewModel.loadFollowedVideos(userToken = user.token, reload = override)
+//    }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.sort = if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS
         viewModel.sortText.value = text
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = null
+//        viewModel.loadedInitial.value = null
         adapter.submitList(null)
-        loadData(true)
+//        loadData(true)
     }
 }

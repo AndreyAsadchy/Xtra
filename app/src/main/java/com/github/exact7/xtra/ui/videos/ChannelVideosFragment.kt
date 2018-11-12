@@ -27,16 +27,16 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
         viewModel.sortText.postValue(getString(sortOptions[DEFAULT_INDEX]))
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadChannelVideos(channelId = channelId, reload = override)
-    }
+//    override fun loadData(override: Boolean) {
+//        viewModel.loadChannelVideos(channelId = channelId, reload = override)
+//    }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) { //TODO move this to viewmodel and update there
         viewModel.sort = if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS
         viewModel.sortText.value = text
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = null
+//        viewModel.loadedInitial.value = null
         adapter.submitList(null)
-        loadData(true)
+//        loadData(true)
     }
 }

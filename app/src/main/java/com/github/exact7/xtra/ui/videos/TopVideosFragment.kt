@@ -26,9 +26,9 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
         viewModel.selectedIndex = DEFAULT_INDEX
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadVideos(reload = override)
-    }
+//    override fun loadData(override: Boolean) {
+//        viewModel.loadVideos(reload = override)
+//    }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.period = when(tag) {
@@ -40,8 +40,8 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
         }
         viewModel.sortText.postValue(text)
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = null
+//        viewModel.loadedInitial.value = null
         adapter.submitList(null)
-        loadData(true)
+//        loadData(true)
     }
 }

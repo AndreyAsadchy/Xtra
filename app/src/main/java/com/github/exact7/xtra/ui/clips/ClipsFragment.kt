@@ -30,10 +30,6 @@ class ClipsFragment : BaseClipsFragment() {
         viewModel.sortText.value = getString(sortOptions[DEFAULT_INDEX])
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadClips(channelName = channelName, gameName = game?.info?.name, reload = override)
-    }
-
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         var period: Period? = null
         var trending = false
@@ -48,8 +44,8 @@ class ClipsFragment : BaseClipsFragment() {
         viewModel.trending = trending
         viewModel.sortText.postValue(text)
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = null
+//        viewModel.loadedInitial.value = null
         adapter.submitList(null)
-        loadData(true)
+//        loadData(true)
     }
 }

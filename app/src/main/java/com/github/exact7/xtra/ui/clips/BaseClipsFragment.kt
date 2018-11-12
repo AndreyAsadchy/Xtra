@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_clips.*
 import javax.inject.Inject
 
-abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loadable, RadioButtonDialogFragment.OnSortOptionChanged {
+abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, RadioButtonDialogFragment.OnSortOptionChanged {
 
     interface OnClipSelectedListener {
         fun startClip(clip: Clip)
@@ -60,7 +60,7 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Loada
             if (!viewModel.isInitialized()) {
                 initializeViewModel()
             }
-            loadData()
+//            loadData()
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)
             })

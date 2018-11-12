@@ -28,16 +28,13 @@ class FollowedClipsFragment : BaseClipsFragment() {
         viewModel.sortText.value = getString(sortOptions[DEFAULT_INDEX])
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadFollowedClips(userToken = user.token, reload = override)
-    }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.trending = tag == R.string.trending
         viewModel.sortText.postValue(text)
         viewModel.selectedIndex = index
-        viewModel.loadedInitial.value = null
+//        viewModel.loadedInitial.value = null
         adapter.submitList(null)
-        loadData(true)
+//        loadData(true)
     }
 }

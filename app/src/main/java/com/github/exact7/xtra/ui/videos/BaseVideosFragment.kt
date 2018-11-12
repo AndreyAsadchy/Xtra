@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
 import javax.inject.Inject
 
-abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scrollable {
+abstract class BaseVideosFragment : LazyFragment(), Injectable, Scrollable {
 
     interface OnVideoSelectedListener {
         fun startVideo(video: Video)
@@ -61,7 +61,6 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Loadable, Scroll
             if (!viewModel.isInitialized()) {
                 initializeViewModel()
             }
-            loadData()
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)
             })

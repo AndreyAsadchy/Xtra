@@ -13,7 +13,7 @@ class StreamsFragment : BaseStreamsFragment() {
         game = arguments?.getParcelable("game")
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadStreams(game?.info?.name)
-    }
+//    override fun loadData(override: Boolean) {
+//        viewModel.loadStreams(game?.info?.name)
+//    }
 }

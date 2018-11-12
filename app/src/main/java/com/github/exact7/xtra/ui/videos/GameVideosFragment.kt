@@ -22,9 +22,9 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
         setSortText(getString(R.string.view_count), getString(R.string.this_week))
     }
 
-    override fun loadData(override: Boolean) {
-        viewModel.loadVideos(game = game.info.name, reload = override)
-    }
+//    override fun loadData(override: Boolean) {
+//        viewModel.loadVideos(game = game.info.name, reload = override)
+//    }
 
     override fun onApply(sort: Sort, sortText: CharSequence, period: Period, periodText: CharSequence) {
         var shouldReload = false
@@ -38,9 +38,9 @@ class GameVideosFragment : BaseVideosFragment(), VideosSortDialog.OnFilterApplie
         }
         if (shouldReload) {
             setSortText(sortText, periodText)
-            viewModel.loadedInitial.value = null
+//            viewModel.loadedInitial.value = null
             adapter.submitList(null)
-            loadData(true)
+//            loadData(true)
         }
     }
 
