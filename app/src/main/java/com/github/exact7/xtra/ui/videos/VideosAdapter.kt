@@ -21,7 +21,7 @@ class VideosAdapter(
                             oldItem.title == newItem.title
         }) {
 
-    override fun createBinding(parent: ViewGroup): FragmentVideosListItemBinding {
+    override fun itemId(parent: ViewGroup): FragmentVideosListItemBinding {
         val binding = DataBindingUtil.inflate<FragmentVideosListItemBinding>(
                 LayoutInflater.from(parent.context),
                 R.layout.fragment_videos_list_item,

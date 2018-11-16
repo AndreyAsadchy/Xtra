@@ -20,9 +20,13 @@ abstract class BaseNetworkFragment : Fragment() {
             isNetworkAvailable = intent?.let {
                 it.getParcelableExtra<NetworkInfo>("networkInfo").state == NetworkInfo.State.CONNECTED
             } == true
-            if (!isInitialized && isNetworkAvailable) {
-                initialize()
-                isInitialized = true
+            if (isNetworkAvailable) {
+                if (!isInitialized) {
+                    initialize()
+                    isInitialized = true
+                } else {
+                    onNetworkRestored()
+                }
             }
         }
     }

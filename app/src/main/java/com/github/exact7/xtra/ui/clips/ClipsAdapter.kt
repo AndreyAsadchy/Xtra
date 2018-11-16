@@ -21,7 +21,7 @@ class ClipsAdapter(
 
         }) {
 
-    override fun createBinding(parent: ViewGroup): FragmentClipsListItemBinding {
+    override fun itemId(parent: ViewGroup): FragmentClipsListItemBinding {
         return DataBindingUtil.inflate<FragmentClipsListItemBinding>(
                 LayoutInflater.from(parent.context),
                 R.layout.fragment_clips_list_item,

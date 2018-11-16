@@ -1,8 +1,5 @@
 package com.github.exact7.xtra.ui.streams
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentStreamsListItemBinding
@@ -20,13 +17,8 @@ class StreamsAdapter : DataBoundPagedListAdapter<Stream, FragmentStreamsListItem
                             oldItem.channel.status == newItem.channel.status
         }) {
 
-    override fun createBinding(parent: ViewGroup): FragmentStreamsListItemBinding =
-            DataBindingUtil.inflate(
-                    LayoutInflater.from(parent.context),
-                    R.layout.fragment_streams_list_item,
-                    parent,
-                    false
-            )
+    override val itemId: Int
+        get() =  R.layout.fragment_streams_list_item
 
     override fun bind(binding: FragmentStreamsListItemBinding, item: Stream?) {
         binding.stream = item

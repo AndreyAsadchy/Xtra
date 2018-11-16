@@ -19,7 +19,7 @@ class GamesAdapter(
                     oldItem.viewers == newItem.viewers
         }) {
 
-    override fun createBinding(parent: ViewGroup): FragmentGamesListItemBinding {
+    override fun itemId(parent: ViewGroup): FragmentGamesListItemBinding {
         val binding = DataBindingUtil.inflate<FragmentGamesListItemBinding>(
                 LayoutInflater.from(parent.context),
                 R.layout.fragment_games_list_item,
