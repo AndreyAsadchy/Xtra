@@ -16,6 +16,7 @@ class MainViewModel @Inject constructor(): ViewModel() {
     var isPlayerOpened = false
         private set
     var hasValidated = false
+    private val _isNetworkAvailable = MutableLiveData<Boolean>()
 
     fun playerMaximized(): LiveData<Boolean> {
         return _playerMaximized
@@ -38,5 +39,11 @@ class MainViewModel @Inject constructor(): ViewModel() {
     fun onPlayerClosed() {
         isPlayerOpened = false
         _playerMaximized.value = false
+    }
+
+    fun isNetworkAvailable(): LiveData<Boolean> = _isNetworkAvailable
+
+    fun setNetworkAvailable(isNetworkAvailable: Boolean) {
+        _isNetworkAvailable.value = isNetworkAvailable
     }
 }

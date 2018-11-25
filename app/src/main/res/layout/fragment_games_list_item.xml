@@ -5,12 +5,16 @@
 
     <data>
         <variable name="game" type="com.github.exact7.xtra.model.game.Game"/>
+        <variable
+            name="listener"
+            type="com.github.exact7.xtra.ui.games.GamesFragment.OnGameSelectedListener"/>
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?attr/cardStyle">
+        style="?attr/cardStyle"
+        android:onClick="@{() -> listener.openGame(game)}">
 
         <RelativeLayout
             android:layout_width="match_parent"

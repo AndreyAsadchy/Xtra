@@ -20,6 +20,12 @@
             android:layout_height="match_parent"
             android:focusable="true" />
 
+        <include
+            android:id="@+id/offlineLayout"
+            layout="@layout/view_offline"
+
+            />
+
         <LinearLayout
             android:id="@+id/navBarContainer"
             android:layout_width="match_parent"

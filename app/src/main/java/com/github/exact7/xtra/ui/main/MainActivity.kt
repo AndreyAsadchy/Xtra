@@ -1,11 +1,15 @@
 package com.github.exact7.xtra.ui.main
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
@@ -17,6 +21,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.OfflineVideo
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.clip.Clip
+import com.github.exact7.xtra.model.game.Game
 import com.github.exact7.xtra.model.stream.Stream
 import com.github.exact7.xtra.model.video.Video
 import com.github.exact7.xtra.repository.AuthRepository
@@ -28,6 +33,7 @@ import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.menu.MenuFragment
 import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
+import com.github.exact7.xtra.ui.pagers.GamePagerFragment
 import com.github.exact7.xtra.ui.pagers.TopPagerFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
@@ -44,12 +50,13 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 
 
-class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener {
+class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener {
 
     companion object {
         private const val PLAYER_TAG = "player"
@@ -68,6 +75,13 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
     private var playerFragment: BasePlayerFragment? = null
     private val handler by lazy { Handler() }
     val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            viewModel.setNetworkAvailable(intent?.let {
+                it.getParcelableExtra<NetworkInfo>("networkInfo").state == NetworkInfo.State.CONNECTED
+            } == true)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,16 +104,16 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                     init()
                 } else {
                     viewModel.hasValidated = true
-//                    authRepository.validate(user.token)
-//                            .subscribe({
-                    init()
-//                            }, {
-//                                viewModel.user.value = null
-//                                getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
-//                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-//                                startActivityForResult(Intent(this, LoginActivity::class.java), 1)
-//                            })
-//                            .addTo(compositeDisposable)
+                    authRepository.validate(user.token)
+                            .subscribe({
+                                init()
+                            }, {
+                                viewModel.user.value = null
+                                getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
+                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                                startActivityForResult(Intent(this, LoginActivity::class.java), 1)
+                            })
+                            .addTo(compositeDisposable)
                 }
             } else {
                 initFragNavController()
@@ -131,6 +145,10 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
                 }
             }
         })
+        viewModel.isNetworkAvailable().observe(this, Observer {
+            offlineLayout.visibility = if (it == true) View.VISIBLE else View.GONE
+        })
+        registerReceiver(receiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
     }
 
     private fun initFragNavController() {
@@ -229,6 +247,15 @@ class MainActivity : AppCompatActivity(), BaseStreamsFragment.OnStreamSelectedLi
         if (fragNavController.size > 0) {
             fragNavController.onSaveInstanceState(outState)
         }
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(receiver)
+        super.onDestroy()
+    }
+
+    override fun openGame(game: Game) {
+        fragNavController.pushFragment(GamePagerFragment.newInstance(game))
     }
 
     override fun startStream(stream: Stream) {

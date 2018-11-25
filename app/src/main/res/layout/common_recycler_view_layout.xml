@@ -45,5 +45,7 @@
             <!--android:layout_height="wrap_content"-->
             <!--app:visible="@{viewModel.pagingState == LoadingState.LOADING}"/>-->
 
+        <include/>
+
     </RelativeLayout>
 </layout>

@@ -3,9 +3,9 @@ package com.github.exact7.xtra.ui.streams
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentStreamsBinding
 import com.github.exact7.xtra.di.Injectable
@@ -14,7 +14,6 @@ import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_streams.*
-import javax.inject.Inject
 
 abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollable {
 
@@ -22,9 +21,6 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
         fun startStream(stream: Stream)
     }
 
-    @Inject
-    protected lateinit var viewModelFactory: ViewModelProvider.Factory
-    protected lateinit var viewModel: StreamsViewModel
     private lateinit var binding: FragmentStreamsBinding
     private var listener: OnStreamSelectedListener? = null
 
@@ -37,7 +33,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
         }
     }
 
-    override fun createView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             FragmentStreamsBinding.inflate(inflater, container, false).let {
                 binding = it
                 it.setLifecycleOwner(this)
@@ -52,7 +48,6 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-
     }
 
     override fun onDetach() {

@@ -6,26 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentClipsBinding
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.clip.Clip
 import com.github.exact7.xtra.ui.Scrollable
-import com.github.exact7.xtra.ui.fragment.LazyFragment
+import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_clips.*
-import javax.inject.Inject
 
-abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, RadioButtonDialogFragment.OnSortOptionChanged {
+abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged {
 
     interface OnClipSelectedListener {
         fun startClip(clip: Clip)
     }
 
-    @Inject
-    protected lateinit var viewModelFactory: ViewModelProvider.Factory
     protected lateinit var viewModel: ClipsViewModel
     protected lateinit var adapter: ClipsAdapter
     private lateinit var binding: FragmentClipsBinding
@@ -50,8 +45,7 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Radio
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun initialize() {
         if (isFragmentVisible) {
             viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
             binding.viewModel = viewModel
@@ -60,7 +54,6 @@ abstract class BaseClipsFragment : LazyFragment(), Injectable, Scrollable, Radio
             if (!viewModel.isInitialized()) {
                 initializeViewModel()
             }
-//            loadData()
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)
             })
