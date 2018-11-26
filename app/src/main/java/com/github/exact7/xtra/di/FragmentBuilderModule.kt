@@ -1,18 +1,18 @@
 package com.github.exact7.xtra.di
 
-import com.github.exact7.xtra.ui.clips.ClipsFragment
-import com.github.exact7.xtra.ui.clips.FollowedClipsFragment
+import com.github.exact7.xtra.ui.clips.common.ClipsFragment
+import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
-import com.github.exact7.xtra.ui.streams.StreamsFragment
+import com.github.exact7.xtra.ui.streams.common.StreamsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
-import com.github.exact7.xtra.ui.videos.FollowedVideosFragment
-import com.github.exact7.xtra.ui.videos.GameVideosFragment
-import com.github.exact7.xtra.ui.videos.TopVideosFragment
+import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
+import com.github.exact7.xtra.ui.videos.game.GameVideosFragment
+import com.github.exact7.xtra.ui.videos.top.TopVideosFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

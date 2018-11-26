@@ -5,9 +5,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
-import com.github.exact7.xtra.ui.clips.ClipsFragment
-import com.github.exact7.xtra.ui.streams.StreamsFragment
-import com.github.exact7.xtra.ui.videos.GameVideosFragment
+import com.github.exact7.xtra.ui.clips.common.ClipsFragment
+import com.github.exact7.xtra.ui.streams.common.StreamsFragment
+import com.github.exact7.xtra.ui.videos.game.GameVideosFragment
 
 class GamePagerAdapter(context: Context, fm: FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
 

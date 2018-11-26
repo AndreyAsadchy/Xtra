@@ -2,7 +2,7 @@ package com.github.exact7.xtra.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.github.exact7.xtra.ui.clips.ClipsViewModel
+import com.github.exact7.xtra.ui.clips.common.ClipsViewModel
 import com.github.exact7.xtra.ui.common.GenericViewModelFactory
 import com.github.exact7.xtra.ui.downloads.DownloadsViewModel
 import com.github.exact7.xtra.ui.games.GamesViewModel
@@ -11,8 +11,8 @@ import com.github.exact7.xtra.ui.player.clip.ClipPlayerViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.ui.player.video.VideoPlayerViewModel
-import com.github.exact7.xtra.ui.streams.StreamsViewModel
-import com.github.exact7.xtra.ui.videos.VideosViewModel
+import com.github.exact7.xtra.ui.streams.common.StreamsViewModel
+import com.github.exact7.xtra.ui.videos.top.TopVideosViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -57,8 +57,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(VideosViewModel::class)
-    abstract fun bindVideosViewModel(videosViewModel: VideosViewModel): ViewModel
+    @ViewModelKey(TopVideosViewModel::class)
+    abstract fun bindVideosViewModel(videosViewModel: TopVideosViewModel): ViewModel
 
     @Binds
     @IntoMap

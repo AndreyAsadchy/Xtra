@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.player
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.Initializable
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.PlaybackParameters

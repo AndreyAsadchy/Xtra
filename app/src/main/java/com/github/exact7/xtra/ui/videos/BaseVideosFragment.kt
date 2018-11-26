@@ -6,28 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentVideosBinding
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.video.Video
 import com.github.exact7.xtra.ui.Scrollable
-import com.github.exact7.xtra.ui.fragment.LazyFragment
+import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.videos.top.TopVideosViewModel
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
-import javax.inject.Inject
 
-abstract class BaseVideosFragment : LazyFragment(), Injectable, Scrollable {
+abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
 
     interface OnVideoSelectedListener {
         fun startVideo(video: Video)
     }
 
-    @Inject
-    protected lateinit var viewModelFactory: ViewModelProvider.Factory
-    protected lateinit var viewModel: VideosViewModel
     protected lateinit var adapter: VideosAdapter
-    private lateinit var binding: FragmentVideosBinding
+    protected lateinit var binding: FragmentVideosBinding
     private var listener: OnVideoSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -54,7 +49,7 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Scrollable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (isFragmentVisible) {
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideosViewModel::class.java)
+            viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopVideosViewModel::class.java)
             binding.viewModel = viewModel
             adapter = VideosAdapter(listener!!)
             recyclerViewLayout.recyclerView.adapter = adapter
@@ -75,6 +70,4 @@ abstract class BaseVideosFragment : LazyFragment(), Injectable, Scrollable {
     override fun scrollToTop() {
         recyclerViewLayout.recyclerView.scrollToPosition(0)
     }
-
-    abstract fun initializeViewModel()
 }

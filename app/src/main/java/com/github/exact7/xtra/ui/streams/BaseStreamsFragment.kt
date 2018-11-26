@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentStreamsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.stream.Stream
@@ -21,7 +19,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
         fun startStream(stream: Stream)
     }
 
-    private lateinit var binding: FragmentStreamsBinding
+    protected lateinit var binding: FragmentStreamsBinding
     private var listener: OnStreamSelectedListener? = null
 
     override fun onAttach(context: Context?) {
@@ -40,23 +38,9 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
                 it.root
             }
 
-    override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamsViewModel::class.java)
-        binding.viewModel = viewModel
-        val adapter = StreamsAdapter()
-        recyclerViewLayout.recyclerView.adapter = adapter
-        viewModel.list.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
-    }
-
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 
     override fun scrollToTop() {

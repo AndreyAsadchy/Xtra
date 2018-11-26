@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="viewModel" type="com.github.exact7.xtra.ui.videos.VideosViewModel" />
+        <variable name="viewModel" type="com.github.exact7.xtra.ui.videos.top.TopVideosViewModel" />
     </data>
 
     <LinearLayout

@@ -9,12 +9,16 @@
         <variable
             name="clip"
             type="com.github.exact7.xtra.model.clip.Clip"/>
+        <variable
+            name="listener"
+            type="com.github.exact7.xtra.ui.clips.BaseClipsFragment.OnClipSelectedListener"/>
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?attr/cardStyle">
+        style="?attr/cardStyle"
+        android:onClick="@{() -> listener.startClip(clip)}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,11 +39,9 @@
                 tools:text="April 20, 2017"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/thumbnail"
                 android:layout_alignEnd="@id/thumbnail"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp" />
 
             <TextView
@@ -49,7 +51,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginBottom="5dp"/>
 
@@ -61,7 +62,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp" />
 
             <ImageView
@@ -71,7 +71,6 @@
                 tools:src="@tools:sample/backgrounds/scenic"
                 style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
-                android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="12dp"/>
 
@@ -83,11 +82,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="7dp"
                 android:layout_below="@id/thumbnail"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toEndOf="@id/userImage"/>
 
             <TextView
                 android:id="@+id/username"
@@ -97,9 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toEndOf="@id/userImage"/>
 
             <TextView
                 android:id="@+id/gameName"
@@ -110,9 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/username"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:paddingBottom="10dp"/>
 
             <!--<ImageButton-->

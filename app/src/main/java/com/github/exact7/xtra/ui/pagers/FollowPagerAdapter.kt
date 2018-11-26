@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.github.exact7.xtra.ui.clips.FollowedClipsFragment
+import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
-import com.github.exact7.xtra.ui.videos.FollowedVideosFragment
+import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 
 class FollowPagerAdapter(context: Context, fm: FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
 

@@ -18,7 +18,7 @@ interface TwitchService {
     fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game>
     fun loadStreams(game: String?, languages: String?, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
     fun loadFollowedStreams(userToken: String, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
-    fun loadClips(channelName: String?, gameName: String?, languages: String?, period: Period, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip>
+    fun loadClips(channelName: String?, gameName: String?, languages: String?, period: Period?, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip>
     fun loadFollowedClips(userToken: String, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip>
     fun loadVideos(game: String?, period: com.github.exact7.xtra.ui.videos.Period, broadcastType: BroadcastType, language: String?, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>
     fun loadFollowedVideos(userToken: String, broadcastType: BroadcastType, language: String?, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>

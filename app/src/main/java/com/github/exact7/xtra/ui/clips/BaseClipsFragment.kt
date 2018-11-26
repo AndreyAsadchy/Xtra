@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentClipsBinding
 import com.github.exact7.xtra.model.clip.Clip
 import com.github.exact7.xtra.ui.Scrollable
@@ -21,9 +19,8 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
         fun startClip(clip: Clip)
     }
 
-    protected lateinit var viewModel: ClipsViewModel
     protected lateinit var adapter: ClipsAdapter
-    private lateinit var binding: FragmentClipsBinding
+    protected lateinit var binding: FragmentClipsBinding
     private var listener: OnClipSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -46,18 +43,7 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
     }
 
     override fun initialize() {
-        if (isFragmentVisible) {
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
-            binding.viewModel = viewModel
-            adapter = ClipsAdapter(listener!!)
-            recyclerViewLayout.recyclerView.adapter = adapter
-            if (!viewModel.isInitialized()) {
-                initializeViewModel()
-            }
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-        }
+        binding.listener = listener
     }
 
     override fun onDetach() {
@@ -68,6 +54,4 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
     override fun scrollToTop() {
         recyclerViewLayout.recyclerView.scrollToPosition(0)
     }
-
-    abstract fun initializeViewModel()
 }
