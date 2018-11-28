@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentVideosBinding
 import com.github.exact7.xtra.model.video.Video
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
-import com.github.exact7.xtra.ui.videos.top.TopVideosViewModel
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
 
@@ -21,7 +18,6 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
         fun startVideo(video: Video)
     }
 
-    protected lateinit var adapter: VideosAdapter
     protected lateinit var binding: FragmentVideosBinding
     private var listener: OnVideoSelectedListener? = null
 
@@ -46,20 +42,8 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (isFragmentVisible) {
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopVideosViewModel::class.java)
-            binding.viewModel = viewModel
-            adapter = VideosAdapter(listener!!)
-            recyclerViewLayout.recyclerView.adapter = adapter
-            if (!viewModel.isInitialized()) {
-                initializeViewModel()
-            }
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-        }
+    override fun initialize() {
+        binding.listener = listener
     }
 
     override fun onDetach() {

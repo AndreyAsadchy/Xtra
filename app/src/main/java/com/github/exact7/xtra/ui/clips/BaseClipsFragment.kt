@@ -19,7 +19,6 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
         fun startClip(clip: Clip)
     }
 
-    protected lateinit var adapter: ClipsAdapter
     protected lateinit var binding: FragmentClipsBinding
     private var listener: OnClipSelectedListener? = null
 
