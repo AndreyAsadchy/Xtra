@@ -71,7 +71,7 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadClips(channelName: String?, gameName: String?, languages: String?, period: com.github.exact7.xtra.ui.clips.Period, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip> {
+    override fun loadClips(channelName: String?, gameName: String?, languages: String?, period: com.github.exact7.xtra.ui.clips.Period?, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip> {
         val factory = ClipsDataSource.Factory(channelName, gameName, languages, period, trending, api, networkExecutor, compositeDisposable)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)

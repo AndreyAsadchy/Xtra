@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.player.clip
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.core.content.edit
 import com.github.exact7.xtra.model.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -39,10 +38,10 @@ class ClipPlayerViewModel @Inject constructor(
         helper.selectedQualityIndex = index
     }
 
-    override fun play() {
-        super.play()
-        player.seekTo(playbackProgress)
-    }
+//    override fun play() {
+//        super.play()
+//        player.seekTo(playbackProgress)
+//    }
 
     fun init() {
         playerRepository.fetchClipQualities(clip.slug)
@@ -78,8 +77,8 @@ class ClipPlayerViewModel @Inject constructor(
 //    }
 
     private fun play(source: String) {
-        mediaSource = factory.createMediaSource(Uri.parse(source))
-        play()
+//        mediaSource = factory.createMediaSource(Uri.parse(source))
+//        play()
         player.seekTo(playbackProgress)
     }
 

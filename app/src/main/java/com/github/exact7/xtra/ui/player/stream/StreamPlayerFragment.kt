@@ -81,11 +81,11 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             messageView.visibility = if (it != null) View.VISIBLE else View.GONE
             viewModel.user = it
         })
-        if (!viewModel.isInitialized()) {
+//        if (!viewModel.isInitialized()) {
             settings.isEnabled = false
             settings.setColorFilter(Color.GRAY) //TODO
             viewModel.stream = arguments!!.getParcelable("stream")!!
-        }
+//        }
         viewModel.helper.qualities.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE)

@@ -29,8 +29,8 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     private lateinit var tempList: List<CharSequence>
-
     val helper = PlayerHelper()
+
     override fun changeQuality(index: Int) {
         helper.selectedQualityIndex = index
         when (index) {
@@ -55,7 +55,7 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
         }
     }
 
-    private var initialized = false
+    private var initialized = false //TODO reset in oncleared?
 
     override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
         if (!initialized) {

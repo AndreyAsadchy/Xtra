@@ -9,7 +9,6 @@ import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.tasks.LiveChatTask
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.util.TwitchApiHelper
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
@@ -32,11 +31,11 @@ class StreamPlayerViewModel @Inject constructor(
         set(value) {
             if (field != value) {
                 field = value
-                if (isInitialized()) {
-                    if (chatTask.value != null)
-                        stopChat()
-                    startChat()
-                }
+//                if (isInitialized()) {
+//                    if (chatTask.value != null)
+//                        stopChat()
+//                    startChat()
+//                }
             }
         }
 
@@ -44,8 +43,8 @@ class StreamPlayerViewModel @Inject constructor(
         val channel = stream.channel
         repository.fetchStreamPlaylist(channel.name)
                 .subscribe({
-                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
-                    play()
+//                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
+//                    play()
                 }, {
 
                 })

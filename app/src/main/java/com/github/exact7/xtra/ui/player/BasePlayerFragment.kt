@@ -24,6 +24,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
     protected var isPortraitOrientation: Boolean = false
+        private set
     private lateinit var decorView: View
 
 
@@ -105,7 +106,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     }
 
     override fun onMovedToForeground() {
-        viewModel.play()
+//        viewModel.play()
     }
 
     override fun onMovedToBackground() {

@@ -6,7 +6,8 @@ import com.github.exact7.xtra.databinding.FragmentGamesListItemBinding
 import com.github.exact7.xtra.model.game.Game
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
-class GamesAdapter : DataBoundPagedListAdapter<Game, FragmentGamesListItemBinding>(
+class GamesAdapter(
+        private val listener: GamesFragment.OnGameSelectedListener) : DataBoundPagedListAdapter<Game, FragmentGamesListItemBinding>(
         object : DiffUtil.ItemCallback<Game>() {
             override fun areItemsTheSame(oldItem: Game, newItem: Game): Boolean =
                     oldItem.info.id == newItem.info.id
@@ -20,5 +21,6 @@ class GamesAdapter : DataBoundPagedListAdapter<Game, FragmentGamesListItemBindin
 
     override fun bind(binding: FragmentGamesListItemBinding, item: Game?) {
         binding.game = item
+        binding.listener = listener
     }
 }

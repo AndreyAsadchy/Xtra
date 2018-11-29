@@ -6,7 +6,8 @@ import com.github.exact7.xtra.databinding.FragmentClipsListItemBinding
 import com.github.exact7.xtra.model.clip.Clip
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
-class ClipsAdapter : DataBoundPagedListAdapter<Clip, FragmentClipsListItemBinding>(
+class ClipsAdapter(
+        private val listener: BaseClipsFragment.OnClipSelectedListener) : DataBoundPagedListAdapter<Clip, FragmentClipsListItemBinding>(
         object : DiffUtil.ItemCallback<Clip>() {
             override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
                     oldItem.slug == newItem.slug
@@ -23,5 +24,6 @@ class ClipsAdapter : DataBoundPagedListAdapter<Clip, FragmentClipsListItemBindin
 
     override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
         binding.clip = item
+        binding.listener = listener
     }
 }

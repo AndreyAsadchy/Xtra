@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.common
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,8 +19,8 @@ abstract class BaseNetworkFragment : LazyFragment(), Injectable {
     @Inject protected lateinit var viewModelFactory: ViewModelProvider.Factory
     private var isInitialized = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         savedInstanceState?.let {
             isInitialized = it.getBoolean(INITIALIZED_KEY)
         }
@@ -34,7 +35,6 @@ abstract class BaseNetworkFragment : LazyFragment(), Injectable {
                 }
             }
         })
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -56,10 +56,10 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-        if (!viewModel.isInitialized()) {
-            viewModel.clip = arguments!!.getParcelable("clip")!!
-            viewModel.init()
-        }
+//        if (!viewModel.isInitialized()) {
+//            viewModel.clip = arguments!!.getParcelable("clip")!!
+//            viewModel.init()
+//        }
     }
 
     override fun onClick(quality: String) {

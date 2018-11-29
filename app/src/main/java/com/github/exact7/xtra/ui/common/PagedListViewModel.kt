@@ -15,11 +15,13 @@ abstract class PagedListViewModel<T> : ViewModel() {
     val list: LiveData<PagedList<T>> by lazy { switchMap(result) { it.pagedList } }
     val loadingState: LiveData<LoadingState> by lazy { switchMap(result) { it.loadingState } }
     val pagingState: LiveData<LoadingState> by lazy { switchMap(result) { it.pagingState } }
-    protected val _loadedInitial = MediatorLiveData<Boolean?>().apply {
-        addSource(loadingState) {
-            if (value == null) {
-                if (it == LoadingState.LOADED) value = true
-                else if (it == LoadingState.FAILED) value = false
+    protected val _loadedInitial by lazy {
+        MediatorLiveData<Boolean?>().apply {
+            addSource(loadingState) {
+                if (value == null) {
+                    if (it == LoadingState.LOADED) value = true
+                    else if (it == LoadingState.FAILED) value = false
+                }
             }
         }
     }

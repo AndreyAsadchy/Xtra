@@ -18,7 +18,10 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
         fun startVideo(video: Video)
     }
 
+    protected lateinit var adapter: VideosAdapter
+        private set
     protected lateinit var binding: FragmentVideosBinding
+        private set
     private var listener: OnVideoSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -43,7 +46,8 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
     }
 
     override fun initialize() {
-        binding.listener = listener
+        adapter = VideosAdapter(listener!!)
+        recyclerViewLayout.recyclerView.adapter = adapter
     }
 
     override fun onDetach() {

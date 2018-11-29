@@ -19,7 +19,10 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
         fun startClip(clip: Clip)
     }
 
+    protected lateinit var adapter: ClipsAdapter
+        private set
     protected lateinit var binding: FragmentClipsBinding
+        private set
     private var listener: OnClipSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -42,7 +45,8 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
     }
 
     override fun initialize() {
-        binding.listener = listener
+        adapter = ClipsAdapter(listener!!)
+        recyclerViewLayout.recyclerView.adapter = adapter
     }
 
     override fun onDetach() {

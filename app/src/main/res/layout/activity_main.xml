@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.github.exact7.xtra.ui.main.MainViewModel"/>
+    </data>
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,7 +29,7 @@
         <include
             android:id="@+id/offlineLayout"
             layout="@layout/view_offline"
-
+            app:visible="@{viewModel.isNetworkAvailable}"
             />
 
         <LinearLayout

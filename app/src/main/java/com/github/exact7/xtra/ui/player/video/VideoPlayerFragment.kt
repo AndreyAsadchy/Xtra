@@ -63,10 +63,10 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-        if (!viewModel.isInitialized()) {
-            viewModel.video = arguments!!.getParcelable("video")!!
-            viewModel.init()
-        }
+//        if (!viewModel.isInitialized()) {
+//            viewModel.video = arguments!!.getParcelable("video")!!
+//            viewModel.init()
+//        }
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

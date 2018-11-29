@@ -10,6 +10,7 @@ import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
 import com.github.exact7.xtra.ui.streams.common.StreamsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
+import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
 import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 import com.github.exact7.xtra.ui.videos.game.GameVideosFragment
 import com.github.exact7.xtra.ui.videos.top.TopVideosFragment
@@ -26,7 +27,7 @@ abstract class FragmentBuilderModule {
     abstract fun contributeFollowedStreamsFragment(): FollowedStreamsFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeGameStreamsFragment(): StreamsFragment
+    abstract fun contributeStreamsFragment(): StreamsFragment
 
     @ContributesAndroidInjector
     abstract fun contributeStreamPlayerFragment(): StreamPlayerFragment
@@ -45,6 +46,9 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFollowedClipsFragment(): FollowedClipsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChannelVideosFragment(): ChannelVideosFragment
 
     @ContributesAndroidInjector
     abstract fun contributeVideosFragment(): GameVideosFragment

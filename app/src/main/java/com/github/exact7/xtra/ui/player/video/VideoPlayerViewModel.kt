@@ -9,7 +9,6 @@ import com.github.exact7.xtra.service.VideoDownloadService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.hls.HlsManifest
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
@@ -26,18 +25,18 @@ class VideoPlayerViewModel @Inject constructor(
     fun init() {
         playerRepository.fetchVideoPlaylist(video.id)
                 .subscribe({
-                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
-                    play()
+//                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
+//                    play()
                 }, {
 
                 })
                 .addTo(compositeDisposable)
     }
 
-    override fun play() {
-        super.play()
-        player.seekTo(playbackProgress)
-    }
+//    override fun play() {
+//        super.play()
+//        player.seekTo(playbackProgress)
+//    }
 
 //    override fun play() {
 //        super.play()

@@ -1,22 +1,20 @@
 package com.github.exact7.xtra.ui.pagers
 
 import android.content.Context
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
 import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 
-class FollowPagerAdapter(context: Context, fm: FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
+class FollowPagerAdapter(context: Context, fm: FragmentManager) : MediaPagerAdapter(context, fm) {
 
     override fun getItem(position: Int): Fragment? {
-        val fragment: Fragment? = when (position) {
+        return when (position) {
             0 -> FollowedStreamsFragment()
             1 -> FollowedVideosFragment()
             2 -> FollowedClipsFragment()
             else -> null
         }
-        return fragment?.apply { arguments = args }
     }
 }

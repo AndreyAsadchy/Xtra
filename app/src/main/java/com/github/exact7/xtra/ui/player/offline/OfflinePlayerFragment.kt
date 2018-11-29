@@ -25,10 +25,10 @@ class OfflinePlayerFragment : BasePlayerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(OfflinePlayerViewModel::class.java)
         playerView.player = viewModel.player
-        if (!viewModel.isInitialized()) {
-            viewModel.video = arguments!!.getParcelable("video")!!
-            viewModel.init()
-        }
+//        if (!viewModel.isInitialized()) {
+//            viewModel.video = arguments!!.getParcelable("video")!!
+//            viewModel.init()
+//        }
     }
 
 }

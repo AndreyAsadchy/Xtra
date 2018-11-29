@@ -6,7 +6,8 @@ import com.github.exact7.xtra.databinding.FragmentVideosListItemBinding
 import com.github.exact7.xtra.model.video.Video
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
-class VideosAdapter : DataBoundPagedListAdapter<Video, FragmentVideosListItemBinding>(
+class VideosAdapter(
+        private val listener: BaseVideosFragment.OnVideoSelectedListener) : DataBoundPagedListAdapter<Video, FragmentVideosListItemBinding>(
         object : DiffUtil.ItemCallback<Video>() {
             override fun areItemsTheSame(oldItem: Video, newItem: Video): Boolean =
                     oldItem.id == newItem.id
@@ -22,5 +23,6 @@ class VideosAdapter : DataBoundPagedListAdapter<Video, FragmentVideosListItemBin
 
     override fun bind(binding: FragmentVideosListItemBinding, item: Video?) {
         binding.video = item
+        binding.listener = listener
     }
 }

@@ -12,6 +12,6 @@ class GamesViewModel @Inject constructor(
         private val repository: TwitchService) : PagedListViewModel<Game>() {
 
     override val result: LiveData<Listing<Game>> = MutableLiveData<Listing<Game>>().apply {
-        repository.loadTopGames(compositeDisposable)
+        value = repository.loadTopGames(compositeDisposable)
     }
 }

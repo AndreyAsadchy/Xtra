@@ -1,14 +1,11 @@
 package com.github.exact7.xtra.ui.player.offline
 
 import android.app.Application
-import android.net.Uri
-
 import com.github.exact7.xtra.model.OfflineVideo
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-
 import javax.inject.Inject
 
 class OfflinePlayerViewModel @Inject constructor(
@@ -23,8 +20,8 @@ class OfflinePlayerViewModel @Inject constructor(
         } else {
             ExtractorMediaSource.Factory(dataSourceFactory)
         }
-        mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
-        play()
+//        mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
+//        play()
     }
 
 //    override fun play() {

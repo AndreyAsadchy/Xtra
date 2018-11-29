@@ -3,6 +3,7 @@ package com.github.exact7.xtra.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.exact7.xtra.ui.clips.common.ClipsViewModel
+import com.github.exact7.xtra.ui.clips.followed.FollowedClipsViewModel
 import com.github.exact7.xtra.ui.common.GenericViewModelFactory
 import com.github.exact7.xtra.ui.downloads.DownloadsViewModel
 import com.github.exact7.xtra.ui.games.GamesViewModel
@@ -12,6 +13,10 @@ import com.github.exact7.xtra.ui.player.offline.OfflinePlayerViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.ui.player.video.VideoPlayerViewModel
 import com.github.exact7.xtra.ui.streams.common.StreamsViewModel
+import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsViewModel
+import com.github.exact7.xtra.ui.videos.channel.ChannelVideosViewModel
+import com.github.exact7.xtra.ui.videos.followed.FollowedVideosViewModel
+import com.github.exact7.xtra.ui.videos.game.GameVideosViewModel
 import com.github.exact7.xtra.ui.videos.top.TopVideosViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,7 +28,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(MainViewModel::class)
-    abstract fun bindMainActivityViewModel(mainViewModel: MainViewModel): ViewModel
+    abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -34,6 +39,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(StreamsViewModel::class)
     abstract fun bindStreamsViewModel(streamListViewModel: StreamsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FollowedStreamsViewModel::class)
+    abstract fun bindFollowedStreamsViewModel(followedStreamsViewModel: FollowedStreamsViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -57,8 +67,23 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(ChannelVideosViewModel::class)
+    abstract fun bindChannelVideosViewModel(channelVideosViewModel: ChannelVideosViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FollowedVideosViewModel::class)
+    abstract fun bindFollowedVideosViewModel(followedVideosViewModel: FollowedVideosViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(GameVideosViewModel::class)
+    abstract fun bindGameVideosViewModel(gameVideosViewModel: GameVideosViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(TopVideosViewModel::class)
-    abstract fun bindVideosViewModel(videosViewModel: TopVideosViewModel): ViewModel
+    abstract fun bindTopVideosViewModel(topVideosViewModel: TopVideosViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -69,6 +94,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ClipsViewModel::class)
     abstract fun bindClipsViewModel(clipsViewModel: ClipsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FollowedClipsViewModel::class)
+    abstract fun bindFollowedClipsViewModel(followedClipsViewModel: FollowedClipsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: GenericViewModelFactory): ViewModelProvider.Factory

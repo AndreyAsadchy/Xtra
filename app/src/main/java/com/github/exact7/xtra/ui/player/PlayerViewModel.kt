@@ -17,16 +17,14 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, Initializable {
+abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener {
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
     protected val trackSelector = DefaultTrackSelector()
     protected val compositeDisposable = CompositeDisposable()
-    protected lateinit var mediaSource: MediaSource
-    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
+    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector).apply { addListener(this@PlayerViewModel) }
 
-    open fun play() {
-        player.addListener(this)
+    protected fun play(mediaSource: MediaSource) {
         player.prepare(mediaSource)
         player.playWhenReady = true
     }
@@ -35,10 +33,6 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
         player.release()
         compositeDisposable.clear()
         super.onCleared()
-    }
-
-    override fun isInitialized(): Boolean {
-        return ::mediaSource.isInitialized
     }
 
     //Player.EventListener

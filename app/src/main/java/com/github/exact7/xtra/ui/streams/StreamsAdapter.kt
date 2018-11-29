@@ -6,7 +6,8 @@ import com.github.exact7.xtra.databinding.FragmentStreamsListItemBinding
 import com.github.exact7.xtra.model.stream.Stream
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
-class StreamsAdapter : DataBoundPagedListAdapter<Stream, FragmentStreamsListItemBinding>(
+class StreamsAdapter(
+        private val listener: BaseStreamsFragment.OnStreamSelectedListener) : DataBoundPagedListAdapter<Stream, FragmentStreamsListItemBinding>(
         object : DiffUtil.ItemCallback<Stream>() {
             override fun areItemsTheSame(oldItem: Stream, newItem: Stream): Boolean =
                     oldItem.id == newItem.id
@@ -22,5 +23,6 @@ class StreamsAdapter : DataBoundPagedListAdapter<Stream, FragmentStreamsListItem
 
     override fun bind(binding: FragmentStreamsListItemBinding, item: Stream?) {
         binding.stream = item
+        binding.listener = listener
     }
 }

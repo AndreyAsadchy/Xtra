@@ -19,7 +19,10 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
         fun startStream(stream: Stream)
     }
 
+    protected lateinit var adapter: StreamsAdapter
+        private set
     protected lateinit var binding: FragmentStreamsBinding
+        private set
     private var listener: OnStreamSelectedListener? = null
 
     override fun onAttach(context: Context?) {
@@ -41,6 +44,11 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    override fun initialize() {
+        adapter = StreamsAdapter(listener!!)
+        recyclerViewLayout.recyclerView.adapter = adapter
     }
 
     override fun scrollToTop() {

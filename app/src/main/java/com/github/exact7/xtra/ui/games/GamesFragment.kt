@@ -43,8 +43,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
-        binding.listener = listener
-        val adapter = GamesAdapter()
+        val adapter = GamesAdapter(listener!!)
         recyclerViewLayout.recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
