@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.main
 
+import android.animation.Animator
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -45,7 +46,6 @@ import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
-import com.google.android.material.snackbar.Snackbar
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
                 if (viewModel.hasValidated) {
                     init()
-                } else {
+                } else { //TODO check internet
                     viewModel.hasValidated = true
                     authRepository.validate(user.token)
                             .subscribe({
@@ -146,7 +146,41 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         })
         viewModel.isNetworkAvailable().observe(this, Observer {
-            Snackbar.make(findViewById(android.R.id.content), if (it) "Online" else "Offline", Snackbar.LENGTH_LONG)
+            if (it) {
+                navBarContainer.animate().translationY(0f)
+                offlineView.animate().translationY(offlineView.height.toFloat()).setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        offlineView.visibility = View.GONE
+
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                    }
+                })
+            } else {
+                navBarContainer.animate().translationY(-offlineView.height.toFloat())
+                offlineView.animate().translationY(0f).setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        offlineView.visibility = View.VISIBLE
+                    }
+                })
+            }
         })
         registerReceiver(receiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
     }
