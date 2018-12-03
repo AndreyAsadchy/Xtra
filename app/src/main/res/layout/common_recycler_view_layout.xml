@@ -43,7 +43,9 @@
             <!--android:id="@+id/loadMoreProgressBar"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
-            <!--app:visible="@{viewModel.pagingState == LoadingState.LOADING}"/>-->
+            <!--app:visible="@{viewModel.pagingState == LoadingState.LOADING}"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerInParent="true"/>-->
 
     </RelativeLayout>
 </layout>

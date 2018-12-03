@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentStreamsBinding
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.stream.Stream
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_streams.*
 
-abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollable {
+abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
 
     interface OnStreamSelectedListener {
         fun startStream(stream: Stream)
@@ -37,7 +36,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Injectable, Scrollab
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             FragmentStreamsBinding.inflate(inflater, container, false).let {
                 binding = it
-                it.setLifecycleOwner(this)
+                it.setLifecycleOwner(viewLifecycleOwner)
                 it.root
             }
 

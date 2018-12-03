@@ -10,6 +10,7 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
     private lateinit var viewModel: FollowedStreamsViewModel
 
     override fun initialize() {
+        super.initialize()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FollowedStreamsViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {
@@ -24,5 +25,4 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
     override fun onNetworkRestored() {
         viewModel.retry()
     }
-
 }

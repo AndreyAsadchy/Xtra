@@ -1,8 +1,8 @@
 package com.github.exact7.xtra.ui.fragment
 
-import androidx.fragment.app.Fragment
+import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 
-open class LazyFragment : Fragment() {
+abstract class LazyFragment : BaseNetworkFragment() {
 
     var isFragmentVisible: Boolean = false
         private set

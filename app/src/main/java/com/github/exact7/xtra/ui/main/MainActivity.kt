@@ -13,13 +13,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.ActivityMainBinding
 import com.github.exact7.xtra.model.OfflineVideo
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.clip.Clip
@@ -47,6 +45,7 @@ import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.google.android.material.snackbar.Snackbar
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -55,7 +54,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
-
 
 
 class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener {
@@ -87,9 +85,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.viewModel = viewModel
         val prefs = getPreferences(Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean("first_launch", true)
         if (!isFirstLaunch) {
@@ -100,7 +97,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 fun init() {
                     initFragNavController()
                     viewModel.user.value = user
-                    fragNavController.initialize(INDEX_GAMES, savedInstanceState)
+                    fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
                 }
 
                 if (viewModel.hasValidated) {
@@ -149,7 +146,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         })
         viewModel.isNetworkAvailable().observe(this, Observer {
-            offlineLayout.visibility = if (it != true) View.VISIBLE else View.GONE
+            Snackbar.make(findViewById(android.R.id.content), if (it) "Online" else "Offline", Snackbar.LENGTH_LONG)
         })
         registerReceiver(receiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
     }

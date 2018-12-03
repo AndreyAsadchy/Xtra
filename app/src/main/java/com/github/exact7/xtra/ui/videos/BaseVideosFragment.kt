@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentVideosBinding
 import com.github.exact7.xtra.model.video.Video
 import com.github.exact7.xtra.ui.Scrollable
-import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.fragment.LazyFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
 
-abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
+abstract class BaseVideosFragment : LazyFragment(), Scrollable {
 
     interface OnVideoSelectedListener {
         fun startVideo(video: Video)
@@ -37,7 +37,7 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
         return if (isFragmentVisible) {
             FragmentVideosBinding.inflate(inflater, container, false).let {
                 binding = it
-                it.setLifecycleOwner(this@BaseVideosFragment)
+                it.setLifecycleOwner(viewLifecycleOwner)
                 it.root
             }
         } else {
