@@ -50,4 +50,7 @@
     <string name="delete">Удалить</string>
     <string name="are_you_sure">Вы действительно хотите удалить это видео?</string>
     <string name="token_expired">Время сеанса истекло. Пожалуйста, пройдите авторизацию</string>
+    <string name="no_connection">Отсутствует Интернет-соединение</string>
+    <string name="connection_restored">Соединение восстановлено</string>
+    <string name="follow_tab_login_prompt">Здесь будут отображаться Ваши подписки</string>
 </resources>

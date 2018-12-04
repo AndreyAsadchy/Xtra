@@ -44,6 +44,7 @@
     <style name="NavBarDark">
         <item name="android:background">@color/primaryDark</item>
         <item name="itemIconTint">@color/nav_bar_dark</item>
+        <item name="itemTextColor">@color/nav_bar_dark</item>
     </style>
 
 

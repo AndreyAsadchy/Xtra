@@ -19,6 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file title.
 #-renamesourcefileattribute SourceFile
+-printmapping build/outputs/mapping/release/mapping.txt
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule

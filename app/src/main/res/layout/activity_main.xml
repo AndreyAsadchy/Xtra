@@ -22,8 +22,8 @@
         android:id="@+id/navBarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
 
         <View
             android:layout_width="match_parent"
@@ -35,18 +35,23 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:menu="@menu/navigation_bar"
-            app:labelVisibilityMode="unlabeled"
+            app:labelVisibilityMode="labeled"
             style="?attr/navBarStyle"/>
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/offlineView"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:translationY="20dp"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/holo_green_dark"/>
+    <!--<LinearLayout-->
+        <!--android:id="@+id/offlineViewContainer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true">-->
+<!---->
+        <!--<View-->
+            <!--android:id="@+id/offlineView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:visibility="gone"-->
+            <!--android:background="@android:color/holo_green_dark" />-->
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

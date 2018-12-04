@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.main
 
-import android.animation.Animator
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -145,42 +144,33 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
+        var notFirst = false
         viewModel.isNetworkAvailable().observe(this, Observer {
-            if (it) {
-                navBarContainer.animate().translationY(0f)
-                offlineView.animate().translationY(offlineView.height.toFloat()).setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(animation: Animator?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animator?) {
-                        offlineView.visibility = View.GONE
-
-                    }
-
-                    override fun onAnimationCancel(animation: Animator?) {
-                    }
-
-                    override fun onAnimationStart(animation: Animator?) {
-                    }
-                })
+            if (notFirst) {
+                Toast.makeText(this, getString(if (it) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
             } else {
-                navBarContainer.animate().translationY(-offlineView.height.toFloat())
-                offlineView.animate().translationY(0f).setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(animation: Animator?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animator?) {
-
-                    }
-
-                    override fun onAnimationCancel(animation: Animator?) {
-                    }
-
-                    override fun onAnimationStart(animation: Animator?) {
-                        offlineView.visibility = View.VISIBLE
-                    }
-                })
+                notFirst = true
             }
+//            if (it) {
+//                offlineView.animate().translationY(offlineView.height.toFloat()).setListener(object : Animator.AnimatorListener {
+//                    override fun onAnimationRepeat(animation: Animator?) {
+//                    }
+//
+//                    override fun onAnimationEnd(animation: Animator?) {
+//                offlineView.visibility = View.GONE
+//                    }
+//
+//                    override fun onAnimationCancel(animation: Animator?) {
+//                    }
+//
+//                    override fun onAnimationStart(animation: Animator?) {
+//                    }
+//                })
+
+//            } else {
+//                offlineView.visibility = View.VISIBLE
+//                offlineView.animate().translationY(0f)
+//            }
         })
         registerReceiver(receiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
     }
@@ -198,19 +188,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 val index = when (it.itemId) {
                     R.id.fragment_games -> INDEX_GAMES
                     R.id.fragment_top -> INDEX_TOP
-                    R.id.fragment_follow -> {
-                        if (viewModel.user.value != null) {
-                            INDEX_FOLLOWED
-                        } else {
-                            INDEX_MENU //TODO create another screen instead of this
-                        }
-                    }
+                    R.id.fragment_follow -> INDEX_FOLLOWED
                     R.id.fragment_downloads -> INDEX_DOWNLOADS
                     R.id.fragment_menu -> INDEX_MENU
                     else -> throw IllegalArgumentException()
                 }
                 fragNavController.switchTab(index)
-                return@setOnNavigationItemSelectedListener true
+                true
             }
 
             setOnNavigationItemReselectedListener {
@@ -239,7 +223,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onActivityResult(requestCode, resultCode, data)
 
         fun updateUserLiveData() {
-            data?.getParcelableExtra<User>(C.USER)?.let(viewModel.user::postValue)
+            data?.getParcelableExtra<User>(C.USER)?.let {
+                viewModel.user.value = it
+            }
         }
 
         when (requestCode) {
@@ -266,10 +252,30 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                         updateUserLiveData()
                         navBar.selectedItemId = R.id.fragment_follow
                         fragNavController.switchTab(INDEX_FOLLOWED)
+                        fragNavController.replaceFragment(FollowPagerFragment())
                     }
                     RESULT_CANCELED -> { //Logged out
                         viewModel.user.value = null
                         navBar.selectedItemId = R.id.fragment_top
+                        fragNavController.transactionListener = object : FragNavController.TransactionListener {
+                            var removed = false
+
+                            override fun onTabTransaction(fragment: Fragment?, index: Int) {
+                                if (!removed && index == INDEX_FOLLOWED) {
+                                    println("replace")
+                                    fragNavController.
+//                                    fragNavController.replaceFragment(FollowPagerFragment())
+                                    removed = true
+                                }
+                            }
+
+                            override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
+                            }
+                        }
+                        fragNavController.getStack(INDEX_FOLLOWED)?.apply {
+                            clear()
+                            push(FollowPagerFragment())
+                        }
                     }
                 }
             }

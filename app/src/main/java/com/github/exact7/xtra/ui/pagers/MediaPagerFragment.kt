@@ -26,6 +26,10 @@ abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwareP
         viewPager.offscreenPageLimit = 2
     }
 
+    fun superOnViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
     protected fun setAdapter(adapter: ItemAwareFragmentPagerAdapter) {
         this.adapter = adapter
         viewPager.adapter = adapter
