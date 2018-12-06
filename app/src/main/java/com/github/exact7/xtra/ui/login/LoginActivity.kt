@@ -15,6 +15,7 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.C
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), Injectable {
 
     @Inject
     lateinit var repository: AuthRepository
@@ -43,7 +44,6 @@ class LoginActivity : AppCompatActivity() {
                 login.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
             } else {
-                setResult(2) //if cancelled do nothing
                 initWebView()
             }
         } else {

@@ -8,15 +8,19 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(): ViewModel() {
 
-    val user = MutableLiveData<User?>()
-
+    private val _user = MutableLiveData<User?>()
+    val user: LiveData<User?>
+        get() = _user
     private val _playerMaximized = MutableLiveData<Boolean>()
     val isPlayerMaximized: Boolean
         get() = _playerMaximized.value ?: false
     var isPlayerOpened = false
         private set
-    var hasValidated = false
     private val _isNetworkAvailable = MutableLiveData<Boolean>()
+
+    fun setUser(user: User?) {
+        _user.value = user
+    }
 
     fun playerMaximized(): LiveData<Boolean> {
         return _playerMaximized
@@ -46,4 +50,6 @@ class MainViewModel @Inject constructor(): ViewModel() {
     fun setNetworkAvailable(isNetworkAvailable: Boolean) {
         _isNetworkAvailable.value = isNetworkAvailable
     }
+
+
 }

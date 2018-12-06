@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.di
 
+import com.github.exact7.xtra.ui.SplashActivity
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 
@@ -14,4 +15,7 @@ abstract class ActivityBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeLoginActivity(): LoginActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeSplashActivity(): SplashActivity
 }

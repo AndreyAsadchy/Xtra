@@ -7,11 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.github.exact7.xtra.XtraApp
-import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.LifecycleListener
 import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 
 object AppInjector {
 
@@ -49,7 +47,7 @@ object AppInjector {
     }
 
     private fun handleActivity(activity: Activity, xtraApp: XtraApp) {
-        if (activity is HasSupportFragmentInjector || activity is LoginActivity) { //TODO change
+        if (activity is Injectable) {
             AndroidInjection.inject(activity)
         }
         if (activity is FragmentActivity) {

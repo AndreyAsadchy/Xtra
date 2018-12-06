@@ -46,7 +46,7 @@ object TwitchApiHelper {
     fun getCurrentTimeFormatted(context: Context): String =
             DateUtils.formatDateTime(context, Calendar.getInstance().time.time, DateUtils.FORMAT_NO_YEAR)
 
-    fun getUserData(context: Context): User? {
+    fun getUser(context: Context): User? {
         val prefs = context.getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
         return with(prefs) {
             val id = getString(C.USER_ID, null)
