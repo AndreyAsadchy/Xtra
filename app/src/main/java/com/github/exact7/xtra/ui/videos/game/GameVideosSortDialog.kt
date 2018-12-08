@@ -19,8 +19,8 @@ import kotlinx.android.synthetic.main.dialog_videos_sort.*
 
 class GameVideosSortDialog : BottomSheetDialogFragment() {
 
-    interface OnFilterApplied {
-        fun onApply(sort: Sort, sortText: CharSequence, period: Period, periodText: CharSequence)
+    interface OnFilter {
+        fun onChange(sort: Sort, sortText: CharSequence, period: Period, periodText: CharSequence)
     }
 
     companion object {
@@ -35,14 +35,14 @@ class GameVideosSortDialog : BottomSheetDialogFragment() {
         }
     }
 
-    private var listener: OnFilterApplied? = null
+    private var listener: OnFilter? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (parentFragment is OnFilterApplied) {
-            listener = parentFragment as OnFilterApplied
+        if (parentFragment is OnFilter) {
+            listener = parentFragment as OnFilter
         } else {
-            throw RuntimeException(parentFragment.toString() + " must implement OnFilterApplied")
+            throw RuntimeException(parentFragment.toString() + " must implement OnFilter")
         }
     }
 
@@ -52,27 +52,33 @@ class GameVideosSortDialog : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sort.check(if (arguments?.getSerializable(SORT) as Sort == Sort.TIME) R.id.time else R.id.views)
-        period.check(when (arguments?.getSerializable(PERIOD) as Period) {
+        val originalSortId = if (arguments?.getSerializable(SORT) as Sort == Sort.TIME) R.id.time else R.id.views
+        val originalPeriodId = when (arguments?.getSerializable(PERIOD) as Period) {
             DAY -> R.id.today
             WEEK -> R.id.week
             MONTH -> R.id.month
             ALL -> R.id.all
-        })
+        }
+        sort.check(originalSortId)
+        period.check(originalPeriodId)
         apply.setOnClickListener {
-            val sortBtn = view.findViewById<RadioButton>(sort.checkedRadioButtonId)
-            val periodBtn = view.findViewById<RadioButton>(period.checkedRadioButtonId)
-            listener!!.onApply(
-                    if (sortBtn.id == R.id.time) Sort.TIME else Sort.VIEWS,
-                    sortBtn.text,
-                    when (periodBtn.id) {
-                        R.id.today -> DAY
-                        R.id.week -> WEEK
-                        R.id.month -> MONTH
-                        R.id.all -> ALL
-                        else -> throw IllegalStateException()
-                    },
-                    periodBtn.text)
+            val checkedPeriodId = period.checkedRadioButtonId
+            val checkedSortId = sort.checkedRadioButtonId
+            if (checkedPeriodId != originalPeriodId || checkedSortId != originalSortId) {
+                val sortBtn = view.findViewById<RadioButton>(checkedSortId)
+                val periodBtn = view.findViewById<RadioButton>(checkedPeriodId)
+                listener!!.onChange(
+                        if (checkedSortId == R.id.time) Sort.TIME else Sort.VIEWS,
+                        sortBtn.text,
+                        when (checkedPeriodId) {
+                            R.id.today -> DAY
+                            R.id.week -> WEEK
+                            R.id.month -> MONTH
+                            R.id.all -> ALL
+                            else -> throw IllegalStateException()
+                        },
+                        periodBtn.text)
+            }
             dismiss()
         }
     }

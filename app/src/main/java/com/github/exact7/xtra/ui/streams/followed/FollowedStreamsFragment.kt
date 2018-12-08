@@ -17,10 +17,8 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
             adapter.submitList(it)
         })
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            user?.let {
-                viewModel.setUser(it)
-            }
+        mainViewModel.user.observe(viewLifecycleOwner, Observer {
+            viewModel.setUser(it!!)
         })
     }
 

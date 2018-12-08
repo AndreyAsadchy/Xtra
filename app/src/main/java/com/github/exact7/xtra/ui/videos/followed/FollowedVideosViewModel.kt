@@ -35,14 +35,15 @@ class FollowedVideosViewModel @Inject constructor(
     }
 
     fun setUser(user: User) {
-        filter.value = filter.value?.copy(user = user) ?: Filter(user)
+        if (filter.value?.user != user) {
+            filter.value = filter.value?.copy(user = user) ?: Filter(user)
+        }
     }
 
     fun sort(sort: Sort, index: Int, text: CharSequence) {
-        val filter = filter.value
-        if (filter?.sort != sort) {
-            this.filter.value = null
-            this.filter.value = filter?.copy(sort = sort)
+        if (filter.value?.sort != sort) {
+            _loadedInitial.value = null
+            filter.value = filter.value?.copy(sort = sort)
             selectedIndex = index
             _sortText.value = text
         }

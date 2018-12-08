@@ -15,27 +15,25 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     @Inject protected lateinit var viewModelFactory: ViewModelProvider.Factory
     private var isInitialized = false
 
+    abstract fun initialize()
+    abstract fun onNetworkRestored()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        viewModel.isNetworkAvailable().observe(viewLifecycleOwner, Observer {
-            if (it) {
+        viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent()) {
                 if (!isInitialized) {
                     initialize()
                     isInitialized = true
                 } else {
                     onNetworkRestored()
                 }
+            } else {
+                if (isInitialized) {
+                    initialize()
+                }
             }
         })
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initialize()
-        isInitialized = true
-    }
-
-    abstract fun initialize()
-    abstract fun onNetworkRestored()
 }

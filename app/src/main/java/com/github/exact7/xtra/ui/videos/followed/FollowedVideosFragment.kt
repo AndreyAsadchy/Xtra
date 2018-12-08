@@ -1,7 +1,5 @@
 package com.github.exact7.xtra.ui.videos.followed
 
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -16,11 +14,6 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
 
     private lateinit var viewModel: FollowedVideosViewModel
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
     override fun initialize() {
         if (isFragmentVisible) {
             super.initialize()
@@ -34,6 +27,7 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
             mainViewModel.user.observe(viewLifecycleOwner, Observer {
                 viewModel.setUser(it!!)
             })
+            sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
         }
     }
 
@@ -42,6 +36,7 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+        adapter.submitList(null)
         viewModel.sort(if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS, index, text)
     }
 }

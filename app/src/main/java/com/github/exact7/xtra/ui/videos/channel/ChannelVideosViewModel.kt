@@ -34,14 +34,15 @@ class ChannelVideosViewModel @Inject constructor(
     }
 
     fun setChannelId(channelId: Any) {
-        filter.value = Filter(channelId)
+        if (filter.value?.channelId != channelId) {
+            filter.value = Filter(channelId)
+        }
     }
 
     fun setSort(sort: Sort, index: Int, text: CharSequence) {
-        val filter = this.filter.value!!
-        if (filter.sort != sort) {
-            this.filter.value = null
-            this.filter.value = filter.copy(sort = sort)
+        if (filter.value?.sort != sort) {
+            _loadedInitial.value = null
+            filter.value = filter.value?.copy(sort = sort)
             selectedIndex = index
             _sortText.value = text
         }

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
@@ -38,7 +37,7 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentDownloadsBinding.inflate(inflater, container, false).apply { setLifecycleOwner(this@DownloadsFragment) }
+        binding = FragmentDownloadsBinding.inflate(inflater, container, false).apply { setLifecycleOwner(viewLifecycleOwner) }
         return binding.root
     }
 
@@ -47,7 +46,7 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(DownloadsViewModel::class.java)
         binding.viewModel = viewModel
         val adapter = DownloadsAdapter(listener!!, viewModel::delete)
-        viewModel.load().observe(this, Observer(adapter::submitList))
+        viewModel.load().observe(this, Observer(adapter::submitList)) //TODO if size 0 show empty text
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {

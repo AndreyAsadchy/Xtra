@@ -20,7 +20,11 @@ class StreamsViewModel @Inject constructor(
     }
 
     fun loadStreams(game: Game? = null, languages: String? = null) {
-        filter.value = Filter(game, languages)
+        Filter(game, languages).let {
+            if (filter.value != it) {
+                filter.value = it
+            }
+        }
     }
 
     private data class Filter(

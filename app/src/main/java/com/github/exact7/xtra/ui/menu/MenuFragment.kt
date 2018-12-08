@@ -25,10 +25,7 @@ class MenuFragment : Fragment() {
         val viewModel = ViewModelProviders.of(activity).get(MainViewModel::class.java)
         viewModel.user.observe(this, Observer { login.text = if (it != null) getString(R.string.log_out) else getString(R.string.log_in) })
         login.setOnClickListener {
-            activity.startActivityForResult(
-                    Intent(activity, LoginActivity::class.java),
-                    if (viewModel.user.value == null) 1 else 2
-            )
+            activity.startActivityForResult(Intent(activity, LoginActivity::class.java), if (viewModel.user.value == null) 1 else 2)
         }
     }
 }

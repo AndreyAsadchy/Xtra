@@ -32,14 +32,15 @@ class FollowedClipsViewModel @Inject constructor(
     }
 
     fun setUser(user: User) {
-        filter.value = filter.value?.copy(user = user) ?: Filter(user)
+        if (filter.value?.user != user) {
+            filter.value = filter.value?.copy(user = user) ?: Filter(user)
+        }
     }
 
     fun setTrending(trending: Boolean, index: Int, text: CharSequence) {
-        val filter = filter.value
-        if (filter?.trending != trending) {
-            this.filter.value = null
-            this.filter.value = filter?.copy(trending = trending)
+        if (filter.value?.trending != trending) {
+            _loadedInitial.value = null
+            filter.value = filter.value?.copy(trending = trending)
             _sortText.value = text
             selectedIndex = index
         }

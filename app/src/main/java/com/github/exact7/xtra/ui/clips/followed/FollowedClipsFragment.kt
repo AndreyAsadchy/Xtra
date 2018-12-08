@@ -1,7 +1,5 @@
 package com.github.exact7.xtra.ui.clips.followed
 
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -13,11 +11,6 @@ import kotlinx.android.synthetic.main.fragment_clips.*
 class FollowedClipsFragment : BaseClipsFragment() {
 
     private lateinit var viewModel: FollowedClipsViewModel
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
 
     override fun initialize() {
         if (isFragmentVisible) {
@@ -32,6 +25,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
             mainViewModel.user.observe(viewLifecycleOwner, Observer {
                 viewModel.setUser(it!!)
             })
+            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
         }
     }
 
@@ -40,6 +34,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+        adapter.submitList(null)
         viewModel.setTrending(tag == R.string.trending, index, text)
     }
 }

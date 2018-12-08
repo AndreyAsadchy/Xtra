@@ -1,11 +1,7 @@
 package com.github.exact7.xtra.ui.main
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Configuration
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -42,14 +38,13 @@ import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.NetworkUtils
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
-
-
 class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener, Injectable {
 
     companion object {
@@ -67,35 +62,31 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private var playerFragment: BasePlayerFragment? = null
     private val handler by lazy { Handler() }
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            viewModel.setNetworkAvailable(intent?.let {
-                it.getParcelableExtra<NetworkInfo>("networkInfo").state == NetworkInfo.State.CONNECTED
-            } == true)
-        }
-    }
 
     //Lifecycle methods
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initNavigation()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        viewModel.user.observe(this, Observer {
-            if (it == null) {
+        initNavigation()
+        val user = intent.getParcelableExtra<User>(C.USER)
+        if (user == null) {
+            fragNavController.initialize(INDEX_TOP, savedInstanceState)
+            if (savedInstanceState == null) {
                 navBar.selectedItemId = R.id.fragment_top
-            } else {
+            }
+        } else {
+            fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
+            if (savedInstanceState == null) {
                 navBar.selectedItemId = R.id.fragment_follow
             }
-        })
-        val user = intent.getParcelableExtra<User>(C.USER)
-        fragNavController.initialize(if (user == null) INDEX_TOP else INDEX_FOLLOWED, savedInstanceState)
+        }
         viewModel.setUser(user)
         if (viewModel.isPlayerOpened) {
             playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
         }
-        viewModel.playerMaximized().observe(this, Observer {
+        viewModel.playerMaximized.observe(this, Observer {
             if (viewModel.isPlayerOpened) {
                 val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
                 if (!isLandscape) {
@@ -109,12 +100,23 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
-        var notFirst = false
-        viewModel.isNetworkAvailable().observe(this, Observer {
-            if (notFirst) {
-                Toast.makeText(this, getString(if (it) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
-            } else {
-                notFirst = true
+
+        fun showToast(online: Boolean) {
+            Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
+        }
+
+        var flag = false
+        if (!NetworkUtils.isConnected(this)) {
+            showToast(false)
+            flag = true
+        }
+        viewModel.isNetworkAvailable.observe(this, Observer {
+            it.getContentIfNotHandled()?.let { online ->
+                if (flag) {
+                    showToast(online)
+                } else {
+                    flag = true
+                }
             }
 //            if (it) {
 //                offlineView.animate().translationY(offlineView.height.toFloat()).setListener(object : Animator.AnimatorListener {
@@ -137,12 +139,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //                offlineView.animate().translationY(0f)
 //            }
         })
-        registerReceiver(receiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
-    }
-
-    override fun onDestroy() {
-        unregisterReceiver(receiver)
-        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -156,26 +152,18 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        //TODO reset fragments and restart chatview if it's running
-        fun update() {
-            for (i in 0..2) {
-                fragNavController.getStack(i)?.clear()
-            }
-            viewModel.setUser(data?.getParcelableExtra(C.USER))
+        fun restartActivity() {
+            startActivity(Intent(this, MainActivity::class.java).apply { putExtra(C.USER, data?.getParcelableExtra<User>(C.USER)) })
+            finish()
         }
 
         when (requestCode) {
             1 -> { //Was not logged in
                 when (resultCode) {
-                    RESULT_OK -> { //Logged in
-                        update()
-                        handler.postDelayed( {fragNavController.replaceFragment(FollowPagerFragment()) }, 5000)
-                    }
+                    RESULT_OK -> restartActivity() //Logged in
                 }
             }
-            2 -> { //Was logged in
-                update()
-            }
+            2 -> restartActivity() //Was logged in
         }
     }
 
@@ -213,7 +201,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         playerFragment?.onWindowFocusChanged(hasFocus)
     }
 
-    //Navigation listeners
+//Navigation listeners
 
     override fun openGame(game: Game) {
         fragNavController.pushFragment(GamePagerFragment.newInstance(game))
@@ -240,7 +228,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         //TODO
     }
 
-    //DraggableListener
+//DraggableListener
 
     override fun onMaximized() {
         viewModel.onMaximize()
@@ -262,7 +250,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         navBarContainer.translationY = -verticalDragOffset * navBarContainer.height + navBarContainer.height
     }
 
-    //Player methods
+//Player methods
 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {

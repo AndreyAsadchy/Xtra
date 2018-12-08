@@ -1,7 +1,5 @@
 package com.github.exact7.xtra.ui.videos.top
 
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -15,11 +13,6 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
 
     private lateinit var viewModel: TopVideosViewModel
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
     override fun initialize() {
         if (isFragmentVisible) {
             super.initialize()
@@ -29,6 +22,7 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
             viewModel.list.observe(this, Observer {
                 adapter.submitList(it)
             })
+            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
         }
     }
 
@@ -44,6 +38,7 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
             R.string.all_time -> Period.ALL
             else -> throw IllegalArgumentException()
         }
+        adapter.submitList(null)
         viewModel.filter(period, index, text)
     }
 }

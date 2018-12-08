@@ -33,19 +33,22 @@ class GameVideosViewModel @Inject constructor(
         get() = filter.value!!.period
 
     init {
-        _sortText.value = context.getString(R.string.sort_and_period, Sort.VIEWS, Period.WEEK)
+        _sortText.value = context.getString(R.string.sort_and_period, context.getString(R.string.view_count), context.getString(R.string.this_week))
     }
 
     fun setGame(game: Game) {
-        filter.value = Filter(game)
+        if (filter.value?.game != game) {
+            filter.value = Filter(game)
+        }
     }
 
     fun filter(sort: Sort, period: Period, text: CharSequence) {
-        val filter = this.filter.value?.copy(sort = sort, period = period)
-        if (this.filter.value != filter) {
-            this.filter.value = null
-            this.filter.value = filter
-            _sortText.value = text
+        filter.value?.copy(sort = sort, period = period).let {
+            if (filter.value != it) {
+                _loadedInitial.value = null
+                filter.value = it
+                _sortText.value = text
+            }
         }
     }
 

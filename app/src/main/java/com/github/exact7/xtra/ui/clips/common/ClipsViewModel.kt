@@ -33,17 +33,20 @@ class ClipsViewModel @Inject constructor(
     }
 
     fun loadClips(channelName: String? = null, game: Game? = null, languages: String? = null) {
-        filter.value = Filter(channelName, game, languages)
+        Filter(channelName, game, languages).let {
+            if (filter.value != it)
+                filter.value = it
+        }
     }
 
     fun filter(period: Period?, trending: Boolean, index: Int, text: CharSequence) {
-        val newFilter = filter.value?.copy(period = period, trending = trending)
-        if (filter.value != newFilter) {
-            filter.value = null
-            filter.value = newFilter
-            _sortText.value = text
-            _loadedInitial.value = null
-            selectedIndex = index
+        filter.value?.copy(period = period, trending = trending).let {
+            if (filter.value != it) {
+                _loadedInitial.value = null
+                filter.value = it
+                _sortText.value = text
+                selectedIndex = index
+            }
         }
     }
 

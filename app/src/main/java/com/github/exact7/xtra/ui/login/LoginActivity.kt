@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.login
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -49,7 +48,6 @@ class LoginActivity : AppCompatActivity(), Injectable {
         } else {
             initWebView()
             prefs.edit { clear() }
-            setResult(Activity.RESULT_CANCELED)
             repository.revoke(token)
                     .subscribe { _ -> prefs.edit { clear() } }
                     .addTo(compositeDisposable)

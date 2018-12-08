@@ -16,10 +16,11 @@ android {
     defaultConfig {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         targetSdkVersion 28
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
@@ -48,6 +49,7 @@ android {
             disable 'ContentDescription'
         }
     }
+    gradleLint.rules = ['unused-dependency']
 }
 
 dependencies {

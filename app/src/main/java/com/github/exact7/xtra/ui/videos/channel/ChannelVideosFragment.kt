@@ -1,7 +1,5 @@
 package com.github.exact7.xtra.ui.videos.channel
 
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -15,11 +13,6 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
 
     private lateinit var viewModel: ChannelVideosViewModel
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
     override fun initialize() {
         if (isFragmentVisible) {
             super.initialize()
@@ -30,6 +23,7 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
                 adapter.submitList(it)
             })
             viewModel.setChannelId(arguments?.get("channelId")!!)
+            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
         }
     }
 
@@ -38,6 +32,7 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+        adapter.submitList(null)
         viewModel.setSort(if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS, index, text)
     }
 }

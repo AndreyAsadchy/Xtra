@@ -1,7 +1,5 @@
 package com.github.exact7.xtra.ui.clips.common
 
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -15,11 +13,6 @@ class ClipsFragment : BaseClipsFragment() {
 
     private lateinit var viewModel: ClipsViewModel
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireActivity(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
     override fun initialize() {
         if (isFragmentVisible) {
             super.initialize()
@@ -30,6 +23,7 @@ class ClipsFragment : BaseClipsFragment() {
                 adapter.submitList(it)
             })
             viewModel.loadClips(arguments?.getString("channel"), arguments?.getParcelable("game") as Game?)
+            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
         }
     }
 
@@ -47,6 +41,7 @@ class ClipsFragment : BaseClipsFragment() {
             R.string.this_month -> period = Period.MONTH
             R.string.all_time -> period = Period.ALL
         }
+        adapter.submitList(null)
         viewModel.filter(period, trending, index, text)
     }
 }
