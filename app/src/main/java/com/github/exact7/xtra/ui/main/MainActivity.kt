@@ -100,20 +100,11 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
-
-        fun showToast(online: Boolean) {
-            Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
-        }
-
-        var flag = false
-        if (!NetworkUtils.isConnected(this)) {
-            showToast(false)
-            flag = true
-        }
+        var flag = !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
                 if (flag) {
-                    showToast(online)
+                    Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
                 } else {
                     flag = true
                 }

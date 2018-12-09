@@ -19,15 +19,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            app:visible="@{viewModel.loadedInitial == null &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"/>
+            app:visible="@{!viewModel.loadedInitial &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"/>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:onRefreshListener="@{viewModel::refresh}"
-                app:refreshing="@{viewModel.loadedInitial != null &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"
-                app:enabled="@{viewModel.loadedInitial != null}">
+                app:refreshing="@{viewModel.loadedInitial &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"
+                app:enabled="@{!viewModel.loadedInitial}">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"

@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentClipsBinding
 import com.github.exact7.xtra.model.clip.Clip
 import com.github.exact7.xtra.ui.Scrollable
-import com.github.exact7.xtra.ui.fragment.LazyFragment
+import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_clips.*
 
-abstract class BaseClipsFragment : LazyFragment(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged {
+abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged {
 
     interface OnClipSelectedListener {
         fun startClip(clip: Clip)

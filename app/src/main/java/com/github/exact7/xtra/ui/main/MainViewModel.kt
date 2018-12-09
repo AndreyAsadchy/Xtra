@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.util.Event
+import com.github.exact7.xtra.util.NetworkUtils
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(application: Application): ViewModel() {
@@ -46,6 +47,9 @@ class MainViewModel @Inject constructor(application: Application): ViewModel() {
 
     init {
         cm.registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+        if (!NetworkUtils.isConnected(application)) {
+            _isNetworkAvailable.value = Event(false)
+        }
     }
 
     fun setUser(user: User?) {
