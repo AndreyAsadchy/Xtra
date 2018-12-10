@@ -9,7 +9,6 @@ class StreamsFragment : BaseStreamsFragment() {
     private lateinit var viewModel: StreamsViewModel
 
     override fun initialize() {
-        super.initialize()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamsViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {

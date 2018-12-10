@@ -15,6 +15,7 @@ abstract class PagedListViewModel<T> : ViewModel() {
     val list: LiveData<PagedList<T>> by lazy { switchMap(result) { it.pagedList } }
     val loadingState: LiveData<LoadingState> by lazy { switchMap(result) { it.loadingState } }
     val pagingState: LiveData<LoadingState> by lazy { switchMap(result) { it.pagingState } }
+
     protected val _loadedInitial by lazy {
         MediatorLiveData<Boolean?>().apply {
             addSource(loadingState) {

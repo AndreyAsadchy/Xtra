@@ -34,20 +34,12 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if (isFragmentVisible) {
-            FragmentVideosBinding.inflate(inflater, container, false).let {
-                binding = it
-                it.setLifecycleOwner(viewLifecycleOwner)
-                it.root
-            }
-        } else {
-            null
+        return FragmentVideosBinding.inflate(inflater, container, false).let {
+            binding = it
+            it.setLifecycleOwner(viewLifecycleOwner)
+            it.root.recyclerView.adapter = VideosAdapter(listener!!).also { a -> adapter = a }
+            it.root
         }
-    }
-
-    override fun initialize() {
-        adapter = VideosAdapter(listener!!)
-        recyclerViewLayout.recyclerView.adapter = adapter
     }
 
     override fun onDetach() {

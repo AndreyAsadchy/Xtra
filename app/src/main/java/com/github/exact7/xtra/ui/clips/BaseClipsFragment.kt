@@ -35,18 +35,12 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if (isFragmentVisible) FragmentClipsBinding.inflate(inflater, container, false).let {
+        return FragmentClipsBinding.inflate(inflater, container, false).let {
             binding = it
             it.setLifecycleOwner(viewLifecycleOwner)
+            it.root.recyclerView.adapter = ClipsAdapter(listener!!).also { a -> adapter = a }
             it.root
-        } else {
-            null
         }
-    }
-
-    override fun initialize() {
-        adapter = ClipsAdapter(listener!!)
-        recyclerViewLayout.recyclerView.adapter = adapter
     }
 
     override fun onDetach() {

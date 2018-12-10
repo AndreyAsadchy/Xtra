@@ -14,16 +14,13 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
     private lateinit var viewModel: TopVideosViewModel
 
     override fun initialize() {
-        if (isFragmentVisible) {
-            super.initialize()
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopVideosViewModel::class.java)
-            binding.viewModel = viewModel
-            binding.sortText = viewModel.sortText
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopVideosViewModel::class.java)
+        binding.viewModel = viewModel
+        binding.sortText = viewModel.sortText
+        viewModel.list.observe(this, Observer {
+            adapter.submitList(it)
+        })
+        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
     override fun onNetworkRestored() {

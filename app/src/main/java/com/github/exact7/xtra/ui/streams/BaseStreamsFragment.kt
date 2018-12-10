@@ -37,17 +37,13 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
             FragmentStreamsBinding.inflate(inflater, container, false).let {
                 binding = it
                 it.setLifecycleOwner(viewLifecycleOwner)
+                it.root.recyclerView.adapter =  StreamsAdapter(listener!!).also { a -> adapter = a }
                 it.root
             }
 
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    override fun initialize() {
-        adapter = StreamsAdapter(listener!!)
-        recyclerViewLayout.recyclerView.adapter = adapter
     }
 
     override fun scrollToTop() {

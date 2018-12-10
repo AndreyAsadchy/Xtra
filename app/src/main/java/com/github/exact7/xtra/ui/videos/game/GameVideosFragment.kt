@@ -14,17 +14,14 @@ class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {
     private lateinit var viewModel: GameVideosViewModel
 
     override fun initialize() {
-        if (isFragmentVisible) {
-            super.initialize()
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(GameVideosViewModel::class.java)
-            binding.viewModel = viewModel
-            binding.sortText = viewModel.sortText
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-            viewModel.setGame(arguments?.getParcelable("game") as Game)
-            sortBar.setOnClickListener { GameVideosSortDialog.newInstance(viewModel.sort, viewModel.period).show(childFragmentManager, null) }
-        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(GameVideosViewModel::class.java)
+        binding.viewModel = viewModel
+        binding.sortText = viewModel.sortText
+        viewModel.list.observe(this, Observer {
+            adapter.submitList(it)
+        })
+        viewModel.setGame(arguments?.getParcelable("game") as Game)
+        sortBar.setOnClickListener { GameVideosSortDialog.newInstance(viewModel.sort, viewModel.period).show(childFragmentManager, null) }
     }
 
     override fun onNetworkRestored() {

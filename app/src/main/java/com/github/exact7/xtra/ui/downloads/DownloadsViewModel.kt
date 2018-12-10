@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.downloads
 
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.exact7.xtra.model.OfflineVideo
 import com.github.exact7.xtra.repository.OfflineRepository
@@ -14,9 +13,7 @@ import javax.inject.Inject
 class DownloadsViewModel @Inject internal constructor(
         private val repository: OfflineRepository) : ViewModel() {
 
-    val loaded = MutableLiveData<Boolean>()
-
-    fun load() = repository.loadAll().also { loaded.postValue(true) }
+    val list = repository.loadAll()
 
     fun delete(video: OfflineVideo) {
         repository.delete(video)

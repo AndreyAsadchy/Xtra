@@ -14,17 +14,14 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
     private lateinit var viewModel: ChannelVideosViewModel
 
     override fun initialize() {
-        if (isFragmentVisible) {
-            super.initialize()
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelVideosViewModel::class.java)
-            binding.viewModel = viewModel
-            binding.sortText = viewModel.sortText
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-            viewModel.setChannelId(arguments?.get("channelId")!!)
-            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelVideosViewModel::class.java)
+        binding.viewModel = viewModel
+        binding.sortText = viewModel.sortText
+        viewModel.list.observe(this, Observer {
+            adapter.submitList(it)
+        })
+        viewModel.setChannelId(arguments?.get("channelId")!!)
+        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
     override fun onNetworkRestored() {

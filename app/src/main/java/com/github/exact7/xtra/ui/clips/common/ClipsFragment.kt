@@ -14,17 +14,14 @@ class ClipsFragment : BaseClipsFragment() {
     private lateinit var viewModel: ClipsViewModel
 
     override fun initialize() {
-        if (isFragmentVisible) {
-            super.initialize()
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
-            binding.viewModel = viewModel
-            binding.sortText = viewModel.sortText
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-            viewModel.loadClips(arguments?.getString("channel"), arguments?.getParcelable("game") as Game?)
-            sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
+        binding.viewModel = viewModel
+        binding.sortText = viewModel.sortText
+        viewModel.list.observe(this, Observer {
+            adapter.submitList(it)
+        })
+        viewModel.loadClips(arguments?.getString("channel"), arguments?.getParcelable("game") as Game?)
+        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
     override fun onNetworkRestored() {

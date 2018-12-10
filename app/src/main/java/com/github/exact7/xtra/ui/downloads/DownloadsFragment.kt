@@ -46,7 +46,7 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(DownloadsViewModel::class.java)
         binding.viewModel = viewModel
         val adapter = DownloadsAdapter(listener!!, viewModel::delete)
-        viewModel.load().observe(this, Observer(adapter::submitList)) //TODO if size 0 show empty text
+        viewModel.list.observe(this, Observer(adapter::submitList))
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {

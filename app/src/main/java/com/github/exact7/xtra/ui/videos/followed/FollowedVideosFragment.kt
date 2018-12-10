@@ -15,20 +15,17 @@ class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.O
     private lateinit var viewModel: FollowedVideosViewModel
 
     override fun initialize() {
-        if (isFragmentVisible) {
-            super.initialize()
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(FollowedVideosViewModel::class.java)
-            binding.viewModel = viewModel
-            binding.sortText = viewModel.sortText
-            viewModel.list.observe(this, Observer {
-                adapter.submitList(it)
-            })
-            val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-            mainViewModel.user.observe(viewLifecycleOwner, Observer {
-                viewModel.setUser(it!!)
-            })
-            sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(FollowedVideosViewModel::class.java)
+        binding.viewModel = viewModel
+        binding.sortText = viewModel.sortText
+        viewModel.list.observe(this, Observer {
+            adapter.submitList(it)
+        })
+        val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.user.observe(viewLifecycleOwner, Observer {
+            viewModel.setUser(it!!)
+        })
+        sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
     override fun onNetworkRestored() {
