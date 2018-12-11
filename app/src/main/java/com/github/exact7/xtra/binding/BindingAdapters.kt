@@ -10,15 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.github.exact7.xtra.GlideApp
+import java.util.*
+import kotlin.math.roundToInt
 
 @SuppressLint("CheckResult")
-@BindingAdapter("imageUrl", "signature", "circle", requireAll = false)
-fun loadImage(imageView: ImageView, url: String, signature: Any?, circle: Boolean) {
-    println(signature)
+@BindingAdapter("imageUrl", "changes", "circle", requireAll = false)
+fun loadImage(imageView: ImageView, url: String, changes: Boolean, circle: Boolean) {
     val request = GlideApp.with(imageView.context)
             .load(url)
             .transition(DrawableTransitionOptions.withCrossFade())
-    signature?.let { request.signature(ObjectKey(it)) }
+    if (changes) {
+        val calendar = Calendar.getInstance()
+        request.signature(ObjectKey((calendar.get(Calendar.MINUTE) / 10f).roundToInt() + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
+    }
     if (circle) {
         request.circleCrop()
     }
