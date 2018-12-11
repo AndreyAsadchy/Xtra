@@ -7,17 +7,18 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.github.exact7.xtra.GlideApp
 
 @SuppressLint("CheckResult")
-@BindingAdapter("imageUrl", "circle", requireAll = false)
-fun loadImage(imageView: ImageView, url: String?, circle: Boolean) {
+@BindingAdapter("imageUrl", "signature", "circle", requireAll = false)
+fun loadImage(imageView: ImageView, url: String, signature: Any?, circle: Boolean) {
+    println(signature)
     val request = GlideApp.with(imageView.context)
             .load(url)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
             .transition(DrawableTransitionOptions.withCrossFade())
+    signature?.let { request.signature(ObjectKey(it)) }
     if (circle) {
         request.circleCrop()
     }

@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webViewContainer.visibility = View.VISIBLE
+        webView.visibility = View.VISIBLE
         CookieManager.getInstance().removeAllCookies(null)
         with(webView) {
             settings.javaScriptEnabled = true
@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                     val matcher = pattern.matcher(url)
                     if (matcher.find()) {
-                        webViewContainer.visibility = View.GONE
+                        webView.visibility = View.GONE
                         welcomeContainer.visibility = View.GONE
                         progressBar.visibility = View.VISIBLE
                         val token = matcher.group(1)
@@ -101,12 +101,10 @@ class LoginActivity : AppCompatActivity(), Injectable {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (event.action == KeyEvent.ACTION_DOWN) {
-            when (keyCode) {
-                KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
-                    webView.goBack()
-                    return true
-                }
+        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (webView.canGoBack()) {
+                webView.goBack()
+                return true
             }
         }
         return super.onKeyDown(keyCode, event)

@@ -25,6 +25,7 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 app:imageUrl="@{stream.preview.large}"
+                app:signature="@{stream.channel.updatedAt}"
                 tools:src="@tools:sample/backgrounds/scenic"
                 android:scaleType="centerCrop"
                 android:layout_width="match_parent"
