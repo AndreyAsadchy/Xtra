@@ -14,13 +14,13 @@ class OfflinePlayerViewModel @Inject constructor(
     lateinit var video: OfflineVideo
     private var playbackProgress: Long = 0
 
-    fun init() {
+    fun setVideo(video: OfflineVideo) {
         val mediaSourceFactory = if (video.vod) {
             HlsMediaSource.Factory(dataSourceFactory)
         } else {
             ExtractorMediaSource.Factory(dataSourceFactory)
         }
-//        mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
+        mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
 //        play()
     }
 

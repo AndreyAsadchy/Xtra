@@ -17,15 +17,14 @@ import kotlinx.android.synthetic.main.player_stream.*
 import javax.inject.Inject
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
+abstract class BasePlayerFragment<T : Parcelable> : Fragment(), Injectable, LifecycleListener {
 
     private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
-    protected var isPortraitOrientation: Boolean = false
-        private set
-    private lateinit var decorView: View
+    private var isPortraitOrientation: Boolean = false
+    private var decorView: View? = null
 
 
     @Inject
@@ -53,13 +52,14 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
+        val activity = requireActivity()
         if (isPortraitOrientation) {
             minimize.setOnClickListener { minimize() }
             draggableView = view as DraggableView
             draggableView.setDraggableListener(dragListener)
-            fullscreenEnter.setOnClickListener { requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            fullscreenEnter.setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
-            decorView = requireActivity().window.decorView
+            decorView = activity.window.decorView
             hideStatusBar()
 
             // Code below is to handle presses of Volume up or Volume down.
@@ -72,9 +72,10 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 //            }
             //            slidingView = view.findViewById(R.id.fragment_player_sv);
             fullscreenExit.setOnClickListener {
-                val activity = requireActivity()
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                activity.apply {
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
 
             }
         }
@@ -84,7 +85,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
         super.onDetach()
         if (!isPortraitOrientation) {
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            decorView.systemUiVisibility = 0
+            decorView?.systemUiVisibility = 0
         }
         channelListener = null
         dragListener = null
@@ -97,7 +98,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     }
 
     private fun hideStatusBar() {
-        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -113,7 +114,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
         viewModel.player.stop()
     }
 
-    abstract fun play(obj: Parcelable)
+    abstract fun play(obj: T)
 
     fun minimize() {
         if (isPortraitOrientation) {
