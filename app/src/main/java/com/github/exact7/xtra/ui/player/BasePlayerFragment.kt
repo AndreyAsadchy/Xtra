@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.player_stream.*
 import javax.inject.Inject
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment<T : Parcelable> : Fragment(), Injectable, LifecycleListener {
+abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
     private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
