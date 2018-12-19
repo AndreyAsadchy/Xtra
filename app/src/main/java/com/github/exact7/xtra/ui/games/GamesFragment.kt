@@ -24,7 +24,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     private lateinit var binding: FragmentGamesBinding
     private var listener: OnGameSelectedListener? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnGameSelectedListener) {
             listener = context

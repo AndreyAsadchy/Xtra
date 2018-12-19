@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.binding
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.github.exact7.xtra.GlideApp
+import com.github.exact7.xtra.R
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -30,11 +31,18 @@ fun loadImage(imageView: ImageView, url: String, changes: Boolean, circle: Boole
 }
 
 @BindingAdapter("divider")
-fun setDivider(recyclerView: RecyclerView, divider: Drawable) {
-    val context = recyclerView.context
-    recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
-        setDrawable(divider)
-    })
+fun setDivider(recyclerView: RecyclerView, showDivider: Boolean) {
+    if (showDivider) {
+        val context = recyclerView.context
+        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setDrawable(context.getDrawable(R.drawable.divider))
+            } else {
+                println(R.drawable.divider)
+            }
+//            VectorDrawableCompat.create(context.resources, R.drawable.divider, null)!!
+        })
+    }
 }
 
 @BindingAdapter("visible")

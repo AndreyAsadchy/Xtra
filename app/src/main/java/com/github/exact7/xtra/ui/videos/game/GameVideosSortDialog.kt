@@ -37,7 +37,7 @@ class GameVideosSortDialog : BottomSheetDialogFragment() {
 
     private var listener: OnFilter? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (parentFragment is OnFilter) {
             listener = parentFragment as OnFilter

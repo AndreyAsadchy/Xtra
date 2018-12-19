@@ -24,7 +24,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
         private set
     private var listener: OnStreamSelectedListener? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnStreamSelectedListener) {
             listener = context

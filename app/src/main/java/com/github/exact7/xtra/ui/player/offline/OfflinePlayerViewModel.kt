@@ -11,7 +11,7 @@ import javax.inject.Inject
 class OfflinePlayerViewModel @Inject constructor(
         context: Application) : PlayerViewModel(context) {
 
-    lateinit var video: OfflineVideo
+//    lateinit var video: OfflineVideo
     private var playbackProgress: Long = 0
 
     fun setVideo(video: OfflineVideo) {
@@ -20,7 +20,7 @@ class OfflinePlayerViewModel @Inject constructor(
         } else {
             ExtractorMediaSource.Factory(dataSourceFactory)
         }
-        mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
+//        mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(video.url))
 //        play()
     }
 

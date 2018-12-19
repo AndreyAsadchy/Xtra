@@ -6,7 +6,7 @@ buildscript {
     ext.lifecycle = '2.0.0'
     ext.room = '2.1.0-alpha03'
     ext.exoplayer = "2.9.0"
-    ext.dagger = '2.19'
+    ext.dagger = '2.16'
     ext.retrofit = '2.5.0'
     ext.glide = "4.8.0"
 

@@ -9,12 +9,11 @@ import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 
 class FollowPagerAdapter(context: Context, fm: FragmentManager) : MediaPagerAdapter(context, fm) {
 
-    override fun getItem(position: Int): Fragment? {
+    override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> FollowedStreamsFragment()
             1 -> FollowedVideosFragment()
-            2 -> FollowedClipsFragment()
-            else -> null
+            else -> FollowedClipsFragment()
         }
     }
 }

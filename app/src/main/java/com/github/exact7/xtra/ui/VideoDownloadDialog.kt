@@ -34,7 +34,7 @@ class VideoDownloadDialog : DialogFragment() {
 
     private lateinit var listener: OnDownloadClickListener
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = parentFragment as OnDownloadClickListener
     }

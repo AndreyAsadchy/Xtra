@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +23,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     private var dragListener: DraggableListener? = null
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
-    private var isPortraitOrientation: Boolean = false
+    protected var isPortraitOrientation: Boolean = false
     private var decorView: View? = null
 
 
@@ -113,7 +114,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
         viewModel.player.stop()
     }
 
-    abstract fun play(obj: T)
+    abstract fun play(obj: Parcelable)
 
     fun minimize() {
         if (isPortraitOrientation) {

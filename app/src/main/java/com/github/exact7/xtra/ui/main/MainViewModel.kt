@@ -3,8 +3,6 @@ package com.github.exact7.xtra.ui.main
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,20 +31,20 @@ class MainViewModel @Inject constructor(application: Application): ViewModel() {
     var isPlayerOpened = false
         private set
     private val cm: ConnectivityManager = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network?) {
-            super.onAvailable(network)
-            _isNetworkAvailable.postValue(Event(true))
-        }
-
-        override fun onLost(network: Network?) {
-            super.onLost(network)
-            _isNetworkAvailable.postValue(Event(false))
-        }
-    }
+//    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+//        override fun onAvailable(network: Network?) {
+//            super.onAvailable(network)
+//            _isNetworkAvailable.postValue(Event(true))
+//        }
+//
+//        override fun onLost(network: Network?) {
+//            super.onLost(network)
+//            _isNetworkAvailable.postValue(Event(false))
+//        }
+//    }
 
     init {
-        cm.registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+//        cm.registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
         if (!NetworkUtils.isConnected(application)) {
             _isNetworkAvailable.value = Event(false)
         }
@@ -77,6 +75,6 @@ class MainViewModel @Inject constructor(application: Application): ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        cm.unregisterNetworkCallback(networkCallback)
+//        cm.unregisterNetworkCallback(networkCallback)
     }
 }

@@ -38,9 +38,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginStart="3dp"
                 android:layout_marginBottom="5dp"
-                android:layout_toEndOf="@id/streamTypeImage" />
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_toEndOf="@id/streamTypeImage"
+                android:layout_toRightOf="@id/streamTypeImage" />
 
             <ImageView
                 android:id="@+id/streamTypeImage"
@@ -53,7 +55,8 @@
                 android:scaleType="centerCrop"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="6dp"
-                android:layout_marginStart="5dp" />
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp" />
 
             <ImageView
                 android:id="@+id/userImage"
@@ -63,7 +66,8 @@
                 style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
-                android:layout_marginStart="10dp" />
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp" />
 
             <TextView
                 android:id="@+id/username"
@@ -76,7 +80,9 @@
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="7dp"
                 android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/userImage"/>
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@id/userImage"
+                android:layout_toRightOf="@id/userImage" />
             <TextView
                 android:id="@+id/title"
                 android:text="@{stream.channel.status}"
@@ -88,7 +94,9 @@
                 android:layout_below="@id/username"
                 android:layout_marginTop="1dp"
                 android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/userImage"/>
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@id/userImage"
+                android:layout_toRightOf="@id/userImage" />
 
             <TextView
                 android:id="@+id/gameName"
@@ -98,10 +106,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
-                android:layout_toEndOf="@id/userImage"
                 android:layout_marginTop="1dp"
+                android:paddingBottom="10dp"
+                android:layout_toEndOf="@id/userImage"
+                android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
-                android:paddingBottom="10dp"/>
+                android:layout_marginLeft="10dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

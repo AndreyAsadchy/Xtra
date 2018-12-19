@@ -20,7 +20,8 @@
             tools:text="@string/all_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/sortByImage" />
+            android:layout_toStartOf="@id/sortByImage"
+            android:layout_toLeftOf="@id/sortByImage" />
 
         <ImageView
             android:id="@+id/sortByImage"
@@ -28,14 +29,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@android:color/white"
-            android:layout_toStartOf="@id/sortByText" />
+            android:layout_toStartOf="@id/sortByText"
+            android:layout_toLeftOf="@id/sortByText" />
 
         <TextView
             android:id="@+id/sortByText"
             android:text="@string/sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
 </layout>

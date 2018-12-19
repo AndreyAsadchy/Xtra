@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.stream.Stream
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
 import java.util.*
 
-class StreamPlayerFragment : BasePlayerFragment<Stream>(), RadioButtonDialogFragment.OnSortOptionChanged {
+class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
     private companion object {
         const val TAG = "StreamPlayer"
@@ -43,7 +43,6 @@ class StreamPlayerFragment : BasePlayerFragment<Stream>(), RadioButtonDialogFrag
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        playerView.
         super.onViewCreated(view, savedInstanceState)
         if (!isPortraitOrientation) {
             if (prefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
@@ -114,7 +113,7 @@ class StreamPlayerFragment : BasePlayerFragment<Stream>(), RadioButtonDialogFrag
         viewModel.stopChat()
     }
 
-    override fun play(obj: Stream) {
+    override fun play(obj: Parcelable) {
 //        val stream = obj as Stream
 //        if (viewModel.stream != stream) {
 //            viewModel.player.playWhenReady = false

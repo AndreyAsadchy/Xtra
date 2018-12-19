@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.clip.Clip
 import com.github.exact7.xtra.ui.ClipDownloadDialog
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -17,7 +16,7 @@ import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
-class ClipPlayerFragment : BasePlayerFragment<Clip>(), RadioButtonDialogFragment.OnSortOptionChanged, ClipDownloadDialog.OnDownloadClickListener {
+class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, ClipDownloadDialog.OnDownloadClickListener {
     override fun play(obj: Parcelable) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.core.os.bundleOf
-import com.github.exact7.xtra.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -59,7 +59,7 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val radioGroup = inflater.inflate(R.layout.dialog_radio_button, container, false) as RadioGroup
+        val radioGroup = RadioGroup(requireContext()).apply { layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT) }
         arguments?.let {
             val checkedId = it.getInt(CHECKED)
             val clickListener = View.OnClickListener { v ->

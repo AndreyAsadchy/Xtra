@@ -11,13 +11,12 @@ import com.github.exact7.xtra.ui.videos.game.GameVideosFragment
 
 class GamePagerAdapter(context: Context, fm: FragmentManager, private val args: Bundle) : MediaPagerAdapter(context, fm) {
 
-    override fun getItem(position: Int): androidx.fragment.app.Fragment? {
-        val fragment: Fragment? = when (position) {
+    override fun getItem(position: Int): Fragment {
+        val fragment: Fragment = when (position) {
             0 -> StreamsFragment()
             1 -> GameVideosFragment()
-            2 -> ClipsFragment()
-            else -> null
+            else -> ClipsFragment()
         }
-        return fragment?.apply { arguments = args }
+        return fragment.apply { arguments = args }
     }
 }

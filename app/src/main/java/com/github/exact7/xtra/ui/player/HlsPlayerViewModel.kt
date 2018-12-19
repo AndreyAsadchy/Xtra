@@ -59,8 +59,6 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
 
     override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
         if (!initialized) {
-            (player.currentManifest as HlsManifest).masterPlaylist.variants.get(0).
-            trackGroups.get(0).getFormat(0)
             trackSelector.currentMappedTrackInfo?.let {
                 initialized = true
                 val index = prefs.getString(TAG, "Auto").let { quality: String ->
