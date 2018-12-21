@@ -41,4 +41,9 @@ class FollowPagerFragment : MediaPagerFragment(), Injectable {
             superOnViewCreated(view, savedInstanceState)
         }
     }
+
+    override fun scrollToTop() {
+        if (isLoggedIn)
+            super.scrollToTop()
+    }
 }

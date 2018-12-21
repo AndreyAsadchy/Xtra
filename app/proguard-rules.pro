@@ -27,6 +27,7 @@
   **[] $VALUES;
   public *;
 }
+-keep class com.bumptech.glide.integration.okhttp.OkHttpGlideModule
 
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;

@@ -35,7 +35,7 @@
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/fragment_downloads_list_item"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:divider="@{true}"/>
+                        app:divider="@{@drawable/divider}"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
