@@ -203,12 +203,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        playerFragment?.onWindowFocusChanged(hasFocus)
-    }
-
-//Navigation listeners
+    //Navigation listeners
 
     override fun openGame(game: Game) {
         fragNavController.pushFragment(GamePagerFragment.newInstance(game))
@@ -256,6 +251,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onMoved(horizontalDragOffset: Float, verticalDragOffset: Float) {
         navBarContainer.translationY = -verticalDragOffset * navBarContainer.height + navBarContainer.height
     }
+
+//    override fun onDrag(viewYPosition: Float, parentHeight: Int, viewHeight: Int) {
+//        navBarContainer.translationY = -viewYPosition * navBarContainer.height + navBarContainer.height
+//    }
 
 //Player methods
 

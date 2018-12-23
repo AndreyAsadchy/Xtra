@@ -8,10 +8,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.github.exact7.xtra.R;
-
 import androidx.core.view.ViewCompat;
 import androidx.customview.widget.ViewDragHelper;
+
+import com.github.exact7.xtra.R;
 
 /**
  * @author Pedro Vicente Gómez Sánchez.
@@ -591,30 +591,30 @@ public class DraggableView extends RelativeLayout {
      * @param attrs to be analyzed.
      */
     private void initializeAttributes(AttributeSet attrs) {
-        TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.DraggableView);
+        TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.draggable_view);
         this.enableHorizontalAlphaEffect =
-                attributes.getBoolean(R.styleable.DraggableView_enable_minimized_horizontal_alpha_effect,
+                attributes.getBoolean(R.styleable.draggable_view_enable_minimized_horizontal_alpha_effect,
                         DEFAULT_ENABLE_HORIZONTAL_ALPHA_EFFECT);
         this.enableClickToMaximize =
-                attributes.getBoolean(R.styleable.DraggableView_enable_click_to_maximize_view,
+                attributes.getBoolean(R.styleable.draggable_view_enable_click_to_maximize_view,
                         DEFAULT_ENABLE_CLICK_TO_MAXIMIZE);
         this.enableClickToMinimize =
-                attributes.getBoolean(R.styleable.DraggableView_enable_click_to_minimize_view,
+                attributes.getBoolean(R.styleable.draggable_view_enable_click_to_minimize_view,
                         DEFAULT_ENABLE_CLICK_TO_MINIMIZE);
-        this.topViewHeight = attributes.getDimensionPixelSize(R.styleable.DraggableView_top_view_height,
+        this.topViewHeight = attributes.getDimensionPixelSize(R.styleable.draggable_view_top_view_height,
                 DEFAULT_TOP_VIEW_HEIGHT);
-        this.scaleFactorX = attributes.getFloat(R.styleable.DraggableView_top_view_x_scale_factor,
+        this.scaleFactorX = attributes.getFloat(R.styleable.draggable_view_top_view_x_scale_factor,
                 DEFAULT_SCALE_FACTOR);
-        this.scaleFactorY = attributes.getFloat(R.styleable.DraggableView_top_view_y_scale_factor,
+        this.scaleFactorY = attributes.getFloat(R.styleable.draggable_view_top_view_y_scale_factor,
                 DEFAULT_SCALE_FACTOR);
-        this.marginBottom = attributes.getDimensionPixelSize(R.styleable.DraggableView_top_view_margin_bottom,
+        this.marginBottom = attributes.getDimensionPixelSize(R.styleable.draggable_view_top_view_margin_bottom,
                 DEFAULT_TOP_VIEW_MARGIN);
-        this.marginRight = attributes.getDimensionPixelSize(R.styleable.DraggableView_top_view_margin_right,
+        this.marginRight = attributes.getDimensionPixelSize(R.styleable.draggable_view_top_view_margin_right,
                 DEFAULT_TOP_VIEW_MARGIN);
         this.dragViewId =
-                attributes.getResourceId(R.styleable.DraggableView_top_view_id, 0);
+                attributes.getResourceId(R.styleable.draggable_view_top_view_id, 0);
         this.secondViewId =
-                attributes.getResourceId(R.styleable.DraggableView_bottom_view_id, 0);
+                attributes.getResourceId(R.styleable.draggable_view_bottom_view_id, 0);
         attributes.recycle();
     }
 

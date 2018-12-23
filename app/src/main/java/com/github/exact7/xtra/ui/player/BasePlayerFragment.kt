@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.exact7.xtra.di.Injectable
@@ -23,8 +24,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
     protected var isPortraitOrientation: Boolean = false
-    private var decorView: View? = null
-
+        private set
 
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -52,23 +52,15 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
         super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
         val activity = requireActivity()
-        draggableView = view as DraggableView
-        draggableView.setDraggableListener(dragListener)
+
         if (isPortraitOrientation) {
+            draggableView = view as DraggableView
+            draggableView.setDraggableListener(dragListener)
             minimize.setOnClickListener { minimize() }
             fullscreenEnter.setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
-            decorView = activity.window.decorView
-            hideStatusBar()
-
-            // Code below is to handle presses of Volume up or Volume down.
-            // Without this, after pressing volume buttons, the navigation bar will
-            // show up and won't hide
-//            decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-//                if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-//                    hideStatusBar()
-//                }
-//            }
+            activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
             //            slidingView = view.findViewById(R.id.fragment_player_sv);
             fullscreenExit.setOnClickListener {
                 activity.apply {
@@ -83,26 +75,12 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     override fun onDetach() {
         super.onDetach()
         if (!isPortraitOrientation) {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            decorView?.systemUiVisibility = 0
+            val activity = requireActivity()
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
 //        channelListener = null
         dragListener = null
-    }
-
-    fun onWindowFocusChanged(hasFocus:Boolean) {
-        if (!isPortraitOrientation && hasFocus) {
-            hideStatusBar()
-        }
-    }
-
-    private fun hideStatusBar() {
-        decorView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
     override fun onMovedToForeground() {
