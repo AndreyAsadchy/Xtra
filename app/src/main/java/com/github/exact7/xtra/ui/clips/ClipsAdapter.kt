@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.clips
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentClipsListItemBinding
-import com.github.exact7.xtra.model.clip.Clip
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
 class ClipsAdapter(

@@ -20,7 +20,7 @@ import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.model.OfflineVideo
-import com.github.exact7.xtra.model.clip.Clip
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.util.TwitchApiHelper
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.GlobalScope

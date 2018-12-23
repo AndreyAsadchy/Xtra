@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.videos
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentVideosListItemBinding
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
 class VideosAdapter(

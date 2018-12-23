@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.player.video
 import android.app.Application
 import android.content.Intent
 import com.github.exact7.xtra.model.VideoInfo
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.service.VideoDownloadService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel

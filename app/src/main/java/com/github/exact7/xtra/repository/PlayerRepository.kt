@@ -6,11 +6,12 @@ import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.model.clip.ClipStatusResponse
+import com.github.exact7.xtra.model.kraken.clip.ClipStatusResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.*
+import java.util.HashMap
+import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 

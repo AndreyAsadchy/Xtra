@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.clip.Clip
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.model.kraken.clip.Period
+import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.repository.Listing
 import com.github.exact7.xtra.repository.TwitchService
-import com.github.exact7.xtra.ui.clips.Period
 import com.github.exact7.xtra.ui.common.PagedListViewModel
 import javax.inject.Inject
 

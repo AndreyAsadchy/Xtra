@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -59,7 +60,8 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val radioGroup = RadioGroup(requireContext()).apply { layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT) }
+        val context = requireContext()
+        val radioGroup = RadioGroup(context).apply { layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT) }
         arguments?.let {
             val checkedId = it.getInt(CHECKED)
             val clickListener = View.OnClickListener { v ->
@@ -71,7 +73,7 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
             }
             val tags = it.getIntArray(TAGS)
             it.getCharSequenceArrayList(LABELS)?.forEachIndexed { index, label ->
-                val button = RadioButton(requireActivity()).apply {
+                val button = AppCompatRadioButton(context).apply {
                     id = index
                     text = label
                     tag = tags?.getOrNull(index)

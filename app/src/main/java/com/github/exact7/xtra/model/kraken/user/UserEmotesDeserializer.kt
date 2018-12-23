@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model.user
+package com.github.exact7.xtra.model.kraken.user
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
@@ -6,7 +6,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import java.lang.reflect.Type
-import java.util.*
+import java.util.ArrayList
 
 class UserEmotesDeserializer : JsonDeserializer<UserEmotesResponse> {
 

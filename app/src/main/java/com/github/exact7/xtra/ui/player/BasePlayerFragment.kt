@@ -9,7 +9,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.ui.common.OnChannelClickedListener
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
 import com.github.exact7.xtra.ui.view.draggableview.DraggableView
 import com.github.exact7.xtra.util.LifecycleListener
@@ -19,7 +18,7 @@ import javax.inject.Inject
 @Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
-    private var channelListener: OnChannelClickedListener? = null
+//    private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
@@ -32,11 +31,11 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnChannelClickedListener) {
-            channelListener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnViewChannelClickedListener")
-        }
+//        if (context is OnChannelClickedListener) {
+//            channelListener = context
+//        } else {
+//            throw RuntimeException(context.toString() + " must implement OnViewChannelClickedListener")
+//        }
         if (context is DraggableListener) {
             dragListener = context
         } else {
@@ -53,10 +52,10 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
         super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
         val activity = requireActivity()
+        draggableView = view as DraggableView
+        draggableView.setDraggableListener(dragListener)
         if (isPortraitOrientation) {
             minimize.setOnClickListener { minimize() }
-            draggableView = view as DraggableView
-            draggableView.setDraggableListener(dragListener)
             fullscreenEnter.setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
             decorView = activity.window.decorView
@@ -87,7 +86,7 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             decorView?.systemUiVisibility = 0
         }
-        channelListener = null
+//        channelListener = null
         dragListener = null
     }
 

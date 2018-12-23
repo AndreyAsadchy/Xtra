@@ -3,10 +3,10 @@ package com.github.exact7.xtra.ui.videos.followed
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
-import com.github.exact7.xtra.ui.videos.Sort
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_videos.*
 

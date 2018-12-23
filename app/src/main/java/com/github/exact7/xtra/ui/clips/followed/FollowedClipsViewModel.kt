@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
-import com.github.exact7.xtra.model.clip.Clip
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.Listing
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.PagedListViewModel

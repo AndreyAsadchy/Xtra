@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.core.os.bundleOf
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.videos.Period
-import com.github.exact7.xtra.ui.videos.Period.ALL
-import com.github.exact7.xtra.ui.videos.Period.DAY
-import com.github.exact7.xtra.ui.videos.Period.MONTH
-import com.github.exact7.xtra.ui.videos.Period.WEEK
-import com.github.exact7.xtra.ui.videos.Sort
+import com.github.exact7.xtra.model.kraken.video.Period
+import com.github.exact7.xtra.model.kraken.video.Period.ALL
+import com.github.exact7.xtra.model.kraken.video.Period.DAY
+import com.github.exact7.xtra.model.kraken.video.Period.MONTH
+import com.github.exact7.xtra.model.kraken.video.Period.WEEK
+import com.github.exact7.xtra.model.kraken.video.Sort
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_videos_sort.*
 

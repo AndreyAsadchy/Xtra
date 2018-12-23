@@ -8,7 +8,7 @@
         <import type="android.text.format.DateUtils"/>
         <variable
             name="video"
-            type="com.github.exact7.xtra.model.video.Video"/>
+            type="com.github.exact7.xtra.model.kraken.video.Video"/>
         <variable
             name="listener"
             type="com.github.exact7.xtra.ui.videos.BaseVideosFragment.OnVideoSelectedListener"/>

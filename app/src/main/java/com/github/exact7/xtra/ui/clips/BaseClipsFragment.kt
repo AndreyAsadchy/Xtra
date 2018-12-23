@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentClipsBinding
-import com.github.exact7.xtra.model.clip.Clip
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment

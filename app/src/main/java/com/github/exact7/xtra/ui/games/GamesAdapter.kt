@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.games
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentGamesListItemBinding
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
 
 class GamesAdapter(

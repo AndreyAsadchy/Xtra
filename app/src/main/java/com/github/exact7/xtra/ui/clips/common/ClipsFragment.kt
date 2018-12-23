@@ -3,9 +3,9 @@ package com.github.exact7.xtra.ui.clips.common
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.clip.Period
+import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
-import com.github.exact7.xtra.ui.clips.Period
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_clips.*
 

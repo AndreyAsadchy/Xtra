@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.videos
+package com.github.exact7.xtra.model.kraken.video
 
 enum class BroadcastType(val value: String) {
     ALL("all"),

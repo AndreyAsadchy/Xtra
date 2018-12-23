@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.model.stream.Stream
+import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.tasks.LiveChatTask
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel

@@ -26,7 +26,7 @@ import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.model.OfflineVideo
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
@@ -40,7 +40,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
+import java.util.ArrayList
+import java.util.Comparator
+import java.util.LinkedList
+import java.util.Queue
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 

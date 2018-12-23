@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.github.exact7.xtra.model.kraken.stream.StreamType"/>
         <variable
             name="stream"
-            type="com.github.exact7.xtra.model.stream.Stream"/>
+            type="com.github.exact7.xtra.model.kraken.stream.Stream"/>
         <variable
             name="listener"
             type="com.github.exact7.xtra.ui.streams.BaseStreamsFragment.OnStreamSelectedListener"/>
@@ -46,8 +47,8 @@
 
             <ImageView
                 android:id="@+id/streamTypeImage"
-                android:src="@{!stream.playlist ? @drawable/baseline_fiber_manual_record_black_24 : @drawable/baseline_replay_black_24 }"
-                app:tint="@{!stream.playlist ? @android:color/holo_red_dark : @android:color/darker_gray }"
+                android:src="@{stream.streamType == StreamType.LIVE ? @drawable/baseline_fiber_manual_record_black_24 : @drawable/baseline_replay_black_24 }"
+                app:tint="@{stream.streamType == StreamType.LIVE ? @android:color/holo_red_dark : @android:color/darker_gray }"
                 tools:src="@drawable/baseline_fiber_manual_record_black_24"
                 tools:tint="@android:color/holo_red_dark"
                 android:layout_width="17dp"

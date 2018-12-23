@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model.user
+package com.github.exact7.xtra.model.kraken.user
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

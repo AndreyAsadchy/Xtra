@@ -9,8 +9,8 @@ import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.model.chat.SubscriberBadgeDeserializer
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.model.user.UserEmotesDeserializer
-import com.github.exact7.xtra.model.user.UserEmotesResponse
+import com.github.exact7.xtra.model.kraken.user.UserEmotesDeserializer
+import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.TwitchApiHelper

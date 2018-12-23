@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model.game
+package com.github.exact7.xtra.model.kraken.game
 
 import com.google.gson.annotations.SerializedName
 

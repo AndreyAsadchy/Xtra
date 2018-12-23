@@ -3,12 +3,16 @@ package com.github.exact7.xtra.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.github.exact7.xtra.api.KrakenApi
-import com.github.exact7.xtra.model.clip.Clip
-import com.github.exact7.xtra.model.game.Game
-import com.github.exact7.xtra.model.stream.Stream
-import com.github.exact7.xtra.model.user.Emote
-import com.github.exact7.xtra.model.user.User
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.model.kraken.game.Game
+import com.github.exact7.xtra.model.kraken.stream.Stream
+import com.github.exact7.xtra.model.kraken.stream.StreamType
+import com.github.exact7.xtra.model.kraken.user.Emote
+import com.github.exact7.xtra.model.kraken.user.User
+import com.github.exact7.xtra.model.kraken.video.BroadcastType
+import com.github.exact7.xtra.model.kraken.video.Period
+import com.github.exact7.xtra.model.kraken.video.Sort
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.datasource.ChannelVideosDataSource
 import com.github.exact7.xtra.repository.datasource.ClipsDataSource
 import com.github.exact7.xtra.repository.datasource.FollowedClipsDataSource
@@ -17,10 +21,6 @@ import com.github.exact7.xtra.repository.datasource.FollowedVideosDataSource
 import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
-import com.github.exact7.xtra.ui.streams.StreamType
-import com.github.exact7.xtra.ui.videos.BroadcastType
-import com.github.exact7.xtra.ui.videos.Period
-import com.github.exact7.xtra.ui.videos.Sort
 import com.github.exact7.xtra.util.toLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -71,7 +71,7 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadClips(channelName: String?, gameName: String?, languages: String?, period: com.github.exact7.xtra.ui.clips.Period?, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip> {
+    override fun loadClips(channelName: String?, gameName: String?, languages: String?, period: com.github.exact7.xtra.model.kraken.clip.Period?, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip> {
         val factory = ClipsDataSource.Factory(channelName, gameName, languages, period, trending, api, networkExecutor, compositeDisposable)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)

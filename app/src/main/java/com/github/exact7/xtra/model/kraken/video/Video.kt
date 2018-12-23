@@ -1,8 +1,8 @@
-package com.github.exact7.xtra.model.video
+package com.github.exact7.xtra.model.kraken.video
 
 import android.os.Parcelable
 import com.github.exact7.xtra.model.Preview
-import com.github.exact7.xtra.model.channel.Channel
+import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 

@@ -3,7 +3,7 @@ package com.github.exact7.xtra.repository.datasource
 import androidx.paging.DataSource
 import androidx.paging.PositionalDataSource
 import com.github.exact7.xtra.api.KrakenApi
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.game.Game
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.Executor

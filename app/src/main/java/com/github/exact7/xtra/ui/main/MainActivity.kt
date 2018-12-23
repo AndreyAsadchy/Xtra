@@ -1,7 +1,11 @@
 package com.github.exact7.xtra.ui.main
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -16,10 +20,10 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.OfflineVideo
 import com.github.exact7.xtra.model.User
-import com.github.exact7.xtra.model.clip.Clip
-import com.github.exact7.xtra.model.game.Game
-import com.github.exact7.xtra.model.stream.Stream
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.model.kraken.game.Game
+import com.github.exact7.xtra.model.kraken.stream.Stream
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.common.OnChannelClickedListener
@@ -63,6 +67,11 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private var playerFragment: BasePlayerFragment? = null
     private val handler by lazy { Handler() }
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            viewModel.setNetworkAvailable(NetworkUtils.isConnected(context!!))
+        }
+    }
 
     //Lifecycle methods
 
@@ -101,7 +110,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
-        var flag = !NetworkUtils.isConnected(this)
+        var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
                 if (flag) {
@@ -131,11 +140,17 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //                offlineView.animate().translationY(0f)
 //            }
         })
+        registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         fragNavController.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
     }
 
     /**

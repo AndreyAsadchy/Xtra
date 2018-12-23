@@ -1,17 +1,13 @@
 package com.github.exact7.xtra.ui.main
 
-import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.util.Event
-import com.github.exact7.xtra.util.NetworkUtils
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(application: Application): ViewModel() {
+class MainViewModel @Inject constructor(): ViewModel() {
 
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?>
@@ -30,25 +26,6 @@ class MainViewModel @Inject constructor(application: Application): ViewModel() {
 
     var isPlayerOpened = false
         private set
-    private val cm: ConnectivityManager = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-//        override fun onAvailable(network: Network?) {
-//            super.onAvailable(network)
-//            _isNetworkAvailable.postValue(Event(true))
-//        }
-//
-//        override fun onLost(network: Network?) {
-//            super.onLost(network)
-//            _isNetworkAvailable.postValue(Event(false))
-//        }
-//    }
-
-    init {
-//        cm.registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
-        if (!NetworkUtils.isConnected(application)) {
-            _isNetworkAvailable.value = Event(false)
-        }
-    }
 
     fun setUser(user: User?) {
         _user.value = user
@@ -73,8 +50,9 @@ class MainViewModel @Inject constructor(application: Application): ViewModel() {
         _playerMaximized.value = false
     }
 
-    override fun onCleared() {
-        super.onCleared()
-//        cm.unregisterNetworkCallback(networkCallback)
+    fun setNetworkAvailable(available: Boolean) {
+        if (_isNetworkAvailable.value?.peekContent() != available) {
+            _isNetworkAvailable.value = Event(available)
+        }
     }
 }

@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.edit
-import com.github.exact7.xtra.model.clip.Clip
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.service.ClipDownloadService
 import com.github.exact7.xtra.ui.OnQualityChangeListener

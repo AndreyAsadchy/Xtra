@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.api
 
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.model.clip.ClipStatusResponse
+import com.github.exact7.xtra.model.kraken.clip.ClipStatusResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path

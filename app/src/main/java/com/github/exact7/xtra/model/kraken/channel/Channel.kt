@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model.channel
+package com.github.exact7.xtra.model.kraken.channel
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

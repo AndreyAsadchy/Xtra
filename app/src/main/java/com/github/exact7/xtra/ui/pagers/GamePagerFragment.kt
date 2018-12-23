@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.pagers
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.game.Game
 
 class GamePagerFragment : MediaPagerFragment() {
 

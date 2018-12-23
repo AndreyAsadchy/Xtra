@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="game" type="com.github.exact7.xtra.model.game.Game"/>
+        <variable name="game" type="com.github.exact7.xtra.model.kraken.game.Game"/>
         <variable
             name="listener"
             type="com.github.exact7.xtra.ui.games.GamesFragment.OnGameSelectedListener"/>

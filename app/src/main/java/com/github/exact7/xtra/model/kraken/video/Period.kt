@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.clips
+package com.github.exact7.xtra.model.kraken.video
 
 enum class Period(val value: String) {
     DAY("day"),

@@ -1,17 +1,17 @@
 package com.github.exact7.xtra.api
 
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
-import com.github.exact7.xtra.model.clip.ClipsResponse
-import com.github.exact7.xtra.model.game.GamesResponse
-import com.github.exact7.xtra.model.stream.StreamsResponse
-import com.github.exact7.xtra.model.user.User
-import com.github.exact7.xtra.model.user.UserEmotesResponse
-import com.github.exact7.xtra.model.user.UsersResponse
-import com.github.exact7.xtra.model.video.VideosResponse
-import com.github.exact7.xtra.ui.clips.Period
-import com.github.exact7.xtra.ui.streams.StreamType
-import com.github.exact7.xtra.ui.videos.BroadcastType
-import com.github.exact7.xtra.ui.videos.Sort
+import com.github.exact7.xtra.model.kraken.clip.ClipsResponse
+import com.github.exact7.xtra.model.kraken.clip.Period
+import com.github.exact7.xtra.model.kraken.game.GamesResponse
+import com.github.exact7.xtra.model.kraken.stream.StreamType
+import com.github.exact7.xtra.model.kraken.stream.StreamsResponse
+import com.github.exact7.xtra.model.kraken.user.User
+import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
+import com.github.exact7.xtra.model.kraken.user.UsersResponse
+import com.github.exact7.xtra.model.kraken.video.BroadcastType
+import com.github.exact7.xtra.model.kraken.video.Sort
+import com.github.exact7.xtra.model.kraken.video.VideosResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -42,7 +42,7 @@ interface KrakenApi {
     fun getFollowedClips(@Header("Authorization") token: String, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): Single<ClipsResponse>
 
     @GET("videos/top")
-    fun getTopVideos(@Query("game") game: String?, @Query("period") period: com.github.exact7.xtra.ui.videos.Period?, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>
+    fun getTopVideos(@Query("game") game: String?, @Query("period") period: com.github.exact7.xtra.model.kraken.video.Period?, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>
 
     @GET("videos/followed")
     fun getFollowedVideos(@Header("Authorization") token: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>

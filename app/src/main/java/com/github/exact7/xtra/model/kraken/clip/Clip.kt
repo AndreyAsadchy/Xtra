@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model.clip
+package com.github.exact7.xtra.model.kraken.clip
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

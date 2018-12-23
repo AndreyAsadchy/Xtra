@@ -6,12 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.video.BroadcastType
+import com.github.exact7.xtra.model.kraken.video.Sort
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.Listing
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.PagedListViewModel
-import com.github.exact7.xtra.ui.videos.BroadcastType
-import com.github.exact7.xtra.ui.videos.Sort
 import javax.inject.Inject
 
 class ChannelVideosViewModel @Inject constructor(

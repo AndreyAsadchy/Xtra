@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model.video
+package com.github.exact7.xtra.model.kraken.video
 
 import com.google.gson.annotations.SerializedName
 

@@ -3,10 +3,10 @@ package com.github.exact7.xtra.ui.videos.game
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.game.Game
+import com.github.exact7.xtra.model.kraken.video.Period
+import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
-import com.github.exact7.xtra.ui.videos.Period
-import com.github.exact7.xtra.ui.videos.Sort
 import kotlinx.android.synthetic.main.fragment_videos.*
 
 class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {

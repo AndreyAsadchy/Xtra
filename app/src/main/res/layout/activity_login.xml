@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,69 +10,79 @@
         android:id="@+id/welcomeContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="0dp"
-            android:layout_height="175dp"
+            android:layout_height="0dp"
             android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
             android:src="@drawable/logo"
+            app:layout_constraintBottom_toTopOf="@+id/welcome"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/welcome"
-            android:layout_width="201dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="200dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginRight="32dp"
             android:gravity="center_horizontal"
             android:text="@string/welcome"
             app:autoSizeMaxTextSize="44sp"
             app:autoSizeMinTextSize="24sp"
             app:autoSizeStepGranularity="2sp"
             app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@+id/loginPrompt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logo" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/loginPrompt"
             android:layout_width="0dp"
             android:layout_height="115dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
             android:gravity="center_horizontal"
             android:text="@string/login_prompt"
             app:autoSizeMaxTextSize="44sp"
-            app:autoSizeMinTextSize="16sp"
+            app:autoSizeMinTextSize="24sp"
             app:autoSizeStepGranularity="2sp"
             app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@+id/skip"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcome" />
+            app:layout_constraintTop_toBottomOf="@+id/welcome"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/login"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginStart="71dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="71dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="71dp"
+            android:layout_marginRight="71dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/log_in"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/skip"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginPrompt"
             app:layout_constraintVertical_bias="0.0" />
@@ -79,13 +91,13 @@
             android:id="@+id/skip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
             android:layout_marginBottom="24dp"
             android:text="@string/skip"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

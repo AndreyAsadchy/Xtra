@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentVideosBinding
-import com.github.exact7.xtra.model.video.Video
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*

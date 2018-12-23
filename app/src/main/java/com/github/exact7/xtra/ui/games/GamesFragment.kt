@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentGamesBinding
-import com.github.exact7.xtra.model.game.Game
+import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
