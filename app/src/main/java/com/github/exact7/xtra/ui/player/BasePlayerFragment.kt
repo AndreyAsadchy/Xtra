@@ -84,11 +84,11 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     }
 
     override fun onMovedToForeground() {
-//        viewModel.play()
+        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-        viewModel.player.stop()
+        viewModel.onPause()
     }
 
     abstract fun play(obj: Parcelable)

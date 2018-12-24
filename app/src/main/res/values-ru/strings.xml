@@ -54,4 +54,6 @@
     <string name="connection_restored">Соединение восстановлено</string>
     <string name="follow_tab_login_prompt">Здесь будут отображаться Ваши подписки</string>
     <string name="downloads_empty">Здесь будут отображаться скачанные видео</string>
+    <string name="downloads_channel">Загрузки</string>
+    <string name="added_to_queue">Видео добавлено в очередь</string>
 </resources>

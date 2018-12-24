@@ -15,7 +15,7 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
-import java.util.*
+import java.util.LinkedList
 
 class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, VideoDownloadDialog.OnDownloadClickListener {
     override fun play(obj: Parcelable) {
@@ -41,7 +41,6 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         settings.setColorFilter(Color.GRAY) //TODO
         download.setColorFilter(Color.GRAY)
         settings.setOnClickListener {
-            println(viewModel.videoInfo.targetDuration)
             LinkedList(viewModel.helper.qualities.value).also { list ->
                 list.addFirst(getString(R.string.auto))
                 FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
@@ -54,19 +53,16 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
         playerView.player = viewModel.player
-        viewModel.helper.qualities.observe(this, Observer {
+        viewModel.helper.qualities.observe(viewLifecycleOwner, Observer {
             val loaded = it != null
             settings.isEnabled = loaded
             download.isEnabled = loaded
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
+        viewModel.setVideo(arguments!!.getParcelable("video")!!)
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-//        if (!viewModel.isInitialized()) {
-//            viewModel.video = arguments!!.getParcelable("video")!!
-//            viewModel.init()
-//        }
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

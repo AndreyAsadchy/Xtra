@@ -23,10 +23,19 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     protected val trackSelector = DefaultTrackSelector()
     protected val compositeDisposable = CompositeDisposable()
     val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector).apply { addListener(this@PlayerViewModel) }
+    protected lateinit var mediaSource: MediaSource
 
-    protected fun play(mediaSource: MediaSource) {
+    protected fun play() {
         player.prepare(mediaSource)
         player.playWhenReady = true
+    }
+
+    open fun onResume() {
+        play()
+    }
+
+    open fun onPause() {
+        player.stop()
     }
 
     override fun onCleared() {

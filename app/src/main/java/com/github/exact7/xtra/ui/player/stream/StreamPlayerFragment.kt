@@ -20,8 +20,9 @@ import com.github.exact7.xtra.util.FragmentUtils
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
-import java.util.*
+import java.util.LinkedList
 
+@Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
     private companion object {
@@ -73,26 +74,22 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
         playerView.player = viewModel.player
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(this, Observer {
+        mainViewModel.user.observe(viewLifecycleOwner, Observer {
             messageView.visibility = if (it != null) View.VISIBLE else View.GONE
-            viewModel.user = it
+            viewModel.startStream(arguments!!.getParcelable("stream")!!, it)
         })
-//        if (!viewModel.isInitialized()) {
-            settings.isEnabled = false
-            settings.setColorFilter(Color.GRAY) //TODO
-            viewModel.stream = arguments!!.getParcelable("stream")!!
-//        }
+        settings.isEnabled = false
+        settings.setColorFilter(Color.GRAY)
         viewModel.helper.qualities.observe(this, Observer {
             settings.isEnabled = true
-            settings.setColorFilter(Color.WHITE)
+            settings.setColorFilter(Color.WHITE) //TODO
         })
-        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
-        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-        viewModel.chatTask.observe(this, Observer(messageView::setCallback))
+        viewModel.helper.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
+        viewModel.helper.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
+        viewModel.chatTask.observe(viewLifecycleOwner, Observer(messageView::setCallback))
         settings.setOnClickListener {
             val list = LinkedList(viewModel.helper.qualities.value)
             list.apply {
@@ -101,16 +98,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             }
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
         }
-    }
-
-    override fun onMovedToForeground() {
-        super.onMovedToForeground()
-        viewModel.startChat()
-    }
-
-    override fun onMovedToBackground() {
-        super.onMovedToBackground()
-        viewModel.stopChat()
     }
 
     override fun play(obj: Parcelable) {

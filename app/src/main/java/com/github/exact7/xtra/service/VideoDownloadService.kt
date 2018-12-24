@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.util.LongSparseArray
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
@@ -135,7 +136,6 @@ class VideoDownloadService : Service() {
                 } else {
                     if (processedCount == currentProgress + 1) {
                         Log.d(TAG, "Canceled download")
-                        notificationBuilder.mActions.remove(cancelAction)
                         notificationManager.cancel(notificationId)
                         canceled = false
                         val directory = File(directoryPath)
@@ -157,17 +157,17 @@ class VideoDownloadService : Service() {
         notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
             setSmallIcon(R.drawable.ic_notification)
             priority = NotificationCompat.PRIORITY_LOW
+            addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@VideoDownloadService, 0, Intent(this@VideoDownloadService, CancelReceiver::class.java), 0)))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "Xtra", NotificationManager.IMPORTANCE_LOW).apply {
+            val channel = NotificationChannel(CHANNEL_ID, getString(R.string.downloads_channel), NotificationManager.IMPORTANCE_LOW).apply {
                 setSound(null, null)
             }
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
 
-        val cancelIntent = PendingIntent.getBroadcast(this, 0, Intent(this, CancelReceiver::class.java), 0)
-        cancelAction = NotificationCompat.Action(0, getString(R.string.cancel), cancelIntent)
+
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
@@ -175,6 +175,9 @@ class VideoDownloadService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "Adding download to queue")
+        if (countDownLatch.count > 0) {
+            Toast.makeText(this, getString(R.string.added_to_queue), Toast.LENGTH_LONG).show()
+        }
         GlobalScope.launch {
             countDownLatch.await()
             if (init(downloadQueue.poll())) {
@@ -203,7 +206,6 @@ class VideoDownloadService : Service() {
             setContentTitle(getString(R.string.downloading))
             setContentText(video.title)
             setOngoing(true)
-            addAction(cancelAction)
         }
         countDownLatch = CountDownLatch(1)
         return true
@@ -280,13 +282,11 @@ class VideoDownloadService : Service() {
     class CancelReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
-            context?.let {
-                canceled = true
-                val downloadManager = it.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val iterator = idsMap.keyIterator()
-                while (iterator.hasNext()) {
-                    downloadManager.remove(iterator.next())
-                }
+            canceled = true
+            val downloadManager = context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val iterator = idsMap.keyIterator()
+            while (iterator.hasNext()) {
+                downloadManager.remove(iterator.next())
             }
         }
     }

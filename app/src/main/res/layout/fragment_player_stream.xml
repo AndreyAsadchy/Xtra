@@ -17,8 +17,7 @@
     <LinearLayout
         android:id="@+id/chatContainer"
         android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?android:colorBackground"
         android:layout_below="@id/playerView">
@@ -26,8 +25,8 @@
         <com.github.exact7.xtra.ui.view.ChatView
             android:id="@+id/chatView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <com.github.exact7.xtra.ui.view.MessageView
             android:id="@+id/messageView"
@@ -40,7 +39,7 @@
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/playerHeight"
         app:controller_layout_id="@layout/player_stream"
         app:show_buffering="always"
         app:resize_mode="fill"/>

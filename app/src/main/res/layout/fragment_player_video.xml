@@ -14,7 +14,14 @@
     DraggableView:top_view_margin_bottom="130dp"
     DraggableView:top_view_margin_right="30dp">
 
-    <com.github.exact7.xtra.ui.view.ChatView
+    <!--<com.github.exact7.xtra.ui.view.ChatView-->
+        <!--android:id="@id/chatView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/black"-->
+        <!--android:layout_below="@id/playerView"/>-->
+
+    <View
         android:id="@id/chatView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +31,7 @@
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/playerHeight"
         android:background="@android:color/black"
         app:controller_layout_id="@layout/player_video"
         app:show_buffering="always"

@@ -16,7 +16,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import java.util.LinkedList
 import java.util.regex.Pattern
-import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
 abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context), OnQualityChangeListener {
@@ -35,18 +34,17 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
         helper.selectedQualityIndex = index
         when (index) {
             in 0..helper.qualities.value!!.lastIndex -> {
-                val parametersBuilder = trackSelector.buildUponParameters()
                 val quality = when (index) {
                     0 -> {
-                        parametersBuilder.clearSelectionOverrides()
+                        trackSelector.setParameters(trackSelector.buildUponParameters().clearSelectionOverrides())
                         "Auto"
                     }
                     else -> {
-                        parametersBuilder.setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, index - 1))
+                        updateQuality()
                         helper.qualities.value!![index - 1].toString()
                     }
                 }
-                trackSelector.setParameters(parametersBuilder)
+
                 changePlayerMode(NORMAL)
                 prefs.edit { putString(TAG, quality) }
             }
@@ -56,33 +54,6 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
     }
 
     private var initialized = false //TODO reset in oncleared?
-
-    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
-        if (!initialized) {
-            trackSelector.currentMappedTrackInfo?.let {
-                initialized = true
-                val index = prefs.getString(TAG, "Auto").let { quality: String ->
-                    if (quality == "Auto") {
-                        0
-                    } else {
-                        val index = tempList.indexOf(quality)
-                        if (index != -1) {
-                            index + 1
-                        } else {
-                            0
-                        }
-                    }
-                }
-                helper.selectedQualityIndex = index
-                if (index != 0) {
-                    val parametersBuilder = trackSelector.buildUponParameters()
-                            .setSelectionOverride(VIDEO_RENDERER, it.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, index - 1))
-                    trackSelector.setParameters(parametersBuilder)
-                }
-                helper.qualities.value = tempList
-            }
-        }
-    }
 
     private fun changePlayerMode(playerMode: PlayerMode) {
         val videoDisabled: Boolean
@@ -102,6 +73,44 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
             }
         }
         trackSelector.setParameters(trackSelector.buildUponParameters().setRendererDisabled(VIDEO_RENDERER, videoDisabled).setRendererDisabled(AUDIO_RENDERER, audioDisabled))
+    }
+
+    protected fun updateQuality() {
+        trackSelector.currentMappedTrackInfo?.let {
+            val parametersBuilder = trackSelector.buildUponParameters()
+                    .setSelectionOverride(VIDEO_RENDERER, it.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.selectedQualityIndex - 1))
+            trackSelector.setParameters(parametersBuilder)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateQuality()
+    }
+
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+        if (!initialized) {
+            trackSelector.currentMappedTrackInfo?.let {
+                initialized = true
+                val index = prefs.getString(TAG, "Auto").let { quality: String ->
+                    if (quality == "Auto") {
+                        0
+                    } else {
+                        val index = tempList.indexOf(quality)
+                        if (index != -1) {
+                            index + 1
+                        } else {
+                            0
+                        }
+                    }
+                }
+                helper.selectedQualityIndex = index
+                if (index != 0) {
+                    updateQuality()
+                }
+                helper.qualities.value = tempList
+            }
+        }
     }
 
     override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
