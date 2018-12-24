@@ -33,7 +33,7 @@ class ClipsViewModel @Inject constructor(
     }
 
     fun loadClips(channelName: String? = null, game: Game? = null, languages: String? = null) {
-        Filter(channelName, game, languages).let {
+        Filter(channelName, game, languages).let { //TODO change
             if (filter.value != it)
                 filter.value = it
         }
