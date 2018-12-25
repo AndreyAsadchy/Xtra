@@ -20,7 +20,7 @@ import com.github.exact7.xtra.util.FragmentUtils
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
-import java.util.LinkedList
+import java.util.*
 
 @Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -58,22 +58,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         }
     }
 
-    private fun hideChat() {
-        maximizePlayer.visibility = View.GONE
-        minimizePlayer.visibility = View.VISIBLE
-        chatContainer.visibility = View.GONE
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-    }
-
-    private fun showChat() {
-        maximizePlayer.visibility = View.VISIBLE
-        minimizePlayer.visibility = View.GONE
-        chatContainer.visibility = View.VISIBLE
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
         playerView.player = viewModel.player
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
@@ -115,5 +100,19 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 //            if (index >= viewModel.helper.qualities.value!!.lastIndex) {
 //                TODO hide player
 //            }
+    }
+
+    private fun hideChat() {
+        maximizePlayer.visibility = View.GONE
+        minimizePlayer.visibility = View.VISIBLE
+        chatContainer.visibility = View.GONE
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+    }
+
+    private fun showChat() {
+        maximizePlayer.visibility = View.VISIBLE
+        minimizePlayer.visibility = View.GONE
+        chatContainer.visibility = View.VISIBLE
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 }

@@ -33,21 +33,21 @@ class ClipsViewModel @Inject constructor(
     }
 
     fun loadClips(channelName: String? = null, game: Game? = null, languages: String? = null) {
-        Filter(channelName, game, languages).let { //TODO change
-            if (filter.value != it)
-                filter.value = it
+        if (filter.value == null) {
+            filter.value = Filter(channelName, game, languages)
+        } else {
+            filter.value?.copy(channelName = channelName, game = game, languages = languages).let {
+                if (filter.value != it)
+                    filter.value = it
+            }
         }
     }
 
     fun filter(period: Period?, trending: Boolean, index: Int, text: CharSequence) {
-        filter.value?.copy(period = period, trending = trending).let {
-            if (filter.value != it) {
-                _loadedInitial.value = null
-                filter.value = it
-                _sortText.value = text
-                selectedIndex = index
-            }
-        }
+        _loadedInitial.value = null
+        filter.value = filter.value?.copy(period = period, trending = trending)
+        _sortText.value = text
+        selectedIndex = index
     }
 
     private data class Filter(

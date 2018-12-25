@@ -43,13 +43,9 @@ class GameVideosViewModel @Inject constructor(
     }
 
     fun filter(sort: Sort, period: Period, text: CharSequence) {
-        filter.value?.copy(sort = sort, period = period).let {
-            if (filter.value != it) {
-                _loadedInitial.value = null
-                filter.value = it
-                _sortText.value = text
-            }
-        }
+        _loadedInitial.value = null
+        filter.value = filter.value?.copy(sort = sort, period = period)
+        _sortText.value = text
     }
 
     private data class Filter(

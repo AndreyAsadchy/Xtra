@@ -17,14 +17,22 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 
     override lateinit var viewModel: OfflinePlayerViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableNetworkCheck = false
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_offline, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(OfflinePlayerViewModel::class.java)
         playerView.player = viewModel.player
         viewModel.setVideo(arguments!!.getParcelable("video")!!)
+    }
+
+    override fun onNetworkRestored() {
+        //do nothing
     }
 }

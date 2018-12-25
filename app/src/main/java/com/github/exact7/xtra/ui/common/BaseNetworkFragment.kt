@@ -20,6 +20,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     }
 
     @Inject protected lateinit var viewModelFactory: ViewModelProvider.Factory
+    protected var enableNetworkCheck = true
     private var lastState = false
     private var shouldRestore = false
     private var isInitialized = false
@@ -30,59 +31,71 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: NetworkUtils.isConnected(requireContext())
-        shouldRestore = savedInstanceState?.getBoolean(RESTORE_KEY) ?: false
-        created = savedInstanceState?.getBoolean(CREATED_KEY) ?: false
+        if (enableNetworkCheck) {
+            lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: NetworkUtils.isConnected(requireContext())
+            shouldRestore = savedInstanceState?.getBoolean(RESTORE_KEY) ?: false
+            created = savedInstanceState?.getBoolean(CREATED_KEY) ?: false
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!isInitialized && (created || (lastState && userVisibleHint))) {
-            init()
-        }
-        val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
-            val isOnline = it.peekContent()
-            if (isOnline && !lastState) {
-                shouldRestore = if (userVisibleHint) {
-                    if (isInitialized) {
-                        onNetworkRestored()
-                    } else {
-                        init()
-                    }
-                    false
-                } else {
-                    true
-                }
+        if (enableNetworkCheck) {
+            if (!isInitialized && (created || (lastState && userVisibleHint))) {
+                init()
             }
-            lastState = isOnline
-        })
+            val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+            viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
+                val isOnline = it.peekContent()
+                if (isOnline && !lastState) {
+                    shouldRestore = if (userVisibleHint) {
+                        if (isInitialized) {
+                            onNetworkRestored()
+                        } else {
+                            init()
+                        }
+                        false
+                    } else {
+                        true
+                    }
+                }
+                lastState = isOnline
+            })
+        } else {
+            initialize()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        isInitialized = false
+        if (enableNetworkCheck) {
+            isInitialized = false
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isInitialized) {
-            if (isVisibleToUser && isResumed && lastState) {
-                init()
-            }
-        } else if (shouldRestore && lastState) {
-            if (isVisibleToUser) {
-                onNetworkRestored()
-                shouldRestore = false
+        if (enableNetworkCheck) {
+            if (!isInitialized) {
+                if (isVisibleToUser && isResumed && lastState) {
+                    init()
+                }
+            } else if (shouldRestore && lastState) {
+                if (isVisibleToUser) {
+                    onNetworkRestored()
+                    shouldRestore = false
+                }
             }
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(LAST_KEY, lastState)
-        outState.putBoolean(RESTORE_KEY, shouldRestore)
-        outState.putBoolean(CREATED_KEY, created)
+        if (enableNetworkCheck) {
+            outState.putBoolean(LAST_KEY, lastState)
+            outState.putBoolean(RESTORE_KEY, shouldRestore)
+            outState.putBoolean(CREATED_KEY, created)
+        }
     }
 
     private fun init() {

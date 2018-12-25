@@ -41,12 +41,10 @@ class FollowedVideosViewModel @Inject constructor(
     }
 
     fun sort(sort: Sort, index: Int, text: CharSequence) {
-        if (filter.value?.sort != sort) {
-            _loadedInitial.value = null
-            filter.value = filter.value?.copy(sort = sort)
-            selectedIndex = index
-            _sortText.value = text
-        }
+        _loadedInitial.value = null
+        filter.value = filter.value?.copy(sort = sort)
+        selectedIndex = index
+        _sortText.value = text
     }
 
     private data class Filter(

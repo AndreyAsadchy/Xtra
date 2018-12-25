@@ -7,17 +7,15 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
 import com.github.exact7.xtra.ui.view.draggableview.DraggableView
 import com.github.exact7.xtra.util.LifecycleListener
 import kotlinx.android.synthetic.main.player_stream.*
-import javax.inject.Inject
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
+abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener {
 
 //    private var channelListener: OnChannelClickedListener? = null
     private var dragListener: DraggableListener? = null
@@ -25,9 +23,6 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
     protected abstract val viewModel: PlayerViewModel
     protected var isPortraitOrientation: Boolean = false
         private set
-
-    @Inject
-    protected lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -89,6 +84,10 @@ abstract class BasePlayerFragment : Fragment(), Injectable, LifecycleListener {
 
     override fun onMovedToBackground() {
         viewModel.onPause()
+    }
+
+    override fun onNetworkRestored() {
+        viewModel.onResume()
     }
 
     abstract fun play(obj: Parcelable)
