@@ -83,6 +83,7 @@ dependencies {
     implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
     implementation 'com.iheartradio.m3u8:open-m3u8:0.2.6'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.tonyodev.fetch2:fetch2:2.3.4'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"

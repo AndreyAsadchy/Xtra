@@ -2,14 +2,14 @@ package com.github.exact7.xtra.ui.player.clip
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.ClipDownloadService
+import com.github.exact7.xtra.service.ClipRequest
+import com.github.exact7.xtra.service.DownloadService
 import com.github.exact7.xtra.ui.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
@@ -90,12 +90,6 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     fun download(quality: String) {
-        val context = getApplication<Application>()
-        Intent(context, ClipDownloadService::class.java).apply {
-            putExtra("clip", clip.value)
-            putExtra("quality", quality)
-            putExtra("url", helper.urls[quality]!!)
-            context.startService(this)
-        }
+        DownloadService.download(getApplication(), ClipRequest(clip.value!!, quality, helper.urls[quality]!!))
     }
 }

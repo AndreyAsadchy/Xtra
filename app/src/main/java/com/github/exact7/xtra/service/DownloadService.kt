@@ -45,31 +45,23 @@ import java.util.Queue
 import javax.inject.Inject
 import kotlin.collections.HashMap
 import kotlin.collections.set
-import kotlin.collections.sortedSetOf
-import kotlin.collections.toList
 
 class DownloadService : Service() {
 
     companion object {
-        private const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
         private const val TAG = "DownloadService"
+        private const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
         private const val CHANNEL_ID = "xtra_download_channel"
-        private val idsMap = LongSparseArray<Int>()
-        private val queue: Queue<Any> = LinkedList()
-        private val map = HashMap<Int, Any>()
+        private val queue: Queue<Request> = LinkedList()
+        private val requestToIdsMap = LongSparseArray<Int>()
+        private val map = HashMap<Int, Request>()
 
-        fun downloadVideo(video: Video, quality: String, url: String, segments: ArrayList<Pair<String, Long>>, targetDuration: Int) {
-            VideoRequest(video, quality, url, segments, targetDuration).let {
+        fun download(context: Context, request: Request) {
+            request.let {
                 queue.add(it)
                 map[it.id] = it
             }
-        }
-
-        fun downloadClip(clip: Clip, quality: String, url: String) {
-            ClipRequest(clip, quality, url).let {
-                queue.add(it)
-                map[it.id] = it
-            }
+            context.startService(Intent(context, DownloadService::class.java))
         }
     }
 
@@ -99,7 +91,7 @@ class DownloadService : Service() {
 
         fun process(intent: Intent) {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            val segmentIndex = idsMap.get(id)
+            val segmentIndex = requestToIdsMap.get(id)
             val segment = segments[segmentIndex]
             val trackDuration = segment.second
             totalDuration += trackDuration
@@ -112,7 +104,7 @@ class DownloadService : Service() {
         @SuppressLint("RestrictedApi")
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.apply {
-                if (!idsMap.contains(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))) return //TODO maybe do one download service?
+                if (!requestToIdsMap.contains(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))) return //TODO maybe do one download service?
                 processedCount++
                 if (!canceled) {
                     if (++currentProgress != maxProgress) {
@@ -183,7 +175,7 @@ class DownloadService : Service() {
                             setVisibleInDownloadsUi(false)
                             setDestinationUri(Uri.withAppendedPath(directoryUri, segment.first))
                         }
-                        idsMap.put(downloadManager.enqueue(r), currentProgress)
+                        requestToIdsMap.put(downloadManager.enqueue(r), currentProgress)
                     }
                 }
             } else {
@@ -231,7 +223,7 @@ class DownloadService : Service() {
     }
 
     private fun reset() {
-        idsMap.clear()
+        requestToIdsMap.clear()
         tracks.clear()
         currentProgress = 0
         processedCount = 0
@@ -251,33 +243,42 @@ class DownloadService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             canceled = true
             val downloadManager = context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val iterator = idsMap.keyIterator()
+            val iterator = requestToIdsMap.keyIterator()
             while (iterator.hasNext()) {
                 downloadManager.remove(iterator.next())
             }
         }
     }
 
-    private data class VideoRequest(
-            val video: Video,
-            val quality: String,
-            val url: String,
-            val segments: ArrayList<Pair<String, Long>>,
-            val targetDuration: Int) {
 
-        val id = video.id.substring(1).toInt()
-        val maxProgress = segments.size
-        var currentProgress = 0
-        var totalDuration = 0L
-        lateinit var directoryUri: Uri
-        lateinit var directoryPath: String
-        var canceled = false
-    }
 
-    private data class ClipRequest(
-            val clip: Clip,
-            val quality: String,
-            val url: String) {
-        val id = clip.slug.hashCode()
-    }
+
+
+}
+
+sealed class Request {
+    abstract val id: Int
+    var canceled = false
+}
+
+data class VideoRequest(
+        val video: Video,
+        val quality: String,
+        val url: String,
+        val segments: ArrayList<Pair<String, Long>>,
+        val targetDuration: Int) : Request() {
+
+    override val id = video.id.substring(1).toInt()
+    val maxProgress = segments.size
+    var currentProgress = 0
+    var totalDuration = 0L
+    lateinit var directoryUri: Uri
+    lateinit var directoryPath: String
+}
+
+data class ClipRequest(
+        val clip: Clip,
+        val quality: String,
+        val url: String) : Request() {
+    override val id = clip.slug.hashCode()
 }
