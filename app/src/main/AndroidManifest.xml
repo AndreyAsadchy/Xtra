@@ -27,9 +27,9 @@
         <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"/>
-        <service android:name=".service.VideoDownloadService" />
+        <service android:name=".service.DownloadService" />
         <service android:name=".service.ClipDownloadService" />
-        <receiver android:name=".service.VideoDownloadService$CancelReceiver" />
+        <receiver android:name=".service.DownloadService$CancelReceiver" />
     </application>
 
 </manifest>

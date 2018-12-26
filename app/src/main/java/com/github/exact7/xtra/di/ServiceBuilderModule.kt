@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.di
 
 import com.github.exact7.xtra.service.ClipDownloadService
-import com.github.exact7.xtra.service.VideoDownloadService
+import com.github.exact7.xtra.service.DownloadService
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -9,7 +9,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class ServiceBuilderModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeVideoDownloadService(): VideoDownloadService
+    abstract fun contributeVideoDownloadService(): DownloadService
 
     @ContributesAndroidInjector
     abstract fun contributeClipDownloadService(): ClipDownloadService

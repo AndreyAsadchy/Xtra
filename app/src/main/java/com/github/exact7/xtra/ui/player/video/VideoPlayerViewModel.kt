@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.VideoInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.VideoDownloadService
+import com.github.exact7.xtra.service.DownloadService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -52,14 +52,14 @@ class VideoPlayerViewModel @Inject constructor(
 
     fun download(quality: String, segmentFrom: Int, segmentTo: Int) {
         val context = getApplication<Application>()
-        VideoDownloadService.addToQueue(
+        DownloadService.downloadVideo(
                 video.value!!,
                 quality,
                 helper.urls[quality]!!.substringBeforeLast('/') + "/",
                 ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
                 toSeconds(mediaPlaylist.targetDurationUs).toInt()
         )
-        Intent(context, VideoDownloadService::class.java).let {
+        Intent(context, DownloadService::class.java).let {
             context.startService(it)
         }
     }

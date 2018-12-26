@@ -12,22 +12,19 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.util.LongSparseArray
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.util.contains
 import androidx.core.util.keyIterator
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.db.VideosDao
-import com.github.exact7.xtra.model.OfflineVideo
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
@@ -45,44 +42,43 @@ import java.util.ArrayList
 import java.util.Comparator
 import java.util.LinkedList
 import java.util.Queue
-import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
+import kotlin.collections.HashMap
+import kotlin.collections.set
+import kotlin.collections.sortedSetOf
+import kotlin.collections.toList
 
-class VideoDownloadService : Service() {
+class DownloadService : Service() {
 
     companion object {
-        private const val VIDEO = "video"
-        private const val QUALITY = "quality"
-        private const val URL = "url"
-        private const val SEGMENTS = "segments"
-        private const val TARGET = "target"
-
-        private const val TAG = "VideoDownloadService"
+        private const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
+        private const val TAG = "DownloadService"
         private const val CHANNEL_ID = "xtra_download_channel"
         private val idsMap = LongSparseArray<Int>()
-        private var canceled = false
-        private val downloadQueue: Queue<Bundle> = LinkedList()
+        private val queue: Queue<Any> = LinkedList()
+        private val map = HashMap<Int, Any>()
 
-        fun addToQueue(video: Video, quality: String, url: String, segments: ArrayList<Pair<String, Long>>, targetDuration: Int) {
-            downloadQueue.add(bundleOf(VIDEO to video, QUALITY to quality, URL to url, SEGMENTS to segments, TARGET to targetDuration))
+        fun downloadVideo(video: Video, quality: String, url: String, segments: ArrayList<Pair<String, Long>>, targetDuration: Int) {
+            VideoRequest(video, quality, url, segments, targetDuration).let {
+                queue.add(it)
+                map[it.id] = it
+            }
+        }
+
+        fun downloadClip(clip: Clip, quality: String, url: String) {
+            ClipRequest(clip, quality, url).let {
+                queue.add(it)
+                map[it.id] = it
+            }
         }
     }
 
     @Inject
-    lateinit var dao: VideosDao //TODO change to repository
+    lateinit var repository: OfflineRepository
 
     private lateinit var downloadManager: DownloadManager
-    private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManagerCompat
-    private val notificationId = System.currentTimeMillis().toInt() //TODO change to video id and handle notification clicks
-    private lateinit var cancelAction: NotificationCompat.Action
-    private var countDownLatch = CountDownLatch(0)
-
-    private lateinit var video: Video
-    private lateinit var quality: String
-    private lateinit var url: String
-    private var targetDuration = 0
-    private lateinit var segments: List<Pair<String, Long>>
+    private var notificationBuilders = HashMap<Int, NotificationCompat.Builder>()
 
     private val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
         fun parse(trackData: TrackData) =
@@ -98,12 +94,7 @@ class VideoDownloadService : Service() {
             else -> 0
         }
     })
-    private var maxProgress = 0
-    private var currentProgress = 0
-    private var processedCount = 0
-    private var totalDuration = 0L
-    private lateinit var directoryPath: String
-    private lateinit var directoryUri: Uri
+
     private val receiver = object : BroadcastReceiver() {
 
         fun process(intent: Intent) {
@@ -154,11 +145,6 @@ class VideoDownloadService : Service() {
         AndroidInjection.inject(this)
         downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         notificationManager = NotificationManagerCompat.from(this)
-        notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
-            setSmallIcon(R.drawable.ic_notification)
-            priority = NotificationCompat.PRIORITY_LOW
-            addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@VideoDownloadService, 0, Intent(this@VideoDownloadService, CancelReceiver::class.java), 0)))
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID, getString(R.string.downloads_channel), NotificationManager.IMPORTANCE_LOW).apply {
                 setSound(null, null)
@@ -166,56 +152,45 @@ class VideoDownloadService : Service() {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
-
-
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "Adding download to queue")
-        if (countDownLatch.count > 0) {
-            Toast.makeText(this, getString(R.string.added_to_queue), Toast.LENGTH_LONG).show()
-        }
         GlobalScope.launch {
-            countDownLatch.await()
-            if (init(downloadQueue.poll())) {
-                startDownload()
+            val request = queue.poll()
+            if (request is VideoRequest) {
+                with(request) {
+                    getExternalFilesDir(".downloads" + File.separator + video.id + quality)!!.let {
+                        directoryUri = it.toUri()
+                        directoryPath = it.absolutePath
+                    }
+                    val notification = NotificationCompat.Builder(this@DownloadService, CHANNEL_ID).apply {
+                        setSmallIcon(R.drawable.ic_notification)
+                        priority = NotificationCompat.PRIORITY_LOW
+                        setGroup(GROUP_KEY)
+                        setContentTitle(getString(R.string.downloading))
+                        setContentText(video.title)
+                        setOngoing(true)
+                        setProgress(maxProgress, currentProgress, false)
+                        addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@DownloadService, id, Intent(this@DownloadService, CancelReceiver::class.java), 0)))
+                    }
+
+                    Log.d(TAG, "Starting download")
+                    notificationManager.notify(id, notification.build())
+                    for (segment in segments) {
+                        val r = DownloadManager.Request((url + segment.first).toUri()).apply {
+                            setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                            setVisibleInDownloadsUi(false)
+                            setDestinationUri(Uri.withAppendedPath(directoryUri, segment.first))
+                        }
+                        idsMap.put(downloadManager.enqueue(r), currentProgress)
+                    }
+                }
+            } else {
+
             }
         }
         return super.onStartCommand(intent, flags, startId)
-    }
-
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "unchecked_cast")
-    private fun init(bundle: Bundle?): Boolean {
-        if (bundle == null) return false
-        with (bundle) {
-            video = getParcelable(VIDEO) as Video
-            quality = getString(QUALITY)
-            url = getString(URL)
-            targetDuration = getInt(TARGET)
-            segments = getSerializable(SEGMENTS) as ArrayList<Pair<String, Long>>
-        }
-        with(getExternalFilesDir(".downloads" + File.separator + video.id + quality)) {
-            directoryUri = toUri()
-            directoryPath = absolutePath
-        }
-        maxProgress = segments.size
-        notificationBuilder.apply {
-            setContentTitle(getString(R.string.downloading))
-            setContentText(video.title)
-            setOngoing(true)
-        }
-        countDownLatch = CountDownLatch(1)
-        return true
-    }
-
-    private fun startDownload() {
-        Log.d(TAG, "Starting download")
-        notificationBuilder.setProgress(maxProgress, currentProgress, false)
-        notificationManager.notify(notificationId, notificationBuilder.build())
-        enqueueNext()
     }
 
     @SuppressLint("RestrictedApi")
@@ -240,7 +215,7 @@ class VideoDownloadService : Service() {
             with (video) {
                 val thumbnail = glide.downloadOnly().load(preview.medium).submit().get().absolutePath
                 val logo = glide.downloadOnly().load(channel.logo).submit().get().absolutePath
-                dao.insert(OfflineVideo(playlistPath, title, channel.name, game, totalDuration, currentDate, createdAt, thumbnail, logo))
+                repository.insert(OfflineVideo(playlistPath, title, channel.name, game, totalDuration, currentDate, createdAt, thumbnail, logo))
                 reset()
             }
         }
@@ -249,20 +224,10 @@ class VideoDownloadService : Service() {
             setContentTitle(getString(R.string.downloaded))
             setProgress(0, 0, false)
             setOngoing(false)
-            mActions.remove(cancelAction)
+            mActions.clear()
         }
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
         notificationManager.cancel(notificationId)
-    }
-
-    private fun enqueueNext() {
-        val pair = segments[currentProgress]
-        val request = DownloadManager.Request((url + pair.first).toUri()).apply {
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-            setVisibleInDownloadsUi(false)
-            setDestinationUri(Uri.withAppendedPath(directoryUri, pair.first))
-        }
-        idsMap.put(downloadManager.enqueue(request), currentProgress)
     }
 
     private fun reset() {
@@ -279,6 +244,8 @@ class VideoDownloadService : Service() {
         super.onDestroy()
     }
 
+    override fun onBind(intent: Intent?): IBinder? = null
+
     class CancelReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -289,5 +256,28 @@ class VideoDownloadService : Service() {
                 downloadManager.remove(iterator.next())
             }
         }
+    }
+
+    private data class VideoRequest(
+            val video: Video,
+            val quality: String,
+            val url: String,
+            val segments: ArrayList<Pair<String, Long>>,
+            val targetDuration: Int) {
+
+        val id = video.id.substring(1).toInt()
+        val maxProgress = segments.size
+        var currentProgress = 0
+        var totalDuration = 0L
+        lateinit var directoryUri: Uri
+        lateinit var directoryPath: String
+        var canceled = false
+    }
+
+    private data class ClipRequest(
+            val clip: Clip,
+            val quality: String,
+            val url: String) {
+        val id = clip.slug.hashCode()
     }
 }
