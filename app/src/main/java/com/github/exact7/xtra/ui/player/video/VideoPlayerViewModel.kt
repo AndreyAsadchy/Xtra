@@ -57,6 +57,74 @@ class VideoPlayerViewModel @Inject constructor(
                         helper.urls[quality]!!.substringBeforeLast('/') + "/",
                         ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
                         toSeconds(mediaPlaylist.targetDurationUs).toInt()))
+//        val context = getApplication<Application>()
+//        val notificationManager = DefaultFetchNotificationManager(context)
+//        val fetchConfiguration = FetchConfiguration.Builder(context)
+//                .setNotificationManager(notificationManager)
+//                .setDownloadConcurrentLimit(3)
+//                .enableLogging(true)
+//                .enableRetryOnNetworkGain(true)
+//                .build()
+//        val fetch = Fetch.getInstance(fetchConfiguration)
+//        var downloaded = 0
+//        fetch.addListener(object : FetchListener {
+//            override fun onAdded(download: Download) {
+//
+//            }
+//
+//            override fun onCancelled(download: Download) {
+//
+//            }
+//
+//            override fun onCompleted(download: Download) {
+//                println(++downloaded)
+//            }
+//
+//            override fun onDeleted(download: Download) {
+//
+//            }
+//
+//            override fun onDownloadBlockUpdated(download: Download, downloadBlock: DownloadBlock, totalBlocks: Int) {
+//
+//            }
+//
+//            override fun onError(download: Download, error: Error, throwable: Throwable?) {
+//
+//            }
+//
+//            override fun onPaused(download: Download) {
+//
+//            }
+//
+//            override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
+//            }
+//
+//            override fun onQueued(download: Download, waitingOnNetwork: Boolean) {
+//            }
+//
+//            override fun onRemoved(download: Download) {
+//            }
+//
+//            override fun onResumed(download: Download) {
+//            }
+//
+//            override fun onStarted(download: Download, downloadBlocks: List<DownloadBlock>, totalBlocks: Int) {
+//            }
+//
+//            override fun onWaitingNetwork(download: Download) {
+//            }
+//
+//        })
+//        val list = mutableListOf<Request>()
+//        for (i in 0..5) {
+//        val request = Request(helper.urls[quality]!!.substringBeforeLast('/') + "/$i.ts", context.getExternalFilesDir(".downloads" + File.separator + video.value!!.id + quality)!!.absolutePath + File.separator + "$i.ts")
+//            request.groupId = 123
+//            list.add(request)
+//        }
+//        fetch.enqueue(list, Func {
+//
+//        })
+
     }
 
     private fun toSeconds(value: Long) = value / 1000000L

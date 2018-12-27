@@ -2,8 +2,6 @@ package com.github.exact7.xtra
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.util.*
-import kotlin.math.roundToInt
 
 
 /**
@@ -20,8 +18,6 @@ class ExampleUnitTest {
 
     @Test
     fun test() {
-        val calendar = Calendar.getInstance()
-        println("${(calendar.get(Calendar.MINUTE))} ${(calendar.get(Calendar.MINUTE) / 10f).roundToInt()}")
-        assertEquals(5, (calendar.get(Calendar.MINUTE) / 10f).roundToInt())
+
     }
 }
