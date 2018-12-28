@@ -7,9 +7,9 @@ android {
     signingConfigs {
         config {
             keyAlias 'key0'
-            keyPassword 'D@)^C%$&%'
+            keyPassword KEY_PASSWORD
             storeFile file('C:/Users/Sampe/Desktop/keystore.jks')
-            storePassword 'd206c5475'
+            storePassword KEYSTORE_PASSWORD
         }
     }
     compileSdkVersion 28
@@ -57,23 +57,19 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13-beta-1'
 
-    //Support library
+    //UI
     implementation 'com.google.android.material:material:1.1.0-alpha02'
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.exifinterface:exifinterface:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
 
     //Architecture components
-    implementation "androidx.paging:paging-runtime:$paging"
+    implementation "androidx.paging:paging-runtime-ktx:$paging"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
     implementation 'androidx.core:core-ktx:1.0.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
     //Misc
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -93,13 +89,13 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
 
+
     implementation "com.google.dagger:dagger:$dagger"
     kapt "com.google.dagger:dagger-compiler:$dagger"
     implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger-android-support:$dagger"
     kapt "com.google.dagger:dagger-android-processor:$dagger"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
 
