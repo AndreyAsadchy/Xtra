@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.model
+package com.github.exact7.xtra.model.offline
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

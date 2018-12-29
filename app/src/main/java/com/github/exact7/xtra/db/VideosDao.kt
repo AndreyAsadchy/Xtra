@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.github.exact7.xtra.model.OfflineVideo
+import com.github.exact7.xtra.model.offline.OfflineVideo
 
 @Dao
 interface VideosDao {

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentDownloadsListItemBinding
-import com.github.exact7.xtra.model.OfflineVideo
+import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.DataBoundViewHolder
 
 class DownloadsAdapter(

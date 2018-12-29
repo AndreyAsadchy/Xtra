@@ -26,7 +26,7 @@ import java.util.concurrent.Executor
 import javax.inject.Named
 import javax.inject.Singleton
 
-@Module(includes = [(ViewModelModule::class)])
+@Module
 class XtraModule {
 
     @Singleton

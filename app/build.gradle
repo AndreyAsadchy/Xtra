@@ -34,9 +34,6 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
             signingConfig signingConfigs.debug
-            minifyEnabled true
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
             shrinkResources true
@@ -83,6 +80,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
+    implementation "android.arch.work:work-runtime:$work"
     implementation 'androidx.core:core-ktx:1.0.1'
 
     //Misc

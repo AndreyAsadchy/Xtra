@@ -7,10 +7,10 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-@Module
+@Module(includes = [ViewModelModule::class])
 abstract class ActivityBuilderModule {
 
-    @ContributesAndroidInjector(modules = [(FragmentBuilderModule::class)])
+    @ContributesAndroidInjector(modules = [FragmentBuilderModule::class])
     abstract fun contributeMainActivity(): MainActivity
 
     @ContributesAndroidInjector

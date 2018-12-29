@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" android:minSdkVersion="28" />
 
     <application
         android:name=".XtraApp"
@@ -28,8 +27,13 @@
         <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"/>
-        <service android:name=".service.DownloadService"/>
-        <receiver android:name=".service.DownloadService$CancelReceiver" />
+        <receiver android:name=".service.CancelActionReceiver" />
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="com.github.exact7.xtra.workmanager-init"
+            android:enabled="false"
+            android:exported="false"
+            tools:replace="android:authorities" />
     </application>
 
 </manifest>

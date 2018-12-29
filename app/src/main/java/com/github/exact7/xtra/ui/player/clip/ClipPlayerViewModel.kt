@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.player.clip
 
+//import com.github.exact7.xtra.service.ClipRequest
 import android.app.Application
 import android.content.Context
 import androidx.core.content.edit
@@ -8,8 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.ClipRequest
-import com.github.exact7.xtra.service.DownloadService
 import com.github.exact7.xtra.ui.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
@@ -90,6 +89,6 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     fun download(quality: String) {
-        DownloadService.download(getApplication(), ClipRequest(clip.value!!, quality, helper.urls[quality]!!))
+//        DownloadWorker.download(getApplication(), ClipRequest(clip.value!!, quality, helper.urls[quality]!!))
     }
 }

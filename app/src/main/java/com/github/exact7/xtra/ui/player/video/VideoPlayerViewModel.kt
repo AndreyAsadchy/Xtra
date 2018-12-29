@@ -1,18 +1,24 @@
 package com.github.exact7.xtra.ui.player.video
 
 import android.app.Application
+import android.os.Bundle
+import android.os.Parcel
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.github.exact7.xtra.model.VideoInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.DownloadService
-import com.github.exact7.xtra.service.VideoRequest
+import com.github.exact7.xtra.service.DownloadWorker
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
+
 
 class VideoPlayerViewModel @Inject constructor(
         context: Application,
@@ -50,13 +56,45 @@ class VideoPlayerViewModel @Inject constructor(
         playbackProgress = player.currentPosition
     }
 
+    fun getBundleSizeInBytes(bundle: Bundle): Int {
+        val parcel = Parcel.obtain()
+        parcel.writeValue(bundle)
+        val bytes = parcel.marshall()
+        parcel.recycle()
+        return bytes.size
+    }
+
     fun download(quality: String, segmentFrom: Int, segmentTo: Int) {
-        DownloadService.download(getApplication(), VideoRequest(
-                        video.value!!,
-                        quality,
-                        helper.urls[quality]!!.substringBeforeLast('/') + "/",
-                        ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
-                        toSeconds(mediaPlaylist.targetDurationUs).toInt()))
+//        DownloadWorker.download(getApplication(), VideoRequest(
+//                        video.value!!,
+//                        quality,
+//                        helper.urls[quality]!!.substringBeforeLast('/') + "/",
+//                        ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
+//                        toSeconds(mediaPlaylist.targetDurationUs).toInt()))
+
+        println(getBundleSizeInBytes(bundleOf()))
+//        val request = VideoRequest(video.value!!,
+//                        quality,
+//                        helper.urls[quality]!!.substringBeforeLast('/') + "/",
+//                        ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
+//                        toSeconds(mediaPlaylist.targetDurationUs).toInt())
+
+        val data1 = Data.Builder()
+                .putInt("key", 1)
+                .build()
+        val downloadWork1 = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
+                .setInputData(data1)
+                .build()
+        val data2 = Data.Builder()
+                .putInt("key", 2)
+                .build()
+        val downloadWork2 = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
+                .setInputData(data2)
+                .build()
+        val workManager = WorkManager.getInstance()
+        workManager.enqueue(downloadWork1)
+        workManager.enqueue(downloadWork2)
+
 //        val context = getApplication<Application>()
 //        val notificationManager = DefaultFetchNotificationManager(context)
 //        val fetchConfiguration = FetchConfiguration.Builder(context)

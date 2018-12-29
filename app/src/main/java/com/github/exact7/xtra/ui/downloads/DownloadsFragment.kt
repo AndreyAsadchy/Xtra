@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.OfflineVideo
+import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.Scrollable
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
