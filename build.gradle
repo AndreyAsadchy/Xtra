@@ -22,10 +22,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'nebula.lint' version '9.3.2'
-}
-
 allprojects {
     repositories {
         google()

@@ -5,11 +5,19 @@ apply plugin: 'kotlin-kapt'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'key0'
-            keyPassword KEY_PASSWORD
-            storeFile file('C:/Users/Sampe/Desktop/keystore.jks')
-            storePassword KEYSTORE_PASSWORD
+        debug {
+            keyAlias 'debug'
+            keyPassword '123456'
+            storeFile file('debug-keystore.jks')
+            storePassword '123456'
+        }
+        release {
+            Properties properties = new Properties()
+            properties.load(project.file('keystore.properties').newDataInputStream())
+            keyAlias properties['KEY_ALIAS']
+            keyPassword properties['KEY_PASSWORD']
+            storeFile file(properties['KEYSTORE_PATH'])
+            storePassword properties['KEYSTORE_PASSWORD']
         }
     }
     compileSdkVersion 28
@@ -20,14 +28,21 @@ android {
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         targetSdkVersion 28
-        signingConfig signingConfigs.config
-        multiDexEnabled true
     }
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     externalNativeBuild {
@@ -50,7 +65,6 @@ android {
             disable 'ContentDescription'
         }
     }
-    gradleLint.rules = ['unused-dependency']
 }
 
 dependencies {
@@ -78,7 +92,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
     implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
     implementation 'com.iheartradio.m3u8:open-m3u8:0.2.6'
-    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.tonyodev.fetch2:fetch2:2.3.4'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"

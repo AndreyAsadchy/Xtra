@@ -1,10 +1,9 @@
 package com.github.exact7.xtra
 
 import android.app.Activity
+import android.app.Application
 import android.app.Service
-import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.multidex.MultiDexApplication
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.LifecycleListener
@@ -14,7 +13,7 @@ import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
 import javax.inject.Inject
 
-class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector {
+class XtraApp : Application(), HasActivityInjector, HasServiceInjector {
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
@@ -24,7 +23,6 @@ class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector {
         super.onCreate()
         AppInjector.init(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
-        Thread.setDefaultUncaughtExceptionHandler { t, e -> Log.e("Test", e?.message, e.cause) } //TODO remove
     }
 
     override fun activityInjector(): AndroidInjector<Activity> {
