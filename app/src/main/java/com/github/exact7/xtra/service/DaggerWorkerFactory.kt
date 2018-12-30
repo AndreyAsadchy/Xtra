@@ -5,18 +5,22 @@ import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import com.github.exact7.xtra.di.AppInjector
-import javax.inject.Provider
+import com.github.exact7.xtra.di.WorkerSubcomponent
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DaggerWorkerFactory(private val creators: Map<Class<out Worker>, @JvmSuppressWildcards Provider<Worker>>) : WorkerFactory() {
+class DaggerWorkerFactory @Inject constructor(
+        private val workerSubcomponent: WorkerSubcomponent.Builder) : WorkerFactory() {
 
     override fun createWorker(appContext: Context, workerClassName: String, workerParameters: WorkerParameters): ListenableWorker? {
-        creators[Class.forName(workerClassName)]?.get()
-        val constructor =
-                .asSubclass(Worker::class.java)
-                .getDeclaredConstructor(Context::class.java, WorkerParameters::class.java)
-        return constructor.newInstance(appContext, workerParameters).apply { AppInjector.inject(this) }
+        return workerSubcomponent.workerParameters(workerParameters).build().run {
+            val workers = workers()
+            val workerClass = Class.forName(workerClassName).asSubclass(Worker::class.java)
+            val creator = workers[workerClass] ?: workers.entries.firstOrNull {
+                workerClass.isAssignableFrom((it.key))
+            }?.value ?: throw IllegalArgumentException("Unknown worker class $workerClass")
+            creator.get()
+        }
     }
 }

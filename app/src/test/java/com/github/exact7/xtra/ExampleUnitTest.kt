@@ -18,6 +18,8 @@ class ExampleUnitTest {
 
     @Test
     fun test() {
-
+        println(System.currentTimeMillis().toInt())
+        Thread.sleep(10000)
+        println(System.currentTimeMillis().toInt())
     }
 }
