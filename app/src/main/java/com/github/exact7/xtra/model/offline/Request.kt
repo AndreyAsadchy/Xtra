@@ -6,11 +6,9 @@ import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.iheartradio.m3u8.data.TrackData
 import java.util.ArrayList
-import java.util.UUID
 
 sealed class Request {
     val id = System.currentTimeMillis().toInt()
-    lateinit var workId: UUID
     var canceled = false
 }
 

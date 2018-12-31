@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        Toast.makeText(this, "CLICKED", Toast.LENGTH_LONG).show()
+        startOfflineVideo(intent!!.getParcelableExtra("video"))
     }
 
     /**

@@ -16,13 +16,11 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Process
 import android.util.Log
-import android.util.LongSparseArray
-import android.util.SparseArray
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.core.util.keyIterator
-import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -47,6 +45,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import java.util.LinkedList
+import java.util.Queue
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
@@ -59,30 +59,34 @@ class DownloadWorker @Inject constructor(
         private const val TAG = "DownloadWorker"
         private const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
         private const val CHANNEL_ID = "xtra_download_channel"
-        private val downloadRequestToRequestIdsMap = LongSparseArray<Int>()
-        private val requests = SparseArray<Request>()
-        private val notificationBuilders = SparseArray<NotificationCompat.Builder>()
+        private val queue: Queue<Request> = LinkedList()
         private var isNotificationChannelCreated = false
 
         fun download(request: Request) {
-            val data = Data.Builder().putInt("key", request.id).build()
-            val work = OneTimeWorkRequest.Builder(DownloadWorker::class.java).setInputData(data).build()
-            request.workId = work.id
-            requests.put(request.id, request)
-            WorkManager.getInstance().enqueue(work)
+            queue.add(request)
+            val work = OneTimeWorkRequest.Builder(DownloadWorker::class.java).build()
+            WorkManager.getInstance().enqueueUniqueWork(TAG, ExistingWorkPolicy.APPEND, work)
         }
     }
 
     private val downloadReceiver: BroadcastReceiver
-    private val downloadHandler: Handler
     private val downloadManager: DownloadManager
+    private val notificationBuilder: NotificationCompat.Builder
     private val notificationManager: NotificationManagerCompat
+    private val downloadHandler: Handler
     private val countDownLatch = CountDownLatch(1)
-    private lateinit var result: Result
 
     init {
         with (application) {
             downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
+                setSmallIcon(R.drawable.ic_notification)
+                setGroup(GROUP_KEY)
+                setContentTitle(getString(R.string.downloading))
+                setOngoing(true)
+                val cancelIntent = Intent(this@with, CancelActionReceiver::class.java)
+                addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@with, 0, cancelIntent, 0)))
+            }
             notificationManager = NotificationManagerCompat.from(this)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isNotificationChannelCreated) {
                 val channel = NotificationChannel(CHANNEL_ID, getString(R.string.downloads_channel), NotificationManager.IMPORTANCE_DEFAULT).apply {
@@ -97,13 +101,11 @@ class DownloadWorker @Inject constructor(
 
             override fun onReceive(context: Context, intent: Intent) {
                 val downloadRequestIndex = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0)
-                println(downloadRequestToRequestIdsMap)
-                val requestId = downloadRequestToRequestIdsMap[downloadRequestIndex]
-                val request = requests[requestId]
+                val request = queue.peek()
                 when (request) {
                     is VideoRequest -> {
                         with(request) {
-                            if (!request.canceled) {
+                            if (!canceled) {
                                 val segment = segments[downloadRequestToSegmentMap[downloadRequestIndex]]
                                 val trackDuration = segment.second
                                 totalDuration += trackDuration
@@ -112,22 +114,20 @@ class DownloadWorker @Inject constructor(
                                         .withTrackInfo(TrackInfo(trackDuration.toFloat(), segment.first))
                                         .build())
                                 if (++currentProgress < maxProgress) {
-                                    enqueueNextSegment(request)
-                                    val notificationBuilder = notificationBuilders[requestId].setProgress(maxProgress, currentProgress, false)
-                                    notificationManager.notify(requestId, notificationBuilder.build())
+                                    enqueueNextSegment(this)
+                                    notificationBuilder.setProgress(maxProgress, currentProgress, false)
+                                    notificationManager.notify(id, notificationBuilder.build())
                                 } else {
-                                    onDownloadCompleted(request)
+                                    onDownloadCompleted(this)
                                 }
                             } else {
-                                println("CANCEL $requestId")
-                                if (!request.deleted) {
+                                if (!deleted) {
+                                    deleted = true
                                     val directory = File(directoryPath)
-                                    if (directory.list().isEmpty()) {
-                                        directory.delete()
+                                    if (directory.exists() && directory.list().isEmpty()) {
+                                        directory.deleteRecursively()
                                     }
-                                    result = Result.failure()
                                     countDownLatch.countDown()
-                                    request.deleted = true
                                 }
                             }
                         }
@@ -136,14 +136,13 @@ class DownloadWorker @Inject constructor(
                         if (!request.canceled) {
                             onDownloadCompleted(request)
                         } else {
-                            result = Result.failure()
                             countDownLatch.countDown()
                         }
                     }
                 }
             }
         }
-        downloadHandler = HandlerThread("RequestThread #${requests.size()}", Process.THREAD_PRIORITY_BACKGROUND).run {
+        downloadHandler = HandlerThread("RequestThread", Process.THREAD_PRIORITY_BACKGROUND).run {
             start()
             Handler(looper)
         }
@@ -151,19 +150,10 @@ class DownloadWorker @Inject constructor(
     }
 
     override fun doWork(): Result {
-        println("start $downloadReceiver $this $countDownLatch $downloadHandler")
+        //TODO save request to database so if app closed we can retreive it and retry
         Log.d(TAG, "Starting download")
-        val request = requests[inputData.getInt("key", -1)]
+        val request = queue.peek()
         with (applicationContext) {
-            val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
-                setSmallIcon(R.drawable.ic_notification)
-                setGroup(GROUP_KEY)
-                setContentTitle(getString(R.string.downloading))
-                setOngoing(true)
-                val cancelIntent = Intent(this@with, CancelActionReceiver::class.java).putExtra("requestId", request.id)
-                addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@with, request.id
-                        , cancelIntent, 0)))
-            }
             when (request) {
                 is VideoRequest -> with(request) {
                     getExternalFilesDir(".downloads" + File.separator + video.id + quality)!!.let {
@@ -175,39 +165,31 @@ class DownloadWorker @Inject constructor(
                         setProgress(maxProgress, currentProgress, false)
                     }
                     notificationManager.notify(id, notificationBuilder.build())
-                    notificationBuilders.put(id, notificationBuilder)
                     enqueueNextSegment(request)
                 }
                 is ClipRequest -> with(request) {
                     notificationBuilder.setContentText(clip.title)
                     notificationManager.notify(id, notificationBuilder.build())
-                    notificationBuilders.put(id, notificationBuilder)
                     val r = DownloadManager.Request(url.toUri()).apply {
                         setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                         setVisibleInDownloadsUi(false)
-                        val downloadPath = getExternalFilesDir(".downloads" + File.separator + clip.slug + quality)!!
-                        setDestinationUri(downloadPath.toUri())
-                        path = downloadPath.absolutePath + ".mp4"
+                        getExternalFilesDir(".downloads" + File.separator + clip.slug + quality)!!.let {
+                            setDestinationUri(it.toUri())
+                            path = it.absolutePath + ".mp4"
+                        }
                     }
-                    val requestId = downloadManager.enqueue(r)
-                    downloadRequestId = requestId
-                    downloadRequestToRequestIdsMap.put(requestId, id)
+                    downloadRequestId = downloadManager.enqueue(r)
                 }
             }
         }
-        while (!request.canceled) {
-
-        }
-//        countDownLatch.await()
-        result = Result.success()
-        println("stop $this $result $countDownLatch $downloadHandler")
-        return result
+        countDownLatch.await()
+        queue.remove()
+        return Result.success() //TODO create offline video before finish and assign it id of request to track progress in ui if canceled return id and delete it in viewmodel
     }
 
     @SuppressLint("RestrictedApi")
     private fun onDownloadCompleted(request: Request) {
         with(applicationContext) {
-            if (requests.size() == 0)
             unregisterReceiver(downloadReceiver)
             val currentDate = TwitchApiHelper.getCurrentTimeFormatted(this)
             val glide = GlideApp.with(this)
@@ -250,7 +232,7 @@ class DownloadWorker @Inject constructor(
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 putExtra("video", video)
             }
-            val notificationBuilder = notificationBuilders[request.id].apply {
+            notificationBuilder.apply {
                 setAutoCancel(true)
                 setContentTitle(getString(R.string.downloaded))
                 setProgress(0, 0, false)
@@ -259,9 +241,7 @@ class DownloadWorker @Inject constructor(
                 mActions.clear()
             }
             notificationManager.notify(request.id, notificationBuilder.build())
-            result = Result.success()
-            request.canceled = true
-//            countDownLatch.countDown()
+            countDownLatch.countDown()
         }
     }
 
@@ -273,9 +253,7 @@ class DownloadWorker @Inject constructor(
                 setVisibleInDownloadsUi(false)
                 setDestinationUri(Uri.withAppendedPath(directoryUri, url))
             }
-            val requestId = downloadManager.enqueue(r)
-            downloadRequestToSegmentMap.put(requestId, currentProgress)
-            downloadRequestToRequestIdsMap.put(requestId, id)
+            downloadRequestToSegmentMap.put(downloadManager.enqueue(r), currentProgress)
         }
     }
 
@@ -284,19 +262,18 @@ class DownloadWorker @Inject constructor(
         override fun onReceive(context: Context, intent: Intent) {
             GlobalScope.launch {
                 Log.d(TAG, "Canceled download")
-                val requestId = intent.getIntExtra("requestId", 0)
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.cancel(requestId)
-                val request = requests[requestId]!!
+                val request = queue.peek()
+                notificationManager.cancel(request.id)
                 request.canceled = true
                 val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 when (request) {
                     is VideoRequest -> {
-                            val iterator = request.downloadRequestToSegmentMap.keyIterator()
-                            while (iterator.hasNext()) {
-                                downloadManager.remove(iterator.next())
-                            }
+                        val iterator = request.downloadRequestToSegmentMap.keyIterator()
+                        while (iterator.hasNext()) {
+                            downloadManager.remove(iterator.next())
                         }
+                    }
                     is ClipRequest -> downloadManager.remove(request.downloadRequestId)
                 }
             }
