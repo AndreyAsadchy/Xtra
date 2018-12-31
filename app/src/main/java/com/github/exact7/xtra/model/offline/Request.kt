@@ -2,13 +2,17 @@ package com.github.exact7.xtra.model.offline
 
 import android.net.Uri
 import android.util.LongSparseArray
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.iheartradio.m3u8.data.TrackData
 import java.util.ArrayList
 
 sealed class Request {
-    val id = System.currentTimeMillis().toInt()
+    @PrimaryKey(autoGenerate = true)
+    val id = 0
+    @Ignore
     var canceled = false
 }
 

@@ -41,6 +41,9 @@ import com.iheartradio.m3u8.data.MediaPlaylist
 import com.iheartradio.m3u8.data.Playlist
 import com.iheartradio.m3u8.data.TrackData
 import com.iheartradio.m3u8.data.TrackInfo
+import com.tonyodev.fetch2.DefaultFetchNotificationManager
+import com.tonyodev.fetch2.Fetch
+import com.tonyodev.fetch2.FetchConfiguration
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -152,10 +155,34 @@ class DownloadWorker @Inject constructor(
     override fun doWork(): Result {
         //TODO save request to database so if app closed we can retreive it and retry
         Log.d(TAG, "Starting download")
+        val fetchConfiguration = FetchConfiguration.Builder(applicationContext)
+                .enableLogging(true)
+                .enableRetryOnNetworkGain(true)
+                .setDownloadConcurrentLimit(3)
+                .setNotificationManager(DefaultFetchNotificationManager(applicationContext))
+                .build()
+        val fetch = Fetch.getInstance(fetchConfiguration)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         val request = queue.peek()
         with (applicationContext) {
             when (request) {
-                is VideoRequest -> with(request) {
+                is VideoRequest -> with(request) { //TODO skip both video and clip if exist
                     getExternalFilesDir(".downloads" + File.separator + video.id + quality)!!.let {
                         directoryUri = it.toUri()
                         directoryPath = it.absolutePath
