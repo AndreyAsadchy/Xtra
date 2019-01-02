@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.model.offline
 
-import android.net.Uri
-import android.util.LongSparseArray
+import androidx.room.ColumnInfo
+import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -11,34 +11,31 @@ import java.util.ArrayList
 
 sealed class Request {
     @PrimaryKey(autoGenerate = true)
-    val id = 0
+    var id = 0
     @Ignore
-    var canceled = false
+    lateinit var path: String
 }
 
+@Entity(tableName = "clip_requests")
 class ClipRequest(
         val clip: Clip,
-        val quality: String,
-        val url: String
-) : Request() {
-    lateinit var path: String
-    var downloadRequestId = 0L
-}
+        val url: String,
+        val quality: String
+) : Request()
 
+@Entity(tableName = "video_requests")
 class VideoRequest(
         val video: Video,
         val quality: String,
+        @ColumnInfo(name = "base_url")
         val baseUrl: String,
         val segments: ArrayList<Pair<String, Long>>,
+        @ColumnInfo(name = "target_duration")
         val targetDuration: Int) : Request() {
 
-    val maxProgress = segments.size
-    var currentProgress = 0
+    @Ignore
     var totalDuration = 0L
-    lateinit var directoryUri: Uri
-    lateinit var directoryPath: String
-    val downloadRequestToSegmentMap = LongSparseArray<Int>()
-    var deleted = false
+    @Ignore
     val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
         fun parse(trackData: TrackData) =
                 trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).let { trackName ->

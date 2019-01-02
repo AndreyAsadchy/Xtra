@@ -6,18 +6,22 @@ import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.VideoInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.VideoRequest
+import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.service.DownloadWorker
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 class VideoPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository) : HlsPlayerViewModel(context) {
+        private val playerRepository: PlayerRepository,
+        private val offlineRepository: OfflineRepository) : HlsPlayerViewModel(context) {
 
     private val _video = MutableLiveData<Video>()
     val video: LiveData<Video>
@@ -52,12 +56,15 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     fun download(quality: String, segmentFrom: Int, segmentTo: Int) {
-        DownloadWorker.download(VideoRequest(
-                video.value!!,
-                quality,
-                helper.urls[quality]!!.substringBeforeLast('/') + "/",
-                ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
-                toSeconds(mediaPlaylist.targetDurationUs).toInt()))
+        GlobalScope.launch {
+            val id = offlineRepository.saveRequest(VideoRequest(
+                    video.value!!,
+                    quality,
+                    helper.urls[quality]!!.substringBeforeLast('/') + "/",
+                    ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
+                    toSeconds(mediaPlaylist.targetDurationUs).toInt()))
+            DownloadWorker.download(id.toInt(), DownloadWorker.TYPE_VIDEO)
+        }
     }
 
     private fun toSeconds(value: Long) = value / 1000000L
