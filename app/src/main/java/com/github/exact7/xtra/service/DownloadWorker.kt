@@ -60,10 +60,10 @@ class DownloadWorker @Inject constructor(
         }
     }
 
-    private val countDownLatch = CountDownLatch(1)
     private val fetch: Fetch
 
     init {
+        println("b ${Thread.currentThread().name}")
         if (fetchConfiguration == null) {
             fetchConfiguration = FetchConfiguration.Builder(application)
                     .enableLogging(true)
@@ -75,8 +75,10 @@ class DownloadWorker @Inject constructor(
         fetch = Fetch.getInstance(fetchConfiguration!!)
     }
 
-    override fun doWork(): Result {
+    override fun doWork(): Result { //TODO Maybe create lock from this method?
         Log.d(TAG, "Starting download")
+        private val countDownLatch = CountDownLatch(1) //<----- USE THIS INSIDE METHOD POGCHAMP
+        println("a ${Thread.currentThread().name}")
         val requestId = inputData.getInt("id", -1)
         val request: com.github.exact7.xtra.model.offline.Request = runBlocking {
             if (inputData.getInt("type", -1) == TYPE_VIDEO) {
