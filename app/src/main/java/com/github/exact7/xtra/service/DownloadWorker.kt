@@ -2,6 +2,8 @@ package com.github.exact7.xtra.service
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -26,6 +28,7 @@ import com.iheartradio.m3u8.data.MediaPlaylist
 import com.iheartradio.m3u8.data.Playlist
 import com.tonyodev.fetch2.DefaultFetchNotificationManager
 import com.tonyodev.fetch2.Download
+import com.tonyodev.fetch2.DownloadNotification
 import com.tonyodev.fetch2.Error
 import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.FetchConfiguration
@@ -63,13 +66,72 @@ class DownloadWorker @Inject constructor(
     private val fetch: Fetch
 
     init {
-        println("b ${Thread.currentThread().name}")
         if (fetchConfiguration == null) {
             fetchConfiguration = FetchConfiguration.Builder(application)
                     .enableLogging(true)
                     .enableRetryOnNetworkGain(true)
                     .setDownloadConcurrentLimit(3)
-                    .setNotificationManager(DefaultFetchNotificationManager(application))
+                    .setNotificationManager(object : DefaultFetchNotificationManager(application) {
+                        override fun cancelNotification(notificationId: Int) {
+                            Log.d(TAG, "cancelNotification")
+                            super.cancelNotification(notificationId)
+                        }
+
+                        override fun cancelOngoingNotifications() {
+                            Log.d(TAG, "cancelOngoingNotifications")
+                            super.cancelOngoingNotifications()
+                        }
+
+                        override fun createNotificationChannels(context: Context, notificationManager: NotificationManager) {
+                            Log.d(TAG, "createNotificationChannels")
+                            super.createNotificationChannels(context, notificationManager)
+                        }
+
+                        override fun getActionPendingIntent(downloadNotification: DownloadNotification, actionType: DownloadNotification.ActionType): PendingIntent {
+                            Log.d(TAG, "getActionPendingIntent")
+                            return super.getActionPendingIntent(downloadNotification, actionType)
+                        }
+
+                        override fun getChannelId(notificationId: Int, context: Context): String {
+                            Log.d(TAG, "getChannelId")
+                            return super.getChannelId(notificationId, context)
+                        }
+
+                        override fun getGroupActionPendingIntent(groupId: Int, downloadNotifications: List<DownloadNotification>, actionType: DownloadNotification.ActionType): PendingIntent {
+                            Log.d(TAG, "getGroupActionPendingIntent")
+                            return super.getGroupActionPendingIntent(groupId, downloadNotifications, actionType)
+                        }
+
+                        override fun getNotificationBuilder(notificationId: Int, groupId: Int): NotificationCompat.Builder {
+                            Log.d(TAG, "getNotificationBuilder")
+                            return super.getNotificationBuilder(notificationId, groupId)
+                        }
+
+                        override fun getOngoingDismissalDelay(notificationId: Int, groupId: Int): Long {
+                            Log.d(TAG, "getOngoingDismissalDelay")
+                            return super.getOngoingDismissalDelay(notificationId, groupId)
+                        }
+
+                        override fun handleNotificationOngoingDismissal(notificationId: Int, groupId: Int, ongoingNotification: Boolean) {
+                            Log.d(TAG, "handleNotificationOngoingDismissal")
+                            super.handleNotificationOngoingDismissal(notificationId, groupId, ongoingNotification)
+                        }
+
+                        override fun notify(groupId: Int) {
+                            Log.d(TAG, "notify")
+                            super.notify(groupId)
+                        }
+
+                        override fun updateGroupSummaryNotification(groupId: Int, notificationBuilder: NotificationCompat.Builder, downloadNotifications: List<DownloadNotification>, context: Context): Boolean {
+                            Log.d(TAG, "updateGroupSummaryNotification")
+                            return super.updateGroupSummaryNotification(groupId, notificationBuilder, downloadNotifications, context)
+                        }
+
+                        override fun updateNotification(notificationBuilder: NotificationCompat.Builder, downloadNotification: DownloadNotification, context: Context) {
+                            Log.d(TAG, "updateNotification")
+                            super.updateNotification(notificationBuilder, downloadNotification, context)
+                        }
+                    })
                     .build()
         }
         fetch = Fetch.getInstance(fetchConfiguration!!)
@@ -77,8 +139,7 @@ class DownloadWorker @Inject constructor(
 
     override fun doWork(): Result { //TODO Maybe create lock from this method?
         Log.d(TAG, "Starting download")
-        private val countDownLatch = CountDownLatch(1) //<----- USE THIS INSIDE METHOD POGCHAMP
-        println("a ${Thread.currentThread().name}")
+        val countDownLatch = CountDownLatch(1) //<----- USE THIS INSIDE METHOD POGCHAMP
         val requestId = inputData.getInt("id", -1)
         val request: com.github.exact7.xtra.model.offline.Request = runBlocking {
             if (inputData.getInt("type", -1) == TYPE_VIDEO) {
@@ -105,6 +166,7 @@ class DownloadWorker @Inject constructor(
                         if (++downloaded == segments.size) {
                             GlobalScope.launch {
                                 onDownloadCompleted(request) //TODO add code from downloadmanager receiver
+                                countDownLatch.countDown()
                             }
                         }
                     }
@@ -240,7 +302,6 @@ class DownloadWorker @Inject constructor(
 //                mActions.clear()
 //            }
 //            notificationManager.notify(request.id, notificationBuilder.build())
-            countDownLatch.countDown()
         }
     }
 
