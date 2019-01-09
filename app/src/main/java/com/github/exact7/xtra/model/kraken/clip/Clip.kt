@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.model.kraken.clip
 
 import android.os.Parcelable
+import com.github.exact7.xtra.model.offline.Downloadable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -19,14 +20,23 @@ data class Clip(
         @SerializedName("broadcast_id")
         val broadcastId: String,
         val vod: Vod?,
-        val game: String,
+        override val game: String,
         val language: String,
         val title: String,
         val views: Int,
         var duration: Double,
         @SerializedName("created_at")
         val createdAt: String,
-        val thumbnails: Thumbnails) : Parcelable {
+        val thumbnails: Thumbnails) : Parcelable, Downloadable {
+
+    override val thumbnail: String
+        get() = thumbnails.medium
+    override val channelName: String
+        get() = broadcaster.name
+    override val channelLogo: String
+        get() = broadcaster.logo
+    override val uploadDate: String
+        get() = createdAt
 
     @Parcelize
     data class Channel(

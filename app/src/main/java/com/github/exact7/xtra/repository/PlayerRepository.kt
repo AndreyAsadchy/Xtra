@@ -10,8 +10,9 @@ import com.github.exact7.xtra.model.kraken.clip.ClipStatusResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.HashMap
-import java.util.Random
+import okhttp3.ResponseBody
+import retrofit2.Response
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,7 +44,7 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchVideoPlaylist(videoId: String): Single<Uri> {
+    fun fetchVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
         Log.d(TAG, "Getting video playlist for video $videoId")
         val options = HashMap<String, String>()
         options["allow_source"] = "true"
@@ -56,7 +57,6 @@ class PlayerRepository @Inject constructor(
                     options["nauthsig"] = it.sig
                     usher.getVideoPlaylist(videoId.substring(1), options) //substring 1 to remove v, should be removed when upgraded to new api
                 }
-                .map { Uri.parse(it.raw().request().url().toString()) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }

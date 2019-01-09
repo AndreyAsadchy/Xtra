@@ -20,7 +20,7 @@ class ClipsFragment : BaseClipsFragment() {
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.loadClips(arguments?.getString("channel"), arguments?.getParcelable("game") as Game?)
+        viewModel.loadClips(arguments?.getString("channelName"), arguments?.getParcelable("game") as Game?)
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 

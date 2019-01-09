@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.VideoDownloadDialog
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -34,7 +35,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(video.getChannel().getName()));
+        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(video.getChannelName().getName()));
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
@@ -46,7 +47,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
                 FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
             }
         }
-        download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }
+        download.setOnClickListener { VideoDownloadDialog.newInstance(videoId = (arguments!!.getParcelable<Video>("video")!!).id).show(childFragmentManager, null) }
+//        download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }
     }
 
     override fun initialize() {

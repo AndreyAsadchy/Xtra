@@ -23,7 +23,7 @@ class MessageListenerImpl(
         val prefix = parts[0]
         val prefixes = splitAndMakeMap(prefix, ";", "=")
 
-        val messageInfo = parts[1] //:<user>!<user>@<user>.tmi.twitch.tv PRIVMSG #<channel> :<message>
+        val messageInfo = parts[1] //:<user>!<user>@<user>.tmi.twitch.tv PRIVMSG #<channelName> :<message>
         val userName = messageInfo.substring(1, messageInfo.indexOf("!"))
         val userMessage = messageInfo.substring(messageInfo.indexOf(":", 44) + 1) //from <message>
 

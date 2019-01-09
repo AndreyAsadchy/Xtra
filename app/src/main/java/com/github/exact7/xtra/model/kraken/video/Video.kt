@@ -3,6 +3,7 @@ package com.github.exact7.xtra.model.kraken.video
 import android.os.Parcelable
 import com.github.exact7.xtra.model.Preview
 import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.model.offline.Downloadable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -33,7 +34,7 @@ data class Video(
         val id: String,
         @SerializedName("recorded_at")
         val recordedAt: String,
-        val game: String,
+        override val game: String,
         val communities: List<String>?,
         val length: Int,
         val preview: Preview,
@@ -47,7 +48,16 @@ data class Video(
         @SerializedName("increment_view_count_url")
         val incrementViewCountUrl: String,
         @SerializedName("muted_segments")
-        val mutedSegments: List<MutedSegment>?) : Parcelable {
+        val mutedSegments: List<MutedSegment>?) : Parcelable, Downloadable {
+
+    override val channelLogo: String
+        get() = channel.logo
+    override val channelName: String
+        get() = channel.name
+    override val thumbnail: String
+        get() = preview.medium
+    override val uploadDate: String
+        get() = createdAt
 
     @Parcelize
     data class MutedSegment(

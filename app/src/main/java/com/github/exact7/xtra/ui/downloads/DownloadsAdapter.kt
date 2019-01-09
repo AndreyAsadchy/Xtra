@@ -19,9 +19,7 @@ class DownloadsAdapter(
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: OfflineVideo, newItem: OfflineVideo): Boolean {
-                return oldItem.length == newItem.length
-            }
+            override fun areContentsTheSame(oldItem: OfflineVideo, newItem: OfflineVideo): Boolean = false
         }) {
 
 

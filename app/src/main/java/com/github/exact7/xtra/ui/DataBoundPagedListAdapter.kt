@@ -14,8 +14,8 @@ abstract class DataBoundPagedListAdapter<T, V : ViewDataBinding>(
     protected abstract fun bind(binding: V, item: T?)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DataBoundViewHolder(
-            DataBindingUtil.inflate<V>(LayoutInflater.from(parent.context), itemId, parent, false
-    ))
+            DataBindingUtil.inflate<V>(LayoutInflater.from(parent.context), itemId, parent, false)
+    )
 
     override fun onBindViewHolder(holder: DataBoundViewHolder<V>, position: Int) {
         bind(holder.binding, getItem(position))

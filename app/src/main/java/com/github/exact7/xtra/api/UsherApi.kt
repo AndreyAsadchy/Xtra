@@ -9,8 +9,8 @@ import retrofit2.http.QueryMap
 
 interface UsherApi {
 
-    @GET("api/channel/hls/{channel}")
-    fun getStreamPlaylist(@Path("channel") channel: String, @QueryMap options: Map<String, String>): Single<Response<ResponseBody>>
+    @GET("api/channelName/hls/{channelName}")
+    fun getStreamPlaylist(@Path("channelName") channel: String, @QueryMap options: Map<String, String>): Single<Response<ResponseBody>>
 
     @GET("vod/{id}")
     fun getVideoPlaylist(@Path("id") id: String, @QueryMap options: Map<String, String>): Single<Response<ResponseBody>>

@@ -13,26 +13,42 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.VideoInfo
+import com.github.exact7.xtra.repository.PlayerRepository
+import com.iheartradio.m3u8.Encoding
+import com.iheartradio.m3u8.Format
+import com.iheartradio.m3u8.ParsingMode
+import com.iheartradio.m3u8.PlaylistParser
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_video_download.*
+import java.net.URL
+import javax.inject.Inject
 
-class VideoDownloadDialog : DialogFragment() {
+class VideoDownloadDialog : DialogFragment(), Injectable {
 
     interface OnDownloadClickListener {
         fun onClick(quality: String, segmentFrom: Int, segmentTo: Int)
     }
 
     companion object {
-        private const val VIDEO_INFO = "video_info"
+        private const val KEY_VIDEO_INFO = "videoInfo"
+        private const val KEY_VIDEO_ID = "videoId"
 
-        fun newInstance(videoInfo: VideoInfo): VideoDownloadDialog {
+        fun newInstance(videoInfo: VideoInfo? = null, videoId: String? = null): VideoDownloadDialog {
             return VideoDownloadDialog().apply {
-                arguments = bundleOf(VIDEO_INFO to videoInfo)
+                arguments = bundleOf(KEY_VIDEO_INFO to videoInfo, KEY_VIDEO_ID to videoId)
             }
         }
     }
 
+    @Inject
+    lateinit var repository: PlayerRepository
     private lateinit var listener: OnDownloadClickListener
+    private var compositeDisposable: CompositeDisposable? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,11 +62,71 @@ class VideoDownloadDialog : DialogFragment() {
     //TODO maybe move to data binding?
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val context = requireActivity()
-        val videoInfo = arguments!!.getParcelable(VIDEO_INFO) as VideoInfo
+        val videoInfo = arguments!!.getParcelable(KEY_VIDEO_INFO) as VideoInfo?
+        if (videoInfo == null) { //
+            compositeDisposable = CompositeDisposable()
+            repository.fetchVideoPlaylist(arguments!!.getString(KEY_VIDEO_ID)!!)
+                    .map { response ->
+                        val string = response.body()!!.string()
+                        val qualities = "NAME=\"(.*)\"".toRegex().findAll(string).map { it.groupValues[1] }.toMutableList()
+                        val urls = "https://.*\\.m3u8".toRegex().findAll(string).map(MatchResult::value).toMutableList()
+                        val audioIndex = qualities.indexOf("Audio Only")
+                        qualities.add(qualities.removeAt(audioIndex))
+                        urls.add(urls.removeAt(audioIndex))
+                        val map = qualities.zip(urls).toMap()
+                        val mediaPlaylist = PlaylistParser(URL(urls[0]).openStream(), Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                        var totalDuration = 0L
+                        val relativeTimes = mutableListOf<Long>()
+                        var time = 0L
+                        mediaPlaylist.tracks.forEach {
+                            val duration = it.trackInfo.duration.toLong()
+                            totalDuration += duration
+                            relativeTimes.add(time)
+                            time += duration
+                        }
+                        VideoInfo(qualities, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
+                        init(it)
+                    }, {
+
+                    })
+                    .addTo(compositeDisposable!!)
+        } else {
+            init(videoInfo)
+        }
+
+    }
+
+    override fun onDestroy() {
+        compositeDisposable?.clear()
+        super.onDestroy()
+    }
+
+    private fun parseTime(textView: TextView): Long? {
+        with (textView) {
+            val value = if (text.isEmpty()) hint else text
+            val time = value.split(":")
+            try {
+                if (time.size != 3) throw IllegalArgumentException()
+                val hours = time[0].toLong()
+                val minutes = time[1].toLong().also { if (it > 59) throw IllegalArgumentException()}
+                val seconds = time[2].toLong().also { if (it > 59) throw IllegalArgumentException()}
+                return (hours * 3600) + (minutes * 60) + seconds
+            } catch (ex: Exception) {
+                error = context.getString(R.string.invalid_time)
+            }
+        }
+        return null
+    }
+
+    private fun init(videoInfo: VideoInfo) {
+        val context = requireContext()
         spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, videoInfo.qualities)
         val duration = DateUtils.formatElapsedTime(videoInfo.totalDuration)
-        length.text = context.getString(R.string.length, duration)
+        this.duration.text = context.getString(R.string.length, duration)
         timeFrom.hint = DateUtils.formatElapsedTime(videoInfo.currentPosition).let {
             if (it.length == 5) {
                 "00:$it"
@@ -112,7 +188,7 @@ class VideoDownloadDialog : DialogFragment() {
                                         offset < to_ -> -1
                                         else -> 0
                                     }
-                                }) + 1 //todo if length is good don't add
+                                }) //todo if length is good don't add
                             }
                             listener.onClick(spinner.selectedItem.toString(), fromIndex, toIndex)
                             dismiss()
@@ -127,22 +203,5 @@ class VideoDownloadDialog : DialogFragment() {
                 }
             }
         }
-    }
-
-    private fun parseTime(textView: TextView): Long? {
-        with (textView) {
-            val value = if (text.isEmpty()) hint else text
-            val time = value.split(":")
-            try {
-                if (time.size != 3) throw IllegalArgumentException()
-                val hours = time[0].toLong()
-                val minutes = time[1].toLong().also { if (it > 59) throw IllegalArgumentException()}
-                val seconds = time[2].toLong().also { if (it > 59) throw IllegalArgumentException()}
-                return (hours * 3600) + (minutes * 60) + seconds
-            } catch (ex: Exception) {
-                error = context.getString(R.string.invalid_time)
-            }
-        }
-        return null
     }
 }

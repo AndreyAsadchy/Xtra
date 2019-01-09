@@ -1,41 +1,25 @@
 package com.github.exact7.xtra.model.offline
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.model.kraken.video.Video
 import com.iheartradio.m3u8.data.TrackData
-import java.util.ArrayList
 
-sealed class Request {
-    @PrimaryKey(autoGenerate = true)
-    var id = 0
-    @Ignore
-    lateinit var path: String
+sealed class Request(downloadable: Downloadable) {
+    val id = System.currentTimeMillis().toInt()
+    val downloadable: Downloadable = Wrapper(downloadable)
 }
 
-@Entity(tableName = "clip_requests")
 class ClipRequest(
-        val clip: Clip,
+        downloadable: Downloadable,
         val url: String,
         val quality: String
-) : Request()
+) : Request(downloadable)
 
-@Entity(tableName = "video_requests")
 class VideoRequest(
-        val video: Video,
+        downloadable: Downloadable,
+        val playlistUrl: String,
         val quality: String,
-        @ColumnInfo(name = "base_url")
-        val baseUrl: String,
-        val segments: ArrayList<Pair<String, Long>>,
-        @ColumnInfo(name = "target_duration")
-        val targetDuration: Int) : Request() {
+        val segmentFrom: Int,
+        val segmentTo: Int) : Request(downloadable) {
 
-    @Ignore
-    var totalDuration = 0L
-    @Ignore
     val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
         fun parse(trackData: TrackData) =
                 trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).let { trackName ->

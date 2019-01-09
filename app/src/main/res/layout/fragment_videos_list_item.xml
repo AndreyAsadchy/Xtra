@@ -57,10 +57,10 @@
                 android:layout_marginLeft="5dp" />
 
             <TextView
-                android:id="@+id/length"
+                android:id="@+id/duration"
                 android:text="@{DateUtils.formatElapsedTime(video.length)}"
                 tools:text="13:37"
-                style="@style/VideoLength"
+                style="@style/VideoDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -80,18 +80,22 @@
 
             <TextView
                 android:id="@+id/title"
-                android:text="@{video.title}"
-                tools:text="@sample/videos.json/vods/title"
-                android:ellipsize="end"
-                android:maxLines="2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/username"
-                android:layout_marginTop="1dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toStartOf="@+id/options"
+                android:layout_toLeftOf="@+id/options"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toRightOf="@id/userImage"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{video.title}"
+                tools:text="@sample/videos.json/vods/title" />
 
             <TextView
                 android:id="@+id/username"
@@ -105,8 +109,12 @@
                 android:layout_marginTop="7dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toRightOf="@id/userImage"
+                android:layout_toStartOf="@+id/options"
+                android:layout_toLeftOf="@+id/options"/>
 
             <TextView
                 android:id="@+id/gameName"
@@ -122,6 +130,17 @@
                 android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp" />
+
+            <ImageButton
+                android:id="@+id/options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                style="?android:attr/actionOverflowButtonStyle"
+                />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

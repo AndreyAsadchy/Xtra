@@ -1,8 +1,10 @@
 package com.github.exact7.xtra.model.offline
 
 import android.os.Parcelable
+import androidx.databinding.ObservableInt
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -10,17 +12,19 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = "videos")
 data class OfflineVideo(
-    val url: String,
-    val name: String,
-    val channel: String,
-    val game: String,
-    val length: Long,
-    @ColumnInfo(name = "download_date")
-    val downloadDate: String,
-    @ColumnInfo(name = "upload_date")
-    val uploadDate: String,
-    val thumbnail: String,
-    val streamerAvatar: String) : Parcelable {
+        val url: String,
+        val name: String,
+        @ColumnInfo(name = "channel_name")
+        val channelName: String,
+        @ColumnInfo(name = "channel_logo")
+        val channelLogo: String,
+        val thumbnail: String,
+        val game: String,
+        val duration: Long,
+        @ColumnInfo(name = "upload_date")
+        val uploadDate: String,
+        @ColumnInfo(name = "download_date")
+        val downloadDate: String) : Parcelable {
 
     @IgnoredOnParcel
     @PrimaryKey(autoGenerate = true)
@@ -29,4 +33,16 @@ data class OfflineVideo(
     @IgnoredOnParcel
     @ColumnInfo(name = "is_vod")
     var vod = url.endsWith(".m3u8")
+
+    @IgnoredOnParcel
+    @Ignore
+    var downloadProgress = ObservableInt()
+
+    @IgnoredOnParcel
+    @Ignore
+    var maxProgress = 0
+
+    @IgnoredOnParcel
+    val downloaded: Boolean
+        get() = downloadProgress.get() == maxProgress
 }

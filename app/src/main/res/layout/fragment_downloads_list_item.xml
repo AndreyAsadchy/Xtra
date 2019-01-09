@@ -50,11 +50,20 @@
                 android:layout_alignEnd="@id/thumbnail"
                 android:layout_alignRight="@id/thumbnail" />
 
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_alignBottom="@id/thumbnail"
+                android:max="@{video.maxProgress}"
+                android:progress="@{video.downloadProgress}"
+                style="@android:style/Widget.ProgressBar.Horizontal"/>
+            <!--app:visible="@{video.downloaded}"-->
+
             <TextView
-                android:id="@+id/length"
-                android:text="@{DateUtils.formatElapsedTime(video.length)}"
+                android:id="@+id/duration"
+                android:text="@{DateUtils.formatElapsedTime(video.duration)}"
                 tools:text="13:37"
-                style="@style/VideoLength"
+                style="@style/VideoDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -63,7 +72,7 @@
 
             <ImageView
                 android:id="@+id/userImage"
-                app:imageUrl="@{video.streamerAvatar}"
+                app:imageUrl="@{video.channelLogo}"
                 app:circle="@{true}"
                 tools:src="@tools:sample/backgrounds/scenic"
                 style="@style/UserPicture"
@@ -83,20 +92,28 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="7dp"
                 android:layout_below="@id/thumbnail"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"  />
+                android:layout_toRightOf="@id/userImage"
+                android:layout_toStartOf="@+id/options"
+                android:layout_toLeftOf="@+id/options" />
 
             <TextView
                 android:id="@+id/username"
-                android:text="@{video.channel}"
+                android:text="@{video.channelName}"
                 tools:text="summit1g"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toRightOf="@id/userImage"
+                android:layout_toStartOf="@+id/options"
+                android:layout_toLeftOf="@+id/options" />
 
             <TextView
                 android:id="@+id/game"
@@ -111,6 +128,17 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:paddingBottom="10dp" />
+
+            <ImageButton
+                android:id="@+id/options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                style="?android:attr/actionOverflowButtonStyle"
+                />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

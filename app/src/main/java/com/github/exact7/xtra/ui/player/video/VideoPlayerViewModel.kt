@@ -1,6 +1,10 @@
 package com.github.exact7.xtra.ui.player.video
 
 import android.app.Application
+import android.net.Uri
+import android.os.Bundle
+import android.os.Parcel
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.VideoInfo
@@ -8,13 +12,11 @@ import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.VideoRequest
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.DownloadWorker
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.gson.Gson
 import io.reactivex.rxkotlin.addTo
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -35,6 +37,7 @@ class VideoPlayerViewModel @Inject constructor(
         if (_video.value != video) {
             _video.value = video
             playerRepository.fetchVideoPlaylist(video.id)
+                    .map { Uri.parse(it.raw().request().url().toString()) }
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
@@ -55,16 +58,31 @@ class VideoPlayerViewModel @Inject constructor(
         playbackProgress = player.currentPosition
     }
 
+    fun getBundleSizeInBytes(bundle: Bundle): Int {
+        val parcel = Parcel.obtain()
+        parcel.writeValue(bundle)
+        val bytes = parcel.marshall()
+        parcel.recycle()
+        return bytes.size
+    }
+
     fun download(quality: String, segmentFrom: Int, segmentTo: Int) {
-        GlobalScope.launch {
-            val id = offlineRepository.saveRequest(VideoRequest(
-                    video.value!!,
-                    quality,
-                    helper.urls[quality]!!.substringBeforeLast('/') + "/",
-                    ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs) }),
-                    toSeconds(mediaPlaylist.targetDurationUs).toInt()))
-            DownloadWorker.download(id.toInt(), DownloadWorker.TYPE_VIDEO)
-        }
+        val string = Gson().toJson(VideoRequest(video.value!!, helper.urls[quality]!!.substringBeforeLast('/') + "/", quality, segmentFrom, segmentTo))
+        println(string)
+        println(getBundleSizeInBytes(bundleOf("test" to Gson().toJson(string))))
+//        DownloadWorker.download()
+//        GlobalScope.launch {
+//            var totalDuration = 0L
+//            val segments = ArrayList(mediaPlaylist.segments.subList(segmentFrom, segmentTo).map { it.url to toSeconds(it.durationUs).also { d -> totalDuration += d } })
+//            val id = offlineRepository.saveRequest(VideoRequest(
+//                    video.value!!,
+//                    quality,
+//                    helper.urls[quality]!!.substringBeforeLast('/') + "/",
+//                    segments,
+//                    toSeconds(mediaPlaylist.targetDurationUs).toInt(),
+//                    totalDuration))
+//            DownloadWorker.download(id.toInt(), DownloadWorker.TYPE_VIDEO)
+//        }
     }
 
     private fun toSeconds(value: Long) = value / 1000000L

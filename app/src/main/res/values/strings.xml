@@ -53,6 +53,7 @@
     <string name="connection_restored">Back online</string>
     <string name="follow_tab_login_prompt">Your followed channels will be shown here</string>
     <string name="downloads_empty">Your downloaded videos will be shown here</string>
-    <string name="downloads_channel">Downloads</string>
-    <string name="added_to_queue">Added to queue</string>
+    <string name="notification_downloads_channel">Downloads</string>
+    <string name="notification_channel_id" translatable="false">xtra_download_channel</string>
+    <string name="download_paused">Paused</string>
 </resources>
