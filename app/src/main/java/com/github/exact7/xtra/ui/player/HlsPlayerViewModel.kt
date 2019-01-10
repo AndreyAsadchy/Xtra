@@ -29,7 +29,6 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
     }
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
-    private lateinit var tempList: List<CharSequence>
     protected val helper = PlayerHelper()
     val loaded: LiveData<Boolean>
         get() = helper.loaded
@@ -44,27 +43,27 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
 
     override fun changeQuality(index: Int) {
         helper.selectedQualityIndex = index
-        helper.urls?.keys?.toList()?.let {
-            when (index) {
-                in 0..it.lastIndex -> {
-                    val quality = if (index == 0) {
-                        trackSelector.setParameters(trackSelector.buildUponParameters().clearSelectionOverrides())
-                        "Auto"
-                    }
-                    else {
-                        updateQuality()
-                        it[index - 1]
-                    }
-                    changePlayerMode(NORMAL)
-                    prefs.edit { putString(TAG, quality) }
-                }
-                it.lastIndex + 1 -> changePlayerMode(AUDIO_ONLY)
-                else -> changePlayerMode(DISABLED)
-            }
-        }
     }
 
-    private fun changePlayerMode(playerMode: PlayerMode) {
+    protected fun updateQuality(index: Int) {
+        val quality = if (index == 0) {
+            trackSelector.setParameters(trackSelector.buildUponParameters().clearSelectionOverrides())
+            "Auto"
+        } else {
+            updateQuality()
+            qualities[index]
+        }
+        changePlayerMode(PlayerMode.NORMAL)
+        prefs.edit { putString(TAG, quality) }
+    }
+
+    private fun updateQuality() {
+        val parametersBuilder = trackSelector.buildUponParameters()
+                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.selectedQualityIndex - 1))
+        trackSelector.setParameters(parametersBuilder)
+    }
+
+    protected fun changePlayerMode(playerMode: PlayerMode) {
         val videoDisabled: Boolean
         val audioDisabled: Boolean
         when (playerMode) {
@@ -84,39 +83,24 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
         trackSelector.setParameters(trackSelector.buildUponParameters().setRendererDisabled(VIDEO_RENDERER, videoDisabled).setRendererDisabled(AUDIO_RENDERER, audioDisabled))
     }
 
-    private fun updateQuality() {
-        trackSelector.currentMappedTrackInfo?.let {
-            val parametersBuilder = trackSelector.buildUponParameters()
-                    .setSelectionOverride(VIDEO_RENDERER, it.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.selectedQualityIndex - 1))
-            trackSelector.setParameters(parametersBuilder)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         updateQuality()
     }
 
     override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
-        if (helper.loaded.value != true) {
-            trackSelector.currentMappedTrackInfo?.let {
-                helper.loaded.value = true
-                val index = prefs.getString(TAG, "Auto").let { quality: String ->
-                    if (quality == "Auto") {
-                        0
-                    } else {
-                        val index = tempList.indexOf(quality)
-                        if (index != -1) {
-                            index + 1
-                        } else {
-                            0
-                        }
-                    }
+        if (helper.loaded.value != true && trackSelector.currentMappedTrackInfo != null) {
+            helper.loaded.value = true
+            val index =  prefs.getString(TAG, "Auto").let { quality: String ->
+                if (quality == "Auto") {
+                    0
+                } else {
+                    qualities.indexOf(quality).let { if (it != -1) it else 0 }
                 }
-                helper.selectedQualityIndex = index
-                if (index != 0) {
-                    updateQuality()
-                }
+            }
+            helper.selectedQualityIndex = index
+            if (index != 0) {
+                updateQuality()
             }
         }
     }
@@ -138,9 +122,11 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
                         urls[if (!quality.startsWith("audio", true)) quality else audioOnly] = url
                     }
                 }
-                helper.urls = urls
+                helper.urls = urls.apply {
+                    put(audioOnly, remove(audioOnly)!!) //move audio option to bottom
+                }
                 qualities = LinkedList(urls.keys).apply {
-                    add(removeAt(indexOf(audioOnly))) //move audio option to bottom
+                    addFirst(context.getString(R.string.auto))
                     if (this@HlsPlayerViewModel is StreamPlayerViewModel) {
                         add(context.getString(R.string.chat_only))
                     }

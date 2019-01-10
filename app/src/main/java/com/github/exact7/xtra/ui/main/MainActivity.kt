@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        startOfflineVideo(intent!!.getParcelableExtra("media_item"))
+        startOfflineVideo(intent!!.getParcelableExtra("video"))
     }
 
     /**
@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun startVideo(video: Video) {
-        startPlayer(VideoPlayerFragment().apply { arguments = bundleOf("media_item" to video) })
+        startPlayer(VideoPlayerFragment().apply { arguments = bundleOf("video" to video) })
     }
 
     override fun startClip(clip: Clip) {
@@ -228,7 +228,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun startOfflineVideo(video: OfflineVideo) {
-        startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf("media_item" to video) })
+        startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf("video" to video) })
     }
 
     override fun viewChannel(channelName: String) {

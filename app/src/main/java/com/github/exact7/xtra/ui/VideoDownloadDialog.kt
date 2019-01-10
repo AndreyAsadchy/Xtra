@@ -62,13 +62,16 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                         val playlist = response.body()!!.string()
                         val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
                         val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
+                        var audioIndex = 0
                         qualities.forEachIndexed { i, s ->
                             if (s.equals("Audio Only", true)) {
-                                qualities.removeAt(i)
-                                qualities.add(i, requireContext().getString(R.string.audio_only))
-                                urls.add(urls.removeAt(i))
+                                audioIndex = i
+                                return@forEachIndexed
                             }
                         }
+                        qualities.removeAt(audioIndex)
+                        qualities.add(audioIndex, requireContext().getString(R.string.audio_only))
+                        urls.add(urls.removeAt(audioIndex))
                         val map = qualities.zip(urls).toMap()
                         val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
                              PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
@@ -89,7 +92,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                     .subscribe({
                         init(it)
                     }, {
-
+                        println(it)
                     })
                     .addTo(compositeDisposable!!)
         } else {

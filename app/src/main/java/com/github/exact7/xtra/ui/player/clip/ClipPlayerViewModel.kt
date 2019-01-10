@@ -68,6 +68,7 @@ class ClipPlayerViewModel @Inject constructor(
                         helper.urls = it
                         play(it.values.first())
                         helper.selectedQualityIndex = 0
+                        helper.loaded.value = true
 //                    if (clip.vod != null) {
 //                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id)
 //                                .subscribe({ response ->

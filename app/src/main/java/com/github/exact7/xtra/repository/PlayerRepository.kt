@@ -45,7 +45,7 @@ class PlayerRepository @Inject constructor(
     }
 
     fun fetchVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
-        Log.d(TAG, "Getting media_item playlist for media_item $videoId")
+        Log.d(TAG, "Getting video playlist for video $videoId")
         val options = HashMap<String, String>()
         options["allow_source"] = "true"
         options["allow_audio_only"] = "true"

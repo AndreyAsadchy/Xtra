@@ -33,7 +33,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(media_item.getChannelName().getName()));
+        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(video.getChannelName().getName()));
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
@@ -54,7 +54,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-        viewModel.setVideo(arguments!!.getParcelable("media_item")!!)
+        viewModel.setVideo(arguments!!.getParcelable("video")!!)
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
     }

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.offline.ClipRequest
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -18,7 +19,7 @@ import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.dialog_clip_download.*
 import javax.inject.Inject
 
-class ClipDownloadDialog : DialogFragment() {
+class ClipDownloadDialog : DialogFragment(), Injectable {
 
     companion object {
         private const val KEY_QUALITIES = "urls"

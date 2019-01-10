@@ -7,8 +7,8 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    @GET("channels/{channelName}/access_token")
-    fun getStreamAccessToken(@Path("channelName") channel: String): Single<PlaylistTokenResponse>
+    @GET("channels/{channel}/access_token")
+    fun getStreamAccessToken(@Path("channel") channel: String): Single<PlaylistTokenResponse>
 
     @GET("vods/{id}/access_token")
     fun getVideoAccessToken(@Path("id") id: String): Single<PlaylistTokenResponse>

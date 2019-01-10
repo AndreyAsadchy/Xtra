@@ -8,6 +8,7 @@ import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
+import com.github.exact7.xtra.ui.player.PlayerMode
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,6 +45,14 @@ class VideoPlayerViewModel @Inject constructor(
 
                     })
                     .addTo(compositeDisposable)
+        }
+    }
+
+    override fun changeQuality(index: Int) {
+        super.changeQuality(index)
+        when {
+            index < qualities.lastIndex -> updateQuality(index)
+            else -> changePlayerMode(PlayerMode.AUDIO_ONLY)
         }
     }
 

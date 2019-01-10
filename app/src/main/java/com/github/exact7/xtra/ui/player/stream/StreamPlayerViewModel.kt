@@ -9,6 +9,7 @@ import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.tasks.LiveChatThread
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
+import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
@@ -49,6 +50,15 @@ class StreamPlayerViewModel @Inject constructor(
                         startChat()
                     })
                     .addTo(compositeDisposable)
+        }
+    }
+
+    override fun changeQuality(index: Int) {
+        super.changeQuality(index)
+        when {
+            index < qualities.size - 2 -> updateQuality(index)
+            index < qualities.size - 1 -> changePlayerMode(PlayerMode.AUDIO_ONLY)
+            else -> changePlayerMode(PlayerMode.DISABLED)
         }
     }
 
