@@ -6,7 +6,6 @@ import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.model.kraken.clip.ClipStatusResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -15,6 +14,7 @@ import retrofit2.Response
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.HashMap
 
 @Singleton
 class PlayerRepository @Inject constructor(
@@ -45,7 +45,7 @@ class PlayerRepository @Inject constructor(
     }
 
     fun fetchVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
-        Log.d(TAG, "Getting video playlist for video $videoId")
+        Log.d(TAG, "Getting media_item playlist for media_item $videoId")
         val options = HashMap<String, String>()
         options["allow_source"] = "true"
         options["allow_audio_only"] = "true"
@@ -57,13 +57,14 @@ class PlayerRepository @Inject constructor(
                     options["nauthsig"] = it.sig
                     usher.getVideoPlaylist(videoId.substring(1), options) //substring 1 to remove v, should be removed when upgraded to new api
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+
     }
 
-    fun fetchClipQualities(slug: String): Single<List<ClipStatusResponse.QualityOption>> {
+    fun fetchClipQualities(slug: String): Single<Map<String, String>> {
         return misc.getClipStatus(slug)
-                .map { it.qualityOptions }
+                .map { response ->
+                    response.qualityOptions.associateBy({ if (it.frameRate == 60) "${it.quality}p${it.frameRate}" else it.quality + "p" }, { it.source })
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }

@@ -5,7 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.text.format.DateUtils
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.tasks.LiveChatTask
+import com.github.exact7.xtra.tasks.LiveChatThread
 import com.github.exact7.xtra.util.chat.MessageListenerImpl
 import com.github.exact7.xtra.util.chat.OnChatMessageReceived
 import java.text.ParseException
@@ -58,7 +58,7 @@ object TwitchApiHelper {
         }
     }
 
-    fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageCallback: OnChatMessageReceived): LiveChatTask {
-        return LiveChatTask(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageCallback)).apply { start() }
+    fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageCallback: OnChatMessageReceived): LiveChatThread {
+        return LiveChatThread(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageCallback)).apply { start() }
     }
 }

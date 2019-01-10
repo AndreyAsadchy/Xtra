@@ -9,16 +9,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.VideoDownloadDialog
 import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
-import java.util.*
 
-class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, VideoDownloadDialog.OnDownloadClickListener {
+class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
     override fun play(obj: Parcelable) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -35,42 +33,33 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(video.getChannelName().getName()));
+        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(media_item.getChannelName().getName()));
         //TODO morebtn
         settings.isEnabled = false
         download.isEnabled = false
         settings.setColorFilter(Color.GRAY) //TODO
         download.setColorFilter(Color.GRAY)
         settings.setOnClickListener {
-            LinkedList(viewModel.helper.qualities.value).also { list ->
-                list.addFirst(getString(R.string.auto))
-                FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
-            }
+            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
-        download.setOnClickListener { VideoDownloadDialog.newInstance(videoId = (arguments!!.getParcelable<Video>("video")!!).id).show(childFragmentManager, null) }
-//        download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }
+        download.setOnClickListener { VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null) }
     }
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
         playerView.player = viewModel.player
-        viewModel.helper.qualities.observe(viewLifecycleOwner, Observer {
-            val loaded = it != null
-            settings.isEnabled = loaded
-            download.isEnabled = loaded
+        viewModel.loaded.observe(viewLifecycleOwner, Observer {
+            settings.isEnabled = true
+            download.isEnabled = true
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-        viewModel.setVideo(arguments!!.getParcelable("video")!!)
+        viewModel.setVideo(arguments!!.getParcelable("media_item")!!)
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index)
-    }
-
-    override fun onClick(quality: String, segmentFrom: Int, segmentTo: Int) {
-        viewModel.download(quality, segmentFrom, segmentTo)
     }
 }

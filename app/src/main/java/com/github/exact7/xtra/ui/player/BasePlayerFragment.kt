@@ -90,7 +90,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         viewModel.onResume()
     }
 
-    abstract fun play(obj: Parcelable)
+    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
 
     fun minimize() {
         if (isPortraitOrientation) {

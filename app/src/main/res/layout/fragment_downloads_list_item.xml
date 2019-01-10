@@ -57,7 +57,7 @@
                 android:max="@{video.maxProgress}"
                 android:progress="@{video.downloadProgress}"
                 style="@android:style/Widget.ProgressBar.Horizontal"/>
-            <!--app:visible="@{video.downloaded}"-->
+            <!--app:visible="@{media_item.downloaded}"-->
 
             <TextView
                 android:id="@+id/duration"

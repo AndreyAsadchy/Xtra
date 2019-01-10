@@ -20,7 +20,6 @@ import com.github.exact7.xtra.util.FragmentUtils
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
-import java.util.*
 
 @Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -68,20 +67,15 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         })
         settings.isEnabled = false
         settings.setColorFilter(Color.GRAY)
-        viewModel.helper.qualities.observe(this, Observer {
+        viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
         })
-        viewModel.helper.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
-        viewModel.helper.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
-        viewModel.chatTask.observe(viewLifecycleOwner, Observer(messageView::setCallback))
+        viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
+        viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
+        viewModel.chat.observe(viewLifecycleOwner, Observer(messageView::setCallback))
         settings.setOnClickListener {
-            val list = LinkedList(viewModel.helper.qualities.value)
-            list.apply {
-                addFirst(getString(R.string.auto))
-                addLast(getString(R.string.chat_only))
-            }
-            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, list, viewModel.helper.selectedQualityIndex)
+            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
     }
 
@@ -97,7 +91,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index)
-//            if (index >= viewModel.helper.qualities.value!!.lastIndex) {
+//            if (index >= viewModel.helper.urls.value!!.lastIndex) {
 //                TODO hide player
 //            }
     }

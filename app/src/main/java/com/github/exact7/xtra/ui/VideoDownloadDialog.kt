@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.VideoInfo
+import com.github.exact7.xtra.model.VideoDownloadInfo
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
@@ -30,30 +31,20 @@ import javax.inject.Inject
 
 class VideoDownloadDialog : DialogFragment(), Injectable {
 
-    interface OnDownloadClickListener {
-        fun onClick(quality: String, segmentFrom: Int, segmentTo: Int)
-    }
-
     companion object {
         private const val KEY_VIDEO_INFO = "videoInfo"
-        private const val KEY_VIDEO_ID = "videoId"
+        private const val KEY_VIDEO = "video"
 
-        fun newInstance(videoInfo: VideoInfo? = null, videoId: String? = null): VideoDownloadDialog {
+        fun newInstance(videoInfo: VideoDownloadInfo? = null, video: Video? = null): VideoDownloadDialog {
             return VideoDownloadDialog().apply {
-                arguments = bundleOf(KEY_VIDEO_INFO to videoInfo, KEY_VIDEO_ID to videoId)
+                arguments = bundleOf(KEY_VIDEO_INFO to videoInfo, KEY_VIDEO to video)
             }
         }
     }
 
     @Inject
     lateinit var repository: PlayerRepository
-    private lateinit var listener: OnDownloadClickListener
     private var compositeDisposable: CompositeDisposable? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        listener = parentFragment as OnDownloadClickListener
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_video_download, container, false)
@@ -62,19 +53,26 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
     //TODO maybe move to data binding?
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val videoInfo = arguments!!.getParcelable(KEY_VIDEO_INFO) as VideoInfo?
-        if (videoInfo == null) { //
+        val videoInfo = arguments!!.getParcelable(KEY_VIDEO_INFO) as VideoDownloadInfo?
+        if (videoInfo == null) {
             compositeDisposable = CompositeDisposable()
-            repository.fetchVideoPlaylist(arguments!!.getString(KEY_VIDEO_ID)!!)
+            val video = arguments!!.getParcelable<Video>(KEY_VIDEO)!!
+            repository.fetchVideoPlaylist(video.id)
                     .map { response ->
-                        val string = response.body()!!.string()
-                        val qualities = "NAME=\"(.*)\"".toRegex().findAll(string).map { it.groupValues[1] }.toMutableList()
-                        val urls = "https://.*\\.m3u8".toRegex().findAll(string).map(MatchResult::value).toMutableList()
-                        val audioIndex = qualities.indexOf("Audio Only")
-                        qualities.add(qualities.removeAt(audioIndex))
-                        urls.add(urls.removeAt(audioIndex))
+                        val playlist = response.body()!!.string()
+                        val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
+                        val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
+                        qualities.forEachIndexed { i, s ->
+                            if (s.equals("Audio Only", true)) {
+                                qualities.removeAt(i)
+                                qualities.add(i, requireContext().getString(R.string.audio_only))
+                                urls.add(urls.removeAt(i))
+                            }
+                        }
                         val map = qualities.zip(urls).toMap()
-                        val mediaPlaylist = PlaylistParser(URL(urls[0]).openStream(), Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                        val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
+                             PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                        }
                         var totalDuration = 0L
                         val relativeTimes = mutableListOf<Long>()
                         var time = 0L
@@ -84,7 +82,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                             relativeTimes.add(time)
                             time += duration
                         }
-                        VideoInfo(qualities, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0)
+                        VideoDownloadInfo(video, map, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0)
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
@@ -122,82 +120,89 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         return null
     }
 
-    private fun init(videoInfo: VideoInfo) {
+    private fun init(videoInfo: VideoDownloadInfo) {
+        container.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
         val context = requireContext()
-        spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, videoInfo.qualities)
-        val duration = DateUtils.formatElapsedTime(videoInfo.totalDuration)
-        this.duration.text = context.getString(R.string.length, duration)
-        timeFrom.hint = DateUtils.formatElapsedTime(videoInfo.currentPosition).let {
-            if (it.length == 5) {
-                "00:$it"
+        with(videoInfo) {
+            spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
+            val duration = DateUtils.formatElapsedTime(totalDuration)
+            this@VideoDownloadDialog.duration.text = context.getString(R.string.length, duration)
+            timeFrom.hint = DateUtils.formatElapsedTime(currentPosition).let {
+                if (it.length == 5) {
+                    "00:$it"
+                } else {
+                    it
+                }
+            }
+            timeTo.hint = if (duration.length != 5) {
+                duration
             } else {
-                it
+                "00:$duration"
             }
-        }
-        timeTo.hint = if (duration.length != 5) {
-            duration
-        } else {
-            "00:$duration"
-        }
-        timeFrom.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                timeFrom.error = null
-            }
-        })
-        timeTo.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                timeTo.error = null
-            }
-        })
-        cancel.setOnClickListener { dismiss() }
-        download.setOnClickListener {
-            parseTime(timeFrom)?.let { from ->
-                parseTime(timeTo)?.let { to_ ->
-                    when {
-                        from < to_ -> {
-                            if (to_ > videoInfo.totalDuration) {
-                                timeTo.error = context.getString(R.string.to_is_longer)
-                                return@setOnClickListener
+            timeFrom.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    timeFrom.error = null
+                }
+            })
+            timeTo.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    timeTo.error = null
+                }
+            })
+            cancel.setOnClickListener { dismiss() }
+            download.setOnClickListener {
+                parseTime(timeFrom)?.let { from ->
+                    parseTime(timeTo)?.let { to_ ->
+                        when {
+                            from < to_ -> {
+                                if (to_ > totalDuration) {
+                                    timeTo.error = context.getString(R.string.to_is_longer)
+                                    return@setOnClickListener
+                                }
+                                val times = relativeStartTimes
+                                val fromIndex = if (from == 0L) {
+                                    0
+                                } else {
+                                    val min = from - targetDuration
+                                    times.binarySearch(comparison = { time ->
+                                        val offset = time / 1000000L
+                                        when {
+                                            offset > from -> 1
+                                            offset < min -> -1
+                                            else -> 0
+                                        }
+                                    })
+                                }
+                                val toIndex = if (to_ in times.last() / 1000000L..totalDuration) {
+                                    times.size - 1
+                                } else {
+                                    val max = to_ + targetDuration
+                                    times.binarySearch(comparison = { time ->
+                                        val offset = time / 1000000L
+                                        when {
+                                            offset > max -> 1
+                                            offset < to_ -> -1
+                                            else -> 0
+                                        }
+                                    }) //todo if length is good don't add
+                                }
+                                val quality = spinner.selectedItem.toString()
+                                val url = qualities[quality]!!.substringBeforeLast('/') + "/"
+                                Toast.makeText(context, "DOWNLOAD", Toast.LENGTH_LONG).show()
+//                                DownloadWorker.download(Gson().toJson(VideoRequest(video, url, quality, fromIndex, toIndex)), true)
+                                dismiss()
                             }
-                            val times = videoInfo.relativeStartTimes
-                            val fromIndex = if (from == 0L) {
-                                0
-                            } else {
-                                val min = from - videoInfo.targetDuration
-                                times.binarySearch(comparison = { time ->
-                                    val offset = time / 1000000L
-                                    when {
-                                        offset > from -> 1
-                                        offset < min -> -1
-                                        else -> 0
-                                    }
-                                })
+                            from >= to_ -> {
+                                timeFrom.error = context.getString(R.string.from_is_greater)
                             }
-                            val toIndex = if (to_ in times.last() / 1000000L..videoInfo.totalDuration) {
-                                times.size - 1
-                            } else {
-                                val max = to_ + videoInfo.targetDuration
-                                times.binarySearch(comparison = { time ->
-                                    val offset = time / 1000000L
-                                    when {
-                                        offset > max -> 1
-                                        offset < to_ -> -1
-                                        else -> 0
-                                    }
-                                }) //todo if length is good don't add
+                            else -> {
+                                timeTo.error = context.getString(R.string.to_is_lesser)
                             }
-                            listener.onClick(spinner.selectedItem.toString(), fromIndex, toIndex)
-                            dismiss()
-                        }
-                        from >= to_ -> {
-                            timeFrom.error = context.getString(R.string.from_is_greater)
-                        }
-                        else -> {
-                            timeTo.error = context.getString(R.string.to_is_lesser)
                         }
                     }
                 }

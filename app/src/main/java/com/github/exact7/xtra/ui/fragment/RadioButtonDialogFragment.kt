@@ -31,7 +31,7 @@ class RadioButtonDialogFragment : BottomSheetDialogFragment() {
         private const val TAGS = "tags"
         private const val CHECKED = "checked"
 
-        fun newInstance(labels: List<CharSequence>, tags: IntArray? = null, checkedIndex: Int): RadioButtonDialogFragment {
+        fun newInstance(labels: Collection<CharSequence>, tags: IntArray? = null, checkedIndex: Int): RadioButtonDialogFragment {
             return RadioButtonDialogFragment().apply {
                 arguments = bundleOf(LABELS to ArrayList(labels), TAGS to tags, CHECKED to checkedIndex)
             }

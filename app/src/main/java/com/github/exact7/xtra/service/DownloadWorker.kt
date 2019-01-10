@@ -2,10 +2,6 @@ package com.github.exact7.xtra.service
 
 import android.app.Application
 import android.util.Log
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.github.exact7.xtra.repository.OfflineRepository
@@ -20,10 +16,10 @@ class DownloadWorker @Inject constructor(
         private const val TAG = "DownloadWorker"
         private const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
 
-        fun download(requestId: Int, type: Int) {
-            val data = Data.Builder().putInt("id", requestId).putInt("type", type).build()
-            val work = OneTimeWorkRequest.Builder(DownloadWorker::class.java).setInputData(data).build()
-            WorkManager.getInstance().enqueueUniqueWork(TAG, ExistingWorkPolicy.APPEND, work)
+        fun download(requestJson: String, isVideoRequest: Boolean) {
+//            val data = Data.Builder().putInt("id", requestId).putInt("type", type).build()
+//            val work = OneTimeWorkRequest.Builder(DownloadWorker::class.java).setInputData(data).build()
+//            WorkManager.getInstance().enqueueUniqueWork(TAG, ExistingWorkPolicy.APPEND, work)
         }
         //TODO maybe pass only url and from and to indexes?
     }
@@ -133,12 +129,12 @@ class DownloadWorker @Inject constructor(
 //            }
 //            when (request) {
 //                is VideoRequest -> with(request) {
-//                    getExternalFilesDir(".downloads" + File.separator + video.id + quality)!!.let {
+//                    getExternalFilesDir(".downloads" + File.separator + media_item.id + quality)!!.let {
 //                        directoryUri = it.toUri()
 //                        directoryPath = it.absolutePath
 //                    }
 //                    notificationBuilder.apply {
-//                        setContentText(video.title)
+//                        setContentText(media_item.title)
 //                        setProgress(maxProgress, currentProgress, false)
 //                    }
 //                    notificationManager.notify(id, notificationBuilder.build())
@@ -161,7 +157,7 @@ class DownloadWorker @Inject constructor(
 //        }
 //        countDownLatch.await()
 //        queue.remove()
-        return Result.success() //TODO create offline video before finish and assign it id of request to track progress in ui if canceled return id and delete it in viewmodel
+        return Result.success() //TODO create offline media_item before finish and assign it id of request to track progress in ui if canceled return id and delete it in viewmodel
     }
 }
 //
@@ -171,9 +167,9 @@ class DownloadWorker @Inject constructor(
 //            unregisterReceiver(downloadReceiver)
 //            val currentDate = TwitchApiHelper.getCurrentTimeFormatted(this)
 //            val glide = GlideApp.with(this)
-//            val video: OfflineVideo = when (request) {
+//            val media_item: OfflineVideo = when (request) {
 //                is VideoRequest -> {
-//                    Log.d(TAG, "Downloaded video")
+//                    Log.d(TAG, "Downloaded media_item")
 //                    with(request) {
 //                        val mediaPlaylist = MediaPlaylist.Builder()
 //                                .withTargetDuration(targetDuration)
@@ -188,7 +184,7 @@ class DownloadWorker @Inject constructor(
 //                        writer.write(playlist)
 //                        out.close()
 //                        Log.d(TAG, "Playlist created")
-//                        with(video) {
+//                        with(media_item) {
 //                            val thumbnail = glide.downloadOnly().load(preview.medium).submit().get().absolutePath
 //                            val logo = glide.downloadOnly().load(channelName.logo).submit().get().absolutePath
 //                            OfflineVideo(playlistPath, title, channelName.name, game, totalDuration, currentDate, createdAt, thumbnail, logo)
@@ -204,11 +200,11 @@ class DownloadWorker @Inject constructor(
 //                    }
 //                }
 //            }
-//            Log.d(TAG, "Saving video")
-//            repository.saveVideo(video)
+//            Log.d(TAG, "Saving media_item")
+//            repository.saveVideo(media_item)
 //            val intent = Intent(this@with, MainActivity::class.java).apply {
 //                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//                putExtra("video", video)
+//                putExtra("media_item", media_item)
 //            }
 //            notificationBuilder.apply {
 //                setAutoCancel(true)
@@ -254,8 +250,8 @@ class DownloadWorker @Inject constructor(
 //
 ////        when (request) {
 ////            is VideoRequest -> with (request) {
-////                path = applicationContext.getExternalFilesDir(".downloads" + File.separator + video.id + quality)!!.absolutePath + "/"
-////                val extras = mapOf("id" to id.toString(), "name" to request.video.title, "size" to segments.size.toString())
+////                path = applicationContext.getExternalFilesDir(".downloads" + File.separator + media_item.id + quality)!!.absolutePath + "/"
+////                val extras = mapOf("id" to id.toString(), "name" to request.media_item.title, "size" to segments.size.toString())
 ////                val requests = segments.map { (fileName, _) -> com.tonyodev.fetch2.Request(baseUrl + fileName, path + fileName)
 ////                        .also { it.extras = Extras(extras) }
 ////                }
@@ -327,13 +323,13 @@ class DownloadWorker @Inject constructor(
 //////        val request = queue.peek()
 ////    with (applicationContext) {
 ////        when (request) {
-////            is VideoRequest -> with(request) { //TODO skip both video and clip if exist
-////                getExternalFilesDir(".downloads" + File.separator + video.id + quality)!!.let {
+////            is VideoRequest -> with(request) { //TODO skip both media_item and clip if exist
+////                getExternalFilesDir(".downloads" + File.separator + media_item.id + quality)!!.let {
 ////                    directoryUri = it.toUri()
 ////                    directory = it.absolutePath
 ////                }
 ////                notificationBuilder.apply {
-////                    setContentText(video.title)
+////                    setContentText(media_item.title)
 ////                    setProgress(maxProgress, currentProgress, false)
 ////                }
 ////                notificationManager.notify(id, notificationBuilder.build())
@@ -356,7 +352,7 @@ class DownloadWorker @Inject constructor(
 ////    }
 ////    countDownLatch.await()
 ////    queue.remove()
-////    return Result.success() //TODO create offline video before finish and assign it id of request to track progress in ui if canceled return id and delete it in viewmodel
+////    return Result.success() //TODO create offline media_item before finish and assign it id of request to track progress in ui if canceled return id and delete it in viewmodel
 ////}
 ////
 //@SuppressLint("RestrictedApi")
@@ -365,9 +361,9 @@ class DownloadWorker @Inject constructor(
 //        //            unregisterReceiver(downloadReceiver)
 //        val currentDate = TwitchApiHelper.getCurrentTimeFormatted(this)
 //        val glide = GlideApp.with(this)
-//        val video: OfflineVideo = when (request) {
+//        val media_item: OfflineVideo = when (request) {
 //            is VideoRequest -> {
-//                Log.d(TAG, "Downloaded video")
+//                Log.d(TAG, "Downloaded media_item")
 //                with(request) {
 //                    val mediaPlaylist = MediaPlaylist.Builder()
 //                            .withTargetDuration(targetDuration)
@@ -382,7 +378,7 @@ class DownloadWorker @Inject constructor(
 //                    writer.write(playlist)
 //                    out.close()
 //                    Log.d(TAG, "Playlist created")
-//                    with(video) {
+//                    with(media_item) {
 //                        val thumbnail = glide.downloadOnly().load(preview.medium).submit().get().absolutePath
 //                        val logo = glide.downloadOnly().load(channelName.logo).submit().get().absolutePath
 //                        OfflineVideo(playlistPath, title, channelName.name, game, totalDuration, currentDate, createdAt, thumbnail, logo)
@@ -398,11 +394,11 @@ class DownloadWorker @Inject constructor(
 //                }
 //            }
 //        }
-//        Log.d(TAG, "Saving video")
-//        repository.saveVideo(video)
+//        Log.d(TAG, "Saving media_item")
+//        repository.saveVideo(media_item)
 //        val intent = Intent(this@with, MainActivity::class.java).apply {
 //            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//            putExtra("video", video)
+//            putExtra("media_item", media_item)
 //        }
 ////            notificationBuilder.apply {
 ////                setAutoCancel(true)

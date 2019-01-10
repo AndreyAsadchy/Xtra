@@ -12,7 +12,7 @@ import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-class LiveChatTask(
+class LiveChatThread(
         private val userName: String?,
         private val userToken: String?,
         channelName: String,
@@ -28,7 +28,7 @@ class LiveChatTask(
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
 
     companion object {
-        private const val TAG = "LiveChatTask"
+        private const val TAG = "LiveChatThread"
     }
 
     override fun run() {

@@ -20,7 +20,7 @@ object FragmentUtils {
     /**
      * Use this when result should be an checkedIndex
      */
-    fun showRadioButtonDialogFragment(fragmentManager: FragmentManager, labels: List<CharSequence>, checkedIndex: Int) {
+    fun showRadioButtonDialogFragment(fragmentManager: FragmentManager, labels: Collection<CharSequence>, checkedIndex: Int) {
         RadioButtonDialogFragment.newInstance(
                 labels,
                 null,

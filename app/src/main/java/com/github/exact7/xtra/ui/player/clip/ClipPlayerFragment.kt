@@ -16,7 +16,7 @@ import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
-class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, ClipDownloadDialog.OnDownloadClickListener {
+class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
     override fun play(obj: Parcelable) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -39,27 +39,22 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         download.isEnabled = false
         settings.setColorFilter(Color.GRAY) //TODO
         download.setColorFilter(Color.GRAY)
-        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.helper.qualities.value!!, viewModel.helper.selectedQualityIndex) }
-        download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.helper.qualities.value!!).show(childFragmentManager, null) }
+        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities.keys, viewModel.selectedQualityIndex) }
+        download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.clip.value!!, viewModel.qualities).show(childFragmentManager, null) }
     }
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipPlayerViewModel::class.java)
         playerView.player = viewModel.player
-        viewModel.helper.qualities.observe(this, Observer {
-            val loaded = it != null
-            settings.isEnabled = loaded
-            download.isEnabled = loaded
+        viewModel.loaded.observe(this, Observer {
+            settings.isEnabled = true
+            download.isEnabled = true
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
         viewModel.setClip(arguments!!.getParcelable("clip")!!)
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-    }
-
-    override fun onClick(quality: String) {
-        viewModel.download(quality)
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

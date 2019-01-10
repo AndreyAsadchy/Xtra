@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.di
 
+import com.github.exact7.xtra.ui.ClipDownloadDialog
 import com.github.exact7.xtra.ui.VideoDownloadDialog
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
@@ -69,4 +70,7 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeVideoDownloadDialog(): VideoDownloadDialog
+
+    @ContributesAndroidInjector
+    abstract fun contributeClipDownloadDialog(): ClipDownloadDialog
 }

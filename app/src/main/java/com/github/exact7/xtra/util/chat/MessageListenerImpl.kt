@@ -5,14 +5,14 @@ import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.LiveChatMessage
 import com.github.exact7.xtra.model.chat.SubscriberBadge
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.tasks.LiveChatTask
+import com.github.exact7.xtra.tasks.LiveChatThread
 import java.util.HashMap
 import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class MessageListenerImpl(
         private val subscriberBadges: SubscriberBadgesResponse?,
-        private val callback: OnChatMessageReceived) : LiveChatTask.OnMessageReceivedListener {
+        private val callback: OnChatMessageReceived) : LiveChatThread.OnMessageReceivedListener {
 
     companion object {
         private const val TAG = "MessageListenerImpl"

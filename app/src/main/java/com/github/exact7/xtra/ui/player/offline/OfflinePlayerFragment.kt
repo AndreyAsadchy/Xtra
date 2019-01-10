@@ -29,7 +29,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(OfflinePlayerViewModel::class.java)
         playerView.player = viewModel.player
-        viewModel.setVideo(arguments!!.getParcelable("video")!!)
+        viewModel.setVideo(arguments!!.getParcelable("media_item")!!)
     }
 
     override fun onNetworkRestored() {

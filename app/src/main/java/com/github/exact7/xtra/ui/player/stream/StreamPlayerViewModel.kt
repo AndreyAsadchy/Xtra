@@ -7,7 +7,7 @@ import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.tasks.LiveChatTask
+import com.github.exact7.xtra.tasks.LiveChatThread
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -21,7 +21,9 @@ class StreamPlayerViewModel @Inject constructor(
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
         get() = _stream
-    val chatTask = MutableLiveData<LiveChatTask>()
+    private val _chat = MutableLiveData<LiveChatThread>()
+    val chat: LiveData<LiveChatThread>
+        get() = _chat
     private var subscriberBadges: SubscriberBadgesResponse? = null
     var user: User? = null
         private set
@@ -61,11 +63,11 @@ class StreamPlayerViewModel @Inject constructor(
     }
 
     private fun startChat() {
-        chatTask.value = TwitchApiHelper.startChat(stream.value!!.channel.name, user?.name, user?.token, subscriberBadges, helper)
+        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, user?.name, user?.token, subscriberBadges, helper)
     }
 
     private fun stopChat() {
-        chatTask.value?.cancel()
+        _chat.value?.cancel()
     }
 
     override fun onCleared() {

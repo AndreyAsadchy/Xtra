@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.player.clip
 
-//import com.github.exact7.xtra.service.ClipRequest
 import android.app.Application
 import android.content.Context
 import androidx.core.content.edit
@@ -30,14 +29,24 @@ class ClipPlayerViewModel @Inject constructor(
         get() = _clip
     private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(dataSourceFactory)
     private var playbackProgress: Long = 0
-    val helper = PlayerHelper()
     private val prefs = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+    private val helper = PlayerHelper()
+    val qualities: Map<String, String>
+        get() = helper.urls!!
+    val loaded: LiveData<Boolean>
+        get() = helper.loaded
+    val selectedQualityIndex: Int
+        get() = helper.selectedQualityIndex
+//    val chatMessages: LiveData<MutableList<ChatMessage>>
+//        get() = helper.chatMessages
+//    val newMessage: LiveData<ChatMessage>
+//        get() = helper.newMessage
 
     override fun changeQuality(index: Int) {
         playbackProgress = player.currentPosition
-        val quality = helper.qualities.value!![index]
-        play(helper.urls[quality]!!)
-        prefs.edit { putString(TAG, quality.toString()) }
+        val quality = helper.urls!!.values.elementAt(index)
+        play(quality)
+        prefs.edit { putString(TAG, quality) }
         helper.selectedQualityIndex = index
     }
 
@@ -56,14 +65,8 @@ class ClipPlayerViewModel @Inject constructor(
             _clip.value = clip
             playerRepository.fetchClipQualities(clip.slug)
                     .subscribe({
-                        val qualities = ArrayList<CharSequence>(it.size)
-                        it.forEach { option ->
-                            val quality = option.quality + "p"
-                            qualities.add(quality)
-                            helper.urls[quality] = option.source
-                        }
-                        play(helper.urls[qualities[0]]!!)
-                        helper.qualities.postValue(qualities)
+                        helper.urls = it
+                        play(it.values.first())
                         helper.selectedQualityIndex = 0
 //                    if (clip.vod != null) {
 //                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id)
@@ -86,9 +89,5 @@ class ClipPlayerViewModel @Inject constructor(
         mediaSource = factory.createMediaSource(url.toUri())
         play()
         player.seekTo(playbackProgress)
-    }
-
-    fun download(quality: String) {
-//        DownloadWorker.download(getApplication(), ClipRequest(clip.value!!, quality, helper.urls[quality]!!))
     }
 }
