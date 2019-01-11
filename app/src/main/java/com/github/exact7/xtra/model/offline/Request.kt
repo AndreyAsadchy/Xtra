@@ -1,37 +1,39 @@
 package com.github.exact7.xtra.model.offline
 
-import com.iheartradio.m3u8.data.TrackData
+import android.net.Uri
+import android.util.LongSparseArray
+import com.iheartradio.m3u8.data.MediaPlaylist
 
-sealed class Request(downloadable: Downloadable) {
-    val id = System.currentTimeMillis().toInt()
-    val downloadable: Downloadable = Wrapper(downloadable)
+sealed class Request(
+        val offlineVideoId: Int,
+        val url: String,
+        val path: Uri) {
+    var maxProgress = 0
+    var progress = 0
+    var canceled = false
 }
 
 class ClipRequest(
-        downloadable: Downloadable,
-        val url: String,
-        val quality: String
-) : Request(downloadable)
+        offlineVideoId: Int,
+        url: String,
+        path: Uri
+) : Request(offlineVideoId, url, path) {
+    var downloadRequestId = 0L
+}
 
 class VideoRequest(
-        downloadable: Downloadable,
-        val playlistUrl: String,
-        val quality: String,
+        offlineVideoId: Int,
+        val videoId: String,
+        url: String,
+        path: Uri,
         val segmentFrom: Int,
-        val segmentTo: Int) : Request(downloadable) {
+        val segmentTo: Int) : Request(offlineVideoId, url, path) {
 
-    val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
-        fun parse(trackData: TrackData) =
-                trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).let { trackName ->
-                    if (!trackName.endsWith("muted")) trackName.toInt() else trackName.substringBefore('-').toInt()
-                }
+    init {
+        maxProgress = segmentTo - segmentFrom
+    }
 
-        val index1 = parse(o1)
-        val index2 = parse(o2)
-        when {
-            index1 > index2 -> 1
-            index1 < index2 -> -1
-            else -> 0
-        }
-    })
+    val downloadRequestsToSegmentsMap = LongSparseArray<Int>()
+    var currentTrack = segmentFrom
+    lateinit var playlist: MediaPlaylist
 }

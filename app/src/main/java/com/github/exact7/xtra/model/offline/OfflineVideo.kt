@@ -28,7 +28,7 @@ data class OfflineVideo(
 
     @IgnoredOnParcel
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
+    var id = 0
 
     @IgnoredOnParcel
     @ColumnInfo(name = "is_vod")

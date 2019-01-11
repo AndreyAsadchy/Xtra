@@ -9,14 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.work.WorkManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.model.offline.VideoRequest
+import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.service.DownloadWorker
+import com.github.exact7.xtra.util.DownloadUtils
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.ParsingMode
@@ -26,6 +32,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.dialog_video_download.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.File
 import java.net.URL
 import javax.inject.Inject
 
@@ -42,8 +51,8 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
-    @Inject
-    lateinit var repository: PlayerRepository
+    @Inject lateinit var playerRepository: PlayerRepository
+    @Inject lateinit var offlineRepository: OfflineRepository
     private var compositeDisposable: CompositeDisposable? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,7 +66,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         if (videoInfo == null) {
             compositeDisposable = CompositeDisposable()
             val video = arguments!!.getParcelable<Video>(KEY_VIDEO)!!
-            repository.fetchVideoPlaylist(video.id)
+            playerRepository.fetchVideoPlaylist(video.id)
                     .map { response ->
                         val playlist = response.body()!!.string()
                         val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
@@ -74,7 +83,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                         urls.add(urls.removeAt(audioIndex))
                         val map = qualities.zip(urls).toMap()
                         val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
-                             PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                            PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
                         }
                         var totalDuration = 0L
                         val relativeTimes = mutableListOf<Long>()
@@ -92,7 +101,6 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                     .subscribe({
                         init(it)
                     }, {
-                        println(it)
                     })
                     .addTo(compositeDisposable!!)
         } else {
@@ -195,9 +203,20 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                     }) //todo if length is good don't add
                                 }
                                 val quality = spinner.selectedItem.toString()
+                                val videoDuration = (relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]) / 1000000L
                                 val url = qualities[quality]!!.substringBeforeLast('/') + "/"
-                                Toast.makeText(context, "DOWNLOAD", Toast.LENGTH_LONG).show()
-//                                DownloadWorker.download(Gson().toJson(VideoRequest(video, url, quality, fromIndex, toIndex)), true)
+                                GlobalScope.launch {
+                                    val path = context.getExternalFilesDir(".downloads${File.separator}${video.id}$quality")!!
+                                    val offlineVideo = DownloadUtils.prepareDownload(context, video, path.absolutePath, videoDuration)
+                                    val videoId = offlineRepository.saveVideo(offlineVideo)
+                                    val request = VideoRequest(videoId.toInt(), video.id, url, path.toUri(), fromIndex, toIndex)
+                                    val workId = DownloadWorker.download(request)
+                                    WorkManager.getInstance().getWorkInfoByIdLiveData(workId).observe(requireActivity(), Observer { info ->
+                                        if (info.state.isFinished) {
+
+                                        }
+                                    })
+                                }
                                 dismiss()
                             }
                             from >= to_ -> {

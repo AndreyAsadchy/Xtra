@@ -22,13 +22,15 @@ data class Clip(
         val vod: Vod?,
         override val game: String,
         val language: String,
-        val title: String,
+        override val title: String,
         val views: Int,
         var duration: Double,
         @SerializedName("created_at")
         val createdAt: String,
         val thumbnails: Thumbnails) : Parcelable, Downloadable {
 
+    override val id: String
+        get() = slug
     override val thumbnail: String
         get() = thumbnails.medium
     override val channelName: String

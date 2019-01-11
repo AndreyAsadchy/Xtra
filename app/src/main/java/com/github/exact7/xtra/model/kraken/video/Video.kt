@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Video(
-        val title: String,
+        override val title: String,
         val description: String?,
         @SerializedName("description_html")
         val descriptionHtml: String?,
@@ -31,7 +31,7 @@ data class Video(
         @SerializedName("published_at")
         val publishedAt: String,
         @SerializedName("_id")
-        val id: String,
+        override val id: String,
         @SerializedName("recorded_at")
         val recordedAt: String,
         override val game: String,

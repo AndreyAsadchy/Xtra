@@ -13,8 +13,11 @@ interface VideosDao {
     @Query("SELECT * FROM videos ORDER BY id DESC")
     fun getAll(): LiveData<List<OfflineVideo>>
 
+    @Query("SELECT * FROM videos WHERE id = :id")
+    fun getById(id: Int): OfflineVideo
+
     @Insert
-    fun insert(video: OfflineVideo)
+    fun insert(video: OfflineVideo): Long
 
     @Delete
     fun delete(video: OfflineVideo)
