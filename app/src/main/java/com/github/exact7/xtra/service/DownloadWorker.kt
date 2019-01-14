@@ -107,6 +107,7 @@ class DownloadWorker @Inject constructor(
 
                 }
             } //TODO maybe https://stackoverflow.com/questions/53029866/workmanager-for-long-network-connection
+            //TODO or switch to IntentService with startForeground?
 
             downloadReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
