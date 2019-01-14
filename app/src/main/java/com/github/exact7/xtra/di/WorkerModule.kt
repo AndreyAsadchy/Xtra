@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.di
 
 import androidx.work.Worker
-import com.github.exact7.xtra.service.DownloadWorker
+import com.github.exact7.xtra.service.DownloadService
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -11,6 +11,6 @@ abstract class WorkerModule {
 
     @Binds
     @IntoMap
-    @WorkerKey(DownloadWorker::class)
-    abstract fun bindDownloadWorker(downloadWorker: DownloadWorker): Worker
+    @WorkerKey(DownloadService::class)
+    abstract fun bindDownloadWorker(downloadWorker: DownloadService): Worker
 }

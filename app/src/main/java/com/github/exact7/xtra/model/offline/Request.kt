@@ -5,7 +5,7 @@ import android.util.LongSparseArray
 import com.iheartradio.m3u8.data.MediaPlaylist
 
 sealed class Request(
-        val offlineVideoId: Int,
+        val offlineVideo: OfflineVideo,
         val url: String,
         val path: Uri) {
     var maxProgress = 0
@@ -14,20 +14,20 @@ sealed class Request(
 }
 
 class ClipRequest(
-        offlineVideoId: Int,
+        offlineVideo: OfflineVideo,
         url: String,
         path: Uri
-) : Request(offlineVideoId, url, path) {
+) : Request(offlineVideo, url, path) {
     var downloadRequestId = 0L
 }
 
 class VideoRequest(
-        offlineVideoId: Int,
+        offlineVideo: OfflineVideo,
         val videoId: String,
         url: String,
         path: Uri,
         val segmentFrom: Int,
-        val segmentTo: Int) : Request(offlineVideoId, url, path) {
+        val segmentTo: Int) : Request(offlineVideo, url, path) {
 
     init {
         maxProgress = segmentTo - segmentFrom

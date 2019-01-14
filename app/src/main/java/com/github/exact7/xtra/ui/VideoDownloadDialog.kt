@@ -21,7 +21,7 @@ import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.VideoRequest
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.DownloadWorker
+import com.github.exact7.xtra.service.DownloadService
 import com.github.exact7.xtra.util.DownloadUtils
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
@@ -210,7 +210,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                     val offlineVideo = DownloadUtils.prepareDownload(context, video, path.absolutePath, videoDuration)
                                     val videoId = offlineRepository.saveVideo(offlineVideo)
                                     val request = VideoRequest(videoId.toInt(), video.id, url, path.toUri(), fromIndex, toIndex)
-                                    val workId = DownloadWorker.download(request)
+                                    val workId = DownloadService.download(request)
                                     WorkManager.getInstance().getWorkInfoByIdLiveData(workId).observe(requireActivity(), Observer { info ->
                                         if (info.state.isFinished) {
 

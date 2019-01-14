@@ -27,6 +27,8 @@
         <activity android:name=".ui.main.MainActivity"/>
         <activity android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"/>
+        <service android:name=".service.DownloadService"
+            android:process="com.github.exact7.xtra.DownloadProcess"/>
         <receiver android:name=".service.CancelActionReceiver" />
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"

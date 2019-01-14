@@ -12,7 +12,7 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.offline.ClipRequest
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.DownloadWorker
+import com.github.exact7.xtra.service.DownloadService
 import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -71,7 +71,7 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         cancel.setOnClickListener { dismiss() }
         download.setOnClickListener {
             val quality = spinner.selectedItem.toString()
-            DownloadWorker.download(Gson().toJson(ClipRequest(clip, qualities[quality]!!, quality)), false)
+            DownloadService.download(Gson().toJson(ClipRequest(clip, qualities[quality]!!, quality)), false)
             dismiss()
         }
     }
