@@ -9,11 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
-import androidx.work.WorkManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.VideoDownloadInfo
@@ -21,7 +18,6 @@ import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.VideoRequest
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.DownloadService
 import com.github.exact7.xtra.util.DownloadUtils
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
@@ -175,47 +171,39 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                     timeTo.error = context.getString(R.string.to_is_longer)
                                     return@setOnClickListener
                                 }
-                                val times = relativeStartTimes
+                                relativeStartTimes
                                 val fromIndex = if (from == 0L) {
                                     0
                                 } else {
                                     val min = from - targetDuration
-                                    times.binarySearch(comparison = { time ->
-                                        val offset = time / 1000000L
+                                    relativeStartTimes.binarySearch(comparison = { time ->
                                         when {
-                                            offset > from -> 1
-                                            offset < min -> -1
+                                            time > from -> 1
+                                            time < min -> -1
                                             else -> 0
                                         }
                                     })
                                 }
-                                val toIndex = if (to_ in times.last() / 1000000L..totalDuration) {
-                                    times.size - 1
+                                val toIndex = if (to_ in relativeStartTimes.last()..totalDuration) {
+                                    relativeStartTimes.size - 1
                                 } else {
                                     val max = to_ + targetDuration
-                                    times.binarySearch(comparison = { time ->
-                                        val offset = time / 1000000L
+                                    relativeStartTimes.binarySearch(comparison = { time ->
                                         when {
-                                            offset > max -> 1
-                                            offset < to_ -> -1
+                                            time > max -> 1
+                                            time < to_ -> -1
                                             else -> 0
                                         }
                                     }) //todo if length is good don't add
                                 }
                                 val quality = spinner.selectedItem.toString()
-                                val videoDuration = (relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]) / 1000000L
+                                val videoDuration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]
                                 val url = qualities[quality]!!.substringBeforeLast('/') + "/"
                                 GlobalScope.launch {
-                                    val path = context.getExternalFilesDir(".downloads${File.separator}${video.id}$quality")!!
-                                    val offlineVideo = DownloadUtils.prepareDownload(context, video, path.absolutePath, videoDuration)
+                                    val path = context.getExternalFilesDir(".downloads${File.separator}${video.id}$quality")!!.absolutePath
+                                    val offlineVideo = DownloadUtils.prepareDownload(context, video, path, videoDuration)
                                     val videoId = offlineRepository.saveVideo(offlineVideo)
-                                    val request = VideoRequest(videoId.toInt(), video.id, url, path.toUri(), fromIndex, toIndex)
-                                    val workId = DownloadService.download(request)
-                                    WorkManager.getInstance().getWorkInfoByIdLiveData(workId).observe(requireActivity(), Observer { info ->
-                                        if (info.state.isFinished) {
-
-                                        }
-                                    })
+                                    DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, path + File.separator, fromIndex, toIndex))
                                 }
                                 dismiss()
                             }

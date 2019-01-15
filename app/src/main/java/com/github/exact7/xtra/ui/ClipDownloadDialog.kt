@@ -10,10 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.model.offline.ClipRequest
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.service.DownloadService
-import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.dialog_clip_download.*
@@ -67,11 +64,12 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
     private fun init(clip: Clip, qualities: Map<String, String>) {
         progressBar.visibility = View.GONE
         container.visibility = View.VISIBLE
-        spinner.adapter = ArrayAdapter(requireContext(), R.layout.spinner_quality_item, qualities.keys.toTypedArray())
+        val context = requireContext()
+        spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
         cancel.setOnClickListener { dismiss() }
         download.setOnClickListener {
             val quality = spinner.selectedItem.toString()
-            DownloadService.download(Gson().toJson(ClipRequest(clip, qualities[quality]!!, quality)), false)
+//            DownloadUtils.download(context, ClipRequest(clip, qualities[quality]!!, quality))
             dismiss()
         }
     }

@@ -71,6 +71,7 @@ dependencies {
     //UI
     implementation 'com.google.android.material:material:1.1.0-alpha02'
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
 
     //Architecture components
     implementation "androidx.paging:paging-runtime-ktx:$paging"
@@ -79,7 +80,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
-    implementation "android.arch.work:work-runtime:$work"
+//    implementation "android.arch.work:work-runtime:$work"
     implementation 'androidx.core:core-ktx:1.0.1'
 
     //Misc
@@ -89,6 +90,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
     implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
     implementation 'com.iheartradio.m3u8:open-m3u8:0.2.6'
+    implementation 'com.tonyodev.fetch2:fetch2:2.3.4'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"
