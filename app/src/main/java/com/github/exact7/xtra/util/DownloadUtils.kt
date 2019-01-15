@@ -22,11 +22,14 @@ object DownloadUtils {
     private var fetch: Fetch? = null
 
     fun getFetch(context: Context): Fetch {
-        return fetch ?: Fetch.getInstance(FetchConfiguration.Builder(context)
-                .enableLogging(BuildConfig.DEBUG)
-                .enableRetryOnNetworkGain(true)
-                .setDownloadConcurrentLimit(3)
-                .build()).also { fetch = it }
+        if (fetch == null || fetch!!.isClosed) {
+            fetch = Fetch.getInstance(FetchConfiguration.Builder(context)
+                    .enableLogging(BuildConfig.DEBUG)
+                    .enableRetryOnNetworkGain(true)
+                    .setDownloadConcurrentLimit(3)
+                    .build())
+        }
+        return fetch!!
     }
 
     fun download(context: Context, request: Request) {

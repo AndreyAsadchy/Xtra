@@ -29,7 +29,7 @@
     <string name="cancel">Cancel</string>
     <string name="download">Download</string>
     <string name="downloading">Downloading</string>
-    <string name="downloaded">Video has been downloaded</string>
+    <string name="downloaded">Download complete</string>
     <string name="download_error">Error downloading video</string>
     <string name="uploaded_date">Uploaded %s</string>
     <string name="downloaded_date">Downloaded %s</string>
@@ -55,5 +55,4 @@
     <string name="downloads_empty">Your downloaded videos will be shown here</string>
     <string name="notification_downloads_channel">Downloads</string>
     <string name="notification_channel_id" translatable="false">xtra_download_channel</string>
-    <string name="download_paused">Paused</string>
 </resources>

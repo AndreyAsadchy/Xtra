@@ -5,6 +5,7 @@ import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -70,6 +71,7 @@ class DownloadService : IntentService(TAG), Injectable {
         val fetch = DownloadUtils.getFetch(this)
         val channelId = getString(R.string.notification_channel_id)
         val offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) }
+//        offlineVideo.maxProgress = request.maxProgress
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(R.drawable.ic_notification)
             setGroup(GROUP_KEY)
@@ -80,7 +82,7 @@ class DownloadService : IntentService(TAG), Injectable {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
             setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, 0))
-            val cancelIntent = Intent(this@DownloadService, CancelActionReceiver::class.java).putExtra("id", request.id)
+            val cancelIntent = Intent(this@DownloadService, CancelActionReceiver::class.java)
             addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@DownloadService, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)))
         }
 
@@ -94,7 +96,7 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
             }
         }
-
+        var canceled = false
         when (request) {
             is VideoRequest -> with(request) {
                 notificationBuilder.apply {
@@ -102,10 +104,10 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
                 notificationManager.notify(id, notificationBuilder.build())
                 fetch.addListener(object : AbstractFetchListener() {
-                    var queuedCount = 0
+                    var activeDownloadsCount = 0
 
                     override fun onQueued(download: Download, waitingOnNetwork: Boolean) {
-                        queuedCount++
+                        activeDownloadsCount++
                     }
 
                     override fun onCompleted(download: Download) {
@@ -119,13 +121,14 @@ class DownloadService : IntentService(TAG), Injectable {
                     }
 
                     override fun onDeleted(download: Download) {
-                        if (--queuedCount == 0) {
+                        if (--activeDownloadsCount == 0) {
                             val directory = File(path)
                             if (directory.exists() && directory.list().isEmpty()) {
                                 directory.deleteRecursively()
                                 offlineRepository.deleteVideo(offlineVideo)
-                                countDownLatch.countDown()
                             }
+                            canceled = true
+                            countDownLatch.countDown()
                         }
                     }
                 })
@@ -157,8 +160,9 @@ class DownloadService : IntentService(TAG), Injectable {
                         offlineVideo.downloadProgress.set(downloadProgress)
                     }
 
-                    override fun onCancelled(download: Download) {
+                    override fun onDeleted(download: Download) {
                         offlineRepository.deleteVideo(offlineVideo)
+                        canceled = true
                         countDownLatch.countDown()
                     }
                 })
@@ -168,7 +172,20 @@ class DownloadService : IntentService(TAG), Injectable {
         startForeground(request.id, notificationBuilder.build())
         countDownLatch.await()
         fetch.close()
-        stopForeground(false)
+        stopForegroundInternal(canceled)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopForegroundInternal(true)
+    }
+
+    private fun stopForegroundInternal(removeNotification: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(if (removeNotification) Service.STOP_FOREGROUND_REMOVE else Service.STOP_FOREGROUND_DETACH)
+        } else {
+            stopForeground(removeNotification)
+        }
     }
 
     @SuppressLint("RestrictedApi")

@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
                 android:layout_alignBottom="@id/thumbnail"
-                android:max="@{video.maxProgress}"
+                android:max="100"
                 android:progress="@{video.downloadProgress}"
                 style="@android:style/Widget.ProgressBar.Horizontal"/>
             <!--app:visible="@{media_item.downloaded}"-->

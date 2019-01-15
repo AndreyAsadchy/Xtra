@@ -155,6 +155,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        println(intent?.getIntExtra("requestCode", -1))
 //        startOfflineVideo(intent!!.getParcelableExtra("video"))
     }
 
