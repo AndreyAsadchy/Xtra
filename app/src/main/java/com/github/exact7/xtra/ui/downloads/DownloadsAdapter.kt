@@ -40,16 +40,15 @@ class DownloadsAdapter(
                 .setTitle(delete)
                 .setMessage(context.getString(R.string.are_you_sure))
                 .setPositiveButton(delete) { _, _ -> deleteCallback.invoke(item) }
-                .setNegativeButton(context.getString(R.string.cancel), null)
+                .setNegativeButton(context.getString(android.R.string.cancel), null)
         binding.video = item
-        binding.root.setOnClickListener {
-            if (item.downloaded) {
-                clickCallback.startOfflineVideo(item)
-            } else {
-                dialog.show()
-            }
-        }
+        binding.root.setOnClickListener { clickCallback.startOfflineVideo(item) }
         binding.root.setOnLongClickListener {
+            dialog.show()
+            true
+        }
+        binding.downloading.setOnClickListener { dialog.show() }
+        binding.downloading.setOnLongClickListener {
             dialog.show()
             true
         }
@@ -58,7 +57,7 @@ class DownloadsAdapter(
                 inflate(R.menu.offline_item)
                 setOnMenuItemClickListener {
                     dialog.show()
-                    return@setOnMenuItemClickListener true
+                    true
                 }
                 show()
             }

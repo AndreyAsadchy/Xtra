@@ -12,7 +12,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
+import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C

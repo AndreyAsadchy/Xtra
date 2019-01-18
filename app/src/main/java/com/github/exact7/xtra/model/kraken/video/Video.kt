@@ -55,7 +55,7 @@ data class Video(
     override val channelName: String
         get() = channel.name
     override val thumbnail: String
-        get() = preview.medium
+        get() = preview.large
     override val uploadDate: String
         get() = createdAt
 

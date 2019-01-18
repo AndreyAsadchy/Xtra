@@ -2,7 +2,7 @@ package com.github.exact7.xtra.util
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
+import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 
 object FragmentUtils {
 

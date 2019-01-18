@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentClipsBinding
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.common.Scrollable
-import com.github.exact7.xtra.ui.fragment.RadioButtonDialogFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_clips.*
 

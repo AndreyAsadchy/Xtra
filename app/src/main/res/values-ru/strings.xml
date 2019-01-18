@@ -27,7 +27,6 @@
     <string name="audio_only">Только звук</string>
     <string name="chat_only">Только чат</string>
     <string name="select_quality">Выберите качество</string>
-    <string name="cancel">Отмена</string>
     <string name="download">Скачать</string>
     <string name="downloading">Загрузка</string>
     <string name="downloaded">Загрузка завершена</string>
@@ -35,7 +34,7 @@
     <string name="uploaded_date">Загружено %s</string>
     <string name="downloaded_date">Скачано %s</string>
     <string name="welcome">Добро пожаловать</string>
-    <string name="login_prompt">Авторизируйтесь в Ваш аккаунт Twitch чтобы просматривать Ваши подписки, или сделайте это позже</string>
+    <string name="login_prompt">Авторизируйтесь в Ваш аккаунт Twitch для доступа к Вашим подпискам</string>
     <string name="log_in">Войти</string>
     <string name="log_out">Выйти</string>
     <string name="skip">Пропустить</string>
@@ -55,5 +54,7 @@
     <string name="follow_tab_login_prompt">Здесь будут отображаться Ваши подписки</string>
     <string name="downloads_empty">Здесь будут отображаться скачанные видео</string>
     <string name="notification_downloads_channel">Загрузки</string>
-    <string name="added_to_queue">Видео добавлено в очередь</string>
+    <string name="storage_permission_message">Для скачивания видео необходимо разрешение на доступ к памяти.</string>
+    <string name="storage_permission_title">Приложению необходимо разрешение</string>
+    <string name="permission_denied">Необходимые разрешения не были предоставлены</string>
 </resources>

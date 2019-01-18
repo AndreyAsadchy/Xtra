@@ -52,6 +52,7 @@ class DownloadService : IntentService(TAG), Injectable {
 
     @Inject lateinit var playerRepository: PlayerRepository
     @Inject lateinit var offlineRepository: OfflineRepository
+    var stopped = false
 
     init {
         setIntentRedelivery(true)
@@ -72,17 +73,18 @@ class DownloadService : IntentService(TAG), Injectable {
         val fetch = DownloadUtils.getFetch(this)
         val channelId = getString(R.string.notification_channel_id)
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
-            setSmallIcon(R.drawable.ic_notification)
+            setSmallIcon(android.R.drawable.stat_sys_download)
             setGroup(GROUP_KEY)
             setContentTitle(getString(R.string.downloading))
             setOngoing(true)
             setContentText(offlineVideo.name)
             val clickIntent = Intent(this@DownloadService, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                putExtra("code", 0)
             }
-            setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, 0))
+            setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
             val cancelIntent = Intent(this@DownloadService, CancelActionReceiver::class.java)
-            addAction(NotificationCompat.Action(0, getString(R.string.cancel), PendingIntent.getBroadcast(this@DownloadService, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)))
+            addAction(NotificationCompat.Action(0, getString(android.R.string.cancel), PendingIntent.getBroadcast(this@DownloadService, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)))
         }
 
         val notificationManager = NotificationManagerCompat.from(this)
@@ -174,12 +176,20 @@ class DownloadService : IntentService(TAG), Injectable {
         stopForegroundInternal(canceled)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!stopped) {
+            stopForegroundInternal(true)
+        }
+    }
+
     private fun stopForegroundInternal(removeNotification: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             stopForeground(if (removeNotification) Service.STOP_FOREGROUND_REMOVE else Service.STOP_FOREGROUND_DETACH)
         } else {
             stopForeground(removeNotification)
         }
+        stopped = true
     }
 
     @SuppressLint("RestrictedApi")
@@ -232,13 +242,15 @@ class DownloadService : IntentService(TAG), Injectable {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("video", offlineVideo)
+            putExtra("code", 1)
         }
         notificationBuilder.apply {
             setAutoCancel(true)
             setContentTitle(getString(R.string.downloaded))
             setProgress(0, 0, false)
             setOngoing(false)
-            setContentIntent(PendingIntent.getActivity(this@DownloadService, 1, intent, 0))
+            setSmallIcon(android.R.drawable.stat_sys_download_done)
+            setContentIntent(PendingIntent.getActivity(this@DownloadService, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT))
             mActions.clear()
         }
         notificationManager.notify(request.id, notificationBuilder.build())

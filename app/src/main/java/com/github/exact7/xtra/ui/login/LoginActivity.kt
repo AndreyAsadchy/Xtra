@@ -1,8 +1,8 @@
 package com.github.exact7.xtra.ui.login
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
@@ -57,7 +56,11 @@ class LoginActivity : AppCompatActivity(), Injectable {
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
         webView.visibility = View.VISIBLE
-        CookieManager.getInstance().removeAllCookies(null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().removeAllCookies(null)
+        } else {
+            CookieManager.getInstance().removeAllCookie()
+        }
         with(webView) {
             settings.javaScriptEnabled = true
             webViewClient = object : WebViewClient() {
@@ -73,14 +76,12 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
-                                    val user = User(response.userId, response.username, token)
                                     prefs.edit {
                                         putString(C.TOKEN, token)
                                         putString(C.USERNAME, response.username)
                                         putString("user_id", response.userId)
                                     }
-                                    val resultIntent = Intent().apply { putExtra(C.USER, user) }
-                                    setResult(RESULT_OK, resultIntent)
+                                    setResult(RESULT_OK)
                                     finish()
                                 }
                                 .addTo(compositeDisposable)

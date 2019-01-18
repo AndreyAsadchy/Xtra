@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -19,11 +18,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
-class SplashActivity : AppCompatActivity(), Injectable {
+const val FIRST_LAUNCH = "first_launch"
 
-    private companion object {
-        const val FIRST_LAUNCH = "first_launch"
-    }
+class SplashActivity : AppCompatActivity(), Injectable {
 
     @Inject
     lateinit var authRepository: AuthRepository
@@ -38,7 +35,7 @@ class SplashActivity : AppCompatActivity(), Injectable {
             if (user != null && NetworkUtils.isConnected(this)) { //TODO change to worker and add livedata is userauthorized
                 authRepository.validate(user.token)
                         .subscribe({
-                            startMainActivity(user)
+                            startMainActivity()
                         }, {
                             getSharedPreferences(C.AUTH_PREFS, Context.MODE_PRIVATE).edit { clear() }
                             Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
@@ -59,13 +56,11 @@ class SplashActivity : AppCompatActivity(), Injectable {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        startMainActivity(data?.getParcelableExtra(C.USER))
+        startMainActivity()
     }
 
-    private fun startMainActivity(user: User? = null) {
-        val intent = Intent(this, MainActivity::class.java)
-        user?.let { intent.putExtra(C.USER, user) }
-        startActivity(intent)
+    private fun startMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 }

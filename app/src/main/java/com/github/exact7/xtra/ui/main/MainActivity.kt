@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -41,8 +40,8 @@ import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
 import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
-import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.NetworkUtils
+import com.github.exact7.xtra.util.TwitchApiHelper
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         initNavigation()
-        val user = intent.getParcelableExtra<User>(C.USER)
+        val user = TwitchApiHelper.getUser(this)
         if (user == null) {
             fragNavController.initialize(INDEX_TOP, savedInstanceState)
             if (savedInstanceState == null) {
@@ -141,6 +140,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //            }
         })
         registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        handleIntent(intent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -155,8 +155,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        println(intent?.getIntExtra("requestCode", -1))
-//        startOfflineVideo(intent!!.getParcelableExtra("video"))
+        handleIntent(intent)
     }
 
     /**
@@ -166,7 +165,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onActivityResult(requestCode, resultCode, data)
 
         fun restartActivity() {
-            startActivity(Intent(this, MainActivity::class.java).apply { putExtra(C.USER, data?.getParcelableExtra<User>(C.USER)) })
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
@@ -206,6 +205,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         } else {
             playerFragment?.minimize()
+        }
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        intent?.let {
+            when (it.getIntExtra("code", -1)) {
+                0 -> navBar.selectedItemId = R.id.fragment_downloads
+                1 -> startOfflineVideo(it.getParcelableExtra("video"))
+            }
         }
     }
 

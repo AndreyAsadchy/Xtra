@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.fragment
+package com.github.exact7.xtra.ui.common
 
 import android.app.Dialog
 import android.content.Context

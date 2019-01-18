@@ -133,15 +133,18 @@
         </RelativeLayout>
 
         <TextView
-            app:visible="@{!video.downloaded}"
+            android:id="@+id/downloading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/black"
+            app:visible="@{!video.downloaded}"
+            android:layout_gravity="center"
+            android:background="#80000000"
             android:gravity="center"
-            android:alpha="0.5"
-            android:text="downloading"
+            android:text="@string/downloading"
             android:textAllCaps="true"
             android:textSize="30sp"
-            android:layout_centerInParent="true"/>
+            android:clickable="true"
+            android:focusable="true" />
+
     </androidx.cardview.widget.CardView>
 </layout>
