@@ -6,7 +6,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
-import com.github.exact7.xtra.ui.OnQualityChangeListener
+import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL

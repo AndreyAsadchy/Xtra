@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.service
+package com.github.exact7.xtra.ui.download
 
 import android.content.BroadcastReceiver
 import android.content.Context

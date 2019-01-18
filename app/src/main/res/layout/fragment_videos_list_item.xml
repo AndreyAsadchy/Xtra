@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.github.exact7.xtra.util.TwitchApiHelper"/>
-        <import type="android.text.format.DateUtils"/>
         <variable
             name="video"
             type="com.github.exact7.xtra.model.kraken.video.Video"/>
@@ -34,7 +32,7 @@
 
             <TextView
                 android:id="@+id/date"
-                android:text="@{TwitchApiHelper.parseIso8601Date(context, video.createdAt)}"
+                app:date="@{video.createdAt}"
                 tools:text="April 20, 2017"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +56,7 @@
 
             <TextView
                 android:id="@+id/duration"
-                android:text="@{DateUtils.formatElapsedTime(video.length)}"
+                app:duration="@{video.length}"
                 tools:text="13:37"
                 style="@style/VideoDuration"
                 android:layout_width="wrap_content"

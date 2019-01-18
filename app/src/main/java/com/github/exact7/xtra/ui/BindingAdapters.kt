@@ -1,12 +1,14 @@
-package com.github.exact7.xtra.binding
+package com.github.exact7.xtra.ui
 
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,7 +17,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
-import java.util.Calendar
+import com.github.exact7.xtra.util.TwitchApiHelper
+import java.util.*
 import kotlin.math.roundToInt
 
 @SuppressLint("CheckResult")
@@ -64,6 +67,21 @@ fun setTint(imageView: ImageView, color: Int) {
         val wrap = DrawableCompat.wrap(drawable)
         DrawableCompat.setTint(wrap, color)
     }
+}
+
+@BindingAdapter("date")
+fun setDate(textView: TextView, date: Long) {
+    textView.text = TwitchApiHelper.formatTime(textView.context, date)
+}
+
+@BindingAdapter("date")
+fun setDate(textView: TextView, date: String) {
+    textView.text = TwitchApiHelper.formatTime(textView.context, TwitchApiHelper.parseIso8601Date(date))
+}
+
+@BindingAdapter("duration")
+fun setDuration(textView: TextView, duration: Long) {
+    textView.text = DateUtils.formatElapsedTime(duration)
 }
 
 //@BindingAdapter("enabled")

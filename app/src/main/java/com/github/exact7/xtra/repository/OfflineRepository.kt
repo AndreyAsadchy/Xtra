@@ -25,4 +25,8 @@ class OfflineRepository @Inject constructor(
     fun deleteVideo(video: OfflineVideo) {
         GlobalScope.launch { videosDao.delete(video) }
     }
+
+    fun onDownloaded(video: OfflineVideo) {
+        GlobalScope.launch { videosDao.onDownloaded(video.id) }
+    }
 }

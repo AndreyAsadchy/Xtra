@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentClipsListItemBinding
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.ui.ClipDownloadDialog
-import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
+import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
+import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 
 class ClipsAdapter(
@@ -28,16 +28,21 @@ class ClipsAdapter(
     override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
         binding.clip = item
         binding.listener = listener
+        val context = binding.date.context as MainActivity
+        val showDialog = { ClipDownloadDialog.newInstance(item!!).show(context.supportFragmentManager, null) }
         binding.options.setOnClickListener {
-            val context = it.context as MainActivity
             PopupMenu(context, binding.options).apply {
                 inflate(R.menu.media_item)
                 setOnMenuItemClickListener {
-                    ClipDownloadDialog.newInstance(item!!).show(context.supportFragmentManager, null)
+                    showDialog.invoke()
                     return@setOnMenuItemClickListener true
                 }
                 show()
             }
+        }
+        binding.root.setOnLongClickListener {
+            showDialog.invoke()
+            true
         }
     }
 }

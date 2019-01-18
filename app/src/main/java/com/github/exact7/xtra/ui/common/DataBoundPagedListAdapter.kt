@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui
+package com.github.exact7.xtra.ui.common
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

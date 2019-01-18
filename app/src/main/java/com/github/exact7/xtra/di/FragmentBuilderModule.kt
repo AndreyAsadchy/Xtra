@@ -1,9 +1,9 @@
 package com.github.exact7.xtra.di
 
-import com.github.exact7.xtra.ui.ClipDownloadDialog
-import com.github.exact7.xtra.ui.VideoDownloadDialog
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
+import com.github.exact7.xtra.ui.download.ClipDownloadDialog
+import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.pagers.FollowPagerFragment

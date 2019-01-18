@@ -14,11 +14,14 @@ interface VideosDao {
     fun getAll(): LiveData<List<OfflineVideo>>
 
     @Query("SELECT * FROM videos WHERE id = :id")
-    fun getById(id: Int): OfflineVideo
+    fun getById(id: Int): OfflineVideo?
 
     @Insert
     fun insert(video: OfflineVideo): Long
 
     @Delete
     fun delete(video: OfflineVideo)
+
+    @Query("UPDATE videos SET downloaded = 1 WHERE id = :id")
+    fun onDownloaded(id: Int)
 }

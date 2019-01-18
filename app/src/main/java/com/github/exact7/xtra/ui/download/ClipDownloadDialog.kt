@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui
+package com.github.exact7.xtra.ui.download
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,10 +10,16 @@ import androidx.fragment.app.DialogFragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.model.offline.ClipRequest
+import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.util.DownloadUtils
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.dialog_clip_download.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 class ClipDownloadDialog : DialogFragment(), Injectable {
@@ -29,8 +35,8 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
-    @Inject
-    lateinit var repository: PlayerRepository
+    @Inject lateinit var playerRepository: PlayerRepository
+    @Inject lateinit var offlineRepository: OfflineRepository
     private var compositeDisposable: CompositeDisposable? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,7 +49,7 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         val clip = arguments!!.getParcelable<Clip>(KEY_CLIP)!!
         if (qualities == null) {
             compositeDisposable = CompositeDisposable()
-            repository.fetchClipQualities(clip.slug)
+            playerRepository.fetchClipQualities(clip.slug)
                     .subscribe({
                         init(clip, it)
                     }, {
@@ -69,7 +75,13 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         cancel.setOnClickListener { dismiss() }
         download.setOnClickListener {
             val quality = spinner.selectedItem.toString()
-//            DownloadUtils.download(context, ClipRequest(clip, qualities[quality]!!, quality))
+            val url = qualities[quality]!!
+            GlobalScope.launch {
+                val path = context.getExternalFilesDir(".downloads${File.separator}${clip.slug}$quality")!!.absolutePath + File.separator
+                val offlineVideo = DownloadUtils.prepareDownload(context, clip, path, clip.duration.toLong())
+                val videoId = offlineRepository.saveVideo(offlineVideo)
+                DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))
+            }
             dismiss()
         }
     }

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
-import com.github.exact7.xtra.ui.Scrollable
+import com.github.exact7.xtra.ui.common.Scrollable
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
 

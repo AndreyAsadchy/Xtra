@@ -10,18 +10,19 @@ import com.github.exact7.xtra.model.offline.Downloadable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.model.offline.VideoRequest
-import com.github.exact7.xtra.service.DownloadService
-import com.github.exact7.xtra.service.KEY_REQUEST
-import com.github.exact7.xtra.service.KEY_TYPE
+import com.github.exact7.xtra.ui.download.DownloadService
+import com.github.exact7.xtra.ui.download.KEY_REQUEST
+import com.github.exact7.xtra.ui.download.KEY_TYPE
 import com.google.gson.Gson
 import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.FetchConfiguration
+import java.util.*
 
 object DownloadUtils {
 
     private var fetch: Fetch? = null
 
-    fun getFetch(context: Context): Fetch {
+    fun getFetch(context: Context): Fetch { //TODO dagger
         if (fetch == null || fetch!!.isClosed) {
             fetch = Fetch.getInstance(FetchConfiguration.Builder(context)
                     .enableLogging(BuildConfig.DEBUG)
@@ -47,14 +48,13 @@ object DownloadUtils {
         val offlinePath = if (downloadable is Video) {
             "$path${System.currentTimeMillis()}.m3u8"
         } else {
-            "$path.mp4"
+            "$path${downloadable.id}.mp4"
         }
-        val currentDate = TwitchApiHelper.getCurrentTimeFormatted(context)
         val glide = GlideApp.with(context)
         return with(downloadable) {
             val thumbnail = glide.downloadOnly().load(thumbnail).submit().get().absolutePath
             val logo = glide.downloadOnly().load(channelLogo).submit().get().absolutePath
-            OfflineVideo(offlinePath, title, channelName, logo, thumbnail, game, duration, uploadDate, currentDate)
+            OfflineVideo(offlinePath, title, channelName, logo, thumbnail, game, duration, TwitchApiHelper.parseIso8601Date(uploadDate), Calendar.getInstance().time.time)
         }
     }
 }

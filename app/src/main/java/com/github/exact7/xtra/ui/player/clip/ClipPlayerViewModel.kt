@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.ui.OnQualityChangeListener
+import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C

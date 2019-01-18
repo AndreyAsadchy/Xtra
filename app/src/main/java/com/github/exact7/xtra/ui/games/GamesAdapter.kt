@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentGamesListItemBinding
 import com.github.exact7.xtra.model.kraken.game.Game
-import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
+import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
 
 class GamesAdapter(
         private val listener: GamesFragment.OnGameSelectedListener) : DataBoundPagedListAdapter<Game, FragmentGamesListItemBinding>(

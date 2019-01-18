@@ -5,7 +5,6 @@ import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.LiveChatMessage
 import com.github.exact7.xtra.model.chat.SubscriberBadge
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.tasks.LiveChatThread
 import java.util.HashMap
 import kotlin.collections.ArrayList
 import kotlin.collections.set

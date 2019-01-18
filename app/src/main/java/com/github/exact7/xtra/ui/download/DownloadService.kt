@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.service
+package com.github.exact7.xtra.ui.download
 
 import android.annotation.SuppressLint
 import android.app.IntentService
@@ -39,11 +39,11 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
-import java.util.Comparator
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
-const val TAG = "DownloadWorker"
+const val TAG = "DownloadService"
 const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
 const val KEY_REQUEST = "request"
 const val KEY_TYPE = "type"
@@ -67,11 +67,10 @@ class DownloadService : IntentService(TAG), Injectable {
         val request = with(intent!!) {
             Gson().fromJson(getStringExtra(KEY_REQUEST), if (getBooleanExtra(KEY_TYPE, true)) VideoRequest::class.java else ClipRequest::class.java)
         }
+        val offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) } ?: return //Download was canceled
         val countDownLatch = CountDownLatch(1)
         val fetch = DownloadUtils.getFetch(this)
         val channelId = getString(R.string.notification_channel_id)
-        val offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) }
-//        offlineVideo.maxProgress = request.maxProgress
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(R.drawable.ic_notification)
             setGroup(GROUP_KEY)
@@ -111,8 +110,7 @@ class DownloadService : IntentService(TAG), Injectable {
                     }
 
                     override fun onCompleted(download: Download) {
-                        offlineVideo.downloadProgress.set(++progress)
-                        if (progress < maxProgress) {
+                        if (++progress < maxProgress) {
                             notificationManager.notify(id, notificationBuilder.setProgress(maxProgress, progress, false).build())
                         } else {
                             onDownloadCompleted(request, offlineVideo, notificationManager, notificationBuilder)
@@ -122,10 +120,10 @@ class DownloadService : IntentService(TAG), Injectable {
 
                     override fun onDeleted(download: Download) {
                         if (--activeDownloadsCount == 0) {
+                            offlineRepository.deleteVideo(offlineVideo)
                             val directory = File(path)
                             if (directory.exists() && directory.list().isEmpty()) {
                                 directory.deleteRecursively()
-                                offlineRepository.deleteVideo(offlineVideo)
                             }
                             canceled = true
                             countDownLatch.countDown()
@@ -141,13 +139,16 @@ class DownloadService : IntentService(TAG), Injectable {
                         }
                         .subscribe({ p ->
                             playlist = p
-                            val requests = p.tracks.subList(segmentFrom, segmentTo).map { Request(url + it.uri, path + it.uri) }
+                            val requests = p.tracks.subList(segmentFrom, segmentTo).map {
+                                Request(url + it.uri, path + it.uri).apply { groupId = offlineVideoId }
+                            }
                             fetch.enqueue(requests)
                         }, {
 
                         })
             }
             is ClipRequest -> with(request) {
+                notificationBuilder.setProgress(100, 0, false)
                 fetch.addListener(object : AbstractFetchListener() {
                     override fun onCompleted(download: Download) {
                         onDownloadCompleted(request, offlineVideo, notificationManager, notificationBuilder)
@@ -155,9 +156,7 @@ class DownloadService : IntentService(TAG), Injectable {
                     }
 
                     override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
-                        val downloadProgress = download.progress
-                        notificationManager.notify(id, notificationBuilder.setProgress(100, downloadProgress, false).build())
-                        offlineVideo.downloadProgress.set(downloadProgress)
+                        notificationManager.notify(id, notificationBuilder.setProgress(100, download.progress, false).build())
                     }
 
                     override fun onDeleted(download: Download) {
@@ -166,18 +165,13 @@ class DownloadService : IntentService(TAG), Injectable {
                         countDownLatch.countDown()
                     }
                 })
-                fetch.enqueue(Request(url, path))
+                fetch.enqueue(Request(url, path).apply { groupId = offlineVideoId })
             }
         }
         startForeground(request.id, notificationBuilder.build())
         countDownLatch.await()
         fetch.close()
         stopForegroundInternal(canceled)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopForegroundInternal(true)
     }
 
     private fun stopForegroundInternal(removeNotification: Boolean) {
@@ -212,7 +206,7 @@ class DownloadService : IntentService(TAG), Injectable {
                             else -> 0
                         }
                     })
-                    for (i in segmentFrom..segmentTo) {
+                    for (i in segmentFrom until segmentTo) {
                         val track = playlist.tracks[i]
                         tracks.add(TrackData.Builder()
                                 .withUri("$path${track.uri}")
@@ -226,8 +220,7 @@ class DownloadService : IntentService(TAG), Injectable {
                     val playlist = Playlist.Builder()
                             .withMediaPlaylist(mediaPlaylist)
                             .build()
-                    val playlistPath = "$path$id.m3u8"
-                    FileOutputStream(playlistPath).use {
+                    FileOutputStream(offlineVideo.url).use {
                         PlaylistWriter(it, Format.EXT_M3U, Encoding.UTF_8).write(playlist)
                     }
                     Log.d(TAG, "Playlist created")
@@ -235,6 +228,7 @@ class DownloadService : IntentService(TAG), Injectable {
             }
             is ClipRequest -> Log.d(TAG, "Downloaded clip")
         }
+        offlineRepository.onDownloaded(offlineVideo)
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("video", offlineVideo)

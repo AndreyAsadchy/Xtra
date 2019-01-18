@@ -35,7 +35,7 @@ class SplashActivity : AppCompatActivity(), Injectable {
         val isFirstLaunch = prefs.getBoolean(FIRST_LAUNCH, true)
         if (!isFirstLaunch) {
             val user = TwitchApiHelper.getUser(this)
-            if (user != null && NetworkUtils.isConnected(this)) { //TODO change to worker
+            if (user != null && NetworkUtils.isConnected(this)) { //TODO change to worker and add livedata is userauthorized
                 authRepository.validate(user.token)
                         .subscribe({
                             startMainActivity(user)

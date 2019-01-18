@@ -7,10 +7,10 @@ import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.tasks.LiveChatThread
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject

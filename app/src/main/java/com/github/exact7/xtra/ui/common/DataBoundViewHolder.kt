@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui
+package com.github.exact7.xtra.ui.common
 
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView

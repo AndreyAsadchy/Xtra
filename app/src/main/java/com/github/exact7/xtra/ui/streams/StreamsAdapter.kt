@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentStreamsListItemBinding
 import com.github.exact7.xtra.model.kraken.stream.Stream
-import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
+import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
 
 class StreamsAdapter(
         private val listener: BaseStreamsFragment.OnStreamSelectedListener) : DataBoundPagedListAdapter<Stream, FragmentStreamsListItemBinding>(

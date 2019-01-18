@@ -24,9 +24,9 @@ import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.OfflineVideo
-import com.github.exact7.xtra.ui.Scrollable
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.common.OnChannelClickedListener
+import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.menu.MenuFragment

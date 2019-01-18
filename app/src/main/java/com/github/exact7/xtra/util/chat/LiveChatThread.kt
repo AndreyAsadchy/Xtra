@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.tasks
+package com.github.exact7.xtra.util.chat
 
 import android.util.Log
 import com.github.exact7.xtra.ui.view.MessageView

@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentVideosListItemBinding
 import com.github.exact7.xtra.model.kraken.video.Video
-import com.github.exact7.xtra.ui.DataBoundPagedListAdapter
-import com.github.exact7.xtra.ui.VideoDownloadDialog
+import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
+import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 
 class VideosAdapter(
@@ -27,16 +27,21 @@ class VideosAdapter(
     override fun bind(binding: FragmentVideosListItemBinding, item: Video?) {
         binding.video = item
         binding.listener = listener
+        val context = binding.date.context as MainActivity
+        val showDialog = { VideoDownloadDialog.newInstance(video = item!!).show(context.supportFragmentManager, null) }
         binding.options.setOnClickListener {
-            val context = it.context as MainActivity
             PopupMenu(context, binding.options).apply {
                 inflate(R.menu.media_item)
                 setOnMenuItemClickListener {
-                    VideoDownloadDialog.newInstance(video = item!!).show(context.supportFragmentManager, null)
+                    showDialog.invoke()
                     return@setOnMenuItemClickListener true
                 }
                 show()
             }
+        }
+        binding.root.setOnLongClickListener {
+            showDialog.invoke()
+            true
         }
     }
 }

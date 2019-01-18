@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.Scrollable
+import com.github.exact7.xtra.ui.common.Scrollable
 
 abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwarePagerFragment, Scrollable {
 

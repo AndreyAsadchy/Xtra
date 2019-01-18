@@ -5,7 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.text.format.DateUtils
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.tasks.LiveChatThread
+import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.MessageListenerImpl
 import com.github.exact7.xtra.util.chat.OnChatMessageReceived
 import java.text.ParseException
@@ -25,26 +25,28 @@ object TwitchApiHelper {
         return url.replace("{width}", width.toString()).replace("{height}", height.toString())
     }
 
-    @JvmStatic fun parseIso8601Date(context: Context, date: String): String {
+    @JvmStatic fun parseIso8601Date(date: String): Long {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            val d = dateFormat.parse(date)
-            val calendar = Calendar.getInstance()
-            calendar.time = d
-            val dateUtilType = if (calendar.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
-                DateUtils.FORMAT_NO_YEAR
-            } else {
-                DateUtils.FORMAT_SHOW_DATE
-            }
-            return DateUtils.formatDateTime(context, d.time, dateUtilType)
+            return dateFormat.parse(date).time
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        return ""
+        return 0L
     }
 
-    fun getCurrentTimeFormatted(context: Context): String =
-            DateUtils.formatDateTime(context, Calendar.getInstance().time.time, DateUtils.FORMAT_NO_YEAR)
+    @JvmStatic fun formatTime(context: Context, date: Long): String {
+        val year = Calendar.getInstance().let {
+            it.timeInMillis = date
+            it.get(Calendar.YEAR)
+        }
+        val format = if (year == Calendar.getInstance().get(Calendar.YEAR)) {
+            DateUtils.FORMAT_NO_YEAR
+        } else {
+            DateUtils.FORMAT_SHOW_DATE
+        }
+        return DateUtils.formatDateTime(context, date, format)
+    }
 
     fun getUser(context: Context): User? {
         val prefs = context.getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)

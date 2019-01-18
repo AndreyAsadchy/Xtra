@@ -28,7 +28,7 @@ class VideoPlayerViewModel @Inject constructor(
     val videoInfo: VideoDownloadInfo
         get() {
             val playlist = (player.currentManifest as HlsManifest).mediaPlaylist
-            return VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
+            return VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
         }
 
     fun setVideo(video: Video) {

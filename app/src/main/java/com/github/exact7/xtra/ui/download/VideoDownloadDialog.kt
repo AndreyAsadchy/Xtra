@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui
+package com.github.exact7.xtra.ui.download
 
 import android.os.Bundle
 import android.text.Editable
@@ -67,15 +67,9 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                         val playlist = response.body()!!.string()
                         val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
                         val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
-                        var audioIndex = 0
-                        qualities.forEachIndexed { i, s ->
-                            if (s.equals("Audio Only", true)) {
-                                audioIndex = i
-                                return@forEachIndexed
-                            }
-                        }
+                        val audioIndex = qualities.indexOfFirst { it.equals("Audio Only", true) }
                         qualities.removeAt(audioIndex)
-                        qualities.add(audioIndex, requireContext().getString(R.string.audio_only))
+                        qualities.add(requireContext().getString(R.string.audio_only))
                         urls.add(urls.removeAt(audioIndex))
                         val map = qualities.zip(urls).toMap()
                         val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
@@ -194,16 +188,16 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                             time < to_ -> -1
                                             else -> 0
                                         }
-                                    }) //todo if length is good don't add
+                                    }) //TODO check length
                                 }
                                 val quality = spinner.selectedItem.toString()
                                 val videoDuration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]
                                 val url = qualities[quality]!!.substringBeforeLast('/') + "/"
                                 GlobalScope.launch {
-                                    val path = context.getExternalFilesDir(".downloads${File.separator}${video.id}$quality")!!.absolutePath
+                                    val path = context.getExternalFilesDir(".downloads${File.separator}${video.id}$quality")!!.absolutePath + File.separator
                                     val offlineVideo = DownloadUtils.prepareDownload(context, video, path, videoDuration)
                                     val videoId = offlineRepository.saveVideo(offlineVideo)
-                                    DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, path + File.separator, fromIndex, toIndex))
+                                    DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, path, fromIndex, toIndex))
                                 }
                                 dismiss()
                             }

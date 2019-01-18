@@ -1,10 +1,8 @@
 package com.github.exact7.xtra.model.offline
 
 import android.os.Parcelable
-import androidx.databinding.ObservableInt
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -22,9 +20,9 @@ data class OfflineVideo(
         val game: String,
         val duration: Long,
         @ColumnInfo(name = "upload_date")
-        val uploadDate: String,
+        val uploadDate: Long,
         @ColumnInfo(name = "download_date")
-        val downloadDate: String) : Parcelable {
+        val downloadDate: Long) : Parcelable {
 
     @IgnoredOnParcel
     @PrimaryKey(autoGenerate = true)
@@ -35,14 +33,5 @@ data class OfflineVideo(
     var vod = url.endsWith(".m3u8")
 
     @IgnoredOnParcel
-    @Ignore
-    var downloadProgress = ObservableInt()
-
-    @IgnoredOnParcel
-    @Ignore
-    var maxProgress = 0
-
-    @IgnoredOnParcel
-    val downloaded: Boolean
-        get() = downloadProgress.get() == maxProgress
+    var downloaded = false
 }

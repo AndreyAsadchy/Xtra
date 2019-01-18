@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.text.format.DateUtils"/>
         <import type="com.github.exact7.xtra.util.TwitchApiHelper"/>
         <variable name="video" type="com.github.exact7.xtra.model.offline.OfflineVideo"/>
     </data>
@@ -28,7 +27,7 @@
 
             <TextView
                 android:id="@+id/date"
-                android:text="@{@string/uploaded_date(TwitchApiHelper.parseIso8601Date(context, video.uploadDate))}"
+                android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
                 tools:text="Uploaded: July 16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +38,7 @@
 
             <TextView
                 android:id="@+id/downloadDate"
-                android:text="@{@string/downloaded_date(video.downloadDate)}"
+                android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
                 tools:text="Downloaded: August 7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,18 +49,9 @@
                 android:layout_alignEnd="@id/thumbnail"
                 android:layout_alignRight="@id/thumbnail" />
 
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_alignBottom="@id/thumbnail"
-                android:max="100"
-                android:progress="@{video.downloadProgress}"
-                style="@android:style/Widget.ProgressBar.Horizontal"/>
-            <!--app:visible="@{media_item.downloaded}"-->
-
             <TextView
                 android:id="@+id/duration"
-                android:text="@{DateUtils.formatElapsedTime(video.duration)}"
+                app:duration="@{video.duration}"
                 tools:text="13:37"
                 style="@style/VideoDuration"
                 android:layout_width="wrap_content"
@@ -141,5 +131,17 @@
                 />
 
         </RelativeLayout>
+
+        <TextView
+            app:visible="@{!video.downloaded}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:gravity="center"
+            android:alpha="0.5"
+            android:text="downloading"
+            android:textAllCaps="true"
+            android:textSize="30sp"
+            android:layout_centerInParent="true"/>
     </androidx.cardview.widget.CardView>
 </layout>
