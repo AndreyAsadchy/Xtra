@@ -219,6 +219,7 @@ class DownloadService : IntentService(TAG), Injectable {
                     for (i in segmentFrom until segmentTo) {
                         val track = playlist.tracks[i]
                         tracks.add(TrackData.Builder()
+//                                .withEncryptionData(EncryptionData.Builder().)
                                 .withUri("$path${track.uri}")
                                 .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
                                 .build())

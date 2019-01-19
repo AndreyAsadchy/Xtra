@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
@@ -26,11 +27,13 @@ import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.common.OnChannelClickedListener
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.menu.MenuFragment
 import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
 import com.github.exact7.xtra.ui.pagers.GamePagerFragment
+import com.github.exact7.xtra.ui.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.pagers.TopPagerFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
@@ -205,6 +208,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         } else {
             playerFragment?.minimize()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) {
+            val fragment = fragNavController.currentFrag
+            if (fragment is MediaPagerFragment && fragment.currentFragment is HasDownloadDialog) {
+                (fragment.currentFragment as HasDownloadDialog).showDownloadDialog()
+            }
+//            (fragNavController.currentFrag as HasDownloadDialog).showDownloadDialog()
+        } else {
+            Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
         }
     }
 

@@ -2,13 +2,14 @@ package com.github.exact7.xtra.di
 
 import android.app.Application
 import com.github.exact7.xtra.XtraApp
+import com.github.exact7.xtra.XtraGlideModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, XtraModule::class, ActivityBuilderModule::class, DatabaseModule::class, ServiceBuilderModule::class])
+@Component(modules = [AndroidInjectionModule::class, XtraModule::class, ActivityBuilderModule::class, DatabaseModule::class, ServiceBuilderModule::class, BroadcastReceiverBuilderModule::class])
 interface XtraComponent {
 
     @Component.Builder
@@ -21,4 +22,5 @@ interface XtraComponent {
     }
 
     fun inject(xtraApp: XtraApp)
+    fun inject(xtraGlideModule: XtraGlideModule)
 }

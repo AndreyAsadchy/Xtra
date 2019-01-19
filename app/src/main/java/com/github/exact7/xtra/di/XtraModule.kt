@@ -1,6 +1,9 @@
 package com.github.exact7.xtra.di
 
+import android.app.Application
 import android.os.AsyncTask
+import android.os.Build
+import android.util.Log
 import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.IdApi
@@ -13,18 +16,30 @@ import com.github.exact7.xtra.model.kraken.user.UserEmotesDeserializer
 import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.util.TlsSocketFactory
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
+import com.tonyodev.fetch2.Fetch
+import com.tonyodev.fetch2.FetchConfiguration
+import com.tonyodev.fetch2okhttp.OkHttpDownloader
 import dagger.Module
 import dagger.Provides
+import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
+import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 import java.util.concurrent.Executor
 import javax.inject.Named
 import javax.inject.Singleton
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 @Module
 class XtraModule {
@@ -123,6 +138,40 @@ class XtraModule {
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
             }
+
+            /***
+             * Enable TLS 1.2 on pre-lollipop devices
+             * https://github.com/square/okhttp/issues/2372#issuecomment-244807676
+             */
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                try {
+                    val sc = SSLContext.getInstance("TLSv1.2")
+                    val trustManagers = arrayOf<TrustManager>(object : X509TrustManager {
+                        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+
+                        @Throws(CertificateException::class)
+                        override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {
+                        }
+
+                        @Throws(CertificateException::class)
+                        override fun checkServerTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {
+                        }
+                    })
+                    sc.init(null, trustManagers, SecureRandom())
+                    sslSocketFactory(TlsSocketFactory(sc.socketFactory), trustManagers[0] as X509TrustManager)
+                    val cs = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                            .tlsVersions(TlsVersion.TLS_1_2)
+                            .build()
+                    val specs = ArrayList<ConnectionSpec>().apply {
+                        add(cs)
+                        add(ConnectionSpec.COMPATIBLE_TLS)
+                        add(ConnectionSpec.CLEARTEXT)
+                    }
+                    connectionSpecs(specs)
+                } catch (e: Exception) {
+                    Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2", e)
+                }
+            }
         }
         return builder.build()
     }
@@ -143,5 +192,22 @@ class XtraModule {
     @Provides
     fun providesExecutor(): Executor {
         return AsyncTask.THREAD_POOL_EXECUTOR
+    }
+
+    //todo wrapper and inside it use provider
+    @Provides
+    fun providesFetch(fetchConfiguration: FetchConfiguration): Fetch {
+        return Fetch.getInstance(fetchConfiguration)
+    }
+
+    @Singleton
+    @Provides
+    fun providesFetchConfiguration(application: Application, @Named("okHttpDefault") okHttpClient: OkHttpClient): FetchConfiguration {
+        return FetchConfiguration.Builder(application)
+                .enableLogging(BuildConfig.DEBUG)
+                .enableRetryOnNetworkGain(true)
+                .setDownloadConcurrentLimit(3)
+                .setHttpDownloader(OkHttpDownloader(okHttpClient))
+                .build()
     }
 }

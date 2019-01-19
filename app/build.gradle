@@ -3,6 +3,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(project.file("keystore.properties")))
+
 android {
     signingConfigs {
         debug {
@@ -12,12 +15,10 @@ android {
             storePassword '123456'
         }
         release {
-            Properties properties = new Properties()
-            properties.load(project.file('keystore.properties').newDataInputStream())
-            keyAlias properties['KEY_ALIAS']
-            keyPassword properties['KEY_PASSWORD']
-            storeFile file(properties['KEYSTORE_PATH'])
-            storePassword properties['KEYSTORE_PASSWORD']
+            keyAlias keystoreProperties['KEY_ALIAS']
+            keyPassword keystoreProperties['KEY_PASSWORD']
+            storeFile file(keystoreProperties['KEYSTORE_PATH'])
+            storePassword keystoreProperties['KEYSTORE_PASSWORD']
         }
     }
     compileSdkVersion 28
@@ -34,6 +35,7 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
             signingConfig signingConfigs.debug
+            multiDexEnabled true
         }
         release {
             shrinkResources true
@@ -67,6 +69,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13-beta-1'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
     //UI
     implementation 'com.google.android.material:material:1.1.0-alpha02'
@@ -90,7 +93,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
     implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
     implementation 'com.iheartradio.m3u8:open-m3u8:0.2.6'
-    implementation 'com.tonyodev.fetch2:fetch2:2.3.4'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"
@@ -113,6 +115,9 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide@aar"
+
+    implementation "com.tonyodev.fetch2:fetch2:$fetch"
+    implementation "com.tonyodev.fetch2okhttp:fetch2okhttp:$fetch"
 }
 
 repositories {

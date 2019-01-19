@@ -8,6 +8,7 @@ import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.DownloadUtils
 
 class ClipsAdapter(
         private val listener: BaseClipsFragment.OnClipSelectedListener) : DataBoundPagedListAdapter<Clip, FragmentClipsListItemBinding>(
@@ -21,6 +22,8 @@ class ClipsAdapter(
 
         }) {
 
+    lateinit var lastSelectedItem: Clip
+        private set
 
     override val itemId: Int
         get() = R.layout.fragment_clips_list_item
@@ -28,10 +31,15 @@ class ClipsAdapter(
     override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
         binding.clip = item
         binding.listener = listener
-        val context = binding.date.context as MainActivity
-        val showDialog = { ClipDownloadDialog.newInstance(item!!).show(context.supportFragmentManager, null) }
+        val activity = binding.root.context as MainActivity
+        val showDialog = {
+            lastSelectedItem = item!!
+            if (DownloadUtils.hasStoragePermission(activity)) {
+                ClipDownloadDialog.newInstance(item).show(activity.supportFragmentManager, null)
+            }
+        }
         binding.options.setOnClickListener {
-            PopupMenu(context, binding.options).apply {
+            PopupMenu(activity, binding.options).apply {
                 inflate(R.menu.media_item)
                 setOnMenuItemClickListener {
                     showDialog.invoke()

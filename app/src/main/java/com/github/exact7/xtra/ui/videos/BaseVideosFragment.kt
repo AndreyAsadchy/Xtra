@@ -9,10 +9,12 @@ import com.github.exact7.xtra.databinding.FragmentVideosBinding
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.ui.download.HasDownloadDialog
+import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
 
-abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
+abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownloadDialog {
 
     interface OnVideoSelectedListener {
         fun startVideo(video: Video)
@@ -49,5 +51,9 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable {
 
     override fun scrollToTop() {
         recyclerViewLayout.recyclerView.scrollToPosition(0)
+    }
+
+    override fun showDownloadDialog() {
+        VideoDownloadDialog.newInstance(video = adapter.lastSelectedItem).show(childFragmentManager, null)
     }
 }

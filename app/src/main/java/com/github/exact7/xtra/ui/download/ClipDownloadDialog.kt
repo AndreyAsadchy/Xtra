@@ -77,7 +77,7 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
             val quality = spinner.selectedItem.toString()
             val url = qualities[quality]!!
             GlobalScope.launch {
-                val path = context.getExternalFilesDir(".downloads${File.separator}${clip.slug}$quality")!!.absolutePath + File.separator
+                val path = context.getExternalFilesDir(".downloads${File.separator}${clip.slug}$quality")!!.absolutePath
                 val offlineVideo = DownloadUtils.prepareDownload(context, clip, path, clip.duration.toLong())
                 val videoId = offlineRepository.saveVideo(offlineVideo)
                 DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))

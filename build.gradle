@@ -10,6 +10,7 @@ buildscript {
     ext.dagger = '2.16'
     ext.retrofit = '2.5.0'
     ext.glide = "4.8.0"
+    ext.fetch = "2.3.6"
 
     repositories {
         google()

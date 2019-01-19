@@ -8,6 +8,7 @@ import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.DownloadUtils
 
 class VideosAdapter(
         private val listener: BaseVideosFragment.OnVideoSelectedListener) : DataBoundPagedListAdapter<Video, FragmentVideosListItemBinding>(
@@ -21,16 +22,24 @@ class VideosAdapter(
                             oldItem.title == newItem.title
         }) {
 
+    lateinit var lastSelectedItem: Video
+        private set
+
     override val itemId: Int
         get() = R.layout.fragment_videos_list_item
 
     override fun bind(binding: FragmentVideosListItemBinding, item: Video?) {
         binding.video = item
         binding.listener = listener
-        val context = binding.date.context as MainActivity
-        val showDialog = { VideoDownloadDialog.newInstance(video = item!!).show(context.supportFragmentManager, null) }
+        val activity = binding.root.context as MainActivity
+        val showDialog = {
+            lastSelectedItem = item!!
+            if (DownloadUtils.hasStoragePermission(activity)) {
+                VideoDownloadDialog.newInstance(video = item).show(activity.supportFragmentManager, null)
+            }
+        }
         binding.options.setOnClickListener {
-            PopupMenu(context, binding.options).apply {
+            PopupMenu(activity, binding.options).apply {
                 inflate(R.menu.media_item)
                 setOnMenuItemClickListener {
                     showDialog.invoke()
