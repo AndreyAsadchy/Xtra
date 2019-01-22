@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.model.NotLoggedIn
+import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -44,7 +46,7 @@ import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
 import com.github.exact7.xtra.util.NetworkUtils
-import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.Prefs
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -82,16 +84,16 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         initNavigation()
-        val user = TwitchApiHelper.getUser(this)
-        if (user == null) {
-            fragNavController.initialize(INDEX_TOP, savedInstanceState)
-            if (savedInstanceState == null) {
-                navBar.selectedItemId = R.id.fragment_top
-            }
-        } else {
+        val user = Prefs.getUser(this) //TODO ...
+        if (user is NotValidated) {
             fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
             if (savedInstanceState == null) {
                 navBar.selectedItemId = R.id.fragment_follow
+            }
+        } else if (user is NotLoggedIn){
+            fragNavController.initialize(INDEX_TOP, savedInstanceState)
+            if (savedInstanceState == null) {
+                navBar.selectedItemId = R.id.fragment_top
             }
         }
         viewModel.setUser(user)

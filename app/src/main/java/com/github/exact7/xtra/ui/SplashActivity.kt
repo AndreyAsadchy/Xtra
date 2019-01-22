@@ -8,10 +8,8 @@ import androidx.core.content.edit
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.util.NetworkUtils
-import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.C.FIRST_LAUNCH
 
-const val FIRST_LAUNCH = "first_launch"
 
 class SplashActivity : AppCompatActivity(), Injectable {
 
@@ -20,21 +18,13 @@ class SplashActivity : AppCompatActivity(), Injectable {
         val prefs = getPreferences(Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean(FIRST_LAUNCH, true)
         if (!isFirstLaunch) {
-            val user = TwitchApiHelper.getUser(this)
-            if (user != null && NetworkUtils.isConnected(this)) { //TODO change to worker and add livedata is userauthorized
-
-            } else {
-                startMainActivity()
-            }
+            startMainActivity()
         } else {
             prefs.edit { putBoolean(FIRST_LAUNCH, false) }
             startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra(FIRST_LAUNCH, true) }, 1)
         }
     }
 
-    /**
-     * Result of LoginActivity
-     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         startMainActivity()

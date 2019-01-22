@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.login
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -15,8 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -29,15 +30,14 @@ class LoginActivity : AppCompatActivity(), Injectable {
     @Inject
     lateinit var repository: AuthRepository
     private val compositeDisposable = CompositeDisposable()
-    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        prefs = getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
+        val prefs = Prefs.authPrefs(this)
         val token = prefs.getString(C.TOKEN, null)
         if (token == null) {
-            if (intent.getBooleanExtra("first_launch", false)) {
+            if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
                 welcomeContainer.visibility = View.VISIBLE
                 login.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
@@ -76,11 +76,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
-                                    prefs.edit {
-                                        putString(C.TOKEN, token)
-                                        putString(C.USERNAME, response.username)
-                                        putString("user_id", response.userId)
-                                    }
+                                    Prefs.saveUser(this@LoginActivity, User(response.userId, response.username, token))
                                     setResult(RESULT_OK)
                                     finish()
                                 }

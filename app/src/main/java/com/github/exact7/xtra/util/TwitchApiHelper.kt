@@ -1,16 +1,15 @@
 package com.github.exact7.xtra.util
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.text.format.DateUtils
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.MessageListenerImpl
 import com.github.exact7.xtra.util.chat.OnChatMessageReceived
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 object TwitchApiHelper {
 
@@ -46,18 +45,6 @@ object TwitchApiHelper {
             DateUtils.FORMAT_SHOW_DATE
         }
         return DateUtils.formatDateTime(context, date, format)
-    }
-
-    fun getUser(context: Context): User? {
-        val prefs = context.getSharedPreferences(C.AUTH_PREFS, MODE_PRIVATE)
-        return with(prefs) {
-            val id = getString(C.USER_ID, null)
-            if (id != null) {
-                User(id, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!)
-            } else {
-                null
-            }
-        }
     }
 
     fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageCallback: OnChatMessageReceived): LiveChatThread {

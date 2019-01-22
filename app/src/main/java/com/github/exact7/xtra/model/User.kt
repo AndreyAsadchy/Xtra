@@ -1,10 +1,10 @@
 package com.github.exact7.xtra.model
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+sealed class User
 
-@Parcelize
-data class User(
+class LoggedIn(user: NotValidated) : User()
+class NotValidated(
         val id: String,
         val name: String,
-        val token: String) : Parcelable
+        val token: String) : User()
+object NotLoggedIn : User()
