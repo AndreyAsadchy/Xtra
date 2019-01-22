@@ -7,8 +7,6 @@ sealed class Request(
         val url: String,
         val path: String) {
     val id = System.currentTimeMillis().toInt()
-    var maxProgress = 0
-    var progress = 0
 }
 
 class ClipRequest(
@@ -25,8 +23,7 @@ class VideoRequest(
         val segmentFrom: Int,
         val segmentTo: Int) : Request(offlineVideoId, url, path) {
 
-    init {
-        maxProgress = segmentTo - segmentFrom
-    }
+    var progress = 0
+    val maxProgress = segmentTo - segmentFrom
     lateinit var playlist: MediaPlaylist
 }

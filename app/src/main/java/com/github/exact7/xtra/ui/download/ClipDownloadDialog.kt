@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.download
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,9 +63,9 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
-    override fun onDestroy() {
+    override fun onDismiss(dialog: DialogInterface) {
         compositeDisposable?.clear()
-        super.onDestroy()
+        super.onDismiss(dialog)
     }
 
     private fun init(clip: Clip, qualities: Map<String, String>) {

@@ -19,10 +19,10 @@ class FollowPagerFragment : MediaPagerFragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: MainViewModel
-    var isLoggedIn = false
+    private var isLoggedIn = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java) //TODO observe validation
         isLoggedIn = viewModel.user.value != null
         return if (isLoggedIn) {
             super.onCreateView(inflater, container, savedInstanceState)

@@ -1,6 +1,6 @@
 package com.github.exact7.xtra.di
 
-import com.github.exact7.xtra.ui.download.CancelActionReceiver
+import com.github.exact7.xtra.ui.download.NotificationActionReceiver
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -8,5 +8,5 @@ import dagger.android.ContributesAndroidInjector
 abstract class BroadcastReceiverBuilderModule {
 
     @ContributesAndroidInjector
-    abstract fun contributeCancelActionReceiver(): CancelActionReceiver
+    abstract fun contributeNotificationActionReceiver(): NotificationActionReceiver
 }

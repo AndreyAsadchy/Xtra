@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.streams.followed
 
+import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.ui.main.MainViewModel
@@ -9,12 +10,16 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
 
     private lateinit var viewModel: FollowedStreamsViewModel
 
-    override fun initialize() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FollowedStreamsViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
+    }
+
+    override fun initialize() {
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
         mainViewModel.user.observe(viewLifecycleOwner, Observer {
             viewModel.setUser(it!!)

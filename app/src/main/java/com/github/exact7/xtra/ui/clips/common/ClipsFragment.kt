@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.clips.common
 
+import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -13,15 +14,19 @@ class ClipsFragment : BaseClipsFragment() {
 
     private lateinit var viewModel: ClipsViewModel
 
-    override fun initialize() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.loadClips(arguments?.getString("channelName"), arguments?.getParcelable("game") as Game?)
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
+    }
+
+    override fun initialize() {
+        viewModel.loadClips(arguments?.getString("channelName"), arguments?.getParcelable("game") as Game?)
     }
 
     override fun onNetworkRestored() {

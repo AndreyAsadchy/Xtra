@@ -47,7 +47,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         download.setOnClickListener { showDownloadDialog() }
     }
 
-    override fun initialize() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
         playerView.player = viewModel.player
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
@@ -56,9 +57,12 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-        viewModel.setVideo(arguments!!.getParcelable("video")!!)
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
+    }
+
+    override fun initialize() {
+        viewModel.setVideo(arguments!!.getParcelable("video")!!)
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

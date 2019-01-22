@@ -43,7 +43,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.clip.value!!, viewModel.qualities).show(childFragmentManager, null) }
     }
 
-    override fun initialize() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipPlayerViewModel::class.java)
         playerView.player = viewModel.player
         viewModel.loaded.observe(this, Observer {
@@ -52,9 +53,12 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-        viewModel.setClip(arguments!!.getParcelable("clip")!!)
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
+    }
+
+    override fun initialize() {
+        viewModel.setClip(arguments!!.getParcelable("clip")!!)
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

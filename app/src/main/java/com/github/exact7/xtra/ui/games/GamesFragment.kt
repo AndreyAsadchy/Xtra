@@ -40,7 +40,8 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
                 binding.root
             }
 
-    override fun initialize() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
         val adapter = GamesAdapter(listener!!)
@@ -48,6 +49,10 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
+    }
+
+    override fun initialize() {
+        //Automatic
     }
 
     override fun onDetach() {

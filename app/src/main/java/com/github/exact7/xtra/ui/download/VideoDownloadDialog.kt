@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.download
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -96,12 +97,11 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         } else {
             init(videoInfo)
         }
-
     }
 
-    override fun onDestroy() {
+    override fun onDismiss(dialog: DialogInterface) {
         compositeDisposable?.clear()
-        super.onDestroy()
+        super.onDismiss(dialog)
     }
 
     private fun parseTime(textView: TextView): Long? {

@@ -16,10 +16,10 @@ import com.github.exact7.xtra.model.kraken.user.UserEmotesDeserializer
 import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.util.FetchProvider
 import com.github.exact7.xtra.util.TlsSocketFactory
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
-import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.FetchConfiguration
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
 import dagger.Module
@@ -194,10 +194,10 @@ class XtraModule {
         return AsyncTask.THREAD_POOL_EXECUTOR
     }
 
-    //todo wrapper and inside it use provider
+    @Singleton
     @Provides
-    fun providesFetch(fetchConfiguration: FetchConfiguration): Fetch {
-        return Fetch.getInstance(fetchConfiguration)
+    fun providesFetchManager(fetchConfiguration: FetchConfiguration): FetchProvider {
+        return FetchProvider(fetchConfiguration)
     }
 
     @Singleton

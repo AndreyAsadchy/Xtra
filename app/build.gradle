@@ -35,7 +35,6 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
             signingConfig signingConfigs.debug
-            multiDexEnabled true
         }
         release {
             shrinkResources true
@@ -69,7 +68,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13-beta-1'
-    implementation 'androidx.multidex:multidex:2.0.0'
+//    implementation 'androidx.multidex:multidex:2.0.0'
 
     //UI
     implementation 'com.google.android.material:material:1.1.0-alpha02'
@@ -83,7 +82,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
-//    implementation "android.arch.work:work-runtime:$work"
+    implementation "android.arch.work:work-runtime:$work"
     implementation 'androidx.core:core-ktx:1.0.1'
 
     //Misc

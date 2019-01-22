@@ -20,7 +20,7 @@ import com.github.exact7.xtra.model.offline.VideoRequest
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.FetchProvider
 import com.google.gson.Gson
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
@@ -39,7 +39,7 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
-import java.util.*
+import java.util.Comparator
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
@@ -52,7 +52,12 @@ class DownloadService : IntentService(TAG), Injectable {
 
     @Inject lateinit var playerRepository: PlayerRepository
     @Inject lateinit var offlineRepository: OfflineRepository
-    var stopped = false
+    @Inject lateinit var fetchProvider: FetchProvider
+    private lateinit var notificationBuilder: NotificationCompat.Builder
+    private lateinit var notificationManager: NotificationManagerCompat
+    private lateinit var request: com.github.exact7.xtra.model.offline.Request
+    private lateinit var offlineVideo: OfflineVideo
+    private var stopped = false
 
     init {
         setIntentRedelivery(true)
@@ -65,14 +70,14 @@ class DownloadService : IntentService(TAG), Injectable {
 
     override fun onHandleIntent(intent: Intent?) {
         Log.d(TAG, "Starting download")
-        val request = with(intent!!) {
+        request = with(intent!!) {
             Gson().fromJson(getStringExtra(KEY_REQUEST), if (getBooleanExtra(KEY_TYPE, true)) VideoRequest::class.java else ClipRequest::class.java)
         }
-        val offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) } ?: return //Download was canceled
+        offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) } ?: return //Download was canceled
         val countDownLatch = CountDownLatch(1)
-        val fetch = DownloadUtils.getFetch(this)
+        val fetch = fetchProvider.get()
         val channelId = getString(R.string.notification_channel_id)
-        val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
+        notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(android.R.drawable.stat_sys_download)
             setGroup(GROUP_KEY)
             setContentTitle(getString(R.string.downloading))
@@ -83,11 +88,11 @@ class DownloadService : IntentService(TAG), Injectable {
                 putExtra("code", 0)
             }
             setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-            val cancelIntent = Intent(this@DownloadService, CancelActionReceiver::class.java)
+            val cancelIntent = Intent(this@DownloadService, NotificationActionReceiver::class.java)
             addAction(NotificationCompat.Action(0, getString(android.R.string.cancel), PendingIntent.getBroadcast(this@DownloadService, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)))
         }
 
-        val notificationManager = NotificationManagerCompat.from(this)
+        notificationManager = NotificationManagerCompat.from(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (manager.getNotificationChannel(channelId) == null) {
@@ -99,7 +104,7 @@ class DownloadService : IntentService(TAG), Injectable {
         }
         var canceled = false
         when (request) {
-            is VideoRequest -> with(request) {
+            is VideoRequest -> with(request as VideoRequest) {
                 notificationBuilder.apply {
                     setProgress(maxProgress, 0, false)
                 }
@@ -115,7 +120,7 @@ class DownloadService : IntentService(TAG), Injectable {
                         if (++progress < maxProgress) {
                             notificationManager.notify(id, notificationBuilder.setProgress(maxProgress, progress, false).build())
                         } else {
-                            onDownloadCompleted(request, offlineVideo, notificationManager, notificationBuilder)
+                            onDownloadCompleted()
                             countDownLatch.countDown()
                         }
                     }
@@ -153,11 +158,12 @@ class DownloadService : IntentService(TAG), Injectable {
                 notificationBuilder.setProgress(100, 0, false)
                 fetch.addListener(object : AbstractFetchListener() {
                     override fun onCompleted(download: Download) {
-                        onDownloadCompleted(request, offlineVideo, notificationManager, notificationBuilder)
+                        onDownloadCompleted()
                         countDownLatch.countDown()
                     }
 
                     override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
+                        println(download.progress)
                         notificationManager.notify(id, notificationBuilder.setProgress(100, download.progress, false).build())
                     }
 
@@ -193,15 +199,11 @@ class DownloadService : IntentService(TAG), Injectable {
     }
 
     @SuppressLint("RestrictedApi")
-    private fun onDownloadCompleted(
-            request: com.github.exact7.xtra.model.offline.Request,
-            offlineVideo: OfflineVideo,
-            notificationManager: NotificationManagerCompat,
-            notificationBuilder: NotificationCompat.Builder) {
+    private fun onDownloadCompleted() {
         when (request) {
             is VideoRequest -> {
                 Log.d(TAG, "Downloaded video")
-                with(request) {
+                with(request as VideoRequest) {
                     val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
                         fun parse(trackData: TrackData) =
                                 trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).let { trackName ->
@@ -219,7 +221,6 @@ class DownloadService : IntentService(TAG), Injectable {
                     for (i in segmentFrom until segmentTo) {
                         val track = playlist.tracks[i]
                         tracks.add(TrackData.Builder()
-//                                .withEncryptionData(EncryptionData.Builder().)
                                 .withUri("$path${track.uri}")
                                 .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
                                 .build())

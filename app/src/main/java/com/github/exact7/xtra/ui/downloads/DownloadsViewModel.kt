@@ -5,7 +5,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.repository.OfflineRepository
-import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.FetchProvider
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.PlaylistParser
@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 class DownloadsViewModel @Inject internal constructor(
         application: Application,
-        private val repository: OfflineRepository) : AndroidViewModel(application) {
+        private val repository: OfflineRepository,
+        private val fetchProvider: FetchProvider) : AndroidViewModel(application) {
 
     val list = repository.loadAllVideos()
 
@@ -48,7 +49,7 @@ class DownloadsViewModel @Inject internal constructor(
                 file.delete()
             }
         } else {
-            DownloadUtils.getFetch(getApplication()).deleteGroup(video.id)
+            fetchProvider.get().deleteGroup(video.id)
         }
     }
 }

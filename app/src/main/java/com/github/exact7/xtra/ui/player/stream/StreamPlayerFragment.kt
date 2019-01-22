@@ -57,14 +57,10 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         }
     }
 
-    override fun initialize() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
         playerView.player = viewModel.player
-        val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(viewLifecycleOwner, Observer {
-            messageView.visibility = if (it != null) View.VISIBLE else View.GONE
-            viewModel.startStream(arguments!!.getParcelable("stream")!!, it)
-        })
         settings.isEnabled = false
         settings.setColorFilter(Color.GRAY)
         viewModel.loaded.observe(this, Observer {
@@ -77,6 +73,14 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
+    }
+
+    override fun initialize() {
+        val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.user.observe(viewLifecycleOwner, Observer {
+            messageView.visibility = if (it != null) View.VISIBLE else View.GONE
+            viewModel.startStream(arguments!!.getParcelable("stream")!!, it)
+        })
     }
 
     override fun play(obj: Parcelable) {

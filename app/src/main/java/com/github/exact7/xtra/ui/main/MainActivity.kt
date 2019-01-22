@@ -218,7 +218,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             if (fragment is MediaPagerFragment && fragment.currentFragment is HasDownloadDialog) {
                 (fragment.currentFragment as HasDownloadDialog).showDownloadDialog()
             }
-//            (fragNavController.currentFrag as HasDownloadDialog).showDownloadDialog()
         } else {
             Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
         }
