@@ -5,41 +5,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.github.exact7.xtra.R
+import com.github.exact7.xtra.databinding.FragmentFollowBinding
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
-import kotlinx.android.synthetic.main.view_follow_not_logged.*
+import kotlinx.android.synthetic.main.fragment_follow.*
+import kotlinx.android.synthetic.main.view_follow_not_logged.view.*
 import javax.inject.Inject
 
 class FollowPagerFragment : MediaPagerFragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: MainViewModel
+    private lateinit var binding: FragmentFollowBinding
     private var isLoggedIn = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java) //TODO observe validation
-        isLoggedIn = viewModel.user.value != null
-        return if (isLoggedIn) {
-            super.onCreateView(inflater, container, savedInstanceState)
-        } else {
-            inflater.inflate(R.layout.view_follow_not_logged, container, false)
+        return FragmentFollowBinding.inflate(inflater, container, false).let {
+            binding = it
+            it.setLifecycleOwner(viewLifecycleOwner)
+            binding.root
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (isLoggedIn) {
-            super.onViewCreated(view, savedInstanceState)
-            setAdapter(FollowPagerAdapter(requireContext(), childFragmentManager))
-        } else {
-            val activity = requireActivity()
-            button.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
-            superOnViewCreated(view, savedInstanceState)
-        }
+        val activity = requireActivity()
+        val viewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
+        binding.viewModel = viewModel
+        viewModel.user.observe(viewLifecycleOwner, Observer {
+            if (it !is NotLoggedIn) {
+                isLoggedIn = true
+                setAdapter(FollowPagerAdapter(activity, childFragmentManager))
+            } else {
+                notLoggedInLayout.login.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
+            }
+        })
     }
 
     override fun scrollToTop() {

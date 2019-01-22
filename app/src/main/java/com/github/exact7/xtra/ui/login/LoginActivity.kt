@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.Prefs
@@ -76,7 +75,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
-                                    Prefs.saveUser(this@LoginActivity, User(response.userId, response.username, token))
+                                    Prefs.saveUser(this@LoginActivity, response.userId, response.username, token)
                                     setResult(RESULT_OK)
                                     finish()
                                 }

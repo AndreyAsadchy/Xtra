@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/text"
         android:layout_width="300dp"
         android:layout_height="150dp"
         android:text="@string/follow_tab_login_prompt"
@@ -15,16 +15,13 @@
         app:autoSizeMinTextSize="18sp"
         app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform"
-        android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="100dp"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/login"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:text="@string/log_in"
         android:textSize="14sp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/text"
         android:layout_marginTop="100dp"/>
-</RelativeLayout>
+</LinearLayout>

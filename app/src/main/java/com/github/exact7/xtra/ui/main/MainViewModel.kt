@@ -3,11 +3,18 @@ package com.github.exact7.xtra.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.User
+import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.Event
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(): ViewModel() {
+class MainViewModel @Inject constructor(
+        private val authRepository: AuthRepository
+): ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -26,6 +33,8 @@ class MainViewModel @Inject constructor(): ViewModel() {
 
     var isPlayerOpened = false
         private set
+
+    private val compositeDisposable = CompositeDisposable()
 
     fun setUser(user: User) {
         _user.value = user
@@ -53,6 +62,17 @@ class MainViewModel @Inject constructor(): ViewModel() {
     fun setNetworkAvailable(available: Boolean) {
         if (_isNetworkAvailable.value?.peekContent() != available) {
             _isNetworkAvailable.value = Event(available)
+        }
+    }
+
+    fun validate(onError: (Throwable) -> Unit) {
+        val user = user.value
+        if (user is NotValidated) {
+            authRepository.validate(user.token)
+                    .subscribe({
+                        _user.value = LoggedIn(user)
+                    }, onError)
+                    .addTo(compositeDisposable)
         }
     }
 }

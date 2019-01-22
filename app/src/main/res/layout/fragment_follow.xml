@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.github.exact7.xtra.model.LoggedIn" />
+        <import type="com.github.exact7.xtra.model.NotValidated" />
+        <import type="com.github.exact7.xtra.model.NotLoggedIn" />
+        <variable
+            name="viewModel"
+            type="com.github.exact7.xtra.ui.main.MainViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/fragment_media_pager"
+            app:visible="@{viewModel.user instanceof LoggedIn}"/>
+
+        <include
+            android:id="@+id/notLoggedInLayout"
+            layout="@layout/view_follow_not_logged"
+            app:visible="@{viewModel.user instanceof NotLoggedIn}"
+            />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:visible="@{viewModel.user instanceof NotValidated}"/>
+
+    </FrameLayout>
+
+</layout>

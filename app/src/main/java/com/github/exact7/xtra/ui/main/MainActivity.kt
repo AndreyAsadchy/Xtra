@@ -12,6 +12,7 @@ import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,7 +21,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
-import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -32,6 +32,7 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
+import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.menu.MenuFragment
 import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
 import com.github.exact7.xtra.ui.pagers.GamePagerFragment
@@ -84,13 +85,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         initNavigation()
-        val user = Prefs.getUser(this) //TODO ...
-        if (user is NotValidated) {
+        val user = Prefs.getUser(this)
+        if (user !is NotLoggedIn) {
             fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
             if (savedInstanceState == null) {
                 navBar.selectedItemId = R.id.fragment_follow
             }
-        } else if (user is NotLoggedIn){
+        } else {
             fragNavController.initialize(INDEX_TOP, savedInstanceState)
             if (savedInstanceState == null) {
                 navBar.selectedItemId = R.id.fragment_top
@@ -117,6 +118,11 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
+                viewModel.validate {
+                    Prefs.authPrefs(this@MainActivity).edit { clear() }
+                    Toast.makeText(this@MainActivity, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                    startActivityForResult(Intent(this@MainActivity, LoginActivity::class.java), 1)
+                }
                 if (flag) {
                     Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
                 } else {
