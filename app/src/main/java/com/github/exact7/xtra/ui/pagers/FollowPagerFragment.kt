@@ -33,6 +33,7 @@ class FollowPagerFragment : MediaPagerFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity()
         val viewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
         binding.viewModel = viewModel

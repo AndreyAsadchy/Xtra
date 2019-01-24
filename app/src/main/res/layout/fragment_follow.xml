@@ -16,6 +16,7 @@
         android:layout_height="match_parent">
 
         <include
+            android:id="@+id/pagerLayout"
             layout="@layout/fragment_media_pager"
             app:visible="@{viewModel.user instanceof LoggedIn}"/>
 

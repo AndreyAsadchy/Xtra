@@ -1,13 +1,19 @@
 package com.github.exact7.xtra.ui.main
 
+import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
+import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.Event
+import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
@@ -37,7 +43,17 @@ class MainViewModel @Inject constructor(
     private val compositeDisposable = CompositeDisposable()
 
     fun setUser(user: User) {
-        _user.value = user
+        _user.value = user.let {
+            if (it is NotValidated) {
+                if (!TwitchApiHelper.validated) {
+                    it
+                } else {
+                    LoggedIn(it)
+                }
+            } else {
+                it
+            }
+        }
     }
 
     fun onMaximize() {
@@ -65,13 +81,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun validate(onError: (Throwable) -> Unit) {
+    fun validate(activity: Activity) {
         val user = user.value
-        if (user is NotValidated) {
+        if (user is NotValidated && !TwitchApiHelper.validated) {
             authRepository.validate(user.token)
                     .subscribe({
+                        TwitchApiHelper.validated = true
                         _user.value = LoggedIn(user)
-                    }, onError)
+                    }, {
+                        with(activity) {
+                            Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                            startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2) //TODO if player don't start
+                        }
+                    })
                     .addTo(compositeDisposable)
         }
     }

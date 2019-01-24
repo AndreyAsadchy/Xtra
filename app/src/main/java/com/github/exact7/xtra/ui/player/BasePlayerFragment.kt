@@ -34,7 +34,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         if (context is DraggableListener) {
             dragListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement DraggableListener")
+            throw RuntimeException("$context must implement DraggableListener")
         }
     }
 

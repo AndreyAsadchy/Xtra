@@ -13,6 +13,7 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
@@ -47,8 +48,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         download.setOnClickListener { showDownloadDialog() }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
         playerView.player = viewModel.player
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
@@ -59,10 +59,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-    }
-
-    override fun initialize() {
-        viewModel.setVideo(arguments!!.getParcelable("video")!!)
+        viewModel.setVideo(arguments!!.getParcelable(C.VIDEO)!!)
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

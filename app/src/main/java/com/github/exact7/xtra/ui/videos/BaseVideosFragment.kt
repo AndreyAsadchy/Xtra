@@ -31,7 +31,7 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
         if (context is OnVideoSelectedListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnVideoSelectedListener")
+            throw RuntimeException("$context must implement OnVideoSelectedListener")
         }
     }
 

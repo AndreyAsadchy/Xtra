@@ -13,7 +13,7 @@ object Prefs {
     fun authPrefs(context: Context) = get(context, C.AUTH_PREFS)
 
     fun getUser(context: Context): User {
-        return with(userPrefs(context)) {
+        return with(authPrefs(context)) {
             val id = getString(C.USER_ID, null)
             if (id != null) {
                 NotValidated(id, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!)
@@ -24,7 +24,7 @@ object Prefs {
     }
 
     fun saveUser(context: Context, id: String, name: String, token: String) {
-        userPrefs(context).edit {
+        authPrefs(context).edit {
             putString(C.USER_ID, id)
             putString(C.USERNAME, name)
             putString(C.TOKEN, token)

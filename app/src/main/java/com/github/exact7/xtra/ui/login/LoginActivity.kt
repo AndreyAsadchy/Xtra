@@ -45,10 +45,11 @@ class LoginActivity : AppCompatActivity(), Injectable {
             }
         } else {
             initWebView()
-            prefs.edit { clear() }
-            repository.revoke(token)
-                    .subscribe { _ -> prefs.edit { clear() } }
-                    .addTo(compositeDisposable)
+            if (!intent.getBooleanExtra("expired", false)) {
+                repository.revoke(token)
+                        .subscribe { _ -> prefs.edit { clear() } }
+                        .addTo(compositeDisposable)
+            }
         }
     }
 
@@ -75,6 +76,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
+                                    TwitchApiHelper.validated = true
                                     Prefs.saveUser(this@LoginActivity, response.userId, response.username, token)
                                     setResult(RESULT_OK)
                                     finish()

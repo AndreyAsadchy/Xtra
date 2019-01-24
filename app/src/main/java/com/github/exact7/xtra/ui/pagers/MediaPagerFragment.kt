@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.Scrollable
+import kotlinx.android.synthetic.main.fragment_follow.*
+import kotlinx.android.synthetic.main.fragment_media_pager.view.*
 
 abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwarePagerFragment, Scrollable {
 
@@ -22,7 +24,7 @@ abstract class MediaPagerFragment : androidx.fragment.app.Fragment(), ItemAwareP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewPager = view.findViewById(R.id.viewPager)
+        viewPager = if (this is FollowPagerFragment) pagerLayout.viewPager else view.findViewById(R.id.viewPager)
         viewPager.offscreenPageLimit = 2
     }
 

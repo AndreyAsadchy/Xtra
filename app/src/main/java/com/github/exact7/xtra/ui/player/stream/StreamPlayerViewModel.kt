@@ -26,10 +26,10 @@ class StreamPlayerViewModel @Inject constructor(
     val chat: LiveData<LiveChatThread>
         get() = _chat
     private var subscriberBadges: SubscriberBadgesResponse? = null
-    var user: User? = null
+    lateinit var user: User
         private set
 
-    fun startStream(stream: Stream, user: User?) {
+    fun startStream(stream: Stream, user: User) {
         if (_stream.value != stream) {
             _stream.value = stream
             this.user = user
@@ -73,7 +73,22 @@ class StreamPlayerViewModel @Inject constructor(
     }
 
     private fun startChat() {
-        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, user?.name, user?.token, subscriberBadges, helper)
+        val userName = user.name.let {
+            if (it == "") {
+                null
+            } else {
+                it
+            }
+        }
+
+        val userToken = user.token.let {
+            if (it == "") {
+                null
+            } else {
+                it
+            }
+        }
+        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, userName, userToken, subscriberBadges, helper)
     }
 
     private fun stopChat() {

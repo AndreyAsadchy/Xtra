@@ -29,6 +29,7 @@ android {
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         targetSdkVersion 28
+        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -82,7 +83,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
-    implementation "android.arch.work:work-runtime:$work"
+//    implementation "android.arch.work:work-runtime:$work"
     implementation 'androidx.core:core-ktx:1.0.1'
 
     //Misc

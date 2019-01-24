@@ -135,9 +135,9 @@ class XtraModule {
     @Named("okHttpDefault")
     fun providesDefaultOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder().apply {
-            if (BuildConfig.DEBUG) {
+//            if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
-            }
+//            }
 
             /***
              * Enable TLS 1.2 on pre-lollipop devices

@@ -12,7 +12,6 @@ import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -32,7 +31,6 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
-import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.menu.MenuFragment
 import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
 import com.github.exact7.xtra.ui.pagers.GamePagerFragment
@@ -118,10 +116,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
-                viewModel.validate {
-                    Prefs.authPrefs(this@MainActivity).edit { clear() }
-                    Toast.makeText(this@MainActivity, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                    startActivityForResult(Intent(this@MainActivity, LoginActivity::class.java), 1)
+                if (online) {
+                    viewModel.validate(this@MainActivity)
                 }
                 if (flag) {
                     Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
@@ -182,8 +178,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
         when (requestCode) {
             1 -> { //Was not logged in
-                when (resultCode) {
-                    RESULT_OK -> restartActivity() //Logged in
+                when (resultCode) {//Logged in
+                    RESULT_OK -> restartActivity()
                 }
             }
             2 -> restartActivity() //Was logged in
@@ -198,7 +194,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         if (!viewModel.isPlayerMaximized) {
             if (fragNavController.isRootFragment) {
-                if (viewModel.user.value != null) {
+                if (viewModel.user.value !is NotLoggedIn) {
                     if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
                         navBar.selectedItemId = R.id.fragment_follow
                     } else {

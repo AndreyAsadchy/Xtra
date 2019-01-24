@@ -16,6 +16,8 @@ object TwitchApiHelper {
     val clientId: String
         external get
 
+    var validated = false
+
     init {
         System.loadLibrary("keys")
     }

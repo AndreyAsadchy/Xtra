@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp">
-<!--TODO fix theme doesn't apply here-->
+
     <RadioGroup
         android:id="@+id/sort"
         android:layout_width="match_parent"

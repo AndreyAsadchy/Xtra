@@ -29,7 +29,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
         if (context is OnGameSelectedListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnGameSelectedListener")
+            throw RuntimeException("$context must implement OnGameSelectedListener")
         }
     }
 
@@ -40,8 +40,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
                 binding.root
             }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
         val adapter = GamesAdapter(listener!!)
@@ -49,10 +48,6 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-    }
-
-    override fun initialize() {
-        //Automatic
     }
 
     override fun onDetach() {

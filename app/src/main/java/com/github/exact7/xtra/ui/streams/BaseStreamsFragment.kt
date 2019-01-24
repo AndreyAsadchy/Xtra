@@ -29,7 +29,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
         if (context is OnStreamSelectedListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnStreamSelectedListener")
+            throw RuntimeException("$context must implement OnStreamSelectedListener")
         }
     }
 

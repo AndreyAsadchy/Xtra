@@ -12,6 +12,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -57,8 +58,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
         playerView.player = viewModel.player
         settings.isEnabled = false
@@ -73,13 +73,10 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
-    }
-
-    override fun initialize() {
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
         mainViewModel.user.observe(viewLifecycleOwner, Observer {
-            messageView.visibility = if (it != null) View.VISIBLE else View.GONE
-            viewModel.startStream(arguments!!.getParcelable("stream")!!, it)
+            messageView.visibility = if (it is LoggedIn) View.VISIBLE else View.GONE
+            viewModel.startStream(arguments!!.getParcelable(C.STREAM)!!, it)
         })
     }
 

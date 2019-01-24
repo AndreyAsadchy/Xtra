@@ -32,7 +32,7 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
         if (context is OnClipSelectedListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnClipSelectedListener")
+            throw RuntimeException("$context must implement OnClipSelectedListener")
         }
     }
 
