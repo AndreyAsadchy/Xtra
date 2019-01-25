@@ -31,11 +31,5 @@
         <service android:name=".ui.download.DownloadService"/>
         <receiver android:name=".ui.download.NotificationActionReceiver" />
     </application>
-        <!--<provider-->
-            <!--android:name="androidx.work.impl.WorkManagerInitializer"-->
-            <!--android:authorities="com.github.exact7.xtra.workmanager-init"-->
-            <!--android:enabled="false"-->
-            <!--android:exported="false"-->
-            <!--tools:replace="android:authorities" />-->
 
 </manifest>
