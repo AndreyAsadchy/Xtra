@@ -1,111 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:id="@+id/container"
-        android:orientation="vertical"
-        android:gravity="center"
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.github.exact7.xtra.ui.download.VideoDownloadViewModel" />
+        <variable
+            name="duration"
+            type="String" />
+        <variable
+            name="currentPosition"
+            type="String" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible">
-
-        <!-- TODO maybe add custom name for media_item -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:text="@string/select_quality"
-            android:textStyle="bold"/>
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:text="@string/specify_time"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"/>
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:visibility="@{viewModel.videoInfo == null ? View.INVISIBLE : View.VISIBLE}">
+
+            <!-- TODO maybe add custom name for video -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/from"/>
+                android:text="@string/select_quality"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/timeFrom"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:inputType="time"
-                android:maxLength="8"/>
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/to"
-                android:layout_marginLeft="7dp"
-                android:layout_marginStart="7dp" />
+                android:text="@string/specify_time"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/timeTo"
-                android:layout_width="100dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="time"
-                android:maxLength="8"/>
+                android:text="@{@string/duration(duration)}"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/from"/>
+
+                <EditText
+                    android:id="@+id/timeFrom"
+                    android:hint="@{currentPosition.length == 5 ? `00:` + currentPosition : currentPosition}"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:maxLength="8"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/to"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginStart="7dp" />
+
+                <EditText
+                    android:id="@+id/timeTo"
+                    android:hint="@{duration.length != 5 ? duration : `00:` + duration}"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:maxLength="8"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@android:string/cancel"
+                    style="?android:buttonBarButtonStyle"/>
+
+                <Button
+                    android:id="@+id/download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download"
+                    style="?android:buttonBarButtonStyle"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            style="?android:buttonBarButtonStyle">
+            android:layout_centerInParent="true"
+            app:visible="@{viewModel.videoInfo == null}"/>
 
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@android:string/cancel"
-                style="?android:buttonBarButtonStyle"/>
-
-            <Button
-                android:id="@+id/download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/download"
-                style="?android:buttonBarButtonStyle"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

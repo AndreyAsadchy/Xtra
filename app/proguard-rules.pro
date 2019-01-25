@@ -19,8 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file title.
 #-renamesourcefileattribute SourceFile
--printmapping build/outputs/mapping/r8/release/mapping.txt
-
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
@@ -33,12 +31,19 @@
     volatile <fields>;
 }
 
+-keepclassmembers class com.google.android.exoplayer2.source.hls.playlist.DefaultHlsPlaylistTracker {
+    <methods>;
+}
+
+-keepclassmembers enum com.iheartradio.m3u8.data.** {
+    *;
+}
+
 # ServiceLoader support
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 -forceprocessing
--optimizationpasses 5
 
 -assumenosideeffects class android.util.Log {
     public static *** d(...);

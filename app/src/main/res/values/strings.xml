@@ -40,7 +40,7 @@
     <string name="specify_time">Specify time</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
-    <string name="length">Length: %s</string>
+    <string name="duration">Duration: %s</string>
     <string name="invalid_time">Invalid time</string>
     <string name="from_is_greater">Time From must be less than To</string>
     <string name="to_is_lesser">Time To must be greater than From</string>

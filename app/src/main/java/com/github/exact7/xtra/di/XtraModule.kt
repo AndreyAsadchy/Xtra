@@ -21,6 +21,7 @@ import com.github.exact7.xtra.util.TlsSocketFactory
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
 import com.tonyodev.fetch2.FetchConfiguration
+import com.tonyodev.fetch2core.Downloader
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
 import dagger.Module
 import dagger.Provides
@@ -135,9 +136,9 @@ class XtraModule {
     @Named("okHttpDefault")
     fun providesDefaultOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder().apply {
-//            if (BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
-//            }
+            }
 
             /***
              * Enable TLS 1.2 on pre-lollipop devices
@@ -196,7 +197,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesFetchManager(fetchConfiguration: FetchConfiguration): FetchProvider {
+    fun providesFetchProvider(fetchConfiguration: FetchConfiguration): FetchProvider {
         return FetchProvider(fetchConfiguration)
     }
 
@@ -207,7 +208,8 @@ class XtraModule {
                 .enableLogging(BuildConfig.DEBUG)
                 .enableRetryOnNetworkGain(true)
                 .setDownloadConcurrentLimit(3)
-                .setHttpDownloader(OkHttpDownloader(okHttpClient))
+                .setHttpDownloader(OkHttpDownloader(okHttpClient, Downloader.FileDownloaderType.PARALLEL))
+                .setProgressReportingInterval(1000L)
                 .build()
     }
 }

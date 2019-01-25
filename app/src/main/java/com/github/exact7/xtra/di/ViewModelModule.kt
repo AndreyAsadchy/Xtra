@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.exact7.xtra.ui.clips.common.ClipsViewModel
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsViewModel
 import com.github.exact7.xtra.ui.common.GenericViewModelFactory
+import com.github.exact7.xtra.ui.download.ClipDownloadViewModel
+import com.github.exact7.xtra.ui.download.VideoDownloadViewModel
 import com.github.exact7.xtra.ui.downloads.DownloadsViewModel
 import com.github.exact7.xtra.ui.games.GamesViewModel
 import com.github.exact7.xtra.ui.main.MainViewModel
@@ -24,6 +26,9 @@ import dagger.multibindings.IntoMap
 
 @Module
 abstract class ViewModelModule {
+
+    @Binds
+    abstract fun bindViewModelFactory(viewModelFactory: GenericViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
@@ -101,5 +106,12 @@ abstract class ViewModelModule {
     abstract fun bindFollowedClipsViewModel(followedClipsViewModel: FollowedClipsViewModel): ViewModel
 
     @Binds
-    abstract fun bindViewModelFactory(viewModelFactory: GenericViewModelFactory): ViewModelProvider.Factory
+    @IntoMap
+    @ViewModelKey(VideoDownloadViewModel::class)
+    abstract fun bindVideoDownloadViewModel(videoDownloadViewModel: VideoDownloadViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ClipDownloadViewModel::class)
+    abstract fun bindClipDownloadViewModel(clipDownloadViewModel: ClipDownloadViewModel): ViewModel
 }

@@ -102,13 +102,9 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
             }
         }
-        var canceled = false
         when (request) {
             is VideoRequest -> with(request as VideoRequest) {
-                notificationBuilder.apply {
-                    setProgress(maxProgress, 0, false)
-                }
-                notificationManager.notify(id, notificationBuilder.build())
+                updateProgress(maxProgress, 0)
                 fetch.addListener(object : AbstractFetchListener() {
                     var activeDownloadsCount = 0
 
@@ -118,11 +114,15 @@ class DownloadService : IntentService(TAG), Injectable {
 
                     override fun onCompleted(download: Download) {
                         if (++progress < maxProgress) {
-                            notificationManager.notify(id, notificationBuilder.setProgress(maxProgress, progress, false).build())
+                            updateProgress(maxProgress, progress)
                         } else {
                             onDownloadCompleted()
                             countDownLatch.countDown()
                         }
+                    }
+
+                    override fun onCancelled(download: Download) {
+                        stopForegroundInternal(true)
                     }
 
                     override fun onDeleted(download: Download) {
@@ -132,7 +132,6 @@ class DownloadService : IntentService(TAG), Injectable {
                             if (directory.exists() && directory.list().isEmpty()) {
                                 directory.deleteRecursively()
                             }
-                            canceled = true
                             countDownLatch.countDown()
                         }
                     }
@@ -155,7 +154,7 @@ class DownloadService : IntentService(TAG), Injectable {
                         })
             }
             is ClipRequest -> with(request) {
-                notificationBuilder.setProgress(100, 0, false)
+                updateProgress(100, 0)
                 fetch.addListener(object : AbstractFetchListener() {
                     override fun onCompleted(download: Download) {
                         onDownloadCompleted()
@@ -163,13 +162,15 @@ class DownloadService : IntentService(TAG), Injectable {
                     }
 
                     override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
-                        println(download.progress)
-                        notificationManager.notify(id, notificationBuilder.setProgress(100, download.progress, false).build())
+                        updateProgress(100, download.progress)
+                    }
+
+                    override fun onCancelled(download: Download) {
+                        stopForegroundInternal(true)
                     }
 
                     override fun onDeleted(download: Download) {
                         offlineRepository.deleteVideo(offlineVideo)
-                        canceled = true
                         countDownLatch.countDown()
                     }
                 })
@@ -179,23 +180,22 @@ class DownloadService : IntentService(TAG), Injectable {
         startForeground(request.id, notificationBuilder.build())
         countDownLatch.await()
         fetch.close()
-        stopForegroundInternal(canceled)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!stopped) {
-            stopForegroundInternal(true)
-        }
+        stopForegroundInternal(true)
     }
 
     private fun stopForegroundInternal(removeNotification: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            stopForeground(if (removeNotification) Service.STOP_FOREGROUND_REMOVE else Service.STOP_FOREGROUND_DETACH)
-        } else {
-            stopForeground(removeNotification)
+        if (!stopped) {
+            stopped = true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                stopForeground(if (removeNotification) Service.STOP_FOREGROUND_REMOVE else Service.STOP_FOREGROUND_DETACH)
+            } else {
+                stopForeground(removeNotification)
+            }
         }
-        stopped = true
     }
 
     @SuppressLint("RestrictedApi")
@@ -256,5 +256,10 @@ class DownloadService : IntentService(TAG), Injectable {
             mActions.clear()
         }
         notificationManager.notify(request.id, notificationBuilder.build())
+        stopForegroundInternal(false)
+    }
+
+    private fun updateProgress(maxProgress: Int, progress: Int) {
+        notificationManager.notify(request.id, notificationBuilder.setProgress(maxProgress, progress, false).build())
     }
 }

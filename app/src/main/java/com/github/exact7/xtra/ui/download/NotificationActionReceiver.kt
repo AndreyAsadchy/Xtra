@@ -6,6 +6,8 @@ import android.content.Intent
 import android.util.Log
 import com.github.exact7.xtra.util.FetchProvider
 import dagger.android.AndroidInjection
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class NotificationActionReceiver : BroadcastReceiver() {
@@ -15,6 +17,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("NotifActionReceiver", "Canceled download")
         AndroidInjection.inject(this, context)
-        fetchProvider.get().deleteAll()
+        GlobalScope.launch {
+            with(fetchProvider.get()) {
+                cancelAll()
+                deleteAll()
+            }
+        }
     }
 }

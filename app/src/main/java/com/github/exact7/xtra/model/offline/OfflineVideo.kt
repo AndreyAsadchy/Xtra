@@ -33,5 +33,5 @@ data class OfflineVideo(
     var vod = url.endsWith(".m3u8")
 
     @IgnoredOnParcel
-    var downloaded = false
+    var downloaded = false //TODO add progress and update in interval in ui
 }

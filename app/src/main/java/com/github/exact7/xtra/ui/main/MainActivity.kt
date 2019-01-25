@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -68,7 +67,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
     private var playerFragment: BasePlayerFragment? = null
-    private val handler by lazy { Handler() }
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -104,9 +102,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
                 if (!isLandscape) {
                     if (it == true) {
-                        handler.post { hideNavigationBar() }
+                        navBarContainer.post { hideNavigationBar() }
                     } else {
-                        handler.post { playerFragment?.minimize() } //TODO add minimize fast without callback
+                        navBarContainer.post { playerFragment?.minimize() } //TODO add minimize fast without callback
                     }
                 } else {
                     navBarContainer.visibility = View.GONE

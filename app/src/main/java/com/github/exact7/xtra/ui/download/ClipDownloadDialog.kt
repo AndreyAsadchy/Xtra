@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.download
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,19 +7,14 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.databinding.DialogClipDownloadBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.model.offline.ClipRequest
-import com.github.exact7.xtra.repository.OfflineRepository
-import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.util.DownloadUtils
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.dialog_clip_download.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 class ClipDownloadDialog : DialogFragment(), Injectable {
@@ -36,53 +30,41 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
-    @Inject lateinit var playerRepository: PlayerRepository
-    @Inject lateinit var offlineRepository: OfflineRepository
-    private var compositeDisposable: CompositeDisposable? = null
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: ClipDownloadViewModel
+    private lateinit var binding: DialogClipDownloadBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_clip_download, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  =
+            DialogClipDownloadBinding.inflate(inflater, container, false).let {
+                binding = it
+                it.setLifecycleOwner(viewLifecycleOwner)
+                binding.root
+            }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        @Suppress("UNCHECKED_CAST") val qualities = arguments!!.getSerializable(KEY_QUALITIES) as Map<String, String>?
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipDownloadViewModel::class.java)
+        binding.viewModel = viewModel
+        viewModel.qualities.observe(viewLifecycleOwner, Observer {
+            init(it)
+        })
         val clip = arguments!!.getParcelable<Clip>(KEY_CLIP)!!
-        if (qualities == null) {
-            compositeDisposable = CompositeDisposable()
-            playerRepository.fetchClipQualities(clip.slug)
-                    .subscribe({
-                        init(clip, it)
-                    }, {
-
-                    })
-                    .addTo(compositeDisposable!!)
-
-        } else {
-            init(clip, qualities)
+        @Suppress("UNCHECKED_CAST")
+        (arguments!!.getSerializable(KEY_QUALITIES) as Map<String, String>?).let {
+            if (it == null) {
+                viewModel.setClip(clip)
+            } else {
+                viewModel.setQualities(it)
+            }
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        compositeDisposable?.clear()
-        super.onDismiss(dialog)
-    }
-
-    private fun init(clip: Clip, qualities: Map<String, String>) {
-        progressBar.visibility = View.GONE
-        container.visibility = View.VISIBLE
-        val context = requireContext()
-        spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
+    private fun init(qualities: Map<String, String>) {
+        spinner.adapter = ArrayAdapter(requireContext(), R.layout.spinner_quality_item, qualities.keys.toTypedArray())
         cancel.setOnClickListener { dismiss() }
         download.setOnClickListener {
             val quality = spinner.selectedItem.toString()
-            val url = qualities[quality]!!
-            GlobalScope.launch {
-                val path = context.getExternalFilesDir(".downloads${File.separator}${clip.slug}$quality")!!.absolutePath
-                val offlineVideo = DownloadUtils.prepareDownload(context, clip, path, clip.duration.toLong())
-                val videoId = offlineRepository.saveVideo(offlineVideo)
-                DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))
-            }
+            viewModel.download(qualities.getValue(quality), quality)
             dismiss()
         }
     }

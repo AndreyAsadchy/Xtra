@@ -41,7 +41,7 @@
     <string name="specify_time">Укажите время</string>
     <string name="from">От:</string>
     <string name="to">До:</string>
-    <string name="length">Длительность: %s</string>
+    <string name="duration">Длительность: %s</string>
     <string name="invalid_time">Некорректное время</string>
     <string name="from_is_greater">Время От должно быть меньше чем До</string>
     <string name="to_is_lesser">Время До должно быть больше чем От</string>
