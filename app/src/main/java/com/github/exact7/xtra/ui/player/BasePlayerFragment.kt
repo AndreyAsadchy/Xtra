@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.player_stream.*
 @Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener {
 
-//    private var channelListener: OnChannelClickedListener? = null
+//    private var channelListener: OnChannelSelectedListener? = null
     private var dragListener: DraggableListener? = null
     private lateinit var draggableView: DraggableView
     protected abstract val viewModel: PlayerViewModel
@@ -26,7 +26,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        if (context is OnChannelClickedListener) {
+//        if (context is OnChannelSelectedListener) {
 //            channelListener = context
 //        } else {
 //            throw RuntimeException(context.toString() + " must implement OnViewChannelClickedListener")

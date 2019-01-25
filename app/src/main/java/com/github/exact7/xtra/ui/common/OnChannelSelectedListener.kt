@@ -1,5 +1,5 @@
 package com.github.exact7.xtra.ui.common
 
-interface OnChannelClickedListener {
+interface OnChannelSelectedListener {
     fun viewChannel(channelName: String)
 }

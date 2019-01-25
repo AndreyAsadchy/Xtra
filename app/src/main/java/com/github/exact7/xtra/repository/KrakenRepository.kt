@@ -3,6 +3,7 @@ package com.github.exact7.xtra.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.github.exact7.xtra.api.KrakenApi
+import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -14,6 +15,7 @@ import com.github.exact7.xtra.model.kraken.video.Period
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.datasource.ChannelVideosDataSource
+import com.github.exact7.xtra.repository.datasource.ChannelsSearchDataSource
 import com.github.exact7.xtra.repository.datasource.ClipsDataSource
 import com.github.exact7.xtra.repository.datasource.FollowedClipsDataSource
 import com.github.exact7.xtra.repository.datasource.FollowedStreamsDataSource
@@ -146,5 +148,16 @@ class KrakenRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.emotes }
                 .toLiveData()
+    }
+
+    override fun loadChannels(query: String, compositeDisposable: CompositeDisposable): Listing<Channel> {
+        val factory = ChannelsSearchDataSource.Factory(query, api, networkExecutor, compositeDisposable)
+        val config = PagedList.Config.Builder()
+                .setPageSize(10)
+                .setInitialLoadSizeHint(15)
+                .setPrefetchDistance(5)
+                .setEnablePlaceholders(false)
+                .build()
+        return Listing.create(factory, config, networkExecutor)
     }
 }

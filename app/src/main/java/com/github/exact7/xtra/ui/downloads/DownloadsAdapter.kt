@@ -30,7 +30,6 @@ class DownloadsAdapter(
         return DataBoundViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.fragment_downloads_list_item, parent, false))
     }
 
-
     override fun onBindViewHolder(holder: DataBoundViewHolder<FragmentDownloadsListItemBinding>, position: Int) {
         val binding = holder.binding
         val context = binding.date.context

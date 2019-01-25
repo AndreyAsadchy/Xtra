@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.api
 
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
+import com.github.exact7.xtra.model.kraken.channel.ChannelsSearchResponse
 import com.github.exact7.xtra.model.kraken.clip.ClipsResponse
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.GamesResponse
@@ -61,4 +62,7 @@ interface KrakenApi {
 
     @GET("users/{id}/emotes")
     fun getUserEmotes(@Path("id") userId: Int): Single<UserEmotesResponse>
+
+    @GET("search/channels")
+    fun getChannels(@Query("query") query: String, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<ChannelsSearchResponse>
 }

@@ -35,6 +35,7 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
             signingConfig signingConfigs.debug
+            multiDexEnabled true
         }
         release {
             shrinkResources true

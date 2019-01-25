@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.repository
 
 import androidx.lifecycle.LiveData
+import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.Game
@@ -26,4 +27,5 @@ interface TwitchService {
     fun loadUserById(id: Int) : LiveData<User>
     fun loadUserByLogin(login: String) : LiveData<User>
     fun loadUserEmotes(userId: Int) : LiveData<List<Emote>>
+    fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
 }

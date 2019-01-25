@@ -14,6 +14,7 @@ import com.github.exact7.xtra.ui.player.clip.ClipPlayerViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.ui.player.video.VideoPlayerViewModel
+import com.github.exact7.xtra.ui.search.SearchViewModel
 import com.github.exact7.xtra.ui.streams.common.StreamsViewModel
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsViewModel
 import com.github.exact7.xtra.ui.videos.channel.ChannelVideosViewModel
@@ -114,4 +115,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ClipDownloadViewModel::class)
     abstract fun bindClipDownloadViewModel(clipDownloadViewModel: ClipDownloadViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    abstract fun bindSearchViewModel(searchViewModel: SearchViewModel): ViewModel
 }

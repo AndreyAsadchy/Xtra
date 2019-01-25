@@ -14,7 +14,7 @@
         android:inputType="textCapSentences|textAutoComplete"
         android:imeOptions="actionSend"
         android:layout_height="match_parent"
-        android:windowSoftInputMode="adjustResize|stateUnchanged"/>
+        android:windowSoftInputMode="adjustResize"/>
 
     <!--<ImageButton-->
         <!--android:id="@+id/emotes"-->

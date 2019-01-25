@@ -84,7 +84,7 @@ class DownloadService : IntentService(TAG), Injectable {
             setOngoing(true)
             setContentText(offlineVideo.name)
             val clickIntent = Intent(this@DownloadService, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 putExtra("code", 0)
             }
             setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
@@ -242,7 +242,7 @@ class DownloadService : IntentService(TAG), Injectable {
         }
         offlineRepository.onDownloaded(offlineVideo)
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("video", offlineVideo)
             putExtra("code", 1)
         }

@@ -11,6 +11,7 @@ import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
+import com.github.exact7.xtra.ui.search.SearchFragment
 import com.github.exact7.xtra.ui.streams.common.StreamsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
 import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
@@ -73,4 +74,7 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeClipDownloadDialog(): ClipDownloadDialog
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchFragment(): SearchFragment
 }

@@ -43,15 +43,17 @@ class MainViewModel @Inject constructor(
     private val compositeDisposable = CompositeDisposable()
 
     fun setUser(user: User) {
-        _user.value = user.let {
-            if (it is NotValidated) {
-                if (!TwitchApiHelper.validated) {
-                    it
+        if (_user.value == null) {
+            _user.value = user.let {
+                if (it is NotValidated) {
+                    if (!TwitchApiHelper.validated) {
+                        it
+                    } else {
+                        LoggedIn(it)
+                    }
                 } else {
-                    LoggedIn(it)
+                    it
                 }
-            } else {
-                it
             }
         }
     }

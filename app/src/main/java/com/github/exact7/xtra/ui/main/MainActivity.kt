@@ -25,7 +25,7 @@ import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
-import com.github.exact7.xtra.ui.common.OnChannelClickedListener
+import com.github.exact7.xtra.ui.common.OnChannelSelectedListener
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
@@ -40,9 +40,11 @@ import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
+import com.github.exact7.xtra.ui.search.SearchFragment
 import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.NetworkUtils
 import com.github.exact7.xtra.util.Prefs
 import com.ncapdevi.fragnav.FragNavController
@@ -52,25 +54,26 @@ import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelClickedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener, Injectable {
 
-    companion object {
-        private const val PLAYER_TAG = "player"
-        const val INDEX_GAMES = FragNavController.TAB1
-        const val INDEX_TOP = FragNavController.TAB2
-        const val INDEX_FOLLOWED = FragNavController.TAB3
-        const val INDEX_DOWNLOADS = FragNavController.TAB4
-        const val INDEX_MENU = FragNavController.TAB5
-    }
+const val PLAYER_TAG = "player"
+const val SEARCH_TAG = "search"
+const val INDEX_GAMES = FragNavController.TAB1
+const val INDEX_TOP = FragNavController.TAB2
+const val INDEX_FOLLOWED = FragNavController.TAB3
+const val INDEX_DOWNLOADS = FragNavController.TAB4
+const val INDEX_MENU = FragNavController.TAB5
+
+class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener, Injectable {
 
     @Inject lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
     private var playerFragment: BasePlayerFragment? = null
+    private var searchFragment: SearchFragment? = null
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            viewModel.setNetworkAvailable(NetworkUtils.isConnected(context!!))
+    private val networkReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            viewModel.setNetworkAvailable(NetworkUtils.isConnected(context))
         }
     }
 
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         initNavigation()
         val user = Prefs.getUser(this)
@@ -123,28 +127,21 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     flag = true
                 }
             }
-//            if (it) {
-//                offlineView.animate().translationY(offlineView.height.toFloat()).setListener(object : Animator.AnimatorListener {
-//                    override fun onAnimationRepeat(animation: Animator?) {
-//                    }
-//
-//                    override fun onAnimationEnd(animation: Animator?) {
-//                offlineView.visibility = View.GONE
-//                    }
-//
-//                    override fun onAnimationCancel(animation: Animator?) {
-//                    }
-//
-//                    override fun onAnimationStart(animation: Animator?) {
-//                    }
-//                })
-
-//            } else {
-//                offlineView.visibility = View.VISIBLE
-//                offlineView.animate().translationY(0f)
-//            }
         })
-        registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        if (!search.isIconified) {
+            searchFragment = supportFragmentManager.findFragmentByTag(SEARCH_TAG) as SearchFragment?
+                    ?: SearchFragment()
+        }
+        search.setOnSearchClickListener {
+            searchFragment = supportFragmentManager.findFragmentByTag(SEARCH_TAG) as SearchFragment?
+                    ?: SearchFragment()
+            supportFragmentManager.beginTransaction().add(R.id.searchContainer, searchFragment!!, SEARCH_TAG).addToBackStack(null).commit()
+        }
+        search.setOnCloseListener {
+            supportFragmentManager.beginTransaction().remove(searchFragment!!).commit()
+            return@setOnCloseListener false
+        }
+        registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         handleIntent(intent)
     }
 
@@ -155,7 +152,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(receiver)
+        unregisterReceiver(networkReceiver)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -191,6 +188,11 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             return
         }
         if (!viewModel.isPlayerMaximized) {
+            if (!search.isIconified) {
+                search.isIconified = true
+                supportFragmentManager.beginTransaction().remove(searchFragment!!).commit()
+                return
+            }
             if (fragNavController.isRootFragment) {
                 if (viewModel.user.value !is NotLoggedIn) {
                     if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
@@ -242,23 +244,23 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun startStream(stream: Stream) {
 //        playerFragment?.play(stream)
-        startPlayer(StreamPlayerFragment().apply { arguments = bundleOf("stream" to stream) })
+        startPlayer(StreamPlayerFragment().apply { arguments = bundleOf(C.STREAM to stream) })
     }
 
     override fun startVideo(video: Video) {
-        startPlayer(VideoPlayerFragment().apply { arguments = bundleOf("video" to video) })
+        startPlayer(VideoPlayerFragment().apply { arguments = bundleOf(C.VIDEO to video) })
     }
 
     override fun startClip(clip: Clip) {
-        startPlayer(ClipPlayerFragment().apply { arguments = bundleOf("clip" to clip) })
+        startPlayer(ClipPlayerFragment().apply { arguments = bundleOf(C.CLIP to clip) })
     }
 
     override fun startOfflineVideo(video: OfflineVideo) {
-        startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf("video" to video) })
+        startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf(C.VIDEO to video) })
     }
 
     override fun viewChannel(channelName: String) {
-        //TODO
+        println(channelName)
     }
 
 //DraggableListener
@@ -287,13 +289,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //        navBarContainer.translationY = -viewYPosition * navBarContainer.height + navBarContainer.height
 //    }
 
-//Player methods
+    //Player methods
 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {
         playerFragment = fragment
         supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
-//        }
         viewModel.onPlayerStarted()
     }
 
@@ -306,12 +307,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         navBarContainer.translationY = navBarContainer.height.toFloat()
     }
 
-
-
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return dispatchingFragmentInjector
     }
-
 
     private fun initNavigation() {
         fragNavController.apply {
