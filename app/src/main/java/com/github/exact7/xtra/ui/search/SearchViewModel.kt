@@ -25,7 +25,6 @@ class SearchViewModel @Inject constructor(
     val loadingState: LiveData<LoadingState> = Transformations.switchMap(result) { it.loadingState }
 
     fun setQuery(query: String) {
-        println("set $query")
         _query.value = query
     }
 

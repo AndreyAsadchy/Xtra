@@ -11,7 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.Executor
 
 class ChannelVideosDataSource (
-        private val channelId: Any,
+        private val channelId: String,
         private val broadcastTypes: BroadcastType,
         private val sort: Sort,
         private val api: KrakenApi,
@@ -33,7 +33,7 @@ class ChannelVideosDataSource (
     }
 
     class Factory(
-            private val channelId: Any,
+            private val channelId: String,
             private val broadcastTypes: BroadcastType,
             private val sort: Sort,
             private val api: KrakenApi,

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
+import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -31,6 +33,7 @@ import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.menu.MenuFragment
+import com.github.exact7.xtra.ui.pagers.ChannelPagerFragment
 import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
 import com.github.exact7.xtra.ui.pagers.GamePagerFragment
 import com.github.exact7.xtra.ui.pagers.MediaPagerFragment
@@ -56,7 +59,6 @@ import javax.inject.Inject
 
 
 const val PLAYER_TAG = "player"
-const val SEARCH_TAG = "search"
 const val INDEX_GAMES = FragNavController.TAB1
 const val INDEX_TOP = FragNavController.TAB2
 const val INDEX_FOLLOWED = FragNavController.TAB3
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
     private var playerFragment: BasePlayerFragment? = null
-    private var searchFragment: SearchFragment? = null
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
     private val networkReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -122,23 +123,22 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     viewModel.validate(this@MainActivity)
                 }
                 if (flag) {
-                    Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_SHORT).show()
                 } else {
                     flag = true
                 }
             }
         })
-        if (!search.isIconified) {
-            searchFragment = supportFragmentManager.findFragmentByTag(SEARCH_TAG) as SearchFragment?
-                    ?: SearchFragment()
-        }
         search.setOnSearchClickListener {
-            searchFragment = supportFragmentManager.findFragmentByTag(SEARCH_TAG) as SearchFragment?
-                    ?: SearchFragment()
-            supportFragmentManager.beginTransaction().add(R.id.searchContainer, searchFragment!!, SEARCH_TAG).addToBackStack(null).commit()
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            fragNavController.pushFragment(SearchFragment())
         }
         search.setOnCloseListener {
-            supportFragmentManager.beginTransaction().remove(searchFragment!!).commit()
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            if (search.query.isNotEmpty()) {
+                fragNavController.popFragment()
+
+            }
             return@setOnCloseListener false
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
@@ -181,6 +181,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onBackPressed() {
         if (viewModel.isPlayerOpened && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
             closePlayer()
@@ -189,8 +196,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         if (!viewModel.isPlayerMaximized) {
             if (!search.isIconified) {
+                search.setQuery("", false)
                 search.isIconified = true
-                supportFragmentManager.beginTransaction().remove(searchFragment!!).commit()
                 return
             }
             if (fragNavController.isRootFragment) {
@@ -259,8 +266,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf(C.VIDEO to video) })
     }
 
-    override fun viewChannel(channelName: String) {
-        println(channelName)
+    override fun viewChannel(channel: Channel) {
+        fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
+        search.setQuery("", false)
+        search.isIconified = true
     }
 
 //DraggableListener
@@ -300,6 +309,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     private fun closePlayer() {
         supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
+        playerFragment = null
         viewModel.onPlayerClosed()
     }
 
@@ -314,7 +324,16 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private fun initNavigation() {
         fragNavController.apply {
             rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())
-            fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
+            fragmentHideStrategy = FragNavController.HIDE
+            transactionListener = object : FragNavController.TransactionListener {
+                override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
+                    println(fragment)
+                }
+
+                override fun onTabTransaction(fragment: Fragment?, index: Int) {
+                    println(fragment)
+                }
+            }
         }
         navBar.apply {
             setOnNavigationItemSelectedListener {

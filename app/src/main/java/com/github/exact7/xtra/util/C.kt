@@ -11,4 +11,5 @@ object C {
     const val USERNAME = "username"
     const val USER_ID = "user_id"
     const val FIRST_LAUNCH = "first_launch"
+    const val CHANNEL = "channel"
 }

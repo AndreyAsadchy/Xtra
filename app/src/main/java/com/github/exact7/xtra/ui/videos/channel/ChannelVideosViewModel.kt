@@ -33,7 +33,7 @@ class ChannelVideosViewModel @Inject constructor(
         _sortText.value = context.getString(sortOptions[selectedIndex])
     }
 
-    fun setChannelId(channelId: Any) {
+    fun setChannelId(channelId: String) {
         if (filter.value?.channelId != channelId) {
             filter.value = Filter(channelId)
         }
@@ -47,6 +47,6 @@ class ChannelVideosViewModel @Inject constructor(
     }
 
     private data class Filter(
-            val channelId: Any,
+            val channelId: String,
             val sort: Sort = Sort.TIME)
 }

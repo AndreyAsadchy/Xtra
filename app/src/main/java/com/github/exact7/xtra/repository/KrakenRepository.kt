@@ -117,7 +117,7 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadChannelVideos(channelId: Any, broadcastType: BroadcastType, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video> {
+    override fun loadChannelVideos(channelId: String, broadcastType: BroadcastType, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video> {
         val factory = ChannelVideosDataSource.Factory(channelId, broadcastType, sort, api, networkExecutor, compositeDisposable)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)

@@ -49,7 +49,7 @@ interface KrakenApi {
     fun getFollowedVideos(@Header("Authorization") token: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>
 
     @GET("channels/{id}/videos")
-    fun getChannelVideos(@Path("id") channelId: Any, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>
+    fun getChannelVideos(@Path("id") channelId: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>
 
     @GET("users/{id}")
     fun getUserById(@Path("id") id: Int): Single<User>

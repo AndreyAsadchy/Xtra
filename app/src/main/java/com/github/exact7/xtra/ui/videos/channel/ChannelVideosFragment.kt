@@ -3,9 +3,11 @@ package com.github.exact7.xtra.ui.videos.channel
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_videos.*
 
@@ -20,7 +22,7 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.setChannelId(arguments?.get("channelId")!!)
+        viewModel.setChannelId(arguments!!.getParcelable<Channel>(C.CHANNEL)!!.id)
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 

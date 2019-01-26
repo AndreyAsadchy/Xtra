@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.main.MainActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait"/>
         <service android:name=".ui.download.DownloadService"/>
