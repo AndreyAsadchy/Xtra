@@ -57,4 +57,5 @@
     <string name="storage_permission_message">Для скачивания видео необходимо разрешение на доступ к памяти.</string>
     <string name="storage_permission_title">Приложению необходимо разрешение</string>
     <string name="permission_denied">Необходимые разрешения не были предоставлены</string>
+    <string name="nothing_here">Здесь пусто</string>
 </resources>

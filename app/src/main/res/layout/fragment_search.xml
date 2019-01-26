@@ -15,10 +15,27 @@
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="?homeAsUpIndicator">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="flagNoExtractUi"
+                app:queryHint="@android:string/search_go"
+                app:iconifiedByDefault="false"
+                app:searchIcon="@null"/>
+        </androidx.appcompat.widget.Toolbar>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:divider="@{@drawable/divider}"
             tools:listitem="@layout/fragment_search_channels_list_item"
@@ -29,6 +46,7 @@
             android:layout_height="wrap_content"
             app:visible="@{viewModel.loadingState == LoadingState.LOADING}"
             android:layout_gravity="center"/>
+
     </FrameLayout>
 
 </layout>

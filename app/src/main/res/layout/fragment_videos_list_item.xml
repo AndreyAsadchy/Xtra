@@ -8,15 +8,18 @@
             name="video"
             type="com.github.exact7.xtra.model.kraken.video.Video"/>
         <variable
-            name="listener"
+            name="videoListener"
             type="com.github.exact7.xtra.ui.videos.BaseVideosFragment.OnVideoSelectedListener"/>
+        <variable
+            name="channelListener"
+            type="com.github.exact7.xtra.ui.common.OnChannelSelectedListener" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?attr/cardStyle"
-        android:onClick="@{() -> listener.startVideo(video)}">
+        android:onClick="@{() -> videoListener.startVideo(video)}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -74,7 +77,8 @@
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                android:onClick="@{() -> channelListener.viewChannel(video.channel)}"/>
 
             <TextView
                 android:id="@+id/title"
@@ -112,7 +116,8 @@
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"/>
+                android:layout_toLeftOf="@+id/options"
+                android:onClick="@{() -> channelListener.viewChannel(video.channel)}"/>
 
             <TextView
                 android:id="@+id/gameName"

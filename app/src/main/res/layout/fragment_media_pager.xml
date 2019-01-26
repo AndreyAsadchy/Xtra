@@ -13,6 +13,7 @@
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabMaxWidth="0dp"
             app:tabMode="fixed"
             app:tabGravity="fill"/>
 

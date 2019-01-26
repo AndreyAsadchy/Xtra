@@ -8,8 +8,8 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -129,17 +129,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
-        search.setOnSearchClickListener {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            fragNavController.pushFragment(SearchFragment())
-        }
-        search.setOnCloseListener {
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            if (search.query.isNotEmpty()) {
-                fragNavController.popFragment()
-
-            }
-            return@setOnCloseListener false
+        search.setOnClickListener {
+            supportFragmentManager.beginTransaction().add(R.id.searchContainer, SearchFragment()).addToBackStack(null).commit()
+            viewModel.isSearchOpened = true
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         handleIntent(intent)
@@ -181,13 +173,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> onBackPressed()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onBackPressed() {
         if (viewModel.isPlayerOpened && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
             closePlayer()
@@ -195,9 +180,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             return
         }
         if (!viewModel.isPlayerMaximized) {
-            if (!search.isIconified) {
-                search.setQuery("", false)
-                search.isIconified = true
+            if (viewModel.isSearchOpened) {
+                closeSearch()
                 return
             }
             if (fragNavController.isRootFragment) {
@@ -267,9 +251,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun viewChannel(channel: Channel) {
+        if (fragNavController.currentFrag is ChannelPagerFragment) //TODO change with own channel items
+            return
         fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
-        search.setQuery("", false)
-        search.isIconified = true
+        if (viewModel.isSearchOpened) {
+            closeSearch()
+        }
     }
 
 //DraggableListener
@@ -313,6 +300,14 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         viewModel.onPlayerClosed()
     }
 
+    private fun closeSearch() {
+        super.onBackPressed()
+        currentFocus?.let {
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
+        }
+        viewModel.isSearchOpened = false
+    }
+
     private fun hideNavigationBar() {
         navBarContainer.translationY = navBarContainer.height.toFloat()
     }
@@ -327,11 +322,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             fragmentHideStrategy = FragNavController.HIDE
             transactionListener = object : FragNavController.TransactionListener {
                 override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
-                    println(fragment)
+                    when (fragment) {
+//                        is ChannelPagerFragment ->
+//                        else -> supportActionBar?.show()
+                    }
+
                 }
 
                 override fun onTabTransaction(fragment: Fragment?, index: Int) {
-                    println(fragment)
+
                 }
             }
         }

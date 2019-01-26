@@ -11,7 +11,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.DownloadUtils
 
 class VideosAdapter(
-        private val listener: BaseVideosFragment.OnVideoSelectedListener) : DataBoundPagedListAdapter<Video, FragmentVideosListItemBinding>(
+        private val mainActivity: MainActivity) : DataBoundPagedListAdapter<Video, FragmentVideosListItemBinding>(
         object : DiffUtil.ItemCallback<Video>() {
             override fun areItemsTheSame(oldItem: Video, newItem: Video): Boolean =
                     oldItem.id == newItem.id
@@ -25,12 +25,12 @@ class VideosAdapter(
     lateinit var lastSelectedItem: Video
         private set
 
-    override val itemId: Int
-        get() = R.layout.fragment_videos_list_item
+    override val itemId: Int = R.layout.fragment_videos_list_item
 
     override fun bind(binding: FragmentVideosListItemBinding, item: Video?) {
         binding.video = item
-        binding.listener = listener
+        binding.videoListener = mainActivity
+        binding.channelListener = mainActivity
         val activity = binding.root.context as MainActivity
         val showDialog = {
             lastSelectedItem = item!!

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentSearchBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.main.MainActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
@@ -32,22 +31,27 @@ class SearchFragment : Fragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java)
         binding.viewModel = viewModel
-        val adapter = ChannelsSearchAdapter(requireActivity() as MainActivity)
+        val activity = requireActivity() as MainActivity
+        val adapter = ChannelsSearchAdapter(activity)
         recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            adapter.submitList(if (search.query.isNotEmpty()) it else null)
         })
-        val search = (requireActivity() as MainActivity).search
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter.submitList(null)
-                if (newText.isNotEmpty()) {
-                    viewModel.setQuery(newText)
+                if (viewModel.query != newText) {
+                    adapter.submitList(null)
+                    if (newText.isNotEmpty()) {
+                        viewModel.query = newText
+                    }
                 }
                 return false
             }
         })
+        toolbar.setNavigationOnClickListener { activity.onBackPressed() }
+        if (savedInstanceState == null)
+            search.onActionViewExpanded()
     }
 }

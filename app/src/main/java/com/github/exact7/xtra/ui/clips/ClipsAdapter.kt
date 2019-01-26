@@ -11,7 +11,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.DownloadUtils
 
 class ClipsAdapter(
-        private val listener: BaseClipsFragment.OnClipSelectedListener) : DataBoundPagedListAdapter<Clip, FragmentClipsListItemBinding>(
+        private val mainActivity: MainActivity) : DataBoundPagedListAdapter<Clip, FragmentClipsListItemBinding>(
         object : DiffUtil.ItemCallback<Clip>() {
             override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
                     oldItem.slug == newItem.slug
@@ -25,21 +25,19 @@ class ClipsAdapter(
     lateinit var lastSelectedItem: Clip
         private set
 
-    override val itemId: Int
-        get() = R.layout.fragment_clips_list_item
+    override val itemId: Int = R.layout.fragment_clips_list_item
 
     override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
         binding.clip = item
-        binding.listener = listener
-        val activity = binding.root.context as MainActivity
+        binding.listener = mainActivity
         val showDialog = {
             lastSelectedItem = item!!
-            if (DownloadUtils.hasStoragePermission(activity)) {
-                ClipDownloadDialog.newInstance(item).show(activity.supportFragmentManager, null)
+            if (DownloadUtils.hasStoragePermission(mainActivity)) {
+                ClipDownloadDialog.newInstance(item).show(mainActivity.supportFragmentManager, null)
             }
         }
         binding.options.setOnClickListener {
-            PopupMenu(activity, binding.options).apply {
+            PopupMenu(mainActivity, binding.options).apply {
                 inflate(R.menu.media_item)
                 setOnMenuItemClickListener {
                     showDialog.invoke()

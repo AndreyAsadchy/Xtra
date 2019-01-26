@@ -3,11 +3,9 @@ package com.github.exact7.xtra.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.view_chat_message.view.*
 
 class MessageView : LinearLayout {
@@ -36,7 +34,6 @@ class MessageView : LinearLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        editText.setOnFocusChangeListener { _, hasFocus ->  (context as MainActivity).window.setSoftInputMode(if (hasFocus) WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE else WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) }
         editText.setOnEditorActionListener { v, actionId, _ ->
             var handled = false
             if (callback != null) {

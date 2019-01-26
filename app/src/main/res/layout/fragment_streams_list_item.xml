@@ -9,15 +9,18 @@
             name="stream"
             type="com.github.exact7.xtra.model.kraken.stream.Stream"/>
         <variable
-            name="listener"
+            name="streamListener"
             type="com.github.exact7.xtra.ui.streams.BaseStreamsFragment.OnStreamSelectedListener"/>
+        <variable
+            name="channelListener"
+            type="com.github.exact7.xtra.ui.common.OnChannelSelectedListener" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?attr/cardStyle"
-        android:onClick="@{() -> listener.startStream(stream)}">
+        android:onClick="@{() -> streamListener.startStream(stream)}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -68,7 +71,8 @@
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                android:onClick="@{() -> channelListener.viewChannel(stream.channel)}"/>
 
             <TextView
                 android:id="@+id/username"
@@ -83,7 +87,9 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toRightOf="@id/userImage"
+                android:onClick="@{() -> channelListener.viewChannel(stream.channel)}"/>
+
             <TextView
                 android:id="@+id/title"
                 android:text="@{stream.channel.status}"

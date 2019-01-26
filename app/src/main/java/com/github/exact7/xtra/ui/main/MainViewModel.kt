@@ -39,6 +39,7 @@ class MainViewModel @Inject constructor(
 
     var isPlayerOpened = false
         private set
+    var isSearchOpened = false
 
     private val compositeDisposable = CompositeDisposable()
 
