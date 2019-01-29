@@ -129,9 +129,16 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
-        search.setOnClickListener {
-            supportFragmentManager.beginTransaction().add(R.id.searchContainer, SearchFragment()).addToBackStack(null).commit()
-            viewModel.isSearchOpened = true
+        search.setOnCloseListener {
+            if (fragNavController.currentFrag is SearchFragment) {
+                fragNavController.popFragment()
+            }
+            false
+        }
+        search.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus && fragNavController.currentFrag !is SearchFragment) {
+                fragNavController.pushFragment(SearchFragment())
+            }
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         handleIntent(intent)
@@ -180,10 +187,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             return
         }
         if (!viewModel.isPlayerMaximized) {
-            if (viewModel.isSearchOpened) {
-                closeSearch()
-                return
-            }
             if (fragNavController.isRootFragment) {
                 if (viewModel.user.value !is NotLoggedIn) {
                     if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
@@ -227,7 +230,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    //Navigation listeners
+//Navigation listeners
 
     override fun openGame(game: Game) {
         fragNavController.pushFragment(GamePagerFragment.newInstance(game))
@@ -251,11 +254,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun viewChannel(channel: Channel) {
-        if (fragNavController.currentFrag is ChannelPagerFragment) //TODO change with own channel items
-            return
-        fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
-        if (viewModel.isSearchOpened) {
-            closeSearch()
+        if (fragNavController.currentFrag !is ChannelPagerFragment) {
+            if (fragNavController.currentFrag is SearchFragment) {
+                currentFocus?.let {
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
+                }
+            }
+            fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
         }
     }
 
@@ -285,7 +290,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //        navBarContainer.translationY = -viewYPosition * navBarContainer.height + navBarContainer.height
 //    }
 
-    //Player methods
+//Player methods
 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {
@@ -300,16 +305,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         viewModel.onPlayerClosed()
     }
 
-    private fun closeSearch() {
-        super.onBackPressed()
-        currentFocus?.let {
-            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
-        }
-        viewModel.isSearchOpened = false
-    }
-
     private fun hideNavigationBar() {
         navBarContainer.translationY = navBarContainer.height.toFloat()
+    }
+
+    private fun showNavigationBar() {
+        navBarContainer.translationY = 0f
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
@@ -319,20 +320,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private fun initNavigation() {
         fragNavController.apply {
             rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())
-            fragmentHideStrategy = FragNavController.HIDE
-            transactionListener = object : FragNavController.TransactionListener {
-                override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
-                    when (fragment) {
-//                        is ChannelPagerFragment ->
-//                        else -> supportActionBar?.show()
-                    }
-
-                }
-
-                override fun onTabTransaction(fragment: Fragment?, index: Int) {
-
-                }
-            }
+            fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
         }
         navBar.apply {
             setOnNavigationItemSelectedListener {
@@ -354,13 +342,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     R.id.fragment_games -> {
                         when (currentFragment) {
                             is GamesFragment -> currentFragment.scrollToTop()
-                            else -> fragNavController.popFragment()
+                            else -> fragNavController.clearStack()
                         }
                     }
-                    else -> {
+                    else -> if (fragNavController.isRootFragment) {
                         if (currentFragment is Scrollable) {
                             currentFragment.scrollToTop()
                         }
+                    } else {
+                        fragNavController.clearStack()
                     }
                 }
             }

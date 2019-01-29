@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -18,8 +19,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.TwitchApiHelper
-import java.util.*
-import kotlin.math.roundToInt
+import java.util.Calendar
 
 @SuppressLint("CheckResult")
 @BindingAdapter("imageUrl", "changes", "circle", requireAll = false)
@@ -29,7 +29,7 @@ fun loadImage(imageView: ImageView, url: String, changes: Boolean, circle: Boole
             .transition(DrawableTransitionOptions.withCrossFade())
     if (changes) {
         val calendar = Calendar.getInstance()
-        request.signature(ObjectKey((calendar.get(Calendar.MINUTE) / 10f).roundToInt() + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
+        request.signature(ObjectKey(Math.floor(calendar.get(Calendar.MINUTE) / 10.0 * 2.0) / 2.0 + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
     }
     if (circle) {
         request.circleCrop()
@@ -58,6 +58,14 @@ fun setEnabled(view: View, enabled: Boolean) {
     view.isEnabled = enabled
 }
 
+@BindingAdapter("enabled")
+fun setEnabled(imageView: ImageView, enabled: Boolean) {
+    imageView.apply {
+        isEnabled = enabled
+        setColorFilter(if (enabled) Color.WHITE else Color.GRAY)
+    }
+}
+
 @BindingAdapter("tint")
 fun setTint(imageView: ImageView, color: Int) {
     val drawable = imageView.drawable
@@ -83,11 +91,3 @@ fun setDate(textView: TextView, date: String) {
 fun setDuration(textView: TextView, duration: Long) {
     textView.text = DateUtils.formatElapsedTime(duration)
 }
-
-//@BindingAdapter("enabled")
-//fun setEnabled(imageView: ImageView, enabled: Boolean) {
-//    imageView.apply {
-//        isEnabled = enabled
-//        setColorFilter(if (enabled) Color.WHITE else Color.GRAY)
-//    }
-//}

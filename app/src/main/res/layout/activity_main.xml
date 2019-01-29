@@ -18,16 +18,14 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
-                <ImageButton
+                <androidx.appcompat.widget.SearchView
                     android:id="@+id/search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    android:background="?android:selectableItemBackground"
-                    />
+                    android:imeOptions="flagNoExtractUi"
+                    app:queryHint="@android:string/search_go"
+                    app:searchHintIcon="@null"/>
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -41,6 +39,12 @@
             />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/playerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"/>
 
     <LinearLayout
         android:id="@+id/navBarContainer"
@@ -57,23 +61,11 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navBar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="50dp"
             app:menu="@menu/navigation_bar"
             app:labelVisibilityMode="labeled"
             style="?attr/navBarStyle"/>
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/searchContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"/>
-
-    <FrameLayout
-        android:id="@+id/playerContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"/>
 
 </RelativeLayout>

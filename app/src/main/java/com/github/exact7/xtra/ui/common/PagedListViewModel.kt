@@ -14,7 +14,7 @@ abstract class PagedListViewModel<T> : ViewModel() {
 
     protected abstract val result: LiveData<Listing<T>>
     val list: LiveData<PagedList<T>> by lazy { switchMap(result) { it.pagedList } }
-    val isEmpty: LiveData<Boolean?> by lazy { Transformations.map(result) { it.pagedList.value?.isEmpty() } } //TODO paged list in data binding not working
+    val isEmpty: LiveData<Boolean> by lazy { Transformations.map(result) { it.pagedList.value?.isEmpty() ?: false } } //TODO paged list in data binding not working
     val loadingState: LiveData<LoadingState> by lazy { switchMap(result) { it.loadingState } }
     val pagingState: LiveData<LoadingState> by lazy { switchMap(result) { it.pagingState } }
 

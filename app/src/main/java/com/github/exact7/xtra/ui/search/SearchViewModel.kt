@@ -27,9 +27,11 @@ class SearchViewModel @Inject constructor(
         set(value) {
             field = value
             job?.cancel()
-            job = GlobalScope.launch {
-                delay(500)
-                _query.postValue(query)
+            if (query.isNotEmpty()) {
+                job = GlobalScope.launch {
+                    delay(500)
+                    _query.postValue(query)
+                }
             }
         }
     private val result: LiveData<Listing<Channel>> = Transformations.map(_query) {

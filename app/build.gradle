@@ -27,8 +27,13 @@ android {
         minSdkVersion 16
         versionCode 2
         versionName "1.0.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 28
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         debug {
@@ -55,6 +60,7 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
     dataBinding {
         enabled true
@@ -68,8 +74,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //    implementation 'androidx.multidex:multidex:2.0.0'
+
     testImplementation 'junit:junit:4.13-beta-1'
-//    implementation 'androidx.multidex:multidex:2.0.0'
+    androidTestImplementation 'androidx.test:core:1.1.0'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
 
     //UI
     implementation 'com.google.android.material:material:1.1.0-alpha02'
@@ -83,6 +92,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
+    androidTestImplementation "androidx.room:room-testing:$room"
     implementation 'androidx.core:core-ktx:1.0.1'
 
     //Misc
