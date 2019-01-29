@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
             job?.cancel()
             if (query.isNotEmpty()) {
                 job = GlobalScope.launch {
-                    delay(500)
+                    delay(750)
                     _query.postValue(query)
                 }
             }

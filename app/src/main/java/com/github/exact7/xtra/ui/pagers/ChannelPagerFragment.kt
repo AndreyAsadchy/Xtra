@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import com.github.exact7.xtra.databinding.FragmentChannelBinding
-import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.util.C
 
 class ChannelPagerFragment : MediaPagerFragment() {

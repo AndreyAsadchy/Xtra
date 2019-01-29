@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
-import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -77,6 +77,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             viewModel.setNetworkAvailable(NetworkUtils.isConnected(context))
         }
     }
+    private val isSearchOpened
+        get() = fragNavController.currentFrag is SearchFragment
 
     //Lifecycle methods
 
@@ -129,14 +131,17 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             }
         })
+        if (isSearchOpened) {
+            hideNavigationBar()
+        }
         search.setOnCloseListener {
-            if (fragNavController.currentFrag is SearchFragment) {
+            if (isSearchOpened) {
                 fragNavController.popFragment()
             }
             false
         }
         search.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus && fragNavController.currentFrag !is SearchFragment) {
+            if (hasFocus && !isSearchOpened) {
                 fragNavController.pushFragment(SearchFragment())
             }
         }
@@ -255,9 +260,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun viewChannel(channel: Channel) {
         if (fragNavController.currentFrag !is ChannelPagerFragment) {
-            if (fragNavController.currentFrag is SearchFragment) {
+            if (isSearchOpened) {
                 currentFocus?.let {
                     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
+                    search.clearFocus()
                 }
             }
             fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
@@ -321,6 +327,18 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         fragNavController.apply {
             rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())
             fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
+            transactionListener = object : FragNavController.TransactionListener {
+                override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
+                    if (isSearchOpened) {
+                        hideNavigationBar()
+                    } else {
+                        showNavigationBar()
+                    }
+                }
+
+                override fun onTabTransaction(fragment: Fragment?, index: Int) {
+                }
+            }
         }
         navBar.apply {
             setOnNavigationItemSelectedListener {
@@ -356,4 +374,5 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
     }
+
 }

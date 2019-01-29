@@ -4,7 +4,7 @@
     <data>
         <variable
             name="channel"
-            type="com.github.exact7.xtra.model.kraken.channel.Channel" />
+            type="com.github.exact7.xtra.model.kraken.Channel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

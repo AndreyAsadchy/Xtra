@@ -29,7 +29,8 @@ class ClipsAdapter(
 
     override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
         binding.clip = item
-        binding.listener = mainActivity
+        binding.clipListener = mainActivity
+        binding.channelListener = mainActivity
         val showDialog = {
             lastSelectedItem = item!!
             if (DownloadUtils.hasStoragePermission(mainActivity)) {

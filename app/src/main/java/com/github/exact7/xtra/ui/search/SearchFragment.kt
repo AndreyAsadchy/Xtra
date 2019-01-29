@@ -40,7 +40,12 @@ class SearchFragment : Fragment(), Injectable {
             adapter.submitList(if (viewModel.query.isNotEmpty()) it else null)
         })
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextSubmit(query: String): Boolean {
+                if (adapter.currentList?.isEmpty() != false) {
+                    viewModel.query = query
+                }
+                return false
+            }
 
             override fun onQueryTextChange(newText: String): Boolean {
                 if (viewModel.query != newText) {

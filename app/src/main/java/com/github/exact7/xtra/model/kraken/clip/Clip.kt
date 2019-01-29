@@ -42,13 +42,13 @@ data class Clip(
 
     @Parcelize
     data class Channel(
-            val id: String,
-            val name: String,
+            override val id: String,
+            override val name: String,
             @SerializedName("display_name")
-            val displayName: String,
+            override val displayName: String,
             @SerializedName("channel_url")
             val channelUrl: String,
-            val logo: String) : Parcelable
+            override val logo: String) : Parcelable, com.github.exact7.xtra.model.kraken.Channel
 
     @Parcelize
     data class Thumbnails(

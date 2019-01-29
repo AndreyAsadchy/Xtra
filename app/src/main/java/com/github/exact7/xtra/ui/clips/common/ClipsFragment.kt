@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.clips.common
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment

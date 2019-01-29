@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.videos.channel
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment

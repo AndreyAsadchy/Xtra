@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.model.kraken.channel
 
 import android.os.Parcelable
+import com.github.exact7.xtra.model.kraken.Channel
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -11,18 +12,18 @@ data class Channel(
         @SerializedName("broadcaster_language")
         val broadcasterLanguage: String,
         @SerializedName("display_name")
-        val displayName: String,
+        override val displayName: String,
         val game: String,
         val language: String,
         @SerializedName("_id")
-        val id: String,
-        val name: String,
+        override val id: String,
+        override val name: String,
         @SerializedName("created_at")
         val createdAt: String,
         @SerializedName("updated_at")
         val updatedAt: String,
         val partner: Boolean,
-        val logo: String,
+        override val logo: String,
         @SerializedName("video_banner")
         val videoBanner: String?,
         @SerializedName("profile_banner")
@@ -38,4 +39,4 @@ data class Channel(
         @SerializedName("private_video")
         val privateVideo: Boolean,
         @SerializedName("privacy_options_enabled")
-        val privacyOptionsEnabled: Boolean) : Parcelable
+        val privacyOptionsEnabled: Boolean) : Parcelable, Channel

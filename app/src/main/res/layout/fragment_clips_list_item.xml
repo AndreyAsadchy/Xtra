@@ -8,15 +8,18 @@
             name="clip"
             type="com.github.exact7.xtra.model.kraken.clip.Clip"/>
         <variable
-            name="listener"
+            name="clipListener"
             type="com.github.exact7.xtra.ui.clips.BaseClipsFragment.OnClipSelectedListener"/>
+        <variable
+            name="channelListener"
+            type="com.github.exact7.xtra.ui.common.OnChannelSelectedListener" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?attr/cardStyle"
-        android:onClick="@{() -> listener.startClip(clip)}">
+        android:onClick="@{() -> clipListener.startClip(clip)}">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -75,7 +78,8 @@
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"/>
 
             <TextView
                 android:id="@+id/title"
@@ -109,7 +113,8 @@
                 android:layout_toStartOf="@+id/options"
                 android:layout_toLeftOf="@+id/options"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"/>
+                android:layout_toRightOf="@id/userImage"
+                android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"/>
 
             <TextView
                 android:id="@+id/gameName"
