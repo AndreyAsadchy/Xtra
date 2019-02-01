@@ -56,6 +56,8 @@ class SlidingLayout : LinearLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    private var pivX = 0f
+    private var pivY = 0f
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -69,6 +71,8 @@ class SlidingLayout : LinearLayout {
             bottomBound = (secondView.height / 1.25f).toInt()
             minimizeThreshold = height / 4
             initialPlayerViewBottom = playerView.bottom
+            pivX = pivotX
+            pivY = pivotY
             when (orientation) {
                 1 -> { //portrait
                     minimizedLeft = (width * 0.4f).toInt()
@@ -88,14 +92,13 @@ class SlidingLayout : LinearLayout {
             }
             println("MAXIMIZED $isMaximized")
         }
+        secondView.post { println("INIT SECOND ${secondView.left} ${secondView.top} ${secondView.right} ${secondView.bottom}") }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         if (isMaximized) {
             playerView.layout(l, playerViewTop, r, playerViewTop + playerView.measuredHeight)
-            secondView.layout(l, playerViewTop + playerView.measuredHeight, r, b)
-        } else {
-
+            secondView.layout(l, playerViewTop + playerView.measuredHeight, r, b + playerViewTop)
         }
     }
 
@@ -112,19 +115,38 @@ class SlidingLayout : LinearLayout {
             }
         }
         val interceptTap = viewDragHelper.isViewUnder(playerView, ev.x.toInt(), ev.y.toInt())
-        return viewDragHelper.shouldInterceptTouchEvent(ev) || interceptTap
+        return (viewDragHelper.shouldInterceptTouchEvent(ev) || interceptTap)
     }
+
+//    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+//        return isViewHit(playerView, event.x.toInt(), event.y.toInt()).also { println(it) }
+//    }
+
+//    override fun onTouchEvent(event: MotionEvent): Boolean {
+//        if (isViewHit(playerView, event.x.toInt(), event.y.toInt())) {
+//            viewDragHelper.processTouchEvent(event)
+//            return true
+//        } else {
+//            return super.onTouchEvent(event)
+//        }
+//    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (isAnimating) {
             return true
         }
-        if (isViewHit(playerView, event.x.toInt(), event.y.toInt()) && isClick(event)) {
+        val isPlayerHit = isViewHit(playerView, event.x.toInt(), event.y.toInt()) || !isMaximized
+        println("isplayer $isPlayerHit")
+        if (isPlayerHit && isClick(event)) {
+            println("GO PERFORM")
             performClick()
             return true
         }
-        viewDragHelper.processTouchEvent(event)
-        return true
+        if (isPlayerHit) {
+            viewDragHelper.processTouchEvent(event)
+            return true
+        }
+        return false
     }
 
     override fun performClick(): Boolean {
@@ -132,8 +154,7 @@ class SlidingLayout : LinearLayout {
             println("CLICK")
             return super.performClick()
         } else {
-            println("$top ${playerView.top}")
-//            maximize()
+            maximize()
             false
         }
     }
@@ -168,31 +189,48 @@ class SlidingLayout : LinearLayout {
 
     fun maximize() {
         isMaximized = true
-        animate(0, 0, width, initialPlayerViewBottom)
-        val l = PropertyValuesHolder.ofInt("left", initialSecondViewLeft)
-        val r = PropertyValuesHolder.ofFloat("translationY", 0f)
-        ObjectAnimator.ofPropertyValuesHolder(secondView, l, r).apply {
-            duration = 270L
+//        animate(0, 0, width, initialPlayerViewBottom)
+//        val l = PropertyValuesHolder.ofInt("left", initialSecondViewLeft)
+//        val r = PropertyValuesHolder.ofFloat("translationY", 0f)
+//        ObjectAnimator.ofPropertyValuesHolder(secondView, l, r).apply {
+//            duration = 270L
+//            addListener(animationListener)
+//            start()
+//        }
+        println("MAX")
+        val t = PropertyValuesHolder.ofFloat("scaleX", 1f)
+        val t1 = PropertyValuesHolder.ofFloat("scaleY", 1f)
+        playerViewTop = 0
+        requestLayout()
+        val t2 = PropertyValuesHolder.ofFloat("pivotX", pivX)
+        val t3 = PropertyValuesHolder.ofFloat("pivotY", pivY)
+//        ObjectAnimator.ofPropertyValuesHolder(playerView, l, r, t, b).apply {
+        ObjectAnimator.ofPropertyValuesHolder(this, t, t1, t2, t3).apply {
+            duration = 300L
             addListener(animationListener)
             start()
+            callback?.onMaximize()
         }
-        callback?.onMaximize()
     }
 
     fun minimize() {
         isMaximized = false
-        secondView.left = width
-        secondView.translationY = minimizedSecondViewTranslationY
+        secondView.layout(0, 0, 0, 0)
         animate(minimizedLeft, minimizedTop, minimizedRight, minimizedBottom)
         callback?.onMinimize()
     }
 
     private fun animate(left: Int, top: Int, right: Int, bottom: Int) {
-        val l = PropertyValuesHolder.ofInt("left", left)
-        val r = PropertyValuesHolder.ofInt("right", right)
-        val t = PropertyValuesHolder.ofInt("top", top)
-        val b = PropertyValuesHolder.ofInt("bottom", bottom)
-        ObjectAnimator.ofPropertyValuesHolder(playerView, l, r, t, b).apply {
+//        val l = PropertyValuesHolder.ofInt("left", left)
+//        val r = PropertyValuesHolder.ofInt("right", right)
+//        val t = PropertyValuesHolder.ofInt("top", top)
+//        val b = PropertyValuesHolder.ofInt("bottom", bottom)
+        val t = PropertyValuesHolder.ofFloat("scaleX", 0.5f)
+        val t1 = PropertyValuesHolder.ofFloat("scaleY", 0.5f)
+        val t2 = PropertyValuesHolder.ofFloat("pivotX", width * 0.9f)
+        val t3 = PropertyValuesHolder.ofFloat("pivotY", height * 0.85f)
+//        ObjectAnimator.ofPropertyValuesHolder(playerView, l, r, t, b).apply {
+        ObjectAnimator.ofPropertyValuesHolder(this, t, t1, t2, t3).apply {
             duration = 300L
             addListener(animationListener)
             start()
