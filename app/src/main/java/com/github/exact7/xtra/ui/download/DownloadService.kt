@@ -33,6 +33,7 @@ import com.iheartradio.m3u8.data.TrackData
 import com.iheartradio.m3u8.data.TrackInfo
 import com.tonyodev.fetch2.AbstractFetchListener
 import com.tonyodev.fetch2.Download
+import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.Request
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.runBlocking
@@ -53,11 +54,13 @@ class DownloadService : IntentService(TAG), Injectable {
     @Inject lateinit var playerRepository: PlayerRepository
     @Inject lateinit var offlineRepository: OfflineRepository
     @Inject lateinit var fetchProvider: FetchProvider
+    private lateinit var fetch: Fetch
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var request: com.github.exact7.xtra.model.offline.Request
     private lateinit var offlineVideo: OfflineVideo
     private var stopped = false
+    private var completed = false
 
     init {
         setIntentRedelivery(true)
@@ -75,7 +78,7 @@ class DownloadService : IntentService(TAG), Injectable {
         }
         offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) } ?: return //Download was canceled
         val countDownLatch = CountDownLatch(1)
-        val fetch = fetchProvider.get()
+        fetch = fetchProvider.get()
         val channelId = getString(R.string.notification_channel_id)
         notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(android.R.drawable.stat_sys_download)
@@ -183,9 +186,17 @@ class DownloadService : IntentService(TAG), Injectable {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         stopForegroundInternal(true)
+        if (!completed) {
+            if (this::fetch.isInitialized) {
+                fetch.deleteAll()
+                offlineRepository.deleteVideo(offlineVideo)
+            }
+        }
+        super.onDestroy()
     }
+
+
 
     private fun stopForegroundInternal(removeNotification: Boolean) {
         if (!stopped) {
@@ -256,6 +267,7 @@ class DownloadService : IntentService(TAG), Injectable {
             mActions.clear()
         }
         notificationManager.notify(request.id, notificationBuilder.build())
+        completed = true
         stopForegroundInternal(false)
     }
 

@@ -40,12 +40,6 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <FrameLayout
-        android:id="@+id/playerContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"/>
-
     <LinearLayout
         android:id="@+id/navBarContainer"
         android:layout_width="match_parent"
@@ -67,5 +61,11 @@
             style="?attr/navBarStyle"/>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/playerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"/>
 
 </RelativeLayout>

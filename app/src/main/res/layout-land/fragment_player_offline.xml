@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.exact7.xtra.ui.view.SlidingLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_player_sv"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:animateLayoutChanges="true">
@@ -14,10 +13,9 @@
         app:show_buffering="always"
         app:resize_mode="fill"/>
 
-    <!--<View-->
-        <!--android:id="@+id/dummyView"-->
-        <!--android:layout_width="1dp"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_below="@id/playerView"/>-->
+    <View
+        android:id="@+id/dummyView"
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
 
-</RelativeLayout>
+</com.github.exact7.xtra.ui.view.SlidingLayout>

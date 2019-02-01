@@ -45,7 +45,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!isPortraitOrientation) {
+        if (!isPortrait) {
             if (prefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
             maximizePlayer.setOnClickListener {
                 hideChat()

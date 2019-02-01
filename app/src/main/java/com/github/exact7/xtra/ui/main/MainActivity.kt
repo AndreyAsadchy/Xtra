@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -46,7 +44,7 @@ import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
 import com.github.exact7.xtra.ui.search.SearchFragment
 import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
-import com.github.exact7.xtra.ui.view.draggableview.DraggableListener
+import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.NetworkUtils
 import com.github.exact7.xtra.util.Prefs
@@ -65,7 +63,7 @@ const val INDEX_FOLLOWED = FragNavController.TAB3
 const val INDEX_DOWNLOADS = FragNavController.TAB4
 const val INDEX_MENU = FragNavController.TAB5
 
-class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DraggableListener, DownloadsFragment.OnVideoSelectedListener, Injectable {
+class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DownloadsFragment.OnVideoSelectedListener, Injectable, SlidingLayout.Callback {
 
     @Inject lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -104,20 +102,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (viewModel.isPlayerOpened) {
             playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
         }
-        viewModel.playerMaximized.observe(this, Observer {
-            if (viewModel.isPlayerOpened) {
-                val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE //TODO change
-                if (!isLandscape) {
-                    if (it == true) {
-                        navBarContainer.post { hideNavigationBar() }
-                    } else {
-                        navBarContainer.post { playerFragment?.minimize() } //TODO add minimize fast without callback
-                    }
-                } else {
-                    navBarContainer.visibility = View.GONE
-                }
-            }
-        })
         var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
@@ -146,7 +130,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        handleIntent(intent)
+        if (savedInstanceState == null) {
+            handleIntent(intent)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -186,11 +172,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun onBackPressed() {
-        if (viewModel.isPlayerOpened && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) { //TODO change
-            closePlayer()
-            navBarContainer.visibility = View.VISIBLE
-            return
-        }
         if (!viewModel.isPlayerMaximized) {
             if (fragNavController.isRootFragment) {
                 if (viewModel.user.value !is NotLoggedIn) {
@@ -270,33 +251,21 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-//DraggableListener
+    //SlidingLayout.Callback
 
-    override fun onMaximized() {
+    override fun onMaximize() {
         viewModel.onMaximize()
     }
 
-    override fun onMinimized() {
+    override fun onMinimize() {
         viewModel.onMinimize()
     }
 
-    override fun onClosedToLeft() {
+    override fun onClose() {
         closePlayer()
     }
 
-    override fun onClosedToRight() {
-        closePlayer()
-    }
-
-    override fun onMoved(horizontalDragOffset: Float, verticalDragOffset: Float) {
-        navBarContainer.translationY = -verticalDragOffset * navBarContainer.height + navBarContainer.height
-    }
-
-//    override fun onDrag(viewYPosition: Float, parentHeight: Int, viewHeight: Int) {
-//        navBarContainer.translationY = -viewYPosition * navBarContainer.height + navBarContainer.height
-//    }
-
-//Player methods
+    //Player methods
 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {
