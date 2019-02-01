@@ -9,17 +9,17 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.core.os.bundleOf
 import androidx.customview.widget.ViewDragHelper
 import com.google.android.exoplayer2.ui.PlayerView
 
-class SlidingLayout : LinearLayout {
+class SlidingLayout : RelativeLayout {
 
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
 
     private lateinit var playerView: PlayerView
-    private lateinit var secondView: View
+    private var secondView: View? = null
     private var playerViewTop = 0
 
     private var topBound = 0
@@ -61,44 +61,41 @@ class SlidingLayout : LinearLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        if (childCount < 2) {
-            throw IllegalStateException()
-        }
         playerView = getChildAt(0) as PlayerView
-        secondView = getChildAt(1)
+        if (childCount > 1) {
+            secondView = getChildAt(1)
+        }
         playerView.post {
             topBound = paddingTop
-            bottomBound = (secondView.height / 1.25f).toInt()
+
+//            bottomBound = (secondView.height / 1.25f).toInt()
             minimizeThreshold = height / 4
             initialPlayerViewBottom = playerView.bottom
+            initialSecondViewLeft = secondView?.left ?: 0
             pivX = pivotX
             pivY = pivotY
-            when (orientation) {
-                1 -> { //portrait
-                    minimizedLeft = (width * 0.4f).toInt()
-                    minimizedRight = (width * 0.9f).toInt()
-                    minimizedTop = (height * 0.7f).toInt()
-                    minimizedBottom = (height * 0.9f).toInt()
-                    minimizedSecondViewTranslationY = minimizedBottom.toFloat()
-                }
-                else -> { //landscape
-                    minimizedLeft = (width * 0.6f).toInt()
-                    minimizedRight = (width * 0.95f).toInt()
-                    minimizedTop = (height * 0.4f).toInt()
-                    minimizedBottom = (height * 0.8f).toInt()
-                    initialSecondViewLeft = secondView.left
-                    minimizedSecondViewTranslationY = minimizedTop.toFloat()
-                }
+            if (playerView.height == height) {//landscape
+                minimizedLeft = (width * 0.6f).toInt()
+                minimizedRight = (width * 0.95f).toInt()
+                minimizedTop = (height * 0.4f).toInt()
+                minimizedBottom = (height * 0.8f).toInt()
+                minimizedSecondViewTranslationY = minimizedTop.toFloat()
+            } else  { //portrait
+                minimizedLeft = (width * 0.4f).toInt()
+                minimizedRight = (width * 0.9f).toInt()
+                minimizedTop = (height * 0.7f).toInt()
+                minimizedBottom = (height * 0.9f).toInt()
+                minimizedSecondViewTranslationY = minimizedBottom.toFloat()
+
             }
             println("MAXIMIZED $isMaximized")
         }
-        secondView.post { println("INIT SECOND ${secondView.left} ${secondView.top} ${secondView.right} ${secondView.bottom}") }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         if (isMaximized) {
             playerView.layout(l, playerViewTop, r, playerViewTop + playerView.measuredHeight)
-            secondView.layout(l, playerViewTop + playerView.measuredHeight, r, b + playerViewTop)
+            secondView?.layout(l, playerViewTop + playerView.measuredHeight, r, b + playerViewTop)
         }
     }
 
@@ -136,7 +133,7 @@ class SlidingLayout : LinearLayout {
             return true
         }
         val isPlayerHit = isViewHit(playerView, event.x.toInt(), event.y.toInt()) || !isMaximized
-        println("isplayer $isPlayerHit")
+//        println("isplayer $isPlayerHit")
         if (isPlayerHit && isClick(event)) {
             println("GO PERFORM")
             performClick()
@@ -215,20 +212,16 @@ class SlidingLayout : LinearLayout {
 
     fun minimize() {
         isMaximized = false
-        secondView.layout(0, 0, 0, 0)
+        secondView?.layout(0, 0, 0, 0)
         animate(minimizedLeft, minimizedTop, minimizedRight, minimizedBottom)
         callback?.onMinimize()
     }
 
     private fun animate(left: Int, top: Int, right: Int, bottom: Int) {
-//        val l = PropertyValuesHolder.ofInt("left", left)
-//        val r = PropertyValuesHolder.ofInt("right", right)
-//        val t = PropertyValuesHolder.ofInt("top", top)
-//        val b = PropertyValuesHolder.ofInt("bottom", bottom)
         val t = PropertyValuesHolder.ofFloat("scaleX", 0.5f)
         val t1 = PropertyValuesHolder.ofFloat("scaleY", 0.5f)
         val t2 = PropertyValuesHolder.ofFloat("pivotX", width * 0.9f)
-        val t3 = PropertyValuesHolder.ofFloat("pivotY", height * 0.85f)
+        val t3 = PropertyValuesHolder.ofFloat("pivotY", (height - playerViewTop + (height / 2)) * 0.95f)
 //        ObjectAnimator.ofPropertyValuesHolder(playerView, l, r, t, b).apply {
         ObjectAnimator.ofPropertyValuesHolder(this, t, t1, t2, t3).apply {
             duration = 300L
@@ -296,7 +289,7 @@ class SlidingLayout : LinearLayout {
 
         override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
             playerViewTop = top
-            secondView.requestLayout()
+            secondView?.requestLayout()
         }
 
         override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {

@@ -2,8 +2,7 @@
 <com.github.exact7.xtra.ui.view.SlidingLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:animateLayoutChanges="true">
+    android:layout_width="match_parent">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
@@ -12,10 +11,5 @@
         app:controller_layout_id="@layout/player_offline"
         app:show_buffering="always"
         app:resize_mode="fill"/>
-
-    <View
-        android:id="@+id/dummyView"
-        android:layout_width="1dp"
-        android:layout_height="1dp"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>
