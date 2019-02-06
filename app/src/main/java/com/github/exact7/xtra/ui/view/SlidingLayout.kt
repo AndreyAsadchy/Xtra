@@ -20,16 +20,19 @@ class SlidingLayout : RelativeLayout {
 
     private lateinit var playerView: PlayerView
     private var secondView: View? = null
-    private var playerViewTop = 0
 
     private var topBound = 0
     private var bottomBound = 0
     private var minimizeThreshold = 0
 
-    private var minimizedLeft = 0
-    private var minimizedRight = 0
-    private var minimizedTop = 0
-    private var minimizedBottom = 0
+    private var playerViewTop = 0
+    private var minScaleX = 0f
+    private var minScaleY = 0f
+    private var minPivotX = 0f
+    private val minPivotY: Float
+        get() = (height - playerViewTop + (height / 2)) * 0.95f
+    private var originalPivotX = 0f
+    private var originalPivotY = 0f
 
     private var clickStartX = 0f
     private var clickStartY = 0f
@@ -39,10 +42,6 @@ class SlidingLayout : RelativeLayout {
 
     private var isMaximized = true
     private var isAnimating = false
-
-    private var initialPlayerViewBottom = 0
-    private var initialSecondViewLeft = 0
-    private var minimizedSecondViewTranslationY = 0f
 
     private var callback: Callback? = null
     private val animationListener = object : Animator.AnimatorListener {
@@ -56,37 +55,24 @@ class SlidingLayout : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private var pivX = 0f
-    private var pivY = 0f
-
     override fun onFinishInflate() {
         super.onFinishInflate()
         playerView = getChildAt(0) as PlayerView
-        if (childCount > 1) {
-            secondView = getChildAt(1)
-        }
+        secondView = getChildAt(1)
         playerView.post {
             topBound = paddingTop
-
-//            bottomBound = (secondView.height / 1.25f).toInt()
-            minimizeThreshold = height / 4
-            initialPlayerViewBottom = playerView.bottom
-            initialSecondViewLeft = secondView?.left ?: 0
-            pivX = pivotX
-            pivY = pivotY
+            minimizeThreshold = height / 5
+            originalPivotX = pivotX
+            originalPivotY = pivotY
             if (playerView.height == height) {//landscape
-                minimizedLeft = (width * 0.6f).toInt()
-                minimizedRight = (width * 0.95f).toInt()
-                minimizedTop = (height * 0.4f).toInt()
-                minimizedBottom = (height * 0.8f).toInt()
-                minimizedSecondViewTranslationY = minimizedTop.toFloat()
+                bottomBound = (height / 1.5f).toInt()
+                minScaleX = 0.5f
+                minScaleY = 0.5f
             } else  { //portrait
-                minimizedLeft = (width * 0.4f).toInt()
-                minimizedRight = (width * 0.9f).toInt()
-                minimizedTop = (height * 0.7f).toInt()
-                minimizedBottom = (height * 0.9f).toInt()
-                minimizedSecondViewTranslationY = minimizedBottom.toFloat()
-
+                bottomBound = height / 2
+                minScaleX = 0.5f
+                minScaleY = 0.5f
+                minPivotX = width * 0.9f
             }
             println("MAXIMIZED $isMaximized")
         }
@@ -129,26 +115,22 @@ class SlidingLayout : RelativeLayout {
 //    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (isAnimating) {
-            return true
-        }
-        val isPlayerHit = isViewHit(playerView, event.x.toInt(), event.y.toInt()) || !isMaximized
-//        println("isplayer $isPlayerHit")
+        viewDragHelper.processTouchEvent(event)
+        val x = event.x.toInt()
+        val y = event.y.toInt()
+        val isPlayerHit = isViewHit(playerView, x, y)
+        println("player $isPlayerHit")
+        val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } ?: false
         if (isPlayerHit && isClick(event)) {
-            println("GO PERFORM")
             performClick()
             return true
         }
-        if (isPlayerHit) {
-            viewDragHelper.processTouchEvent(event)
-            return true
-        }
-        return false
+        return isPlayerHit || isSecondViewHit
     }
 
     override fun performClick(): Boolean {
+        println("CLICK")
         return if (isMaximized) {
-            println("CLICK")
             return super.performClick()
         } else {
             maximize()
@@ -186,54 +168,38 @@ class SlidingLayout : RelativeLayout {
 
     fun maximize() {
         isMaximized = true
-//        animate(0, 0, width, initialPlayerViewBottom)
-//        val l = PropertyValuesHolder.ofInt("left", initialSecondViewLeft)
-//        val r = PropertyValuesHolder.ofFloat("translationY", 0f)
-//        ObjectAnimator.ofPropertyValuesHolder(secondView, l, r).apply {
-//            duration = 270L
-//            addListener(animationListener)
-//            start()
-//        }
-        println("MAX")
-        val t = PropertyValuesHolder.ofFloat("scaleX", 1f)
-        val t1 = PropertyValuesHolder.ofFloat("scaleY", 1f)
+        animate(1f, 1f, originalPivotX, originalPivotY)
         playerViewTop = 0
         requestLayout()
-        val t2 = PropertyValuesHolder.ofFloat("pivotX", pivX)
-        val t3 = PropertyValuesHolder.ofFloat("pivotY", pivY)
-//        ObjectAnimator.ofPropertyValuesHolder(playerView, l, r, t, b).apply {
-        ObjectAnimator.ofPropertyValuesHolder(this, t, t1, t2, t3).apply {
-            duration = 300L
-            addListener(animationListener)
-            start()
-            callback?.onMaximize()
-        }
+        callback?.onMaximize()
     }
 
     fun minimize() {
         isMaximized = false
         secondView?.layout(0, 0, 0, 0)
-        animate(minimizedLeft, minimizedTop, minimizedRight, minimizedBottom)
+        animate(minScaleX, minScaleY, minPivotX, minPivotY)
         callback?.onMinimize()
     }
 
-    private fun animate(left: Int, top: Int, right: Int, bottom: Int) {
-        val t = PropertyValuesHolder.ofFloat("scaleX", 0.5f)
-        val t1 = PropertyValuesHolder.ofFloat("scaleY", 0.5f)
-        val t2 = PropertyValuesHolder.ofFloat("pivotX", width * 0.9f)
-        val t3 = PropertyValuesHolder.ofFloat("pivotY", (height - playerViewTop + (height / 2)) * 0.95f)
-//        ObjectAnimator.ofPropertyValuesHolder(playerView, l, r, t, b).apply {
-        ObjectAnimator.ofPropertyValuesHolder(this, t, t1, t2, t3).apply {
+    private fun animate(scaleX: Float, scaleY: Float, pivotX: Float, pivotY: Float) {
+        val sclX = PropertyValuesHolder.ofFloat("scaleX", scaleX)
+        val sclY = PropertyValuesHolder.ofFloat("scaleY", scaleY)
+        val pvtX = PropertyValuesHolder.ofFloat("pivotX", pivotX)
+//        val pvtY = PropertyValuesHolder.ofFloat("pivotY", pivotY)
+        val pvtY = PropertyValuesHolder.ofInt("top", 500 - playerViewTop)
+        ObjectAnimator.ofPropertyValuesHolder(this, sclX, sclY, pvtX).apply {
             duration = 300L
             addListener(animationListener)
             start()
         }
+        ObjectAnimator.ofPropertyValuesHolder(playerView, pvtY).apply {
+            duration = 300L
+            start()
+        }
     }
 
-    private fun smoothSlideTo(slideOffset: Float): Boolean {
-        val left = (slideOffset * minimizedLeft).toInt()
-        val top = (slideOffset * minimizedTop).toInt()
-        if (viewDragHelper.smoothSlideViewTo(playerView, left, top)) {
+    private fun smoothSlideBack(): Boolean {
+        if (viewDragHelper.smoothSlideViewTo(playerView, 0, 0)) {
             postInvalidateOnAnimation()
             return true
         }
@@ -296,15 +262,13 @@ class SlidingLayout : RelativeLayout {
             if (isMaximized) {
                 when {
                     releasedChild.top >= minimizeThreshold -> minimize()
-                    else -> smoothSlideTo(0f)
+                    else -> smoothSlideBack()
                 }
             } else {
                 when {
                     xvel > 1500 -> closeTo(width)
                     xvel < -1500 -> closeTo(-playerView.width)
-                    else -> {
-                        smoothSlideTo(1f)
-                    }
+                    else -> smoothSlideBack()
                 }
             }
         }
