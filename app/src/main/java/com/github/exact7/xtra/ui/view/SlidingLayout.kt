@@ -24,13 +24,15 @@ class SlidingLayout : RelativeLayout {
     private var topBound = 0
     private var bottomBound = 0
     private var minimizeThreshold = 0
+    private var isPortrait = true
 
     private var playerViewTop = 0
     private var minScaleX = 0f
     private var minScaleY = 0f
-    private var minPivotX = 0f
-    private val minPivotY: Float
-        get() = (height - playerViewTop + (height / 2)) * 0.95f
+    private val minPivotYPortrait: Float
+        get() = (height + playerViewTop).toFloat()
+    private val minPivotYLandscape: Float
+        get() = (height).toFloat()
     private var originalPivotX = 0f
     private var originalPivotY = 0f
 
@@ -68,12 +70,13 @@ class SlidingLayout : RelativeLayout {
                 bottomBound = (height / 1.5f).toInt()
                 minScaleX = 0.5f
                 minScaleY = 0.5f
+                isPortrait = false
             } else  { //portrait
                 bottomBound = height / 2
                 minScaleX = 0.5f
                 minScaleY = 0.5f
-                minPivotX = width * 0.9f
             }
+            pivotX = width * 0.9f
             println("MAXIMIZED $isMaximized")
         }
     }
@@ -133,7 +136,9 @@ class SlidingLayout : RelativeLayout {
         return if (isMaximized) {
             return super.performClick()
         } else {
-            maximize()
+            pivotY += 100
+            println(pivotY)
+//            maximize()
             false
         }
     }
@@ -168,7 +173,7 @@ class SlidingLayout : RelativeLayout {
 
     fun maximize() {
         isMaximized = true
-        animate(1f, 1f, originalPivotX, originalPivotY)
+        animate(1f, 1f, originalPivotY)
         playerViewTop = 0
         requestLayout()
         callback?.onMaximize()
@@ -177,25 +182,20 @@ class SlidingLayout : RelativeLayout {
     fun minimize() {
         isMaximized = false
         secondView?.layout(0, 0, 0, 0)
-        animate(minScaleX, minScaleY, minPivotX, minPivotY)
+        animate(minScaleX, minScaleY, if (isPortrait) minPivotYPortrait else minPivotYLandscape)
         callback?.onMinimize()
     }
 
-    private fun animate(scaleX: Float, scaleY: Float, pivotX: Float, pivotY: Float) {
+    private fun animate(scaleX: Float, scaleY: Float, pivotY: Float) {
         val sclX = PropertyValuesHolder.ofFloat("scaleX", scaleX)
         val sclY = PropertyValuesHolder.ofFloat("scaleY", scaleY)
-        val pvtX = PropertyValuesHolder.ofFloat("pivotX", pivotX)
-//        val pvtY = PropertyValuesHolder.ofFloat("pivotY", pivotY)
-        val pvtY = PropertyValuesHolder.ofInt("top", 500 - playerViewTop)
-        ObjectAnimator.ofPropertyValuesHolder(this, sclX, sclY, pvtX).apply {
+//        val pvtY = PropertyValuesHolder.ofFloat("pivotY", pivotY.also { println(it)})
+        ObjectAnimator.ofPropertyValuesHolder(this, sclX, sclY).apply {
             duration = 300L
             addListener(animationListener)
             start()
         }
-        ObjectAnimator.ofPropertyValuesHolder(playerView, pvtY).apply {
-            duration = 300L
-            start()
-        }
+        smoothSlideBack()
     }
 
     private fun smoothSlideBack(): Boolean {
