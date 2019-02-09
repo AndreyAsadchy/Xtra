@@ -27,10 +27,9 @@ class ClipDownloadViewModel @Inject constructor(
         get() = _qualities
 
     private val compositeDisposable = CompositeDisposable()
-    private lateinit var clip: Clip
+    lateinit var clip: Clip
 
-    fun setClip(clip: Clip) {
-        this.clip = clip
+    fun fetchQualities() {
         playerRepository.fetchClipQualities(clip.slug)
                 .subscribe({
                     setQualities(it)

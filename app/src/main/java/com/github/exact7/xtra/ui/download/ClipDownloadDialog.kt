@@ -48,11 +48,10 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
         viewModel.qualities.observe(viewLifecycleOwner, Observer {
             init(it)
         })
-        val clip = arguments!!.getParcelable<Clip>(KEY_CLIP)!!
-        @Suppress("UNCHECKED_CAST")
-        (arguments!!.getSerializable(KEY_QUALITIES) as Map<String, String>?).let {
+        viewModel.clip = arguments!!.getParcelable(KEY_CLIP)!!
+        @Suppress("UNCHECKED_CAST") (arguments!!.getSerializable(KEY_QUALITIES) as Map<String, String>?).let {
             if (it == null) {
-                viewModel.setClip(clip)
+                viewModel.fetchQualities()
             } else {
                 viewModel.setQualities(it)
             }
