@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
@@ -30,7 +31,7 @@ class SlidingLayout : RelativeLayout {
     private var minScaleX = 0f
     private var minScaleY = 0f
     private val minPivotYPortrait: Float
-        get() = (height + playerViewTop).toFloat()
+        get() = (height).toFloat()
     private val minPivotYLandscape: Float
         get() = (height).toFloat()
     private var originalPivotX = 0f
@@ -76,15 +77,15 @@ class SlidingLayout : RelativeLayout {
                 minScaleX = 0.5f
                 minScaleY = 0.5f
             }
-            pivotX = width * 0.9f
+//            pivotX = width * 0.9f
             println("MAXIMIZED $isMaximized")
         }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        if (isMaximized) {
             playerView.layout(l, playerViewTop, r, playerViewTop + playerView.measuredHeight)
             secondView?.layout(l, playerViewTop + playerView.measuredHeight, r, b + playerViewTop)
+        if (isMaximized) {
         }
     }
 
@@ -136,8 +137,10 @@ class SlidingLayout : RelativeLayout {
         return if (isMaximized) {
             return super.performClick()
         } else {
-            pivotY += 100
-            println(pivotY)
+//            updateLayoutParams { (this as FrameLayout.LayoutParams).bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60f, resources.displayMetrics).toInt() }
+//            postDelayed({
+                pivotY = height.toFloat() + (secondView!!.height) - (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50f, resources.displayMetrics)) * 2
+//            }, 500)
 //            maximize()
             false
         }
@@ -182,6 +185,8 @@ class SlidingLayout : RelativeLayout {
     fun minimize() {
         isMaximized = false
         secondView?.layout(0, 0, 0, 0)
+        playerViewTop = 0
+        requestLayout()
         animate(minScaleX, minScaleY, if (isPortrait) minPivotYPortrait else minPivotYLandscape)
         callback?.onMinimize()
     }
@@ -189,13 +194,14 @@ class SlidingLayout : RelativeLayout {
     private fun animate(scaleX: Float, scaleY: Float, pivotY: Float) {
         val sclX = PropertyValuesHolder.ofFloat("scaleX", scaleX)
         val sclY = PropertyValuesHolder.ofFloat("scaleY", scaleY)
-//        val pvtY = PropertyValuesHolder.ofFloat("pivotY", pivotY.also { println(it)})
+//        val pvtY = PropertyValuesHolder.ofFloat("pivotY", pivotY)
         ObjectAnimator.ofPropertyValuesHolder(this, sclX, sclY).apply {
             duration = 300L
             addListener(animationListener)
             start()
         }
-        smoothSlideBack()
+
+//        smoothSlideBack()
     }
 
     private fun smoothSlideBack(): Boolean {
