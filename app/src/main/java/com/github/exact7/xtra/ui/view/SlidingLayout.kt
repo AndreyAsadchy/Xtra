@@ -13,30 +13,25 @@ import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.os.bundleOf
 import androidx.customview.widget.ViewDragHelper
-import com.google.android.exoplayer2.ui.PlayerView
+
+const val BOTTOM_MARGIN = 75f //before scaling
 
 class SlidingLayout : RelativeLayout {
 
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
 
-    private lateinit var playerView: PlayerView
+    private lateinit var dragView: View
     private var secondView: View? = null
 
     private var topBound = 0
     private var bottomBound = 0
     private var minimizeThreshold = 0
-    private var isPortrait = true
+    private var bottomMargin = 0f
 
-    private var playerViewTop = 0
-    private var playerViewLeft = 0
+    private var dragViewTop = 0
+    private var dragViewLeft = 0
     private var minScaleX = 0f
     private var minScaleY = 0f
-    private val minPivotYPortrait: Float
-        get() = height.toFloat() + secondView!!.height - playerViewTop - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75f, resources.displayMetrics) * 2
-    private val minPivotYLandscape: Float
-        get() = (height).toFloat()
-    private var originalPivotX = 0f
-    private var originalPivotY = 0f
 
     private var clickStartX = 0f
     private var clickStartY = 0f
@@ -44,15 +39,23 @@ class SlidingLayout : RelativeLayout {
     private var clickEndY = 0f
     private var clickDuration = 0L
 
+    private var isPortrait = true
     private var isMaximized = true
     private var isAnimating = false
 
     private var callback: Callback? = null
-    private val animationListener = object : Animator.AnimatorListener {
+    private val animatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) { isAnimating = true }
-        override fun onAnimationEnd(animation: Animator?) { isAnimating = false; pivotY += playerViewTop; playerViewTop = 0; playerView.requestLayout() }
+        override fun onAnimationEnd(animation: Animator?) {
+            isAnimating = false
+            if (!isMaximized) {
+//                pivotY += dragViewTop //TODO add animation?
+                dragViewTop = 0
+                dragView.requestLayout()
+            }
+        }
     }
 
     constructor(context: Context) : super(context)
@@ -61,32 +64,32 @@ class SlidingLayout : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        playerView = getChildAt(0) as PlayerView
+        dragView = getChildAt(0)
         secondView = getChildAt(1)
-        playerView.post {
+        dragView.post {
             topBound = paddingTop
             minimizeThreshold = height / 5
-            originalPivotX = pivotX
-            originalPivotY = pivotY
-            if (playerView.height == height) {//landscape
+            if (dragView.height == height) {//landscape
                 bottomBound = (height / 1.5f).toInt()
-                minScaleX = 0.5f
-                minScaleY = 0.5f
+                minScaleX = 0.3f
+                minScaleY = 0.3f
                 isPortrait = false
             } else  { //portrait
                 bottomBound = height / 2
                 minScaleX = 0.5f
                 minScaleY = 0.5f
             }
-//            pivotX = width * 0.9f
+            bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
+            pivotX = width * 0.95f
             println("MAXIMIZED $isMaximized")
         }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        playerView.layout(playerViewLeft, playerViewTop, r + playerViewLeft, playerViewTop + playerView.measuredHeight)
+        val height = dragView.measuredHeight
+        dragView.layout(dragViewLeft, dragViewTop, r + dragViewLeft, height + dragViewTop)
         if (isMaximized) {
-            secondView?.layout(l, playerViewTop + playerView.measuredHeight, r, b + playerViewTop)
+            secondView?.layout(l, height + dragViewTop, r, b + dragViewTop)
         }
     }
 
@@ -102,43 +105,30 @@ class SlidingLayout : RelativeLayout {
                 }
             }
         }
-        val interceptTap = viewDragHelper.isViewUnder(playerView, ev.x.toInt(), ev.y.toInt())
+        val interceptTap = viewDragHelper.isViewUnder(dragView, ev.x.toInt(), ev.y.toInt())
         return (viewDragHelper.shouldInterceptTouchEvent(ev) || interceptTap)
     }
 
-//    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-//        return isViewHit(playerView, event.x.toInt(), event.y.toInt()).also { println(it) }
-//    }
-
-//    override fun onTouchEvent(event: MotionEvent): Boolean {
-//        if (isViewHit(playerView, event.x.toInt(), event.y.toInt())) {
-//            viewDragHelper.processTouchEvent(event)
-//            return true
-//        } else {
-//            return super.onTouchEvent(event)
-//        }
-//    }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        viewDragHelper.processTouchEvent(event)
+        if (isAnimating) return true
         val x = event.x.toInt()
         val y = event.y.toInt()
-        val isPlayerHit = isViewHit(playerView, x, y)
-        println("player $isPlayerHit")
+        val isPlayerHit = isViewHit(dragView, x, y)
         val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } ?: false
         if (isPlayerHit && isClick(event)) {
+            dragView.dispatchTouchEvent(event)
             performClick()
             return true
         }
+        viewDragHelper.processTouchEvent(event)
         return isPlayerHit || isSecondViewHit
     }
 
     override fun performClick(): Boolean {
-        println("CLICK")
         return if (isMaximized) {
             return super.performClick()
         } else {
-//            maximize()
+            maximize()
             false
         }
     }
@@ -173,42 +163,41 @@ class SlidingLayout : RelativeLayout {
 
     fun maximize() {
         isMaximized = true
-        animate(1f, 1f, originalPivotY)
-        playerViewTop = 0
-        requestLayout()
+        secondView?.requestLayout()
+        animate(1f, 1f)
         callback?.onMaximize()
     }
 
     fun minimize() {
         isMaximized = false
-        animate(minScaleX, minScaleY, if (isPortrait) minPivotYPortrait else minPivotYLandscape)
+        pivotY = if (isPortrait) {
+            height + secondView!!.height - dragViewTop - bottomMargin
+        } else {
+            height - bottomMargin
+        }
         secondView?.layout(0, 0, 0, 0)
+        animate(minScaleX, minScaleY)
         callback?.onMinimize()
     }
 
-    private fun animate(scaleX: Float, scaleY: Float, pivotY: Float) {
+    private fun animate(scaleX: Float, scaleY: Float) {
         val sclX = PropertyValuesHolder.ofFloat("scaleX", scaleX)
         val sclY = PropertyValuesHolder.ofFloat("scaleY", scaleY)
-        this@SlidingLayout.pivotY = pivotY
         ObjectAnimator.ofPropertyValuesHolder(this, sclX, sclY).apply {
-            duration = 300L
-            addListener(animationListener)
+            duration = if (!isMaximized) 2500L else 250L
+            addListener(animatorListener)
             start()
         }
     }
 
-    private fun smoothSlideBack(): Boolean {
-        if (viewDragHelper.smoothSlideViewTo(playerView, 0, 0)) {
+    private fun smoothSlideTo(left: Int, top: Int) {
+        if (viewDragHelper.smoothSlideViewTo(dragView, left, top)) {
             postInvalidateOnAnimation()
-            return true
         }
-        return false
     }
 
     private fun closeTo(left: Int) {
-        if (viewDragHelper.smoothSlideViewTo(playerView, left, playerView.top)) {
-            postInvalidateOnAnimation()
-        }
+        smoothSlideTo(left, dragViewTop)
         callback?.onClose()
     }
 
@@ -241,7 +230,7 @@ class SlidingLayout : RelativeLayout {
     private inner class SlidingCallback : ViewDragHelper.Callback() {
 
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
-            return child == playerView
+            return child == dragView
         }
 
         override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
@@ -253,10 +242,10 @@ class SlidingLayout : RelativeLayout {
         }
 
         override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
-            playerViewTop = top
-            playerViewLeft = left
+            dragViewTop = top
+            dragViewLeft = left
             secondView?.let {
-                it.top = playerView.height + top
+                it.top = dragView.height + top
                 it.bottom = height + top
             }
         }
@@ -265,13 +254,13 @@ class SlidingLayout : RelativeLayout {
             if (isMaximized) {
                 when {
                     releasedChild.top >= minimizeThreshold -> minimize()
-                    else -> smoothSlideBack()
+                    else -> smoothSlideTo(0, 0)
                 }
             } else {
                 when {
                     xvel > 1500 -> closeTo(width)
-                    xvel < -1500 -> closeTo(-playerView.width)
-                    else -> smoothSlideBack()
+                    xvel < -1500 -> closeTo(-dragView.width)
+                    else -> smoothSlideTo(0, 0)
                 }
             }
         }
