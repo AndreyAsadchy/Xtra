@@ -12,9 +12,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
 
 const val BOTTOM_MARGIN = 75f //before scaling
+const val ANIMATION_DURATION = 250L
 
 class SlidingLayout : RelativeLayout {
 
@@ -48,14 +50,7 @@ class SlidingLayout : RelativeLayout {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) { isAnimating = true }
-        override fun onAnimationEnd(animation: Animator?) {
-            isAnimating = false
-            if (!isMaximized) {
-//                pivotY += dragViewTop //TODO add animation?
-                dragViewTop = 0
-                dragView.requestLayout()
-            }
-        }
+        override fun onAnimationEnd(animation: Animator?) { isAnimating = false }
     }
 
     constructor(context: Context) : super(context)
@@ -63,6 +58,7 @@ class SlidingLayout : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun onFinishInflate() {
+        id = ViewCompat.generateViewId() //TODO do something about ids
         super.onFinishInflate()
         dragView = getChildAt(0)
         secondView = getChildAt(1)
@@ -171,12 +167,19 @@ class SlidingLayout : RelativeLayout {
     fun minimize() {
         isMaximized = false
         pivotY = if (isPortrait) {
-            height + secondView!!.height - dragViewTop - bottomMargin
+            height + secondView!!.height - bottomMargin
         } else {
             height - bottomMargin
         }
         secondView?.layout(0, 0, 0, 0)
+        dragViewTop = 0
         animate(minScaleX, minScaleY)
+        val top = PropertyValuesHolder.ofInt("top", 0)
+        val bot = PropertyValuesHolder.ofInt("bottom", dragView.height)
+        ObjectAnimator.ofPropertyValuesHolder(dragView, top, bot).apply {
+            duration = ANIMATION_DURATION
+            start()
+        }
         callback?.onMinimize()
     }
 
@@ -184,7 +187,7 @@ class SlidingLayout : RelativeLayout {
         val sclX = PropertyValuesHolder.ofFloat("scaleX", scaleX)
         val sclY = PropertyValuesHolder.ofFloat("scaleY", scaleY)
         ObjectAnimator.ofPropertyValuesHolder(this, sclX, sclY).apply {
-            duration = if (!isMaximized) 2500L else 250L
+            duration = ANIMATION_DURATION
             addListener(animatorListener)
             start()
         }
@@ -208,6 +211,7 @@ class SlidingLayout : RelativeLayout {
     }
 
     override fun onSaveInstanceState(): Parcelable? {
+        println("SAVE")
         return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized)
     }
 
