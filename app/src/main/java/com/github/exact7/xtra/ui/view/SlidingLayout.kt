@@ -12,8 +12,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
+import com.github.exact7.xtra.R
+import com.google.android.exoplayer2.ui.DefaultTimeBar
+import com.google.android.exoplayer2.ui.PlayerView
 
 const val BOTTOM_MARGIN = 75f //before scaling
 const val ANIMATION_DURATION = 250L
@@ -22,7 +24,8 @@ class SlidingLayout : RelativeLayout {
 
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
 
-    private lateinit var dragView: View
+    private lateinit var dragView: PlayerView
+    private lateinit var timeBar: DefaultTimeBar
     private var secondView: View? = null
 
     private var topBound = 0
@@ -35,11 +38,8 @@ class SlidingLayout : RelativeLayout {
     private var minScaleX = 0f
     private var minScaleY = 0f
 
-    private var clickStartX = 0f
-    private var clickStartY = 0f
-    private var clickEndX = 0f
-    private var clickEndY = 0f
-    private var clickDuration = 0L
+    private var touchX = 0f
+    private var touchY = 0f
 
     private var isPortrait = true
     private var isMaximized = true
@@ -57,10 +57,13 @@ class SlidingLayout : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    init {
+        id = R.id.sliding_layout
+    }
+
     override fun onFinishInflate() {
-        id = ViewCompat.generateViewId() //TODO do something about ids
         super.onFinishInflate()
-        dragView = getChildAt(0)
+        dragView = getChildAt(0) as PlayerView
         secondView = getChildAt(1)
         dragView.post {
             topBound = paddingTop
@@ -77,15 +80,25 @@ class SlidingLayout : RelativeLayout {
             }
             bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
             pivotX = width * 0.95f
-            println("MAXIMIZED $isMaximized")
+            pivotY = if (isPortrait) {
+                height * 2 - dragView.height - bottomMargin
+            } else {
+                height - bottomMargin
+            }
+            if (!isMaximized) {
+                scaleX = minScaleX
+                scaleY = minScaleY
+            }
+            timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
         }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val height = dragView.measuredHeight
-        dragView.layout(dragViewLeft, dragViewTop, r + dragViewLeft, height + dragViewTop)
+        if (!isAnimating) {
+            dragView.layout(dragViewLeft, dragViewTop, r + dragViewLeft, dragView.measuredHeight + dragViewTop)
+        }
         if (isMaximized) {
-            secondView?.layout(l, height + dragViewTop, r, b + dragViewTop)
+            secondView?.layout(l, dragView.measuredHeight + dragViewTop, r, b + dragViewTop)
         }
     }
 
@@ -109,24 +122,27 @@ class SlidingLayout : RelativeLayout {
         if (isAnimating) return true
         val x = event.x.toInt()
         val y = event.y.toInt()
-        val isPlayerHit = isViewHit(dragView, x, y)
-        val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } ?: false
-        if (isPlayerHit && isClick(event)) {
-            dragView.dispatchTouchEvent(event)
+        val isDragViewHit = isViewHit(dragView, x, y)
+        val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
+        dragView.dispatchTouchEvent(event)
+        if (isDragViewHit && !isMaximized) {
+            maximize()
+            return true
+        }
+        if (timeBar.isPressed) {
+            return true
+        }
+        if (isClick(event)) {
             performClick()
             return true
         }
         viewDragHelper.processTouchEvent(event)
-        return isPlayerHit || isSecondViewHit
+        return isDragViewHit || isSecondViewHit
     }
 
     override fun performClick(): Boolean {
-        return if (isMaximized) {
-            return super.performClick()
-        } else {
-            maximize()
-            false
-        }
+        super.performClick()
+        return true
     }
 
     private fun isViewHit(view: View, x: Int, y: Int): Boolean {
@@ -143,18 +159,15 @@ class SlidingLayout : RelativeLayout {
     }
 
     private fun isClick(event: MotionEvent): Boolean {
-        when (event.actionMasked) {
+        return when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                clickStartX = event.x
-                clickStartY = event.y
+                touchX = event.x
+                touchY = event.y
+                false
             }
-            MotionEvent.ACTION_UP -> {
-                clickEndX = event.x
-                clickEndY = event.y
-                clickDuration = event.eventTime - event.downTime
-            }
+            MotionEvent.ACTION_UP -> touchX == event.x && touchY == event.y && event.eventTime - event.downTime <= 500
+            else -> false
         }
-        return clickStartX == clickEndX && clickStartY == clickEndY && clickDuration >= 0 && clickDuration < 300
     }
 
     fun maximize() {
@@ -166,20 +179,18 @@ class SlidingLayout : RelativeLayout {
 
     fun minimize() {
         isMaximized = false
-        pivotY = if (isPortrait) {
-            height + secondView!!.height - bottomMargin
-        } else {
-            height - bottomMargin
-        }
         secondView?.layout(0, 0, 0, 0)
-        dragViewTop = 0
         animate(minScaleX, minScaleY)
-        val top = PropertyValuesHolder.ofInt("top", 0)
-        val bot = PropertyValuesHolder.ofInt("bottom", dragView.height)
-        ObjectAnimator.ofPropertyValuesHolder(dragView, top, bot).apply {
-            duration = ANIMATION_DURATION
-            start()
+        if (dragViewTop != 0) {
+            dragViewTop = 0
+            val top = PropertyValuesHolder.ofInt("top", 0)
+            val bot = PropertyValuesHolder.ofInt("bottom", dragView.height)
+            ObjectAnimator.ofPropertyValuesHolder(dragView, top, bot).apply {
+                duration = ANIMATION_DURATION
+                start()
+            }
         }
+        dragView.hideController()
         callback?.onMinimize()
     }
 
@@ -211,7 +222,6 @@ class SlidingLayout : RelativeLayout {
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        println("SAVE")
         return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized)
     }
 
@@ -219,7 +229,6 @@ class SlidingLayout : RelativeLayout {
         super.onRestoreInstanceState(state.let {
             if (it is Bundle) {
                 isMaximized = it.getBoolean("isMaximized")
-                println("RESTORE $isMaximized")
                 it.getParcelable("superState")
             } else {
                 it
