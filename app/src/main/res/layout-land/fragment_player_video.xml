@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.exact7.xtra.ui.view.SlidingLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_player_sv"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:animateLayoutChanges="true">
+    android:layout_width="match_parent">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,13 +13,4 @@
         app:show_buffering="always"
         app:resize_mode="fill"/>
 
-    <!--<com.exact.xtra.ui.view.ChatView-->
-        <!--android:id="@id/chatView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="?android:colorBackground"-->
-        <!--android:layout_toEndOf="@id/playerView"-->
-        <!--android:layout_toRightOf="@id/playerView"/>-->
-
-</RelativeLayout>
+</com.github.exact7.xtra.ui.view.SlidingLayout>

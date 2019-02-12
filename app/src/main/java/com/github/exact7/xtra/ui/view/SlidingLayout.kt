@@ -10,22 +10,23 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.widget.RelativeLayout
+import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.util.isClick
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
 
 const val BOTTOM_MARGIN = 75f //before scaling
 const val ANIMATION_DURATION = 250L
 
-class SlidingLayout : RelativeLayout {
+class SlidingLayout : LinearLayout {
 
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
 
     private lateinit var dragView: PlayerView
-    private lateinit var timeBar: DefaultTimeBar
+    private lateinit var timeBar: DefaultTimeBar //make nullable cuz stream doent have it
     private var secondView: View? = null
 
     private var topBound = 0
@@ -38,8 +39,7 @@ class SlidingLayout : RelativeLayout {
     private var minScaleX = 0f
     private var minScaleY = 0f
 
-    private var touchX = 0f
-    private var touchY = 0f
+    private var downTouchLocation = FloatArray(2)
 
     private var isPortrait = true
     private var isMaximized = true
@@ -124,16 +124,19 @@ class SlidingLayout : RelativeLayout {
         val y = event.y.toInt()
         val isDragViewHit = isViewHit(dragView, x, y)
         val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
-        dragView.dispatchTouchEvent(event)
-        if (isDragViewHit && !isMaximized) {
-            maximize()
+        if (event.isClick(downTouchLocation)) {
+            if (!isMaximized) {
+                maximize()
+            }
+            if (isDragViewHit) {
+                dragView.dispatchTouchEvent(event)
+            }
+            performClick()
             return true
+        } else if (isDragViewHit) {
+
         }
         if (timeBar.isPressed) {
-            return true
-        }
-        if (isClick(event)) {
-            performClick()
             return true
         }
         viewDragHelper.processTouchEvent(event)
@@ -156,18 +159,6 @@ class SlidingLayout : RelativeLayout {
                 && screenX < viewLocation[0] + view.width
                 && screenY >= viewLocation[1]
                 && screenY < viewLocation[1] + view.height)
-    }
-
-    private fun isClick(event: MotionEvent): Boolean {
-        return when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                touchX = event.x
-                touchY = event.y
-                false
-            }
-            MotionEvent.ACTION_UP -> touchX == event.x && touchY == event.y && event.eventTime - event.downTime <= 500
-            else -> false
-        }
     }
 
     fun maximize() {
