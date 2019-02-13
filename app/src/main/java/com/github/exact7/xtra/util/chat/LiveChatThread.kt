@@ -8,7 +8,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
-import java.util.*
+import java.util.Random
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -38,8 +38,8 @@ class LiveChatThread(
             writer.flush()
         }
 
-        connect()
         try {
+            connect()
             while (true) {
                 val lineListener = readerIn.readLine() ?: break
                 lineListener.run {
@@ -89,8 +89,8 @@ class LiveChatThread(
             Log.d(TAG, "Successfully connected to channelName - $hashChannelName")
         } catch (e: IOException) {
             Log.e(TAG, "Error connecting to Twitch IRC", e)
+            throw e
         }
-
     }
 
     private fun disconnect() {

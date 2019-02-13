@@ -15,6 +15,7 @@ import androidx.core.os.bundleOf
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.isClick
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
 
@@ -26,8 +27,8 @@ class SlidingLayout : LinearLayout {
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
 
     private lateinit var dragView: PlayerView
-    private lateinit var timeBar: DefaultTimeBar //make nullable cuz stream doent have it
     private var secondView: View? = null
+    private var timeBar: DefaultTimeBar? = null
 
     private var topBound = 0
     private var bottomBound = 0
@@ -41,16 +42,21 @@ class SlidingLayout : LinearLayout {
 
     private var downTouchLocation = FloatArray(2)
 
-    private var isPortrait = true
+    private val isPortrait: Boolean
+        get() = orientation == 1
     private var isMaximized = true
     private var isAnimating = false
+    private var shouldUpdateLayout = false
 
     private var callback: Callback? = null
     private val animatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
         override fun onAnimationStart(animation: Animator?) { isAnimating = true }
-        override fun onAnimationEnd(animation: Animator?) { isAnimating = false }
+        override fun onAnimationEnd(animation: Animator?) {
+            isAnimating = false
+            shouldUpdateLayout = false
+        }
     }
 
     constructor(context: Context) : super(context)
@@ -68,15 +74,14 @@ class SlidingLayout : LinearLayout {
         dragView.post {
             topBound = paddingTop
             minimizeThreshold = height / 5
-            if (dragView.height == height) {//landscape
-                bottomBound = (height / 1.5f).toInt()
-                minScaleX = 0.3f
-                minScaleY = 0.3f
-                isPortrait = false
-            } else  { //portrait
+            if (isPortrait) { //portrait
                 bottomBound = height / 2
                 minScaleX = 0.5f
                 minScaleY = 0.5f
+            } else { //landscape
+                bottomBound = (height / 1.5f).toInt()
+                minScaleX = 0.3f
+                minScaleY = 0.3f
             }
             bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
             pivotX = width * 0.95f
@@ -94,11 +99,18 @@ class SlidingLayout : LinearLayout {
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        if (!isAnimating) {
-            dragView.layout(dragViewLeft, dragViewTop, r + dragViewLeft, dragView.measuredHeight + dragViewTop)
+        val height = dragView.measuredHeight
+        if (!isAnimating || shouldUpdateLayout) {
+            dragView.layout(dragViewLeft, dragViewTop, if (isMaximized) dragView.measuredWidth + dragViewLeft else width, height + dragViewTop)
         }
         if (isMaximized) {
-            secondView?.layout(l, dragView.measuredHeight + dragViewTop, r, b + dragViewTop)
+            secondView?.let {
+                if (isPortrait) {
+                    it.layout(l, height + dragViewTop, r, b + dragViewTop)
+                } else {
+                    it.layout(dragView.measuredWidth, dragViewTop, width, height + dragViewTop)
+                }
+            }
         }
     }
 
@@ -124,7 +136,7 @@ class SlidingLayout : LinearLayout {
         val y = event.y.toInt()
         val isDragViewHit = isViewHit(dragView, x, y)
         val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
-        if (event.isClick(downTouchLocation)) {
+        if (event.isClick(downTouchLocation)) { //TODO ONLY THIS LEFT POG
             if (!isMaximized) {
                 maximize()
             }
@@ -136,7 +148,7 @@ class SlidingLayout : LinearLayout {
         } else if (isDragViewHit) {
 
         }
-        if (timeBar.isPressed) {
+        if (timeBar?.isPressed == true) {
             return true
         }
         viewDragHelper.processTouchEvent(event)
@@ -163,14 +175,23 @@ class SlidingLayout : LinearLayout {
 
     fun maximize() {
         isMaximized = true
-        secondView?.requestLayout()
+        secondView?.apply {
+            shouldUpdateLayout = true
+            visibility = View.VISIBLE
+            dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
         animate(1f, 1f)
         callback?.onMaximize()
     }
 
     fun minimize() {
         isMaximized = false
-        secondView?.layout(0, 0, 0, 0)
+        secondView?.apply {
+            shouldUpdateLayout = true
+            layout(0, 0, 0, 0)
+            visibility = View.GONE
+            dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+        }
         animate(minScaleX, minScaleY)
         if (dragViewTop != 0) {
             dragViewTop = 0
@@ -249,7 +270,7 @@ class SlidingLayout : LinearLayout {
             dragViewTop = top
             dragViewLeft = left
             secondView?.let {
-                it.top = dragView.height + top
+                it.top = if (isPortrait) dragView.measuredHeight + top else top
                 it.bottom = height + top
             }
         }

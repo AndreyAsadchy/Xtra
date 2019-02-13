@@ -5,7 +5,7 @@
     android:layout_width="match_parent">
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
-        android:id="@id/playerView"
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"

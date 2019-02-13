@@ -6,7 +6,7 @@ import io.reactivex.Single
 
 fun <T> Single<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable())
 
-fun MotionEvent.isClick(outDownLocation: FloatArray): Boolean {
+fun MotionEvent.isClick(outDownLocation: FloatArray): Boolean { //todo move to view package
     return when (actionMasked) {
         MotionEvent.ACTION_DOWN -> {
             outDownLocation[0] = x
