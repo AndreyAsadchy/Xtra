@@ -46,7 +46,7 @@ class SlidingLayout : LinearLayout {
         get() = orientation == 1
     private var isMaximized = true
     private var isAnimating = false
-    private var shouldUpdateLayout = false
+    private var shouldUpdateDragLayout = false
 
     private var callback: Callback? = null
     private val animatorListener = object : Animator.AnimatorListener {
@@ -55,7 +55,7 @@ class SlidingLayout : LinearLayout {
         override fun onAnimationStart(animation: Animator?) { isAnimating = true }
         override fun onAnimationEnd(animation: Animator?) {
             isAnimating = false
-            shouldUpdateLayout = false
+            shouldUpdateDragLayout = false
         }
     }
 
@@ -100,7 +100,7 @@ class SlidingLayout : LinearLayout {
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val height = dragView.measuredHeight
-        if (!isAnimating || shouldUpdateLayout) {
+        if (!isAnimating || shouldUpdateDragLayout) {
             dragView.layout(dragViewLeft, dragViewTop, if (isMaximized) dragView.measuredWidth + dragViewLeft else width, height + dragViewTop)
         }
         if (isMaximized) {
@@ -176,9 +176,12 @@ class SlidingLayout : LinearLayout {
     fun maximize() {
         isMaximized = true
         secondView?.apply {
-            shouldUpdateLayout = true
-            visibility = View.VISIBLE
-            dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            requestLayout()
+            if (!isPortrait) {
+                shouldUpdateDragLayout = true
+                visibility = View.VISIBLE
+                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            }
         }
         animate(1f, 1f)
         callback?.onMaximize()
@@ -187,10 +190,12 @@ class SlidingLayout : LinearLayout {
     fun minimize() {
         isMaximized = false
         secondView?.apply {
-            shouldUpdateLayout = true
             layout(0, 0, 0, 0)
-            visibility = View.GONE
-            dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+            if (!isPortrait) {
+                shouldUpdateDragLayout = true
+                visibility = View.GONE
+                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL //TODO save after orienatation change
+            }
         }
         animate(minScaleX, minScaleY)
         if (dragViewTop != 0) {
