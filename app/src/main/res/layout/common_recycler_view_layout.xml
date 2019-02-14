@@ -26,7 +26,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:onRefreshListener="@{viewModel::refresh}"
-                app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
+                app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"
+                app:enabled="@{viewModel.loadedInitial != null}">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"

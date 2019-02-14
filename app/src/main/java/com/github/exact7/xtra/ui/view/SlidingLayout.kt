@@ -96,6 +96,12 @@ class SlidingLayout : LinearLayout {
             }
             timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
         }
+        secondView?.post {
+            if (!isMaximized) {
+                secondView?.visibility = View.GONE
+                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+            }
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -103,8 +109,8 @@ class SlidingLayout : LinearLayout {
         if (!isAnimating || shouldUpdateDragLayout) {
             dragView.layout(dragViewLeft, dragViewTop, if (isMaximized) dragView.measuredWidth + dragViewLeft else width, height + dragViewTop)
         }
-        if (isMaximized) {
-            secondView?.let {
+        secondView?.let {
+            if (isMaximized) {
                 if (isPortrait) {
                     it.layout(l, height + dragViewTop, r, b + dragViewTop)
                 } else {
@@ -136,19 +142,22 @@ class SlidingLayout : LinearLayout {
         val y = event.y.toInt()
         val isDragViewHit = isViewHit(dragView, x, y)
         val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
-        if (event.isClick(downTouchLocation)) { //TODO ONLY THIS LEFT POG
-            if (!isMaximized) {
-                maximize()
-            }
-            if (isDragViewHit) {
-                dragView.dispatchTouchEvent(event)
-            }
+        val isClick = event.isClick(downTouchLocation)
+        if (isClick) {
             performClick()
-            return true
-        } else if (isDragViewHit) {
-
+        }
+        if (isDragViewHit) {
+            if (isMaximized) {
+                dragView.dispatchTouchEvent(event)
+            } else if (isClick) {
+                maximize()
+                return true
+            }
         }
         if (timeBar?.isPressed == true) {
+            if (isSecondViewHit) {
+                timeBar?.dispatchTouchEvent(event)
+            }
             return true
         }
         viewDragHelper.processTouchEvent(event)
@@ -194,7 +203,7 @@ class SlidingLayout : LinearLayout {
             if (!isPortrait) {
                 shouldUpdateDragLayout = true
                 visibility = View.GONE
-                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL //TODO save after orienatation change
+                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
         }
         animate(minScaleX, minScaleY)
