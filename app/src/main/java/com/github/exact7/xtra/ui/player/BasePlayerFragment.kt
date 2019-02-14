@@ -47,6 +47,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         }
     }
 
+    override fun onStop() {
+        viewModel.onPause()
+        super.onStop()
+    }
+
     override fun onDetach() {
         super.onDetach()
         if (!isPortrait) {
@@ -57,11 +62,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     override fun onMovedToForeground() {
-        viewModel.onResume()
+//        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-        viewModel.onPause()
+//        viewModel.onPause()
     }
 
     override fun onNetworkRestored() {

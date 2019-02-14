@@ -78,6 +78,13 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             messageView.visibility = if (it is LoggedIn) View.VISIBLE else View.GONE
             viewModel.startStream(arguments!!.getParcelable(C.STREAM)!!, it)
         })
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onResume() //TODO
     }
 
     override fun play(obj: Parcelable) {
