@@ -47,26 +47,20 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         }
     }
 
-    override fun onStop() {
-        viewModel.onPause()
-        super.onStop()
-    }
-
     override fun onDetach() {
         super.onDetach()
         if (!isPortrait) {
-            val activity = requireActivity()
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            showStatusBar()
         }
     }
 
     override fun onMovedToForeground() {
-//        viewModel.onResume()
+        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-//        viewModel.onPause()
+        viewModel.onPause()
     }
 
     override fun onNetworkRestored() {
@@ -77,5 +71,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     fun minimize() {
         slidingLayout.minimize()
+    }
+
+    private fun showStatusBar() {
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 }

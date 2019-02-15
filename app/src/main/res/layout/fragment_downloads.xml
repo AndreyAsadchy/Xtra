@@ -16,8 +16,9 @@
             tools:listitem="@layout/fragment_downloads_list_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:divider="@drawable/divider"/>
+            app:spanCount="@integer/media_columns"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:divider="@{com.github.exact7.xtra.ui.DividerType.SIMPLE_PORTRAIT_MARGIN_LANDSCAPE}"/>
 
         <TextView
             android:id="@+id/text"

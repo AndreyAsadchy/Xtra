@@ -82,11 +82,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onResume() //TODO
-    }
-
     override fun play(obj: Parcelable) {
 //        val stream = obj as Stream
 //        if (viewModel.stream != stream) {

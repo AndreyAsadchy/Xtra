@@ -47,6 +47,7 @@ class SlidingLayout : LinearLayout {
     private var isMaximized = true
     private var isAnimating = false
     private var shouldUpdateDragLayout = false
+    private var maximizedSecondViewVisibility: Int? = null
 
     private var callback: Callback? = null
     private val animatorListener = object : Animator.AnimatorListener {
@@ -56,6 +57,7 @@ class SlidingLayout : LinearLayout {
         override fun onAnimationEnd(animation: Animator?) {
             isAnimating = false
             shouldUpdateDragLayout = false
+            dragViewTop = 0
         }
     }
 
@@ -98,7 +100,9 @@ class SlidingLayout : LinearLayout {
         }
         secondView?.post {
             if (!isMaximized) {
-                secondView?.visibility = View.GONE
+                if (!isPortrait) {
+                    maximizedSecondViewVisibility?.let { secondView?.visibility = it }
+                }
                 dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
         }
@@ -184,13 +188,16 @@ class SlidingLayout : LinearLayout {
 
     fun maximize() {
         isMaximized = true
-        secondView?.apply {
-            requestLayout()
-            if (!isPortrait) {
-                shouldUpdateDragLayout = true
-                visibility = View.VISIBLE
-                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        secondView?.visibility = if (isPortrait) {
+            View.VISIBLE
+        } else {
+            shouldUpdateDragLayout = true
+            dragView.resizeMode = if (maximizedSecondViewVisibility == View.VISIBLE) {
+                AspectRatioFrameLayout.RESIZE_MODE_FIT
+            } else {
+                AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
+            maximizedSecondViewVisibility!!
         }
         animate(1f, 1f)
         callback?.onMaximize()
@@ -199,16 +206,15 @@ class SlidingLayout : LinearLayout {
     fun minimize() {
         isMaximized = false
         secondView?.apply {
-            layout(0, 0, 0, 0)
             if (!isPortrait) {
                 shouldUpdateDragLayout = true
-                visibility = View.GONE
+                maximizedSecondViewVisibility = visibility
                 dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
+            visibility = View.GONE
         }
         animate(minScaleX, minScaleY)
         if (dragViewTop != 0) {
-            dragViewTop = 0
             val top = PropertyValuesHolder.ofInt("top", 0)
             val bot = PropertyValuesHolder.ofInt("bottom", dragView.height)
             ObjectAnimator.ofPropertyValuesHolder(dragView, top, bot).apply {
@@ -248,13 +254,19 @@ class SlidingLayout : LinearLayout {
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized)
+        secondView?.let {
+            if (!isPortrait && isMaximized) {
+                maximizedSecondViewVisibility = it.visibility
+            }
+        }
+        return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized, "secondViewVisibility" to maximizedSecondViewVisibility)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
         super.onRestoreInstanceState(state.let {
             if (it is Bundle) {
                 isMaximized = it.getBoolean("isMaximized")
+                maximizedSecondViewVisibility = it.getInt("secondViewVisibility")
                 it.getParcelable("superState")
             } else {
                 it

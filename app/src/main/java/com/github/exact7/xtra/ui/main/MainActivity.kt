@@ -7,10 +7,13 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -84,6 +87,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener {
+            with(search) {
+                setQuery("", false)
+                isIconified = true
+            }
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         initNavigation()
         val user = Prefs.getUser(this)
@@ -116,6 +125,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         })
         if (isSearchOpened) {
+            search.updateLayoutParams { width = Toolbar.LayoutParams.MATCH_PARENT }
             hideNavigationBar()
         }
         search.setOnCloseListener {
@@ -281,11 +291,11 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     private fun hideNavigationBar() {
-        navBarContainer.translationY = navBarContainer.height.toFloat()
+        navBarContainer.visibility = View.GONE
     }
 
     private fun showNavigationBar() {
-        navBarContainer.translationY = 0f
+        navBarContainer.visibility = View.VISIBLE
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
@@ -299,8 +309,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             transactionListener = object : FragNavController.TransactionListener {
                 override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
                     if (isSearchOpened) {
+                        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                        search.updateLayoutParams { width = Toolbar.LayoutParams.MATCH_PARENT }
                         hideNavigationBar()
                     } else {
+                        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                        search.updateLayoutParams { width = Toolbar.LayoutParams.WRAP_CONTENT }
                         showNavigationBar()
                     }
                 }

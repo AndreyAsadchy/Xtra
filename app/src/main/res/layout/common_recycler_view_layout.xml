@@ -8,6 +8,12 @@
         <variable
             name="viewModel"
             type="com.github.exact7.xtra.ui.common.PagedListViewModel"/>
+        <variable
+            name="spanCount"
+            type="Integer" />
+        <variable
+            name="divider"
+            type="com.github.exact7.xtra.ui.DividerType" />
     </data>
 
     <RelativeLayout
@@ -26,16 +32,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:onRefreshListener="@{viewModel::refresh}"
-                app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"
-                app:enabled="@{viewModel.loadedInitial != null}">
+                app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/fragment_downloads_list_item"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:divider="@{@drawable/divider}"/>
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="@{spanCount}"
+                        app:divider="@{divider}"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
