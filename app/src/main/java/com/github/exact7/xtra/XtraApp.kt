@@ -1,10 +1,10 @@
 package com.github.exact7.xtra
 
 import android.app.Activity
+import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.multidex.MultiDexApplication
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.LifecycleListener
@@ -15,7 +15,7 @@ import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
 import javax.inject.Inject
 
-class XtraApp : MultiDexApplication(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
+class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>

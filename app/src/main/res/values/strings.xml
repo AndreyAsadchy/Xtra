@@ -58,4 +58,5 @@
     <string name="storage_permission_message">Storage permission is required to download videos.</string>
     <string name="permission_denied">Required permissions were denied</string>
     <string name="nothing_here">Nothing here</string>
+    <string name="watch_live">Watch Live</string>
 </resources>

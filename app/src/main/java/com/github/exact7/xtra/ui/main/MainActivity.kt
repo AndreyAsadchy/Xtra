@@ -167,8 +167,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onActivityResult(requestCode, resultCode, data)
 
         fun restartActivity() {
-            startActivity(Intent(this, MainActivity::class.java))
             finish()
+            overridePendingTransition(0, 0)
+            startActivity(Intent(this, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION) })
+            overridePendingTransition(0, 0)
         }
 
         when (requestCode) {

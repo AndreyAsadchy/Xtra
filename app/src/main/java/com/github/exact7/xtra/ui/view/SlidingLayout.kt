@@ -44,7 +44,8 @@ class SlidingLayout : LinearLayout {
 
     private val isPortrait: Boolean
         get() = orientation == 1
-    private var isMaximized = true
+    var isMaximized = true
+        private set
     private var isAnimating = false
     private var shouldUpdateDragLayout = false
     private var maximizedSecondViewVisibility: Int? = null
@@ -101,7 +102,7 @@ class SlidingLayout : LinearLayout {
         secondView?.post {
             if (!isMaximized) {
                 if (!isPortrait) {
-                    maximizedSecondViewVisibility?.let { secondView?.visibility = it }
+                    secondView?.visibility = View.GONE
                 }
                 dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }

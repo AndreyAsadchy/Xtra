@@ -3,30 +3,23 @@
 
     <data>
         <variable
-            name="channel"
-            type="com.github.exact7.xtra.model.kraken.Channel" />
+            name="viewModel"
+            type="com.github.exact7.xtra.ui.pagers.ChannelPagerViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:imageUrl="@{channel.logo}"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            />
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{channel.displayName}"
-            android:textSize="18sp"
-            android:layout_marginBottom="2dp"/>
+            android:id="@+id/watchLive"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:textStyle="bold"
+            android:text="@string/watch_live"
+            android:gravity="center"
+            app:visible="@{viewModel.stream.stream != null}"/>
 
         <include
             android:id="@+id/pagerLayout"

@@ -8,6 +8,7 @@ import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
+import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
 import com.github.exact7.xtra.model.kraken.user.Emote
 import com.github.exact7.xtra.model.kraken.user.User
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
@@ -49,6 +50,14 @@ class KrakenRepository @Inject constructor(
                 .setEnablePlaceholders(false)
                 .build()
         return Listing.create(factory, config, networkExecutor)
+    }
+
+    override fun loadStream(channelId: String, compositeDisposable: CompositeDisposable): LiveData<StreamWrapper> {
+        return api.getStream(channelId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { StreamWrapper(it.streams.firstOrNull()) }
+                .toLiveData()
     }
 
     override fun loadStreams(game: String?, languages: String?, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream> {

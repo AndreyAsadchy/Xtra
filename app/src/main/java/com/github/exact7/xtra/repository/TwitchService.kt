@@ -7,6 +7,7 @@ import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
+import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
 import com.github.exact7.xtra.model.kraken.user.Emote
 import com.github.exact7.xtra.model.kraken.user.User
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
@@ -17,6 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 interface TwitchService {
 
     fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game>
+    fun loadStream(channelId: String, compositeDisposable: CompositeDisposable): LiveData<StreamWrapper>
     fun loadStreams(game: String?, languages: String?, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
     fun loadFollowedStreams(userToken: String, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
     fun loadClips(channelName: String?, gameName: String?, languages: String?, period: Period?, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip>

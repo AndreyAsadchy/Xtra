@@ -25,6 +25,9 @@ interface KrakenApi {
     fun getTopGames(@Query("limit") limit: Int, @Query("offset") offset: Int): Single<GamesResponse>
 
     @GET("streams/")
+    fun getStream(@Query("channel") channelId: String): Single<StreamsResponse>
+
+    @GET("streams/")
     fun getStreams(@Query("game") game: String?, @Query("language") languages: String?, @Query("stream_type") streamType: StreamType?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<StreamsResponse>
 
     @GET("streams/followed")

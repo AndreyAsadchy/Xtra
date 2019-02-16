@@ -10,6 +10,7 @@ import com.github.exact7.xtra.ui.download.VideoDownloadViewModel
 import com.github.exact7.xtra.ui.downloads.DownloadsViewModel
 import com.github.exact7.xtra.ui.games.GamesViewModel
 import com.github.exact7.xtra.ui.main.MainViewModel
+import com.github.exact7.xtra.ui.pagers.ChannelPagerViewModel
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
@@ -120,4 +121,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     abstract fun bindSearchViewModel(searchViewModel: SearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChannelPagerViewModel::class)
+    abstract fun bindChannelPagerViewModel(channelPagerViewModel: ChannelPagerViewModel): ViewModel
 }

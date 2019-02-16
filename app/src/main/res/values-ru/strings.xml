@@ -58,4 +58,5 @@
     <string name="storage_permission_title">Приложению необходимо разрешение</string>
     <string name="permission_denied">Необходимые разрешения не были предоставлены</string>
     <string name="nothing_here">Здесь пусто</string>
+    <string name="watch_live">Прямой эфир</string>
 </resources>
