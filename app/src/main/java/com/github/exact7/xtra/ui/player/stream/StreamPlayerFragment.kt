@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,7 +81,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     }
 
-    override fun play(obj: Parcelable) {
+//    override fun play(obj: Parcelable) {
 //        val stream = obj as Stream
 //        if (viewModel.stream != stream) {
 //            viewModel.player.playWhenReady = false
@@ -90,7 +89,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 //        }
 //        viewModel.stream = stream
 //        draggableView?.maximize()
-    }
+//    }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index)

@@ -76,7 +76,7 @@
 
             <TextView
                 android:id="@+id/username"
-                android:text="@{stream.channel.name}"
+                android:text="@{stream.channel.displayName}"
                 tools:text="@sample/streams.json/streams/channel/name"
                 android:textStyle="bold"
                 android:textSize="15sp"

@@ -66,7 +66,7 @@ const val INDEX_FOLLOWED = FragNavController.TAB3
 const val INDEX_DOWNLOADS = FragNavController.TAB4
 const val INDEX_MENU = FragNavController.TAB5
 
-class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DownloadsFragment.OnVideoSelectedListener, Injectable, SlidingLayout.Callback {
+class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DownloadsFragment.OnVideoSelectedListener, Injectable, SlidingLayout.Listener {
 
     @Inject lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    //SlidingLayout.Callback
+    //SlidingLayout.Listener
 
     override fun onMaximize() {
         viewModel.onMaximize()

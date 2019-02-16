@@ -2,7 +2,6 @@ package com.github.exact7.xtra.ui.player.video
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,9 @@ import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
 class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
-    override fun play(obj: Parcelable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+//    override fun play(obj: Parcelable) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//    }
 
     private companion object {
         const val TAG = "VideoPlayer"

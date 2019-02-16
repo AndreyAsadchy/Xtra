@@ -26,8 +26,10 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     protected lateinit var mediaSource: MediaSource
 
     protected fun play() {
-        player.prepare(mediaSource)
-        player.playWhenReady = true
+        if (this::mediaSource.isInitialized) { //TODO
+            player.prepare(mediaSource)
+            player.playWhenReady = true
+        }
     }
 
     open fun onResume() {

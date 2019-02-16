@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.player
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import android.view.WindowManager
 import com.github.exact7.xtra.di.Injectable
@@ -14,7 +13,7 @@ import com.github.exact7.xtra.util.LifecycleListener
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener {
+abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener {
 
     private lateinit var slidingLayout: SlidingLayout
     protected abstract val viewModel: PlayerViewModel
@@ -31,12 +30,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         view.keepScreenOn = true
         val activity = requireActivity() as MainActivity
         slidingLayout = view as SlidingLayout
-        slidingLayout.setCallback(activity)
+        slidingLayout.addListener(activity)
+        slidingLayout.addListener(this)
         minimize.setOnClickListener { minimize() }
         if (isPortrait) {
             fullscreenEnter.setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
-            activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            hideStatusBar()
             fullscreenExit.setOnClickListener {
                 activity.apply {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -44,14 +44,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
 
             }
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (!isPortrait) {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            showStatusBar()
         }
     }
 
@@ -67,7 +59,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         viewModel.onResume()
     }
 
-    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
+//    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
 
     fun minimize() {
         slidingLayout.minimize()
@@ -75,5 +67,28 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     private fun showStatusBar() {
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    private fun hideStatusBar() {
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    override fun onMinimize() {
+//        if (!isPortrait) { //TODO fix drag view when show status bar
+//            showStatusBar()
+//        }
+    }
+
+    override fun onMaximize() {
+//        if (!isPortrait) {
+//            hideStatusBar()
+//        }
+    }
+
+    override fun onClose() {
+        if (!isPortrait) {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            showStatusBar()
+        }
     }
 }

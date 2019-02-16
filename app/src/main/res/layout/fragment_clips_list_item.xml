@@ -101,7 +101,7 @@
 
             <TextView
                 android:id="@+id/username"
-                android:text="@{clip.broadcaster.name}"
+                android:text="@{clip.broadcaster.displayName}"
                 tools:text="@sample/clips.json/clips/broadcaster/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

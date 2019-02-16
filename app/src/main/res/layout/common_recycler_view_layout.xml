@@ -40,7 +40,7 @@
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/fragment_downloads_list_item"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:spanCount="@{spanCount}"
+                        app:spanCount="@{safeUnbox(spanCount)}"
                         app:divider="@{divider}"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

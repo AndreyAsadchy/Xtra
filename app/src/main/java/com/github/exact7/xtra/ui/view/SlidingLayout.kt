@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
 
+
 const val BOTTOM_MARGIN = 75f //before scaling
 const val ANIMATION_DURATION = 250L
 
@@ -50,7 +51,7 @@ class SlidingLayout : LinearLayout {
     private var shouldUpdateDragLayout = false
     private var maximizedSecondViewVisibility: Int? = null
 
-    private var callback: Callback? = null
+    private var listeners = mutableSetOf<Listener>()
     private val animatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
@@ -84,7 +85,7 @@ class SlidingLayout : LinearLayout {
             } else { //landscape
                 bottomBound = (height / 1.5f).toInt()
                 minScaleX = 0.3f
-                minScaleY = 0.3f
+                minScaleY = 0.325f
             }
             bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
             pivotX = width * 0.95f
@@ -189,24 +190,28 @@ class SlidingLayout : LinearLayout {
 
     fun maximize() {
         isMaximized = true
-        secondView?.visibility = if (isPortrait) {
-            View.VISIBLE
-        } else {
-            shouldUpdateDragLayout = true
-            dragView.resizeMode = if (maximizedSecondViewVisibility == View.VISIBLE) {
-                AspectRatioFrameLayout.RESIZE_MODE_FIT
+        secondView?.apply {
+            requestLayout()
+            visibility = if (isPortrait) {
+                View.VISIBLE
             } else {
-                AspectRatioFrameLayout.RESIZE_MODE_FILL
+                shouldUpdateDragLayout = true
+                dragView.resizeMode = if (maximizedSecondViewVisibility == View.VISIBLE) {
+                    AspectRatioFrameLayout.RESIZE_MODE_FIT
+                } else {
+                    AspectRatioFrameLayout.RESIZE_MODE_FILL
+                }
+                maximizedSecondViewVisibility!!
             }
-            maximizedSecondViewVisibility!!
         }
         animate(1f, 1f)
-        callback?.onMaximize()
+        listeners.forEach { it.onMaximize() }
     }
 
     fun minimize() {
         isMaximized = false
         secondView?.apply {
+            layout(0, 0, 0, 0)
             if (!isPortrait) {
                 shouldUpdateDragLayout = true
                 maximizedSecondViewVisibility = visibility
@@ -224,7 +229,7 @@ class SlidingLayout : LinearLayout {
             }
         }
         dragView.hideController()
-        callback?.onMinimize()
+        listeners.forEach { it.onMinimize() }
     }
 
     private fun animate(scaleX: Float, scaleY: Float) {
@@ -245,7 +250,7 @@ class SlidingLayout : LinearLayout {
 
     private fun closeTo(left: Int) {
         smoothSlideTo(left, dragViewTop)
-        callback?.onClose()
+        listeners.forEach { it.onClose() }
     }
 
     override fun computeScroll() {
@@ -275,8 +280,16 @@ class SlidingLayout : LinearLayout {
         })
     }
 
-    fun setCallback(callback: Callback?) {
-        this.callback = callback
+    fun addListener(listener: Listener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: Listener) {
+        listeners.remove(listener)
+    }
+
+    fun removeListeners() {
+        listeners.clear()
     }
 
     private inner class SlidingCallback : ViewDragHelper.Callback() {
@@ -318,7 +331,7 @@ class SlidingLayout : LinearLayout {
         }
     }
 
-    interface Callback {
+    interface Listener {
         fun onMinimize()
         fun onMaximize()
         fun onClose()
