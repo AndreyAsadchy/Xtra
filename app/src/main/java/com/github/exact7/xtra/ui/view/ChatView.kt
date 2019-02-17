@@ -6,21 +6,23 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import kotlinx.android.synthetic.main.view_chat.view.*
 
+
 class ChatView : RelativeLayout {
 
     private companion object {
-        const val SCROLL_THRESHOLD = 5
-        const val MAX_MESSAGE_COUNT = 100
+        const val MAX_MESSAGE_COUNT = 125
     }
 
     lateinit var adapter: ChatAdapter
-    private lateinit var layoutManager: androidx.recyclerview.widget.LinearLayoutManager
+    private lateinit var layoutManager: LinearLayoutManager
     private var isChatTouched: Boolean = false
+    private var notTouched = true //TODO
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -46,18 +48,20 @@ class ChatView : RelativeLayout {
         recyclerView.layoutManager = layoutManager
         recyclerView.setOnTouchListener { _, event ->
             when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> isChatTouched = true
+                MotionEvent.ACTION_DOWN -> {
+                    isChatTouched = true
+                    notTouched = false
+                }
                 MotionEvent.ACTION_UP -> isChatTouched = false
             }
             false
         }
-        recyclerView.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val offset = getScrollOffsetItemCount()
-                if (!isButtonShowing() && offset >= SCROLL_THRESHOLD) {
+                if (!isButtonShowing() && shouldShowButton()) {
                     btnDown.visibility = View.VISIBLE
-                } else if (isButtonShowing() && offset < SCROLL_THRESHOLD) {
+                } else if (isButtonShowing() && !shouldShowButton()) {
                     btnDown.visibility = View.GONE
                 }
             }
@@ -71,7 +75,7 @@ class ChatView : RelativeLayout {
             adapter.messages.removeAt(0)
             adapter.notifyItemRemoved(0)
         }
-        if (!isChatTouched && getScrollOffsetItemCount() < SCROLL_THRESHOLD) {
+        if (!isChatTouched && !shouldShowButton()) {
             recyclerView.scrollToPosition(getLastItemPosition())
         }
     }
@@ -82,6 +86,16 @@ class ChatView : RelativeLayout {
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1
-    private fun getScrollOffsetItemCount(): Int = getLastItemPosition() - layoutManager.findLastVisibleItemPosition()
+    private fun shouldShowButton(): Boolean {
+        if (notTouched) return false
+        val offset = recyclerView.computeVerticalScrollOffset()
+        if (offset < 0) {
+            return false
+        }
+        val extent = recyclerView.computeVerticalScrollExtent()
+        val range = recyclerView.computeVerticalScrollRange()
+        val percentage = (100 * offset / (range - extent).toFloat())
+        return percentage < 92f
+    }
     private fun isButtonShowing(): Boolean = btnDown.visibility == View.VISIBLE
 }
