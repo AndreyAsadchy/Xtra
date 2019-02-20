@@ -14,28 +14,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Image
 import java.util.Random
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.forEach
-import kotlin.collections.map
 import kotlin.collections.set
 
-class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
+const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
+class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
+    lateinit var messages: MutableList<ChatMessage>
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
     private val userColors = HashMap<String, Int>()
     private val savedColors = HashMap<String, Int>()
+    private var bttvMap: Map<String, BttvEmote>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -94,7 +94,6 @@ class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter
         chatMessage.emotes?.let {
             val copy = it.map { e -> e.copy() }
             index += userNameLength + 2
-            val emotesUrl = "https://static-cdn.jtvnw.net/emoticons/v1/"
             for (e in copy) {
                 val begin = index + e.begin
                 builder.replace(begin, index + e.end + 1, ".")
@@ -108,7 +107,41 @@ class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter
                 }
                 e.end -= length
             }
-            copy.forEach { (id, begin, end) -> images.add(Image("$emotesUrl$id/2.0", index + begin, index + end + 1, true)) }
+            copy.forEach { (id, begin, end) -> images.add(Image("$EMOTES_URL$id/2.0", index + begin, index + end + 1, true)) }
+        }
+        bttvMap?.let {
+            var start = 0
+            var end: Int
+            var code = ""
+            builder.forEachIndexed { index, c ->
+                if (!c.isWhitespace()) {
+                    code += c
+                } else {
+                        end = index
+                        it[code]?.let { e ->
+                            //                        images.add(Image("$BTTV_URL/${e.id}/1x", start, end, true))
+//                    }
+                            println(code)
+                            fun convertDpToPixels(dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, holder.itemView.context.resources.displayMetrics).toInt()
+                            if (!e.isPng) {
+                                GlideApp.with(holder.itemView.context)
+                                        .asGif()
+                                        .load("$BTTV_URL/${e.id}/1x")
+                                        .into(object : SimpleTarget<GifDrawable>() {
+                                            override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
+                                                val size = convertDpToPixels(22f)
+                                                resource.setBounds(0, 0, size, size)
+                                                resource.start()
+                                                builder.setSpan(ImageSpan(resource), builder.indexOf(code), builder.indexOf(code) + code.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                                holder.bind(builder)
+                                            }
+                                        })
+                            }
+                        }
+                        start = index + 1
+                        code = ""
+                }
+            }
         }
         holder.bind(builder)
         loadImages(holder, images, builder)
@@ -132,6 +165,10 @@ class ChatAdapter(val messages: MutableList<ChatMessage>) : RecyclerView.Adapter
                         }
                     })
         }
+    }
+
+    fun setBttvEmotes(list: List<BttvEmote>) {
+        bttvMap = list.associateBy { it.code }
     }
 
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]

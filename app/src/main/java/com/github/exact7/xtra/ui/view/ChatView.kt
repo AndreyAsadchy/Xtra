@@ -8,18 +8,16 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import kotlinx.android.synthetic.main.view_chat.view.*
 
+const val MAX_MESSAGE_COUNT = 125
 
 class ChatView : RelativeLayout {
 
-    private companion object {
-        const val MAX_MESSAGE_COUNT = 125
-    }
-
-    lateinit var adapter: ChatAdapter
+    private val adapter = ChatAdapter()
     private lateinit var layoutManager: LinearLayoutManager
     private var isChatTouched: Boolean = false
     private var notTouched = true //TODO
@@ -42,6 +40,7 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        recyclerView.adapter = adapter
         recyclerView.itemAnimator = null
         layoutManager = LinearLayoutManager(context)
         layoutManager.stackFromEnd = true
@@ -81,8 +80,11 @@ class ChatView : RelativeLayout {
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
-        adapter = ChatAdapter(list)
-        recyclerView.adapter = adapter
+        adapter.messages = list
+    }
+
+    fun setBttvEmotes(list: List<BttvEmote>) {
+        adapter.setBttvEmotes(list)
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1

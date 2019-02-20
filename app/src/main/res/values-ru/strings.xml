@@ -59,4 +59,5 @@
     <string name="permission_denied">Необходимые разрешения не были предоставлены</string>
     <string name="nothing_here">Здесь пусто</string>
     <string name="watch_live">Прямой эфир</string>
+    <string name="error_stream">Ошибка при загрузке стрима</string>
 </resources>

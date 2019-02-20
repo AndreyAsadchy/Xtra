@@ -1,9 +1,12 @@
 package com.github.exact7.xtra.ui.player.stream
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
+import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -25,6 +28,9 @@ class StreamPlayerViewModel @Inject constructor(
     private val _chat = MutableLiveData<LiveChatThread>()
     val chat: LiveData<LiveChatThread>
         get() = _chat
+    private val _bttv = MutableLiveData<List<BttvEmote>>()
+    val bttv: LiveData<List<BttvEmote>>
+        get() = _bttv
     private var subscriberBadges: SubscriberBadgesResponse? = null
     lateinit var user: User
         private set
@@ -39,15 +45,23 @@ class StreamPlayerViewModel @Inject constructor(
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
                     }, {
-
+                        val context = getApplication<Application>()
+                        Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
                     })
                     .addTo(compositeDisposable)
-            repository.fetchSubscriberBadges(stream.channel.id)
+            repository.fetchSubscriberBadges(channel.id)
                     .subscribe({
                         subscriberBadges = it
                         startChat()
                     }, { //no subscriber badges
                         startChat()
+                    })
+                    .addTo(compositeDisposable)
+            repository.fetchBttvEmotes(channel.name)
+                    .subscribe({
+                        _bttv.value = it
+                    }, {
+
                     })
                     .addTo(compositeDisposable)
         }

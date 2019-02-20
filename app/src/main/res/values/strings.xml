@@ -59,4 +59,5 @@
     <string name="permission_denied">Required permissions were denied</string>
     <string name="nothing_here">Nothing here</string>
     <string name="watch_live">Watch Live</string>
+    <string name="error_stream">Error when loading stream</string>
 </resources>

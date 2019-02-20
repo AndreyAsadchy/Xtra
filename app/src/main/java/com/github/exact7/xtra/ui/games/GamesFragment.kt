@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.games
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import com.github.exact7.xtra.databinding.FragmentGamesBinding
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_games.*
 
@@ -22,16 +22,6 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
 
     private lateinit var viewModel: GamesViewModel
     private lateinit var binding: FragmentGamesBinding
-    private var listener: OnGameSelectedListener? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnGameSelectedListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnGameSelectedListener")
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             FragmentGamesBinding.inflate(inflater, container, false).let {
@@ -43,16 +33,11 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
-        val adapter = GamesAdapter(listener!!)
+        val adapter = GamesAdapter(requireActivity() as MainActivity)
         recyclerViewLayout.recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     override fun onNetworkRestored() {

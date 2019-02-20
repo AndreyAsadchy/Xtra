@@ -69,6 +69,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
         viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
         viewModel.chat.observe(viewLifecycleOwner, Observer(messageView::setCallback))
+        viewModel.bttv.observe(viewLifecycleOwner, Observer(chatView::setBttvEmotes))
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
