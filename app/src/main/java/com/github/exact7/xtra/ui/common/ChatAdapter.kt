@@ -1,10 +1,12 @@
 package com.github.exact7.xtra.ui.common
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
@@ -28,14 +30,17 @@ import kotlin.collections.set
 const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
 const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
-class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     lateinit var messages: MutableList<ChatMessage>
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
     private val userColors = HashMap<String, Int>()
     private val savedColors = HashMap<String, Int>()
-    private var bttvMap: Map<String, BttvEmote>? = null
+    private var bttvMap: HashMap<String, BttvEmote> = initBttv()
+    private var userNickname: String? = null
+    private val emoteSize = convertDpToPixels(context, 25f)
+    private val badgeSize = convertDpToPixels(context, 18f)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -59,7 +64,7 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
                         count < 10000 -> "blue"
                         else -> "red"
                     }
-                    "https://static-cdn.jtvnw.net/bits/dark/static/$color/1" //TODO change theme based on app theme
+                    "https://static-cdn.jtvnw.net/bits/dark/static/$color/2" //TODO change theme based on app theme
                 }
                 "broadcaster" -> badgesUrl + "broadcaster.png"
                 "global_mod" -> badgesUrl + "globalmod.png"
@@ -67,10 +72,10 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
                 "subscriber" -> chatMessage.subscriberBadge?.imageUrl2x
                 "staff" -> badgesUrl + "staff.png"
                 "turbo" -> badgesUrl + "turbo.png"
-                "sub-gifter" -> "https://static-cdn.jtvnw.net/badges/v1/4592e9ea-b4ca-4948-93b8-37ac198c0433/1"
-                "premium" -> "https://static-cdn.jtvnw.net/badges/v1/a1dd5073-19c3-4911-8cb4-c464a7bc1510/1"
-                "partner" -> "https://static-cdn.jtvnw.net/badges/v1/d12a2e27-16f6-41d0-ab77-b780518f00a3/1"
-                "clip-champ" -> "https://static-cdn.jtvnw.net/badges/v1/f38976e0-ffc9-11e7-86d6-7f98b26a9d79/1"
+                "sub-gifter" -> "https://static-cdn.jtvnw.net/badges/v1/4592e9ea-b4ca-4948-93b8-37ac198c0433/2"
+                "premium" -> "https://static-cdn.jtvnw.net/badges/v1/a1dd5073-19c3-4911-8cb4-c464a7bc1510/2"
+                "partner" -> "https://static-cdn.jtvnw.net/badges/v1/d12a2e27-16f6-41d0-ab77-b780518f00a3/2"
+                "clip-champ" -> "https://static-cdn.jtvnw.net/badges/v1/f38976e0-ffc9-11e7-86d6-7f98b26a9d79/2"
                 else -> null
             }
             url?.let {
@@ -78,7 +83,6 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
                 images.add(Image(url, index++, index++, false))
             }
         }
-        //TODO add if mentions user make message red
         val userName = chatMessage.displayName
         builder.append(userName).append(": ").append(chatMessage.message)
         val color = chatMessage.color.let { userColor ->
@@ -109,37 +113,38 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
             }
             copy.forEach { (id, begin, end) -> images.add(Image("$EMOTES_URL$id/2.0", index + begin, index + end + 1, true)) }
         }
-        bttvMap?.let {
-            var start = 0
-            var end: Int
-            var code = ""
-            builder.forEachIndexed { index, c ->
-                if (!c.isWhitespace()) {
-                    code += c
+        val split = builder.split(" ")
+        var builderIndex = 0
+        for (i in 0 until split.size) {
+            val value = split[i]
+            bttvMap[value].let { e ->
+                val length = value.length
+                builderIndex += if (e == null) {
+                    if (value.startsWith('@')) {
+                        builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, builderIndex + length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    userNickname?.let {
+                        if (value.contains(it, true) && !value.endsWith(':')) {
+                            builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                    }
+                    length + 1
                 } else {
-                        end = index
-                        it[code]?.let { e ->
-                            //                        images.add(Image("$BTTV_URL/${e.id}/1x", start, end, true))
-//                    }
-                            println(code)
-                            fun convertDpToPixels(dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, holder.itemView.context.resources.displayMetrics).toInt()
-                            if (!e.isPng) {
-                                GlideApp.with(holder.itemView.context)
-                                        .asGif()
-                                        .load("$BTTV_URL/${e.id}/1x")
-                                        .into(object : SimpleTarget<GifDrawable>() {
-                                            override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
-                                                val size = convertDpToPixels(22f)
-                                                resource.setBounds(0, 0, size, size)
-                                                resource.start()
-                                                builder.setSpan(ImageSpan(resource), builder.indexOf(code), builder.indexOf(code) + code.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                                                holder.bind(builder)
-                                            }
-                                        })
+                    chatMessage.emotes?.let {
+                        for (j in it.size - 1 downTo 0) {
+                            val emote = images[j]
+                            if (emote.start > builderIndex) {
+                                emote.start -= length
+                                emote.end -= length
+                            } else {
+                                break
                             }
                         }
-                        start = index + 1
-                        code = ""
+                    }
+                    builder.replace(builderIndex, builderIndex + length, ".")
+                    builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    images.add(Image("$BTTV_URL${e.id}/2x", builderIndex, builderIndex + 1, true, e.isPng))
+                    if (i != split.lastIndex) 2 else 1
                 }
             }
         }
@@ -150,28 +155,63 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     override fun getItemCount(): Int = messages.size
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
-        val context = holder.itemView.context
-        fun convertDpToPixels(dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
+        images.forEach { (url, start, end, isEmote, isPng) ->
+            if (isPng) {
+                GlideApp.with(context)
+                        .load(url)
+                        .into(object : SimpleTarget<Drawable>() {
+                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                                val size = if (isEmote) emoteSize else badgeSize
+                                resource.setBounds(0, 0, size, size)
+                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                holder.bind(builder)
+                            }
+                        })
+            } else {
+                GlideApp.with(context)
+                        .asGif()
+                        .load(url)
+                        .into(object : SimpleTarget<GifDrawable>() {
+                            override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
+                                val textView = holder.itemView as TextView
+                                val callback = object : Drawable.Callback {
+                                    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+                                        textView.removeCallbacks(what)
+                                    }
 
-        images.forEach { (url, start, end, isEmote) ->
-            GlideApp.with(context)
-                    .load(url)
-                    .into(object : SimpleTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            val size = if (isEmote) convertDpToPixels(22f) else convertDpToPixels(17f)
-                            resource.setBounds(0, 0, size, size)
-                            builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
-                            holder.bind(builder)
-                        }
-                    })
+                                    override fun invalidateDrawable(who: Drawable) {
+                                        textView.invalidate()
+                                    }
+
+                                    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+                                        textView.postDelayed(what, `when`)
+                                    }
+                                }
+                                resource.apply {
+                                    setBounds(0, 0, emoteSize, emoteSize)
+                                    setLoopCount(GifDrawable.LOOP_FOREVER)
+                                    this.callback = callback
+                                    start()
+                                }
+                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                holder.bind(builder)
+                            }
+                        })
+            }
         }
     }
 
     fun setBttvEmotes(list: List<BttvEmote>) {
-        bttvMap = list.associateBy { it.code }
+        bttvMap.putAll(list.associateBy { it.code })
+    }
+
+    fun setUserNickname(nickname: String) {
+        userNickname = nickname
     }
 
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]
+
+    private fun convertDpToPixels(context: Context, dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -179,4 +219,108 @@ class ChatAdapter : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
             (itemView as TextView).text = formattedMessage
         }
     }
+
+    private fun initBttv() = hashMapOf("OhMyGoodness" to BttvEmote("54fa925e01e468494b85b54d", "OhMyGoodness", "png")
+            ,"PancakeMix" to BttvEmote("54fa927801e468494b85b54e", "PancakeMix", "png")
+            ,"PedoBear" to BttvEmote("54fa928f01e468494b85b54f", "PedoBear", "png")
+            ,"PokerFace" to BttvEmote("54fa92a701e468494b85b550", "PokerFace", "png")
+            ,"RageFace" to BttvEmote("54fa92d701e468494b85b552", "RageFace", "png")
+            ,"RebeccaBlack" to BttvEmote("54fa92ee01e468494b85b553", "RebeccaBlack", "png")
+            ,":tf:" to BttvEmote("54fa8f1401e468494b85b537", ":tf:", "png")
+            ,"aPliS" to BttvEmote("54fa8f4201e468494b85b538", "aPliS", "png")
+            ,"CiGrip" to BttvEmote("54fa8fce01e468494b85b53c", "CiGrip", "png")
+            ,"CHAccepted" to BttvEmote("54fa8fb201e468494b85b53b", "CHAccepted", "png")
+            ,"FuckYea" to BttvEmote("54fa90d601e468494b85b544", "FuckYea", "png")
+            ,"DatSauce" to BttvEmote("54fa903b01e468494b85b53f", "DatSauce", "png")
+            ,"ForeverAlone" to BttvEmote("54fa909b01e468494b85b542", "ForeverAlone", "png")
+            ,"GabeN" to BttvEmote("54fa90ba01e468494b85b543", "GabeN", "png")
+            ,"HailHelix" to BttvEmote("54fa90f201e468494b85b545", "HailHelix", "png")
+            ,"HerbPerve" to BttvEmote("54fa913701e468494b85b546", "HerbPerve", "png")
+            ,"iDog" to BttvEmote("54fa919901e468494b85b548", "iDog", "png")
+            ,"rStrike" to BttvEmote("54fa930801e468494b85b554", "rStrike", "png")
+            ,"ShoopDaWhoop" to BttvEmote("54fa932201e468494b85b555", "ShoopDaWhoop", "png")
+            ,"SwedSwag" to BttvEmote("54fa9cc901e468494b85b565", "SwedSwag", "png")
+            ,"M&Mjc" to BttvEmote("54fab45f633595ca4c713abc", "M&Mjc", "png")
+            ,"bttvNice" to BttvEmote("54fab7d2633595ca4c713abf", "bttvNice", "png")
+            ,"TopHam" to BttvEmote("54fa934001e468494b85b556", "TopHam", "png")
+            ,"TwaT" to BttvEmote("54fa935601e468494b85b557", "TwaT", "png")
+            ,"WhatAYolk" to BttvEmote("54fa93d001e468494b85b559", "WhatAYolk", "png")
+            ,"WatChuSay" to BttvEmote("54fa99b601e468494b85b55d", "WatChuSay", "png")
+            ,"Blackappa" to BttvEmote("54faa50d01e468494b85b578", "Blackappa", "png")
+            ,"DogeWitIt" to BttvEmote("54faa52f01e468494b85b579", "DogeWitIt", "png")
+            ,"BadAss" to BttvEmote("54faa4f101e468494b85b577", "BadAss", "png")
+            ,"SavageJerky" to BttvEmote("54fb603201abde735115ddb5", "SavageJerky", "png")
+            ,"Zappa" to BttvEmote("5622aaef3286c42e57d8e4ab", "Zappa", "png")
+            ,"tehPoleCat" to BttvEmote("566ca11a65dbbdab32ec0558", "tehPoleCat", "png")
+            ,"AngelThump" to BttvEmote("566ca1a365dbbdab32ec055b", "AngelThump", "png")
+            ,"Kaged" to BttvEmote("54fbf11001abde735115de66", "Kaged", "png")
+            ,"HHydro" to BttvEmote("54fbef6601abde735115de57", "HHydro", "png")
+            ,"TaxiBro" to BttvEmote("54fbefeb01abde735115de5b", "TaxiBro", "png")
+            ,"BroBalt" to BttvEmote("54fbf00a01abde735115de5c", "BroBalt", "png")
+            ,"ButterSauce" to BttvEmote("54fbf02f01abde735115de5d", "ButterSauce", "png")
+            ,"BaconEffect" to BttvEmote("54fbf05a01abde735115de5e", "BaconEffect", "png")
+            ,"SuchFraud" to BttvEmote("54fbf07e01abde735115de5f", "SuchFraud", "png")
+            ,"CandianRage" to BttvEmote("54fbf09c01abde735115de61", "CandianRage", "png")
+            ,"She'llBeRight" to BttvEmote("54fbefc901abde735115de5a", "She'llBeRight", "png")
+            ,"OhhhKee" to BttvEmote("54fbefa901abde735115de59", "OhhhKee", "png")
+            ,"D:" to BttvEmote("55028cd2135896936880fdd7", "D:", "png")
+            ,"SexPanda" to BttvEmote("5502874d135896936880fdd2", "SexPanda", "png")
+            ,"(poolparty)" to BttvEmote("5502883d135896936880fdd3", "(poolparty)", "png")
+            ,":'(" to BttvEmote("55028923135896936880fdd5", ":'(", "png")
+            ,"(puke)" to BttvEmote("550288fe135896936880fdd4", "(puke)", "png")
+            ,"bttvWink" to BttvEmote("550292c0135896936880fdef", "bttvWink", "png")
+            ,"bttvAngry" to BttvEmote("550291a3135896936880fde3", "bttvAngry", "png")
+            ,"bttvConfused" to BttvEmote("550291be135896936880fde4", "bttvConfused", "png")
+            ,"bttvCool" to BttvEmote("550291d4135896936880fde5", "bttvCool", "png")
+            ,"bttvHappy" to BttvEmote("55029200135896936880fde7", "bttvHappy", "png")
+            ,"bttvSad" to BttvEmote("5502925d135896936880fdea", "bttvSad", "png")
+            ,"bttvSleep" to BttvEmote("55029272135896936880fdeb", "bttvSleep", "png")
+            ,"bttvSurprised" to BttvEmote("55029288135896936880fdec", "bttvSurprised", "png")
+            ,"bttvTongue" to BttvEmote("5502929b135896936880fded", "bttvTongue", "png")
+            ,"bttvUnsure" to BttvEmote("550292ad135896936880fdee", "bttvUnsure", "png")
+            ,"bttvGrin" to BttvEmote("550291ea135896936880fde6", "bttvGrin", "png")
+            ,"bttvHeart" to BttvEmote("55029215135896936880fde8", "bttvHeart", "png")
+            ,"bttvTwink" to BttvEmote("55029247135896936880fde9", "bttvTwink", "png")
+            ,"VisLaud" to BttvEmote("550352766f86a5b26c281ba2", "VisLaud", "png")
+            ,"(chompy)" to BttvEmote("550b225fff8ecee922d2a3b2", "(chompy)", "gif")
+            ,"SoSerious" to BttvEmote("5514afe362e6bd0027aede8a", "SoSerious", "png")
+            ,"BatKappa" to BttvEmote("550b6b07ff8ecee922d2a3e7", "BatKappa", "png")
+            ,"KaRappa" to BttvEmote("550b344bff8ecee922d2a3c1", "KaRappa", "png")
+            ,"YetiZ" to BttvEmote("55189a5062e6bd0027aee082", "YetiZ", "png")
+            ,"miniJulia" to BttvEmote("552d2fc2236a1aa17a996c5b", "miniJulia", "png")
+            ,"FishMoley" to BttvEmote("566ca00f65dbbdab32ec0544", "FishMoley", "png")
+            ,"Hhhehehe" to BttvEmote("566ca02865dbbdab32ec0547", "Hhhehehe", "png")
+            ,"KKona" to BttvEmote("566ca04265dbbdab32ec054a", "KKona", "png")
+            ,"OhGod" to BttvEmote("566ca07965dbbdab32ec0552", "OhGod", "png")
+            ,"PoleDoge" to BttvEmote("566ca09365dbbdab32ec0555", "PoleDoge", "png")
+            ,"motnahP" to BttvEmote("55288e390fa35376704a4c7a", "motnahP", "png")
+            ,"sosGame" to BttvEmote("553b48a21f145f087fc15ca6", "sosGame", "png")
+            ,"CruW" to BttvEmote("55471c2789d53f2d12781713", "CruW", "png")
+            ,"RarePepe" to BttvEmote("555015b77676617e17dd2e8e", "RarePepe", "png")
+            ,"iamsocal" to BttvEmote("54fbef8701abde735115de58", "iamsocal", "png")
+            ,"haHAA" to BttvEmote("555981336ba1901877765555", "haHAA", "png")
+            ,"FeelsBirthdayMan" to BttvEmote("55b6524154eefd53777b2580", "FeelsBirthdayMan", "png")
+            ,"RonSmug" to BttvEmote("55f324c47f08be9f0a63cce0", "RonSmug", "png")
+            ,"KappaCool" to BttvEmote("560577560874de34757d2dc0", "KappaCool", "png")
+            ,"FeelsBadMan" to BttvEmote("566c9fc265dbbdab32ec053b", "FeelsBadMan", "png")
+            ,"BasedGod" to BttvEmote("566c9eeb65dbbdab32ec052b", "BasedGod", "png")
+            ,"bUrself" to BttvEmote("566c9f3b65dbbdab32ec052e", "bUrself", "png")
+            ,"ConcernDoge" to BttvEmote("566c9f6365dbbdab32ec0532", "ConcernDoge", "png")
+            ,"FapFapFap" to BttvEmote("566c9f9265dbbdab32ec0538", "FapFapFap", "png")
+            ,"FeelsGoodMan" to BttvEmote("566c9fde65dbbdab32ec053e", "FeelsGoodMan", "png")
+            ,"FireSpeed" to BttvEmote("566c9ff365dbbdab32ec0541", "FireSpeed", "png")
+            ,"NaM" to BttvEmote("566ca06065dbbdab32ec054e", "NaM", "png")
+            ,"SourPls" to BttvEmote("566ca38765dbbdab32ec0560", "SourPls", "gif")
+            ,"LuL" to BttvEmote("567b00c61ddbe1786688a633", "LuL", "png")
+            ,"SaltyCorn" to BttvEmote("56901914991f200c34ffa656", "SaltyCorn", "png")
+            ,"FCreep" to BttvEmote("56d937f7216793c63ec140cb", "FCreep", "png")
+            ,"monkaS" to BttvEmote("56e9f494fff3cc5c35e5287e", "monkaS", "png")
+            ,"VapeNation" to BttvEmote("56f5be00d48006ba34f530a4", "VapeNation", "png")
+            ,"ariW" to BttvEmote("56fa09f18eff3b595e93ac26", "ariW", "png")
+            ,"notsquishY" to BttvEmote("5709ab688eff3b595e93c595", "notsquishY", "png")
+            ,"FeelsAmazingMan" to BttvEmote("5733ff12e72c3c0814233e20", "FeelsAmazingMan", "png")
+            ,"DuckerZ" to BttvEmote("573d38b50ffbf6cc5cc38dc9", "DuckerZ", "png")
+            ,"SqShy" to BttvEmote("59cf182fcbe2693d59d7bf46", "SqShy", "png")
+            ,"Wowee" to BttvEmote("58d2e73058d8950a875ad027", "Wowee", "png")
+    )
 }

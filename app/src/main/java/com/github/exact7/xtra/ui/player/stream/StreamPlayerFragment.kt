@@ -75,7 +75,12 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         }
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
         mainViewModel.user.observe(viewLifecycleOwner, Observer {
-            messageView.visibility = if (it is LoggedIn) View.VISIBLE else View.GONE
+            messageView.visibility = if (it is LoggedIn) {
+                chatView.setUserNickname(it.name)
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
             viewModel.startStream(arguments!!.getParcelable(C.STREAM)!!, it)
         })
 

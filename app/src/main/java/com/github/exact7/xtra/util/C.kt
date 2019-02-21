@@ -12,4 +12,5 @@ object C {
     const val USER_ID = "user_id"
     const val FIRST_LAUNCH = "first_launch"
     const val CHANNEL = "channel"
+    const val THEME = "theme"
 }

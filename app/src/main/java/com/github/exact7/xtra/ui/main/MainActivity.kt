@@ -8,10 +8,11 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import android.widget.Toolbar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
@@ -85,6 +86,24 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val prefs = Prefs.userPrefs(this)
+        val theme = prefs.getInt(C.THEME, -1)
+        if (theme != -1) {
+            setTheme(theme)
+        } else {
+            var darkTheme = true
+            AlertDialog.Builder(this)
+                    .setSingleChoiceItems(arrayOf(getString(R.string.theme_dark), getString(R.string.theme_light)), 0) { _, which -> darkTheme = which == 0 }
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        prefs.edit { putInt(C.THEME, if (darkTheme) R.style.DarkTheme else R.style.LightTheme) }
+                        if (!darkTheme) {
+                            recreate()
+                        }
+                    }
+                    .setTitle(getString(R.string.choose_theme))
+                    .setCancelable(false)
+                    .show()
+        }
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
@@ -253,17 +272,20 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun viewChannel(channel: Channel) {
         if (fragNavController.currentFrag !is ChannelPagerFragment) {
+            val fragment = ChannelPagerFragment.newInstance(channel)
             if (isSearchOpened) {
-                currentFocus?.let {
-                    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
-                    search.clearFocus()
+                with(search) {
+                    setQuery("", false)
+                    isIconified = true
                 }
+                fragNavController.replaceFragment(fragment)
+            } else {
+                fragNavController.pushFragment(fragment)
             }
-            fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
         }
     }
 
-    //SlidingLayout.Listener
+//SlidingLayout.Listener
 
     override fun onMaximize() {
         viewModel.onMaximize()
@@ -277,7 +299,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         closePlayer()
     }
 
-    //Player methods
+//Player methods
 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {

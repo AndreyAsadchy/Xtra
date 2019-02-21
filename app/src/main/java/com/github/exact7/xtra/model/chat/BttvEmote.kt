@@ -9,5 +9,5 @@ data class BttvEmote(
         val code: String,
         val imageType: String) : Parcelable {
     val isPng: Boolean
-        get() = imageType.endsWith(".png")
+        get() = imageType.endsWith("png")
 }

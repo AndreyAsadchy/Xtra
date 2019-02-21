@@ -26,6 +26,13 @@
         <item name="android:radioButtonStyle">@style/RadioButtonDark</item>
     </style>
 
+    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/accentDark</item>
+        <item name="cardStyle">@style/CardDark</item>
+        <item name="navBarStyle">@style/NavBarDark</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDark</item>
+    </style>
+
     <style name="VideoTitle">
         <item name="android:textSize">17sp</item>
         <item name="android:maxLines">2</item>
@@ -76,7 +83,6 @@
         <item name="android:tint">@android:color/white</item>
     </style>
 
-    <style name="RadioButtonDark" parent="Widget.AppCompat.CompoundButton.RadioButton">
-    </style>
+    <style name="RadioButtonDark" parent="Widget.AppCompat.CompoundButton.RadioButton"/>
 
 </resources>

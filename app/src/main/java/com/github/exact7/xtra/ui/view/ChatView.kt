@@ -17,10 +17,10 @@ const val MAX_MESSAGE_COUNT = 125
 
 class ChatView : RelativeLayout {
 
-    private val adapter = ChatAdapter()
+    private lateinit var adapter: ChatAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private var isChatTouched: Boolean = false
-    private var notTouched = true //TODO
+    private var notTouched = true
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -40,27 +40,29 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        recyclerView.adapter = adapter
+        recyclerView.adapter = ChatAdapter(context).also { adapter = it }
         recyclerView.itemAnimator = null
         layoutManager = LinearLayoutManager(context)
         layoutManager.stackFromEnd = true
         recyclerView.layoutManager = layoutManager
         recyclerView.setOnTouchListener { _, event ->
             when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    isChatTouched = true
+                MotionEvent.ACTION_DOWN -> isChatTouched = true
+                MotionEvent.ACTION_UP -> {
+                    isChatTouched = false
                     notTouched = false
                 }
-                MotionEvent.ACTION_UP -> isChatTouched = false
             }
             false
         }
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!isButtonShowing() && shouldShowButton()) {
+                val showButton = shouldShowButton()
+                val buttonShowing = isButtonShowing()
+                if (!buttonShowing && showButton) {
                     btnDown.visibility = View.VISIBLE
-                } else if (isButtonShowing() && !shouldShowButton()) {
+                } else if (buttonShowing && !showButton) {
                     btnDown.visibility = View.GONE
                 }
             }
@@ -74,7 +76,7 @@ class ChatView : RelativeLayout {
             adapter.messages.removeAt(0)
             adapter.notifyItemRemoved(0)
         }
-        if (!isChatTouched && !shouldShowButton()) {
+        if (!isChatTouched && !isButtonShowing()) {
             recyclerView.scrollToPosition(getLastItemPosition())
         }
     }
@@ -87,7 +89,12 @@ class ChatView : RelativeLayout {
         adapter.setBttvEmotes(list)
     }
 
+    fun setUserNickname(nickname: String) {
+        adapter.setUserNickname(nickname)
+    }
+
     private fun getLastItemPosition(): Int = adapter.itemCount - 1
+    private fun isButtonShowing(): Boolean = btnDown.visibility == View.VISIBLE
     private fun shouldShowButton(): Boolean {
         if (notTouched) return false
         val offset = recyclerView.computeVerticalScrollOffset()
@@ -96,8 +103,7 @@ class ChatView : RelativeLayout {
         }
         val extent = recyclerView.computeVerticalScrollExtent()
         val range = recyclerView.computeVerticalScrollRange()
-        val percentage = (100 * offset / (range - extent).toFloat())
-        return percentage < 92f
+        val percentage = (100f * offset / (range - extent).toFloat())
+        return percentage < 95f
     }
-    private fun isButtonShowing(): Boolean = btnDown.visibility == View.VISIBLE
 }

@@ -5,17 +5,24 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".XtraApp"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/DarkTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -25,11 +32,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.MainActivity"
-            android:launchMode="singleTop"/>
-        <activity android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait"/>
-        <service android:name=".ui.download.DownloadService"/>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".ui.download.DownloadService" />
+
         <receiver android:name=".ui.download.NotificationActionReceiver" />
     </application>
 
