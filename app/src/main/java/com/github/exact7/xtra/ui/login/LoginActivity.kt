@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
         if (token == null) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
                 welcomeContainer.visibility = View.VISIBLE
-                login.setOnClickListener { initWebView() }
+                loginText.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
             } else {
                 initWebView()

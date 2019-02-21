@@ -42,7 +42,7 @@ class FollowPagerFragment : MediaPagerFragment(), Injectable {
                 isLoggedIn = true
                 setAdapter(FollowPagerAdapter(activity, childFragmentManager))
             } else {
-                notLoggedInLayout.login.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
+                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
             }
         })
     }

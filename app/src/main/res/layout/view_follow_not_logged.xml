@@ -18,7 +18,7 @@
         android:layout_marginTop="100dp"/>
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/loginText"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:text="@string/log_in"

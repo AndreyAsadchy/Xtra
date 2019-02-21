@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         } else {
             var darkTheme = true
             AlertDialog.Builder(this)
-                    .setSingleChoiceItems(arrayOf(getString(R.string.theme_dark), getString(R.string.theme_light)), 0) { _, which -> darkTheme = which == 0 }
+                    .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.light)), 0) { _, which -> darkTheme = which == 0 }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         prefs.edit { putInt(C.THEME, if (darkTheme) R.style.DarkTheme else R.style.LightTheme) }
                         if (!darkTheme) {

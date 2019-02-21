@@ -21,8 +21,7 @@
         android:theme="@style/DarkTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ui.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:name=".ui.SettingsActivity"/>
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -38,9 +37,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait" />
-
         <service android:name=".ui.download.DownloadService" />
-
         <receiver android:name=".ui.download.NotificationActionReceiver" />
     </application>
 

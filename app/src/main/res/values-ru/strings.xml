@@ -60,7 +60,10 @@
     <string name="nothing_here">Здесь пусто</string>
     <string name="watch_live">Прямой эфир</string>
     <string name="error_stream">Ошибка при загрузке стрима</string>
-    <string name="theme_dark">Темная</string>
-    <string name="theme_light">Светлая</string>
+    <string name="dark">Темная</string>
+    <string name="light">Светлая</string>
     <string name="choose_theme">Выберите тeму</string>
+    <string name="settings">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+
 </resources>
