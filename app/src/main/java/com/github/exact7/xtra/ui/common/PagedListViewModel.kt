@@ -2,7 +2,6 @@ package com.github.exact7.xtra.ui.common
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
@@ -14,12 +13,11 @@ abstract class PagedListViewModel<T> : ViewModel() {
 
     protected abstract val result: LiveData<Listing<T>>
     val list: LiveData<PagedList<T>> by lazy { switchMap(result) { it.pagedList } }
-    val isEmpty: LiveData<Boolean> by lazy { Transformations.map(result) { it.pagedList.value?.isEmpty() ?: false } } //TODO paged list in data binding not working
     val loadingState: LiveData<LoadingState> by lazy { switchMap(result) { it.loadingState } }
     val pagingState: LiveData<LoadingState> by lazy { switchMap(result) { it.pagingState } }
 
     protected val _loadedInitial by lazy {
-        MediatorLiveData<Boolean?>().apply {
+        MediatorLiveData<Boolean>().apply {
             addSource(loadingState) {
                 if (value == null) {
                     if (it == LoadingState.LOADED) value = true

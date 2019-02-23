@@ -25,14 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            app:visible="@{!safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"/>
+            app:visible="@{!(boolean)viewModel.loadedInitial &amp;&amp; viewModel.loadingState == LoadingState.LOADING}"/>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:onRefreshListener="@{viewModel::refresh}"
-                app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
+                app:refreshing="@{(boolean)viewModel.loadedInitial &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
@@ -40,7 +40,7 @@
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/fragment_downloads_list_item"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:spanCount="@{safeUnbox(spanCount)}"
+                        app:spanCount="@{spanCount}"
                         app:divider="@{divider}"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -51,7 +51,7 @@
             android:text="@string/nothing_here"
             android:textSize="20sp"
             android:layout_centerInParent="true"
-            app:visible="@{viewModel.loadingState == LoadingState.LOADED &amp;&amp; viewModel.isEmpty}"/>
+            app:visible="@{viewModel.loadingState == LoadingState.LOADED &amp;&amp; ((java.util.List)(viewModel.list)).isEmpty}"/>
 
         <!--<ProgressBar-->
             <!--android:id="@+id/loadMoreProgressBar"-->

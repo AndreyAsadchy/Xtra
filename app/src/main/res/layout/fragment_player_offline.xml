@@ -7,11 +7,8 @@
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/playerHeight"
-        android:background="@android:color/black"
         app:controller_layout_id="@layout/player_offline"
-        app:show_buffering="always"/>
+        style="@style/PlayerPortrait"/>
 
     <View
         android:id="@+id/dummyView"

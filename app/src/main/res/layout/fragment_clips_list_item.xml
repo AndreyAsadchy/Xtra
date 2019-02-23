@@ -18,8 +18,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?attr/cardStyle"
-        android:onClick="@{() -> clipListener.startClip(clip)}">
+        android:onClick="@{() -> clipListener.startClip(clip)}"
+        style="@style/Card"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,66 +29,66 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 app:imageUrl="@{clip.thumbnails.medium}"
-                android:scaleType="centerCrop"
                 tools:src="@tools:sample/backgrounds/scenic"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/thumbnailHeight"
+                style="@style/Thumbnail"
                 />
 
             <TextView
                 android:id="@+id/date"
-                app:date="@{clip.createdAt}"
-                tools:text="April 20, 2017"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:date="@{clip.createdAt}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
                 android:layout_alignEnd="@id/thumbnail"
                 android:layout_alignRight="@id/thumbnail"
                 android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp" />
+                android:layout_marginRight="5dp"
+                tools:text="April 20, 2017"
+                style="@style/ThumbnailItem"/>
 
             <TextView
                 android:id="@+id/views"
-                android:text="@{@plurals/views(clip.views, clip.views)}"
-                tools:text="133769 views"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{@plurals/views(clip.views, clip.views)}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                tools:text="133769 views"
+                style="@style/ThumbnailItem"/>
 
             <TextView
                 android:id="@+id/duration"
                 app:duration="@{(long)clip.duration}"
-                tools:text="13:37"
-                style="@style/VideoDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                tools:text="13:37"
+                style="@style/VideoDuration"
+                />
 
             <ImageView
                 android:id="@+id/userImage"
                 app:imageUrl="@{clip.broadcaster.logo}"
                 app:circle="@{true}"
-                tools:src="@tools:sample/backgrounds/scenic"
-                style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"/>
+                android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                style="@style/UserPicture"
+                />
 
             <TextView
                 android:id="@+id/title"
-                android:text="@{clip.title}"
-                tools:text="@sample/clips.json/clips/title"
-                style="@style/VideoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{clip.title}"
                 android:layout_marginTop="7dp"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginStart="10dp"
@@ -97,14 +98,16 @@
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"/>
+                android:layout_toLeftOf="@+id/options"
+                tools:text="@sample/clips.json/clips/title"
+                style="@style/VideoTitle"
+                />
 
             <TextView
                 android:id="@+id/username"
-                android:text="@{clip.broadcaster.displayName}"
-                tools:text="@sample/clips.json/clips/broadcaster/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{clip.broadcaster.displayName}"
                 android:layout_below="@id/title"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
@@ -114,21 +117,24 @@
                 android:layout_toLeftOf="@+id/options"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
-                android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"/>
+                android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"
+                tools:text="@sample/clips.json/clips/broadcaster/name"
+                />
 
             <TextView
                 android:id="@+id/gameName"
-                android:text="@{clip.game}"
-                tools:text="@sample/clips.json/clips/game"
-                android:textColor="?attr/secondaryTextColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{clip.game}"
+                android:textColor="?attr/secondaryTextColor"
                 android:layout_below="@id/username"
                 android:paddingBottom="10dp"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                tools:text="@sample/clips.json/clips/game"
+                />
 
             <ImageButton
                 android:id="@+id/options"

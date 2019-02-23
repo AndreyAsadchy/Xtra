@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="cardStyle" format="reference"/>
-    <attr name="navBarStyle" format="reference"/>
-    <attr name="dividerColor" format="color"/>
+    <attr name="primaryColor" format="color"/>
+    <attr name="textColor" format="color"/>
     <attr name="secondaryTextColor" format="color"/>
+    <attr name="dividerColor" format="color"/>
+    <attr name="navBarStyle" format="reference"/>
 </resources>

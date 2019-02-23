@@ -6,10 +6,7 @@
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         app:controller_layout_id="@layout/player_offline"
-        app:show_buffering="always"
-        app:resize_mode="fill"/>
+        style="@style/PlayerLandscape"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

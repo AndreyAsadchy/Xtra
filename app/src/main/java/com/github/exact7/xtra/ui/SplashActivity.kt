@@ -1,10 +1,9 @@
 package com.github.exact7.xtra.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -15,12 +14,9 @@ class SplashActivity : AppCompatActivity(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val prefs = getPreferences(Context.MODE_PRIVATE)
-        val isFirstLaunch = prefs.getBoolean(FIRST_LAUNCH, true)
-        if (!isFirstLaunch) {
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(FIRST_LAUNCH, true)) {
             startMainActivity()
         } else {
-            prefs.edit { putBoolean(FIRST_LAUNCH, false) }
             startActivityForResult(Intent(this, LoginActivity::class.java).apply { putExtra(FIRST_LAUNCH, true) }, 1)
         }
     }

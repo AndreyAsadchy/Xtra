@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
@@ -81,27 +82,27 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
     private val isSearchOpened
         get() = fragNavController.currentFrag is SearchFragment
+    var isDarkTheme = true
+        private set
 
     //Lifecycle methods
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val prefs = Prefs.userPrefs(this)
-        val theme = prefs.getInt(C.THEME, -1)
-        if (theme != -1) {
-            setTheme(theme)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
+            setTheme(if (prefs.getBoolean(C.THEME, true).also { isDarkTheme = it }) R.style.DarkTheme else R.style.LightTheme)
         } else {
-            var darkTheme = true
+            prefs.edit { putBoolean(C.FIRST_LAUNCH, false) }
             AlertDialog.Builder(this)
-                    .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.light)), 0) { _, which -> darkTheme = which == 0 }
+                    .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.light)), 0) { _, which -> isDarkTheme = which == 0 }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        prefs.edit { putInt(C.THEME, if (darkTheme) R.style.DarkTheme else R.style.LightTheme) }
-                        if (!darkTheme) {
+                        prefs.edit { putBoolean(C.THEME, isDarkTheme) }
+                        if (!isDarkTheme) {
                             recreate()
                         }
                     }
                     .setTitle(getString(R.string.choose_theme))
-                    .setCancelable(false)
                     .show()
         }
         setContentView(R.layout.activity_main)

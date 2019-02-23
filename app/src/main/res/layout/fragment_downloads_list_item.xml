@@ -11,7 +11,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?attr/cardStyle">
+        style="@style/Card">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,63 +21,66 @@
                 android:id="@+id/thumbnail"
                 app:imageUrl="@{video.thumbnail}"
                 tools:src="@tools:sample/backgrounds/scenic"
-                android:scaleType="centerCrop"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/thumbnailHeight"/>
+                style="@style/Thumbnail"
+                />
 
             <TextView
                 android:id="@+id/date"
-                android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
-                tools:text="Uploaded: July 16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                tools:text="Uploaded: July 16"
+                style="@style/ThumbnailItem"
+                />
 
             <TextView
                 android:id="@+id/downloadDate"
-                android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
-                tools:text="Downloaded: August 7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_alignEnd="@id/thumbnail"
-                android:layout_alignRight="@id/thumbnail" />
+                android:layout_alignRight="@id/thumbnail"
+                tools:text="Downloaded: August 7"
+                style="@style/ThumbnailItem"
+                />
 
             <TextView
                 android:id="@+id/duration"
-                app:duration="@{video.duration}"
-                tools:text="13:37"
-                style="@style/VideoDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:duration="@{video.duration}"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp" />
+                android:layout_marginStart="10dp"
+                tools:text="13:37"
+                style="@style/VideoDuration"
+                />
 
             <ImageView
                 android:id="@+id/userImage"
                 app:imageUrl="@{video.channelLogo}"
                 app:circle="@{true}"
-                tools:src="@tools:sample/backgrounds/scenic"
-                style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="12dp" />
+                android:layout_marginTop="12dp"
+                tools:src="@tools:sample/backgrounds/scenic"
+                style="@style/UserPicture"
+                />
 
             <TextView
                 android:id="@+id/title"
-                android:text="@{video.name}"
-                tools:text="This is the title of the video"
-                style="@style/VideoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{video.name}"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="7dp"
@@ -87,14 +90,16 @@
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options" />
+                android:layout_toLeftOf="@+id/options"
+                tools:text="This is the title of the video"
+                style="@style/VideoTitle"
+                />
 
             <TextView
                 android:id="@+id/username"
-                android:text="@{video.channelName}"
-                tools:text="summit1g"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{video.channelName}"
                 android:layout_below="@id/title"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
@@ -103,21 +108,24 @@
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options" />
+                android:layout_toLeftOf="@+id/options"
+                tools:text="summit1g"
+                />
 
             <TextView
                 android:id="@+id/game"
-                android:text="@{video.game}"
-                tools:text="Dota 2"
-                android:textColor="?attr/secondaryTextColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{video.game}"
+                android:textColor="?attr/secondaryTextColor"
                 android:layout_below="@id/username"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                tools:text="Dota 2"
+                />
 
             <ImageButton
                 android:id="@+id/options"

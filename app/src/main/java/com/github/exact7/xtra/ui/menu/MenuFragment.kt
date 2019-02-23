@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.menu
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,11 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.ui.SettingsActivity
 import com.github.exact7.xtra.ui.login.LoginActivity
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
+import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.fragment_menu.*
 
 class MenuFragment : Fragment() {
@@ -37,14 +39,12 @@ class MenuFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            data?.let {
-                if (it.getBooleanExtra("changed", false)) {
-                    requireActivity().apply {
-                        setTheme(it.getIntExtra("theme", R.style.DarkTheme))
-                        recreate()
-                    }
-                }
+        val activity = requireActivity() as MainActivity
+        val darkTheme = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(C.THEME, true)
+        if (activity.isDarkTheme != darkTheme) {
+            activity.apply {
+                setTheme(if (darkTheme) R.style.DarkTheme else R.style.LightTheme)
+                recreate()
             }
         }
     }

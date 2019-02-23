@@ -7,11 +7,8 @@
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/playerHeight"
         app:controller_layout_id="@layout/player_stream"
-        app:show_buffering="always"
-        app:resize_mode="fill"/>
+        style="@style/PlayerPortrait"/>
 
     <LinearLayout
         android:id="@+id/chatContainer"

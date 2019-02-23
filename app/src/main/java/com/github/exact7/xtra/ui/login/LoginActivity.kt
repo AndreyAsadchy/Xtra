@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(if (Prefs.userPrefs(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         setContentView(R.layout.activity_login)
         val prefs = Prefs.authPrefs(this)
         val token = prefs.getString(C.TOKEN, null)
