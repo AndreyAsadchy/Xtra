@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
     <ImageButton
-        android:id="@id/exo_play"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        style="@style/ExoMediaButton.Play"/>
+        style="@style/Player.Play"/>
 
     <ImageButton
-        android:id="@id/exo_pause"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        style="@style/ExoMediaButton.Pause"/>
+        style="@style/Player.Pause"/>
 
     <ImageButton
         android:id="@+id/minimize"
-        android:src="@drawable/baseline_expand_more_black_48"
-        style="@style/PlayerControl"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end">
+        style="@style/Player.Minimize"/>
 
         <!--<ImageButton-->
             <!--android:id="@+id/profile"-->
@@ -36,13 +22,19 @@
 
         <ImageButton
             android:id="@+id/download"
-            style="@style/PlayerControl"
-            android:src="@drawable/ic_file_download_black_24dp" />
+            android:layout_toLeftOf="@id/settings"
+            android:layout_toStartOf="@id/settings"
+            style="@style/Player.Download"
+            />
 
         <ImageButton
             android:id="@+id/settings"
-            style="@style/PlayerControl"
-            android:src="@drawable/baseline_settings_black_24" />
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            style="@style/Player.Settings"
+            />
 
 
         <!--<ImageButton-->
@@ -51,70 +43,23 @@
             <!--android:layout_height="50dp"-->
             <!--android:src="@drawable/baseline_more_vert_black_24" />-->
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end">
-
         <TextView
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp" />
+            style="@style/Player.Position"/>
 
         <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@id/exo_progress"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"/>
+            style="@style/Player.Progress" />
 
         <TextView
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_toLeftOf="@id/fullscreenExit"
+            android:layout_toStartOf="@id/fullscreenExit"
+            style="@style/Player.Duration"
             />
-
-        <!--<ImageButton-->
-            <!--android:id="@+id/minimizePlayer"-->
-            <!--style="@style/PlayerControl"-->
-            <!--android:src="@drawable/baseline_unfold_less_black_24"-->
-            <!--android:rotation="90"/>-->
-
-        <!--<ImageButton-->
-            <!--android:id="@+id/maximizePlayer"-->
-            <!--style="@style/PlayerControl"-->
-            <!--android:src="@drawable/baseline_unfold_more_black_24"-->
-            <!--android:rotation="90"/>-->
-
-        <!--<ImageButton-->
-            <!--android:id="@+id/player_hide_chat"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:src="@drawable/baseline_speaker_notes_off_black_24" />-->
-
-
-        <!--<ImageButton-->
-            <!--android:id="@+id/player_show_chat"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:src="@drawable/baseline_chat_black_24" />-->
 
         <ImageButton
             android:id="@+id/fullscreenExit"
-            style="@style/PlayerControl"
-            android:src="@drawable/baseline_fullscreen_exit_black_24" />
+            android:layout_above="@id/exo_progress"
+            style="@style/Player.FullscreenExit"
+            />
 
-    </LinearLayout>
-
-</FrameLayout>
+</RelativeLayout>

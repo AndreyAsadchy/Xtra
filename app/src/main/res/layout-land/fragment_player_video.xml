@@ -6,11 +6,7 @@
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black"
         app:controller_layout_id="@layout/player_video"
-        app:show_buffering="always"
-        app:resize_mode="fill"/>
+        style="@style/Player.Landscape"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

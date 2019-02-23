@@ -9,8 +9,6 @@
     </data>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         style="@style/Card">
 
         <RelativeLayout
@@ -26,8 +24,6 @@
 
             <TextView
                 android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginStart="5dp"
@@ -39,8 +35,6 @@
 
             <TextView
                 android:id="@+id/downloadDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
@@ -54,8 +48,6 @@
 
             <TextView
                 android:id="@+id/duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 app:duration="@{video.duration}"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
@@ -144,13 +136,14 @@
             android:id="@+id/downloading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:text="@string/downloading"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textAllCaps="true"
             app:visible="@{!video.downloaded}"
             android:layout_gravity="center"
             android:background="#80000000"
             android:gravity="center"
-            android:text="@string/downloading"
-            android:textAllCaps="true"
-            android:textSize="30sp"
             android:clickable="true"
             android:focusable="true" />
 

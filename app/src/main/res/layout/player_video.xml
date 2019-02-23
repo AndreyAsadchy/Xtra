@@ -1,96 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+    <ImageButton
+        style="@style/Player.Play"/>
 
-        <ImageButton
-            android:id="@id/exo_play"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            style="@style/ExoMediaButton.Play"/>
+    <ImageButton
+        style="@style/Player.Pause"/>
 
-        <ImageButton
-            android:id="@id/exo_pause"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            style="@style/ExoMediaButton.Pause"/>
+    <ImageButton
+        android:id="@+id/minimize"
+        style="@style/Player.Minimize" />
 
-        <ImageButton
-            android:id="@+id/minimize"
-            style="@style/PlayerControl"
-            android:src="@drawable/baseline_expand_more_black_48" />
+    <ImageButton
+        android:id="@+id/download"
+        android:layout_toLeftOf="@id/settings"
+        android:layout_toStartOf="@id/settings"
+        style="@style/Player.Download"
+        />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end">
+    <!--<ImageButton-->
+    <!--android:id="@+id/profile"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:visibility="gone"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:src="@drawable/baseline_person_black_24" />-->
 
-            <ImageButton
-                android:id="@+id/download"
-                style="@style/PlayerControl"
-                android:src="@drawable/ic_file_download_black_24dp" />
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        style="@style/Player.Settings"
+        />
 
-            <!--<ImageButton-->
-            <!--android:id="@+id/profile"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:visibility="gone"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:src="@drawable/baseline_person_black_24" />-->
+    <!--<ImageButton-->
+    <!--android:id="@+id/more"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:visibility="gone"-->
+    <!--android:src="@drawable/baseline_more_vert_black_24" />-->
 
-            <ImageButton
-                android:id="@+id/settings"
-                style="@style/PlayerControl"
-                android:src="@drawable/baseline_settings_black_24" />
+    <TextView
+        style="@style/Player.Position"/>
 
-            <!--<ImageButton-->
-            <!--android:id="@+id/more"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:visibility="gone"-->
-            <!--android:src="@drawable/baseline_more_vert_black_24" />-->
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@id/exo_progress"
+        style="@style/Player.Progress"
+        />
 
-        </LinearLayout>
+    <TextView
+        android:layout_toLeftOf="@id/fullscreenEnter"
+        android:layout_toStartOf="@id/fullscreenEnter"
+        style="@style/Player.Duration"
+        />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
+    <ImageButton
+        android:id="@+id/fullscreenEnter"
+        android:layout_above="@id/exo_progress"
+        style="@style/Player.FullscreenEnter"/>
 
-            <TextView
-                android:id="@id/exo_position"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"/>
-
-            <com.google.android.exoplayer2.ui.DefaultTimeBar
-                android:id="@id/exo_progress"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@id/exo_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"/>
-
-            <ImageButton
-                android:id="@+id/fullscreenEnter"
-                style="@style/PlayerControl"
-                android:src="@drawable/baseline_fullscreen_black_24"/>
-
-        </LinearLayout>
-    </FrameLayout>
-</layout>
+</RelativeLayout>

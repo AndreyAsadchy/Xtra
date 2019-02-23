@@ -188,10 +188,10 @@ class DownloadService : IntentService(TAG), Injectable {
     override fun onDestroy() {
         stopForegroundInternal(true)
         if (!completed) {
-            if (this::fetch.isInitialized) {
+            if (this::fetch.isInitialized && !fetch.isClosed) {
                 fetch.deleteAll()
-                offlineRepository.deleteVideo(offlineVideo)
             }
+            offlineRepository.deleteVideo(offlineVideo)
         }
         super.onDestroy()
     }

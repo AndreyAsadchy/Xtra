@@ -17,10 +17,9 @@
     </data>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?attr/cardStyle"
-        android:onClick="@{() -> streamListener.startStream(stream)}">
+        android:onClick="@{() -> streamListener.startStream(stream)}"
+        style="@style/Card"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,94 +30,96 @@
                 app:imageUrl="@{stream.preview.large}"
                 app:changes="@{true}"
                 tools:src="@tools:sample/backgrounds/scenic"
-                android:scaleType="centerCrop"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/thumbnailHeight"/>
+                style="@style/Thumbnail"/>
 
             <TextView
                 android:id="@+id/viewers"
                 android:text="@{@plurals/viewers(stream.viewers, stream.viewers)}"
-                tools:text="133769 viewers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="3dp"
                 android:layout_marginLeft="3dp"
                 android:layout_toEndOf="@id/streamTypeImage"
-                android:layout_toRightOf="@id/streamTypeImage" />
+                android:layout_toRightOf="@id/streamTypeImage"
+                tools:text="133769 viewers"
+                style="@style/ThumbnailItem"/>
 
             <ImageView
                 android:id="@+id/streamTypeImage"
-                android:src="@{stream.streamType == StreamType.LIVE ? @drawable/baseline_fiber_manual_record_black_24 : @drawable/baseline_replay_black_24 }"
-                app:tint="@{stream.streamType == StreamType.LIVE ? @android:color/holo_red_dark : @android:color/darker_gray }"
-                tools:src="@drawable/baseline_fiber_manual_record_black_24"
-                tools:tint="@android:color/holo_red_dark"
                 android:layout_width="17dp"
                 android:layout_height="15dp"
+                android:src="@{stream.streamType == StreamType.LIVE ? @drawable/baseline_fiber_manual_record_black_24 : @drawable/baseline_replay_black_24 }"
+                app:tint="@{stream.streamType == StreamType.LIVE ? @android:color/holo_red_dark : @android:color/darker_gray }"
                 android:scaleType="centerCrop"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="6dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                tools:src="@drawable/baseline_fiber_manual_record_black_24"
+                tools:tint="@android:color/holo_red_dark"
+                />
 
             <ImageView
                 android:id="@+id/userImage"
                 app:imageUrl="@{stream.channel.logo}"
                 app:circle="@{true}"
-                tools:src="@tools:sample/backgrounds/scenic"
-                style="@style/UserPicture"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:onClick="@{() -> channelListener.viewChannel(stream.channel)}"/>
+                android:onClick="@{() -> channelListener.viewChannel(stream.channel)}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                style="@style/UserPicture"
+                />
 
             <TextView
                 android:id="@+id/username"
-                android:text="@{stream.channel.displayName}"
-                tools:text="@sample/streams.json/streams/channel/name"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{stream.channel.displayName}"
+                android:textStyle="bold"
+                android:textSize="15sp"
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="7dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
-                android:onClick="@{() -> channelListener.viewChannel(stream.channel)}"/>
+                android:onClick="@{() -> channelListener.viewChannel(stream.channel)}"
+                tools:text="@sample/streams.json/streams/channel/name"
+                />
 
             <TextView
                 android:id="@+id/title"
-                android:text="@{stream.channel.status}"
-                tools:text="@sample/streams.json/streams/channel/status"
-                android:ellipsize="end"
-                android:maxLines="2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{stream.channel.status}"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:layout_below="@id/username"
                 android:layout_marginTop="1dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage" />
+                android:layout_toRightOf="@id/userImage"
+                tools:text="@sample/streams.json/streams/channel/status"
+                />
 
             <TextView
                 android:id="@+id/gameName"
-                android:text="@{stream.game}"
-                tools:text="@sample/games.json/top/game/name"
-                android:textColor="?attr/secondaryTextColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{stream.game}"
+                android:textColor="?attr/secondaryTextColor"
                 android:layout_below="@id/title"
                 android:layout_marginTop="1dp"
                 android:paddingBottom="10dp"
                 android:layout_toEndOf="@id/userImage"
                 android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                tools:text="@sample/games.json/top/game/name"
+                />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

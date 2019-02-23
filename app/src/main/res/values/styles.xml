@@ -35,6 +35,8 @@
     </style>
 
     <style name="Card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="cardCornerRadius">0dp</item>
         <item name="cardBackgroundColor">?attr/primaryColor</item>
     </style>
@@ -46,7 +48,7 @@
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_marginEnd">15dp</item>
         <item name="android:layout_marginRight">15dp</item>
-        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:tint">?attr/textColor</item>
     </style>
 
     <style name="NavBarDark">
@@ -94,13 +96,22 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Outline">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1.5</item>
+        <item name="android:shadowDy">1.3</item>
+        <item name="android:shadowRadius">1.6</item>
+    </style>
+
     <style name="Thumbnail">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/thumbnailHeight</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 
-    <style name="ThumbnailItem">
+    <style name="ThumbnailItem" parent="Outline">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
@@ -122,30 +133,6 @@
     <style name="UserPicture">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
-    </style>
-
-    <style name="PlayerControl">
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:tint">@android:color/white</item>
-    </style>
-
-    <style name="Player">
-        <item name="show_buffering">always</item>
-        <item name="resize_mode">fill</item>
-        <item name="android:background">@android:color/black</item>
-    </style>
-
-    <style name="PlayerPortrait" parent="Player">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/playerHeight</item>
-    </style>
-
-    <style name="PlayerLandscape" parent="Player">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_height">match_parent</item>
     </style>
 
 </resources>

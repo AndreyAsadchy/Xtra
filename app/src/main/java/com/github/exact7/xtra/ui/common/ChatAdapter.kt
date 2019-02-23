@@ -119,7 +119,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
             val value = split[i]
             bttvMap[value].let { e ->
                 val length = value.length
-                builderIndex += if (e == null) {
+                builderIndex += if (e == null) { //TODO check for urls
                     if (value.startsWith('@')) {
                         builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, builderIndex + length, SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
@@ -163,7 +163,11 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
                                 resource.setBounds(0, 0, size, size)
-                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                try {
+                                    builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                } catch (e: Exception) {
+                                    //TODO find error
+                                }
                                 holder.bind(builder)
                             }
                         })

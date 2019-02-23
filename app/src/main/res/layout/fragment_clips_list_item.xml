@@ -16,8 +16,6 @@
     </data>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:onClick="@{() -> clipListener.startClip(clip)}"
         style="@style/Card"
         >
@@ -35,8 +33,6 @@
 
             <TextView
                 android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 app:date="@{clip.createdAt}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
@@ -49,8 +45,6 @@
 
             <TextView
                 android:id="@+id/views"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@{@plurals/views(clip.views, clip.views)}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
@@ -62,8 +56,6 @@
             <TextView
                 android:id="@+id/duration"
                 app:duration="@{(long)clip.duration}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"

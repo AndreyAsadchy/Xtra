@@ -1,63 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <ImageButton
-        android:id="@id/exo_play"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        style="@style/ExoMediaButton.Play"/>
+        style="@style/Player.Play"/>
 
     <ImageButton
-        android:id="@id/exo_pause"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        style="@style/ExoMediaButton.Pause"/>
+        style="@style/Player.Pause"/>
 
     <ImageButton
         android:id="@+id/minimize"
-        android:src="@drawable/baseline_expand_more_black_48"
-        style="@style/PlayerControl"/>
+        style="@style/Player.Minimize"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
+    <TextView
+        style="@style/Player.Position"
+        />
 
-        <TextView
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"/>
+    <TextView
+        android:layout_toLeftOf="@id/fullscreenEnter"
+        android:layout_toStartOf="@id/fullscreenEnter"
+        style="@style/Player.Duration"
+        />
 
-        <com.google.android.exoplayer2.ui.DefaultTimeBar
-            android:id="@id/exo_progress"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"/>
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@id/exo_progress"
+        style="@style/Player.Progress"
+        />
 
-        <TextView
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp" />
+    <ImageButton
+        android:id="@+id/fullscreenEnter"
+        android:layout_above="@id/exo_progress"
+        style="@style/Player.FullscreenEnter"
+        />
 
-        <ImageButton
-            android:id="@+id/fullscreenEnter"
-            style="@style/PlayerControl"
-            android:src="@drawable/baseline_fullscreen_black_24"/>
-
-    </LinearLayout>
-
-</FrameLayout>
+</RelativeLayout>

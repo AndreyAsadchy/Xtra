@@ -13,10 +13,9 @@
     </data>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?attr/cardStyle"
-        android:onClick="@{() -> listener.viewChannel(channel)}">
+        android:onClick="@{() -> listener.viewChannel(channel)}"
+        style="@style/Card"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"

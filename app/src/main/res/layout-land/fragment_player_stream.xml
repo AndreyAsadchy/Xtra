@@ -7,12 +7,12 @@
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
         app:controller_layout_id="@layout/player_stream"
-        style="@style/PlayerLandscape"/>
+        style="@style/Player.Landscape"/>
 
     <LinearLayout
         android:id="@+id/chatContainer"
         android:orientation="vertical"
-        android:layout_width="175dp"
+        android:layout_width="185dp"
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
 

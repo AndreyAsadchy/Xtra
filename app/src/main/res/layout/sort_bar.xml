@@ -16,27 +16,28 @@
 
         <TextView
             android:id="@+id/sortText"
-            android:text="@{liveData}"
-            tools:text="@string/all_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@{liveData}"
             android:layout_toStartOf="@id/sortByImage"
-            android:layout_toLeftOf="@id/sortByImage" />
+            android:layout_toLeftOf="@id/sortByImage"
+            tools:text="@string/all_time"
+            />
 
         <ImageView
             android:id="@+id/sortByImage"
-            android:src="@drawable/baseline_sort_black_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tint="@android:color/white"
+            android:src="@drawable/baseline_sort_black_24"
+            android:tint="?attr/textColor"
             android:layout_toStartOf="@id/sortByText"
             android:layout_toLeftOf="@id/sortByText" />
 
         <TextView
             android:id="@+id/sortByText"
-            android:text="@string/sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/sort"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />
     </RelativeLayout>

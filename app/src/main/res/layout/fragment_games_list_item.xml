@@ -11,8 +11,6 @@
     </data>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:onClick="@{() -> listener.openGame(game)}"
         style="@style/Card"
         >

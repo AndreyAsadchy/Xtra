@@ -1,70 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
     <ImageButton
-        android:id="@id/exo_play"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        style="@style/ExoMediaButton.Play"/>
+        style="@style/Player.Play"/>
 
     <ImageButton
-        android:id="@id/exo_pause"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        style="@style/ExoMediaButton.Pause"/>
+        style="@style/Player.Pause"/>
 
     <ImageButton
         android:id="@+id/minimize"
-        android:src="@drawable/baseline_expand_more_black_48"
-        style="@style/PlayerControl"/>
+        style="@style/Player.Minimize"/>
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="end">-->
+
+    <!--<ImageButton-->
+    <!--android:id="@+id/player_profile"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:src="@drawable/baseline_person_black_24"-->
+    <!--android:visibility="gone"/>-->
+
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        style="@style/Player.Settings"/>
+
+    <!--<ImageButton-->
+    <!--android:id="@+id/player_more"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:visibility="gone"-->
+    <!--android:src="@drawable/baseline_more_vert_black_24" />-->
+
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end">
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/player_profile"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:src="@drawable/baseline_person_black_24"-->
-        <!--android:visibility="gone"/>-->
-
-        <ImageButton
-            android:id="@+id/settings"
-            android:src="@drawable/baseline_settings_black_24"
-            style="@style/PlayerControl"/>
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/player_more"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:visibility="gone"-->
-        <!--android:src="@drawable/baseline_more_vert_black_24" />-->
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end">
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp">
 
         <ImageButton
             android:id="@+id/minimizePlayer"
             android:src="@drawable/baseline_unfold_less_black_24"
             android:rotation="90"
-            style="@style/PlayerControl" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            style="@style/Player.Image" />
 
         <ImageButton
             android:id="@+id/maximizePlayer"
             android:src="@drawable/baseline_unfold_more_black_24"
             android:rotation="90"
-            style="@style/PlayerControl" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            style="@style/Player.Image"
+            />
 
         <!--<ImageButton-->
         <!--android:id="@+id/player_hide_chat"-->
@@ -79,9 +82,8 @@
 
         <ImageButton
             android:id="@+id/fullscreenExit"
-            android:src="@drawable/baseline_fullscreen_exit_black_24"
-            style="@style/PlayerControl"/>
+            style="@style/Player.FullscreenExit"/>
 
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>

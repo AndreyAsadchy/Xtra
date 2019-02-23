@@ -7,6 +7,6 @@
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
         app:controller_layout_id="@layout/player_offline"
-        style="@style/PlayerLandscape"/>
+        style="@style/Player.Landscape"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>
