@@ -6,4 +6,5 @@
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
     <integer name="media_columns">1</integer>
     <dimen name="divider_margin">5dp</dimen>
+    <dimen name="chat_width">180dp</dimen>
 </resources>

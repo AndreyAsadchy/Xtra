@@ -12,7 +12,7 @@
     <LinearLayout
         android:id="@+id/chatContainer"
         android:orientation="vertical"
-        android:layout_width="185dp"
+        android:layout_width="@dimen/chat_width"
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
 

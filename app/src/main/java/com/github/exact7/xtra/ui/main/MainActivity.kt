@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import android.widget.Toolbar
@@ -16,6 +17,7 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -256,19 +258,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun startStream(stream: Stream) {
 //        playerFragment?.play(stream)
-        startPlayer(StreamPlayerFragment().apply { arguments = bundleOf(C.STREAM to stream) })
+        startPlayer(StreamPlayerFragment(), C.STREAM, stream)
     }
 
     override fun startVideo(video: Video) {
-        startPlayer(VideoPlayerFragment().apply { arguments = bundleOf(C.VIDEO to video) })
+        startPlayer(VideoPlayerFragment(), C.VIDEO, video)
     }
 
     override fun startClip(clip: Clip) {
-        startPlayer(ClipPlayerFragment().apply { arguments = bundleOf(C.CLIP to clip) })
+        startPlayer(ClipPlayerFragment(), C.CLIP, clip)
     }
 
     override fun startOfflineVideo(video: OfflineVideo) {
-        startPlayer(OfflinePlayerFragment().apply { arguments = bundleOf(C.VIDEO to video) })
+        startPlayer(OfflinePlayerFragment(), C.VIDEO, video)
     }
 
     override fun viewChannel(channel: Channel) {
@@ -279,10 +281,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     setQuery("", false)
                     isIconified = true
                 }
-                fragNavController.replaceFragment(fragment)
-            } else {
-                fragNavController.pushFragment(fragment)
             }
+            fragNavController.pushFragment(fragment)
         }
     }
 
@@ -302,15 +302,18 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
 //Player methods
 
-    private fun startPlayer(fragment: BasePlayerFragment) {
+    private fun startPlayer(fragment: BasePlayerFragment, argKey: String, argValue: Parcelable) {
 //        if (playerFragment == null) {
-        playerFragment = fragment
+        playerFragment = fragment.apply { arguments = bundleOf(argKey to argValue) }
         supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
         viewModel.onPlayerStarted()
     }
 
     private fun closePlayer() {
-        supportFragmentManager.beginTransaction().remove(playerFragment!!).commit()
+        supportFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .remove(playerFragment!!)
+                .commit()
         playerFragment = null
         viewModel.onPlayerClosed()
     }

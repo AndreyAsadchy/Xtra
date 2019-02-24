@@ -2,6 +2,13 @@
 
     <SwitchPreferenceCompat
         app:key="theme"
-        app:title="@string/dark_theme" />
+        app:title="@string/dark_theme"
+        app:iconSpaceReserved="false"/>
+
+    <EditTextPreference
+        app:key="chat_width"
+        app:title="Chat width"
+        app:summary="% of the screen (5-50)"
+        app:iconSpaceReserved="false"/>
 
 </androidx.preference.PreferenceScreen>

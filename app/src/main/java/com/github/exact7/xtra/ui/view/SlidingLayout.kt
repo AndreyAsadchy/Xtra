@@ -62,7 +62,12 @@ class SlidingLayout : LinearLayout {
             dragViewTop = 0
             dragViewLeft = 0
             dragView.requestLayout()
-            secondView?.let { if (isMaximized) postInvalidate() }
+            secondView?.let {
+                if (isMaximized) {
+                    it.requestLayout()
+                    postInvalidate()
+                }
+            }
         }
     }
 
