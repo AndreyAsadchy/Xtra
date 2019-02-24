@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
@@ -45,6 +47,11 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!isPortrait) {
+            PreferenceManager.getDefaultSharedPreferences(context).getInt(C.LANDSCAPE_CHAT_WIDTH, -1).let {
+                if (it > -1) {
+                    chatContainer.updateLayoutParams { width = it }
+                }
+            }
             if (prefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
             maximizePlayer.setOnClickListener {
                 hideChat()

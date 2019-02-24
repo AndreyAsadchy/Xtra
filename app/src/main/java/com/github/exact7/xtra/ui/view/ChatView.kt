@@ -104,6 +104,6 @@ class ChatView : RelativeLayout {
         val extent = recyclerView.computeVerticalScrollExtent()
         val range = recyclerView.computeVerticalScrollRange()
         val percentage = (100f * offset / (range - extent).toFloat())
-        return percentage < 95f
+        return percentage < 98f
     }
 }

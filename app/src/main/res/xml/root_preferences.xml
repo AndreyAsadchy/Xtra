@@ -6,9 +6,10 @@
         app:iconSpaceReserved="false"/>
 
     <EditTextPreference
-        app:key="chat_width"
-        app:title="Chat width"
-        app:summary="% of the screen (5-50)"
-        app:iconSpaceReserved="false"/>
+        app:key="chatWidth"
+        app:title="@string/landscape_chat_width"
+        app:summary="@string/percentage_of_screen"
+        app:iconSpaceReserved="false"
+        app:dialogLayout="@layout/preference_edit_text_numeric"/>
 
 </androidx.preference.PreferenceScreen>

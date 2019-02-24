@@ -13,4 +13,5 @@ object C {
     const val FIRST_LAUNCH = "first_launch"
     const val CHANNEL = "channel"
     const val THEME = "theme"
+    const val LANDSCAPE_CHAT_WIDTH = "landscape_chat_width"
 }

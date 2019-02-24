@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,7 +17,9 @@ import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_menu.*
+import kotlinx.android.synthetic.main.fragment_player_stream.view.*
 
 class MenuFragment : Fragment() {
 
@@ -45,6 +48,13 @@ class MenuFragment : Fragment() {
             activity.apply {
                 setTheme(if (darkTheme) R.style.DarkTheme else R.style.LightTheme)
                 recreate()
+            }
+        }
+        data?.let {
+            it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
+                if (value > -1 && activity.resources.configuration.orientation == 2) {
+                    activity.playerContainer?.chatContainer?.updateLayoutParams { width = value }
+                }
             }
         }
     }
