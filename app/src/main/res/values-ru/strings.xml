@@ -68,5 +68,6 @@
     <string name="landscape_chat_width">Ширина чата в полноэкранном режиме</string>
     <string name="percentage_of_screen">% от ширины экрана (15–50)</string>
     <string name="landscape_chat_width_error">Значение должно быть между 15 и 50</string>
+    <string name="network_error">Ошибка соединения с сервером</string>
 
 </resources>

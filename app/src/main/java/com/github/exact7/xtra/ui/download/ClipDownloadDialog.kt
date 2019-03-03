@@ -41,20 +41,17 @@ class ClipDownloadDialog : DialogFragment(), Injectable {
                 binding.root
             }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipDownloadViewModel::class.java)
         binding.viewModel = viewModel
-        viewModel.qualities.observe(viewLifecycleOwner, Observer {
-            init(it)
-        })
-        viewModel.clip = arguments!!.getParcelable(KEY_CLIP)!!
-        @Suppress("UNCHECKED_CAST") (arguments!!.getSerializable(KEY_QUALITIES) as Map<String, String>?).let {
-            if (it == null) {
-                viewModel.fetchQualities()
-            } else {
-                viewModel.setQualities(it)
-            }
+        viewModel.apply {
+            clip = arguments!!.getParcelable(KEY_CLIP)!!
+            setQualities(arguments!!.getSerializable(KEY_QUALITIES) as Map<String, String>?)
+            qualities.observe(viewLifecycleOwner, Observer {
+                init(it)
+            })
         }
     }
 

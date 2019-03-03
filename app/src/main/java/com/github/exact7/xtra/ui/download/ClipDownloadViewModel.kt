@@ -29,18 +29,18 @@ class ClipDownloadViewModel @Inject constructor(
     private val compositeDisposable = CompositeDisposable()
     lateinit var clip: Clip
 
-    fun fetchQualities() {
-        playerRepository.fetchClipQualities(clip.slug)
-                .subscribe({
-                    setQualities(it)
-                }, {
+    fun setQualities(qualities: Map<String, String>?) {
+        if (qualities == null) {
+            playerRepository.fetchClipQualities(clip.slug)
+                    .subscribe({
+                        setQualities(it)
+                    }, {
 
-                })
-                .addTo(compositeDisposable)
-    }
-
-    fun setQualities(qualities: Map<String, String>) {
-        _qualities.value = qualities
+                    })
+                    .addTo(compositeDisposable)
+        } else {
+            _qualities.value = qualities
+        }
     }
 
     fun download(url: String, quality: String) {

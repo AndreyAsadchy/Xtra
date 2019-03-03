@@ -109,7 +109,7 @@ class LiveChatThread(
         writers.forEach { it?.write(message + System.getProperty("line.separator")) }
     }
 
-    fun cancel() {
+    fun cancel() { //TODO find a better way
         fun shutdown(socket: Socket?) {
             socket?.let {
                 if (!it.isClosed) {
@@ -120,8 +120,16 @@ class LiveChatThread(
                 }
             }
         }
-        shutdown(socketIn)
-        shutdown(socketOut)
+        try {
+            shutdown(socketIn)
+        } catch (e: Exception) {
+
+        }
+        try {
+            shutdown(socketOut)
+        } catch (e: Exception) {
+
+        }
     }
 
     override fun send(message: String) {

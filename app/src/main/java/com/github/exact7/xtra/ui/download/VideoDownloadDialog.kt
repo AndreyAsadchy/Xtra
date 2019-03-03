@@ -86,6 +86,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                 val from = parseTime(timeFrom) ?: return@setOnClickListener
                 val to = parseTime(timeTo) ?: return@setOnClickListener
                 when {
+                    to > totalDuration -> timeTo.error = getString(R.string.to_is_longer)
                     from < to -> {
                         val fromIndex = if (from == 0L) {
                             0
@@ -116,7 +117,6 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                         viewModel.download(url, quality, fromIndex, toIndex)
                         dismiss()
                     }
-                    to > totalDuration -> timeTo.error = getString(R.string.to_is_longer)
                     from >= to -> timeFrom.error = getString(R.string.from_is_greater)
                     else -> timeTo.error = getString(R.string.to_is_lesser)
                 }

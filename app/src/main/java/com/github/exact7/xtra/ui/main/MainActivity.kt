@@ -130,9 +130,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
         viewModel.setUser(user)
-        if (viewModel.isPlayerOpened) {
-            playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
-        }
         var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
@@ -164,6 +161,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         if (savedInstanceState == null) {
             handleIntent(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.isPlayerOpened) {
+            playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
         }
     }
 

@@ -188,15 +188,13 @@ class DownloadService : IntentService(TAG), Injectable {
     override fun onDestroy() {
         stopForegroundInternal(true)
         if (!completed) {
-            if (this::fetch.isInitialized && !fetch.isClosed) {
+            if (this::fetch.isInitialized && !fetch.isClosed && fetch.hasActiveDownloads) {
                 fetch.deleteAll()
             }
             offlineRepository.deleteVideo(offlineVideo)
         }
         super.onDestroy()
     }
-
-
 
     private fun stopForegroundInternal(removeNotification: Boolean) {
         if (!stopped) {
@@ -217,9 +215,7 @@ class DownloadService : IntentService(TAG), Injectable {
                 with(request as VideoRequest) {
                     val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
                         fun parse(trackData: TrackData) =
-                                trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).let { trackName ->
-                                    if (!trackName.endsWith("muted")) trackName.toInt() else trackName.substringBefore('-').toInt()
-                                }
+                                trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.')).filter { it.isDigit() }.toInt()
 
                         val index1 = parse(o1)
                         val index2 = parse(o2)

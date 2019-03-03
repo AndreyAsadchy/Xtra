@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.widget.Toast
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
@@ -13,6 +14,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
+import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
 
 class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
@@ -25,6 +27,7 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
     override fun onCreate() {
         super.onCreate()
         AppInjector.init(this)
+        RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
     }
 

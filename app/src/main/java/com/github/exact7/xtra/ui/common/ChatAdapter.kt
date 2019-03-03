@@ -152,7 +152,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
         loadImages(holder, images, builder)
     }
 
-    override fun getItemCount(): Int = messages.size
+    override fun getItemCount(): Int = if (this::messages.isInitialized) messages.size else 0
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
         images.forEach { (url, start, end, isEmote, isPng) ->
@@ -197,7 +197,11 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                                     this.callback = callback
                                     start()
                                 }
-                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                try {
+                                    builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                } catch (e: Exception) {
+                                    //TODO find error
+                                }
                                 holder.bind(builder)
                             }
                         })

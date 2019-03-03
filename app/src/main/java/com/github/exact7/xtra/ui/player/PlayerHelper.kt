@@ -12,7 +12,7 @@ class PlayerHelper : OnChatMessageReceived {
     val loaded = MutableLiveData<Boolean>()
 
     private val _chatMessages: MutableLiveData<MutableList<ChatMessage>> by lazy {
-        MutableLiveData<MutableList<ChatMessage>>().apply { value = ArrayList()}
+        MutableLiveData<MutableList<ChatMessage>>().apply { value = ArrayList() }
     }
     val chatMessages: LiveData<MutableList<ChatMessage>>
         get() = _chatMessages
