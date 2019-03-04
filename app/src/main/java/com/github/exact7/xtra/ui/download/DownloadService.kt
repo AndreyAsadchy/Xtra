@@ -213,18 +213,7 @@ class DownloadService : IntentService(TAG), Injectable {
             is VideoRequest -> {
                 Log.d(TAG, "Downloaded video")
                 with(request as VideoRequest) {
-                    val tracks = sortedSetOf<TrackData>(Comparator { o1, o2 ->
-                        fun parse(trackData: TrackData) =
-                                trackData.uri.substring(trackData.uri.lastIndexOf('/') + 1, trackData.uri.lastIndexOf('.')).substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf('.')).filter { it.isDigit() }.toInt()
-
-                        val index1 = parse(o1)
-                        val index2 = parse(o2)
-                        when {
-                            index1 > index2 -> 1
-                            index1 < index2 -> -1
-                            else -> 0
-                        }
-                    })
+                    val tracks = ArrayList<TrackData>(segmentTo - segmentFrom)
                     for (i in segmentFrom until segmentTo) {
                         val track = playlist.tracks[i]
                         tracks.add(TrackData.Builder()
@@ -232,9 +221,17 @@ class DownloadService : IntentService(TAG), Injectable {
                                 .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
                                 .build())
                     }
+                    tracks.sortWith(Comparator { o1, o2 ->
+                        fun parse(trackData: TrackData) = trackData.uri
+                                .substring(trackData.uri.lastIndexOf(File.separator) + 1, trackData.uri.lastIndexOf('.'))
+                                .filter { it.isDigit() }
+                                .toInt()
+
+                        parse(o1) - parse(o2)
+                    })
                     val mediaPlaylist = MediaPlaylist.Builder()
                             .withTargetDuration(playlist.targetDuration)
-                            .withTracks(tracks.toList())
+                            .withTracks(tracks)
                             .build()
                     val playlist = Playlist.Builder()
                             .withMediaPlaylist(mediaPlaylist)
