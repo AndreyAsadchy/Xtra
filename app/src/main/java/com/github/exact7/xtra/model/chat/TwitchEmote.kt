@@ -5,11 +5,8 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class BttvEmote(
-        val id: String,
-        @SerializedName("code")
+data class TwitchEmote(
+        @SerializedName("_id")
         override val name: String,
-        val imageType: String) : Emote, Parcelable {
-    val isPng: Boolean
-        get() = imageType.endsWith("png")
-}
+        var begin: Int,
+        var end: Int) : Emote, Parcelable

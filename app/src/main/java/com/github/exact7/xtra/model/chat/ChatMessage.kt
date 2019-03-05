@@ -7,7 +7,7 @@ interface ChatMessage {
     val displayName: String
     val message: String
     val color: String?
-    val emotes: List<Emote>?
+    val emotes: List<TwitchEmote>?
     val badges: List<Badge>?
     val subscriberBadge: SubscriberBadge?
 }

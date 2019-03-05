@@ -6,11 +6,12 @@ import android.os.Build
 import android.util.Log
 import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.api.ApiService
-import com.github.exact7.xtra.api.BttvApi
 import com.github.exact7.xtra.api.IdApi
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
+import com.github.exact7.xtra.model.chat.FfzRoomDeserializer
+import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.SubscriberBadgeDeserializer
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.user.UserEmotesDeserializer
@@ -119,22 +120,11 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesBttvApi(@Named("okHttpDefault") client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): BttvApi {
-        return Retrofit.Builder()
-                .baseUrl("https://api.betterttv.net/2/")
-                .client(client)
-                .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
-                .build()
-                .create(BttvApi::class.java)
-    }
-
-    @Singleton
-    @Provides
     fun providesGsonConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create(GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .registerTypeAdapter(SubscriberBadgesResponse::class.java, SubscriberBadgeDeserializer())
                 .registerTypeAdapter(UserEmotesResponse::class.java, UserEmotesDeserializer())
+                .registerTypeAdapter(FfzRoomResponse::class.java, FfzRoomDeserializer())
                 .create())
     }
 

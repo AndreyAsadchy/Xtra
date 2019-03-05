@@ -61,12 +61,8 @@ class SlidingLayout : LinearLayout {
             shouldUpdateDragLayout = false
             dragViewTop = 0
             dragViewLeft = 0
-            dragView.requestLayout()
-            secondView?.let {
-                if (isMaximized) {
-                    postInvalidate()
-                }
-            }
+            requestLayout()
+            secondView?.postInvalidate()
         }
     }
 
@@ -156,9 +152,11 @@ class SlidingLayout : LinearLayout {
         val isDragViewHit = isViewHit(dragView, x, y)
         val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
         val isClick = event.isClick(downTouchLocation)
-        if (isClick) {
-            performClick()
+        if (timeBar?.isPressed == true) {
+            timeBar?.dispatchTouchEvent(event)
+            return true
         }
+        viewDragHelper.processTouchEvent(event)
         if (isDragViewHit) {
             if (isMaximized) {
                 dragView.dispatchTouchEvent(event)
@@ -167,13 +165,9 @@ class SlidingLayout : LinearLayout {
                 return true
             }
         }
-        if (timeBar?.isPressed == true) {
-            if (isSecondViewHit) {
-                timeBar?.dispatchTouchEvent(event)
-            }
-            return true
+        if (isClick) {
+            performClick()
         }
-        viewDragHelper.processTouchEvent(event)
         return isDragViewHit || isSecondViewHit
     }
 

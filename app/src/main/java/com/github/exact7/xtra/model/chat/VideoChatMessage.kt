@@ -37,7 +37,7 @@ data class VideoChatMessage(
         get() = messageObj.userColor
         set(_) {}
 
-    override val emotes: List<Emote>?
+    override val emotes: List<TwitchEmote>?
         get() = messageObj.emoticons
 
     override val badges: List<Badge>?
@@ -67,7 +67,7 @@ data class VideoChatMessage(
     @Parcelize
     data class Message(
             val body: String,
-            val emoticons: List<Emote>?,
+            val emoticons: List<TwitchEmote>?,
             val fragments: List<Fragment>,
             @SerializedName("is_action")
             val isAction: Boolean,

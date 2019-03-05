@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -76,7 +77,9 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
         viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
         viewModel.chat.observe(viewLifecycleOwner, Observer(messageView::setCallback))
-        viewModel.bttv.observe(viewLifecycleOwner, Observer(chatView::setBttvEmotes))
+        val emoteObserver: Observer<List<Emote>> = Observer(chatView::addEmotes)
+        viewModel.bttv.observe(viewLifecycleOwner, emoteObserver)
+        viewModel.ffz.observe(viewLifecycleOwner, emoteObserver)
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }

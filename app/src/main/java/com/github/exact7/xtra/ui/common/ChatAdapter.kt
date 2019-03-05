@@ -6,10 +6,13 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+import android.text.method.LinkMovementMethod
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
+import android.text.style.URLSpan
+import android.util.Patterns
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +26,8 @@ import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
+import com.github.exact7.xtra.model.chat.Emote
+import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
 import java.util.Random
 import kotlin.collections.set
@@ -37,9 +42,9 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     private val random = Random()
     private val userColors = HashMap<String, Int>()
     private val savedColors = HashMap<String, Int>()
-    private var bttvMap: HashMap<String, BttvEmote> = initBttv()
+    private val emotes: HashMap<String, Emote> = initBttv().also { it.putAll(initFfz()) }
     private var userNickname: String? = null
-    private val emoteSize = convertDpToPixels(context, 25f)
+    private val emoteSize = convertDpToPixels(context, 26f)
     private val badgeSize = convertDpToPixels(context, 18f)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -100,7 +105,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
             index += userNameLength + 2
             for (e in copy) {
                 val begin = index + e.begin
-                builder.replace(begin, index + e.end + 1, ".")
+                builder.replace(begin, index + e.end + 1, ".") //TODO emojis break this
                 builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), begin, begin + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
                 val length = e.end - e.begin
                 for (e1 in copy) {
@@ -117,35 +122,57 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
         var builderIndex = 0
         for (i in 0 until split.size) {
             val value = split[i]
-            bttvMap[value].let { e ->
-                val length = value.length
-                builderIndex += if (e == null) { //TODO check for urls
+            val length = value.length
+            val endIndex = builderIndex + length
+            val emote = emotes[value]
+            builderIndex += if (emote == null) {
+                if (Patterns.WEB_URL.matcher(value).matches()) {
+                    var url = value
+                    if (!value.startsWith("http")) {
+                        url = "https://$url"
+                    }
+                    builder.setSpan(URLSpan(url), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
+                } else {
                     if (value.startsWith('@')) {
-                        builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, builderIndex + length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                     userNickname?.let {
                         if (value.contains(it, true) && !value.endsWith(':')) {
                             builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                     }
-                    length + 1
-                } else {
-                    chatMessage.emotes?.let {
-                        for (j in it.size - 1 downTo 0) {
-                            val emote = images[j]
-                            if (emote.start > builderIndex) {
-                                emote.start -= length
-                                emote.end -= length
-                            } else {
-                                break
-                            }
+                }
+                length + 1
+            } else {
+                chatMessage.emotes?.let {
+                    for (j in it.size - 1 downTo 0) {
+                        val e = images[j]
+                        if (e.start > builderIndex) {
+                            e.start -= length
+                            e.end -= length
+                        } else {
+                            break
                         }
                     }
-                    builder.replace(builderIndex, builderIndex + length, ".")
-                    builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    images.add(Image("$BTTV_URL${e.id}/2x", builderIndex, builderIndex + 1, true, e.isPng))
-                    if (i != split.lastIndex) 2 else 1
                 }
+                builder.replace(builderIndex, endIndex, ".")
+                builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
+                val url: String
+                val isPng: Boolean
+                val width: Float?
+                if (emote is BttvEmote) {
+                    url = "$BTTV_URL${emote.id}/2x"
+                    isPng = emote.isPng
+                    width = null
+                } else { //FFZ
+                    (emote as FfzEmote).also {
+                        url = it.url
+                        isPng = true
+                        width = it.width
+                    }
+                }
+                images.add(Image(url, builderIndex, builderIndex + 1, true, isPng, width))
+                if (i != split.lastIndex) 2 else 1
             }
         }
         holder.bind(builder)
@@ -155,14 +182,14 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     override fun getItemCount(): Int = if (this::messages.isInitialized) messages.size else 0
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
-        images.forEach { (url, start, end, isEmote, isPng) ->
+        images.forEach { (url, start, end, isEmote, isPng, width) ->
             if (isPng) {
                 GlideApp.with(context)
                         .load(url)
                         .into(object : SimpleTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
-                                resource.setBounds(0, 0, size, size)
+                                resource.setBounds(0, 0, if (width == null) size else convertPixelsToDp(context, width * 1.65f), size)
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: Exception) {
@@ -209,8 +236,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
         }
     }
 
-    fun setBttvEmotes(list: List<BttvEmote>) {
-        bttvMap.putAll(list.associateBy { it.code })
+    fun addEmotes(list: List<Emote>) {
+        emotes.putAll(list.associateBy { it.name })
     }
 
     fun setUserNickname(nickname: String) {
@@ -221,14 +248,20 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
 
     private fun convertDpToPixels(context: Context, dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
 
+    private fun convertPixelsToDp(context: Context, pixels: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, pixels, context.resources.displayMetrics).toInt()
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(formattedMessage: SpannableStringBuilder) {
-            (itemView as TextView).text = formattedMessage
+            (itemView as TextView).apply {
+                text = formattedMessage
+                movementMethod = LinkMovementMethod.getInstance()
+            }
         }
     }
 
-    private fun initBttv() = hashMapOf("OhMyGoodness" to BttvEmote("54fa925e01e468494b85b54d", "OhMyGoodness", "png")
+    private fun initBttv(): HashMap<String, Emote> = hashMapOf(
+            "OhMyGoodness" to BttvEmote("54fa925e01e468494b85b54d", "OhMyGoodness", "png")
             ,"PancakeMix" to BttvEmote("54fa927801e468494b85b54e", "PancakeMix", "png")
             ,"PedoBear" to BttvEmote("54fa928f01e468494b85b54f", "PedoBear", "png")
             ,"PokerFace" to BttvEmote("54fa92a701e468494b85b550", "PokerFace", "png")
@@ -330,5 +363,19 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
             ,"DuckerZ" to BttvEmote("573d38b50ffbf6cc5cc38dc9", "DuckerZ", "png")
             ,"SqShy" to BttvEmote("59cf182fcbe2693d59d7bf46", "SqShy", "png")
             ,"Wowee" to BttvEmote("58d2e73058d8950a875ad027", "Wowee", "png")
+    )
+
+    private fun initFfz(): HashMap<String, Emote> = hashMapOf(
+            "ZrehplaR" to FfzEmote("ZrehplaR", "https:////cdn.frankerfacez.com/4556987ef91323110080b223f96d7400.png", 33f),
+            "YooHoo" to FfzEmote("YooHoo", "https:////cdn.frankerfacez.com/4c3f7ea69ff255ff4ee0adebbe62751c.png", 28f),
+            "YellowFever" to FfzEmote("YellowFever", "https:////cdn.frankerfacez.com/53ebdc39a0603f7a3372ad016bb8597e.png", 23f),
+            "ManChicken" to FfzEmote("ManChicken", "https:////cdn.frankerfacez.com/08c6aa877f0d946d45f30454d9fb1300.png", 30f),
+            "BeanieHipster" to FfzEmote("BeanieHipster", "https:////cdn.frankerfacez.com/9c727af513b96dfb0dcbc86daa2239d8.png", 28f),
+            "CatBag" to FfzEmote("CatBag", "https:////cdn.frankerfacez.com/585e6fdea0c5d3e20678284f43af8749.PNG", 32f),
+            "ZreknarF" to FfzEmote("ZreknarF", "https:////cdn.frankerfacez.com/1719f1cd21489ef579f6e8bbc861c22f.PNG", 40f),
+            "LilZ" to FfzEmote("LilZ", "https:////cdn.frankerfacez.com/a6623002a430bcd27edc866441c1582f.PNG", 32f),
+            "ZliL" to FfzEmote("ZliL", "https:////cdn.frankerfacez.com/0aa63d7f0ac0a6d3622b009b5af28944.PNG", 32f),
+            "LaterSooner" to FfzEmote("LaterSooner", "https:////cdn.frankerfacez.com/1fcefc6216cd36fc9ce2a2f7385d854c.PNG", 25f),
+            "BORT" to FfzEmote("BORT", "https:////cdn.frankerfacez.com/aa4c8a9d459c866e9f9e03aac614c47a.png", 19f)
     )
 }

@@ -1,12 +1,11 @@
 package com.github.exact7.xtra.util.chat
 
 import com.github.exact7.xtra.model.chat.Badge
-import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.LiveChatMessage
 import com.github.exact7.xtra.model.chat.SubscriberBadge
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
+import com.github.exact7.xtra.model.chat.TwitchEmote
 import java.util.HashMap
-import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class MessageListenerImpl(
@@ -26,7 +25,7 @@ class MessageListenerImpl(
         val userName = messageInfo.substring(1, messageInfo.indexOf("!"))
         val userMessage = messageInfo.substring(messageInfo.indexOf(":", 44) + 1) //from <message>
 
-        var emotesList: MutableList<Emote>? = null
+        var emotesList: MutableList<TwitchEmote>? = null
         val emotes = prefixes["emotes"]
         if (emotes != null) {
             val entries = splitAndMakeMap(emotes, "/", ":").entries
@@ -34,7 +33,7 @@ class MessageListenerImpl(
             entries.forEach { emote ->
                 emote.value?.split(",")?.forEach { indexes ->
                     val index = indexes.split("-")
-                    emotesList.add(Emote(emote.key, index[0].toInt(), index[1].toInt()))
+                    emotesList.add(TwitchEmote(emote.key, index[0].toInt(), index[1].toInt()))
                 }
             }
         }

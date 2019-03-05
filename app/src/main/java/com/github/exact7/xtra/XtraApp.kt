@@ -4,10 +4,13 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.preference.PreferenceManager
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -29,6 +32,13 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         AppInjector.init(this)
         RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this) //TODO remove after all devices updated to 1.1.9
+        if (prefs.all["chatWidth"] is String) {
+            prefs.edit {
+                remove("chatWidth")
+                putInt("chatWidth", prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, -1))
+            }
+        }
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = dispatchingActivityInjector

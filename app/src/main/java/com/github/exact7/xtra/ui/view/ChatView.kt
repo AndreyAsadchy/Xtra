@@ -8,8 +8,8 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
+import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import kotlinx.android.synthetic.main.view_chat.view.*
 
@@ -85,8 +85,8 @@ class ChatView : RelativeLayout {
         adapter.messages = list
     }
 
-    fun setBttvEmotes(list: List<BttvEmote>) {
-        adapter.setBttvEmotes(list)
+    fun addEmotes(list: List<Emote>) {
+        adapter.addEmotes(list)
     }
 
     fun setUserNickname(nickname: String) {
@@ -104,6 +104,6 @@ class ChatView : RelativeLayout {
         val extent = recyclerView.computeVerticalScrollExtent()
         val range = recyclerView.computeVerticalScrollRange()
         val percentage = (100f * offset / (range - extent).toFloat())
-        return percentage < 98f
+        return percentage < 97f
     }
 }

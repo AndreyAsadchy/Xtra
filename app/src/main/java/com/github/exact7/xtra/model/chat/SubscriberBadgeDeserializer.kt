@@ -12,8 +12,8 @@ class SubscriberBadgeDeserializer : JsonDeserializer<SubscriberBadgesResponse> {
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): SubscriberBadgesResponse {
         val gson = Gson()
-        val response: SubscriberBadgesResponse
         val badgeSets = json.asJsonObject.getAsJsonObject("badge_sets")
+        val response: SubscriberBadgesResponse
         if (badgeSets.size() > 0) {
             val versions = badgeSets.getAsJsonObject("subscriber").getAsJsonObject("versions")
             response = SubscriberBadgesResponse(LinkedHashMap(versions.size()))

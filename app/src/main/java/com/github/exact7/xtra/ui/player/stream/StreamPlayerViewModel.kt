@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.BttvEmote
+import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -31,6 +32,9 @@ class StreamPlayerViewModel @Inject constructor(
     private val _bttv = MutableLiveData<List<BttvEmote>>()
     val bttv: LiveData<List<BttvEmote>>
         get() = _bttv
+    private val _ffz = MutableLiveData<List<FfzEmote>>()
+    val ffz: LiveData<List<FfzEmote>>
+        get() = _ffz
     private var subscriberBadges: SubscriberBadgesResponse? = null
     lateinit var user: User
         private set
@@ -60,6 +64,13 @@ class StreamPlayerViewModel @Inject constructor(
             repository.fetchBttvEmotes(channel.name)
                     .subscribe({
                         _bttv.value = it
+                    }, {
+
+                    })
+                    .addTo(compositeDisposable)
+            repository.fetchFfzEmotes(channel.name)
+                    .subscribe({
+                        _ffz.value = it
                     }, {
 
                     })

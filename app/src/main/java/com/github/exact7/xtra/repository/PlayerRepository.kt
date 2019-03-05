@@ -3,10 +3,10 @@ package com.github.exact7.xtra.repository
 import android.net.Uri
 import android.util.Log
 import com.github.exact7.xtra.api.ApiService
-import com.github.exact7.xtra.api.BttvApi
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.model.chat.BttvEmote
+import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,8 +21,7 @@ import javax.inject.Singleton
 class PlayerRepository @Inject constructor(
         private val api: ApiService,
         private val usher: UsherApi,
-        private val misc: MiscApi,
-        private val bttv: BttvApi) {
+        private val misc: MiscApi) {
 
     companion object {
         private const val TAG = "PlayerRepository"
@@ -78,7 +77,14 @@ class PlayerRepository @Inject constructor(
     }
 
     fun fetchBttvEmotes(channel: String): Single<List<BttvEmote>> {
-        return bttv.getEmotes(channel)
+        return misc.getBttvEmotes(channel)
+                .map { it.emotes }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+    }
+
+    fun fetchFfzEmotes(channel: String): Single<List<FfzEmote>> {
+        return misc.getFfzEmotes(channel)
                 .map { it.emotes }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

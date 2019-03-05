@@ -1,15 +1,16 @@
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreferenceCompat
-        app:key="theme"
-        app:title="@string/dark_theme"
+        android:key="theme"
+        android:title="@string/dark_theme"
         app:iconSpaceReserved="false"/>
 
-    <EditTextPreference
-        app:key="chatWidth"
-        app:title="@string/landscape_chat_width"
-        app:summary="@string/percentage_of_screen"
+    <SeekBarPreference
+        android:key="chatWidth"
+        android:title="@string/landscape_chat_width"
+        android:summary="@string/percentage_of_screen"
         app:iconSpaceReserved="false"
-        app:dialogLayout="@layout/preference_edit_text_numeric"/>
+        android:max="50"/>
 
 </androidx.preference.PreferenceScreen>
