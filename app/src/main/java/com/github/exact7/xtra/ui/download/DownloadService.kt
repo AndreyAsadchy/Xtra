@@ -40,7 +40,6 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
-import java.util.Comparator
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 
@@ -221,14 +220,6 @@ class DownloadService : IntentService(TAG), Injectable {
                                 .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
                                 .build())
                     }
-                    tracks.sortWith(Comparator { o1, o2 ->
-                        fun parse(trackData: TrackData) = trackData.uri
-                                .substring(trackData.uri.lastIndexOf(File.separator) + 1, trackData.uri.lastIndexOf('.'))
-                                .filter { it.isDigit() }
-                                .toInt()
-
-                        parse(o1) - parse(o2)
-                    })
                     val mediaPlaylist = MediaPlaylist.Builder()
                             .withTargetDuration(playlist.targetDuration)
                             .withTracks(tracks)
