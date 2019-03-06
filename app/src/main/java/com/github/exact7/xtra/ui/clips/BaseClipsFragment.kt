@@ -12,6 +12,7 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_clips.*
 
@@ -33,6 +34,11 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
             it.root.recyclerView.adapter = ClipsAdapter(requireActivity() as MainActivity).also { a -> adapter = a }
             it.root
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerViewLayout.recyclerView)
     }
 
     override fun scrollToTop() {

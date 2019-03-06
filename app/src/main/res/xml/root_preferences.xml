@@ -4,13 +4,33 @@
     <SwitchPreferenceCompat
         android:key="theme"
         android:title="@string/dark_theme"
-        app:iconSpaceReserved="false"/>
+        app:iconSpaceReserved="false"
+        />
 
     <SeekBarPreference
         android:key="chatWidth"
         android:title="@string/landscape_chat_width"
         android:summary="@string/percentage_of_screen"
+        android:max="50"
         app:iconSpaceReserved="false"
-        android:max="50"/>
+        />
+
+    <ListPreference
+        android:key="columnsPortrait"
+        android:title="@string/portrait_column_count"
+        android:entries="@array/portraitColumnCount"
+        android:entryValues="@array/portraitColumnCount"
+        android:defaultValue="1"
+        app:iconSpaceReserved="false"
+        />
+
+    <ListPreference
+        android:key="columnsLandscape"
+        android:title="@string/landscape_column_count"
+        android:entries="@array/landscapeColumnCount"
+        android:entryValues="@array/landscapeColumnCount"
+        android:defaultValue="2"
+        app:iconSpaceReserved="false"
+        />
 
 </androidx.preference.PreferenceScreen>

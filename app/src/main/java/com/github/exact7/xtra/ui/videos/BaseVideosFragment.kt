@@ -11,6 +11,7 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_videos.*
 
@@ -32,6 +33,11 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
             it.root.recyclerView.adapter = VideosAdapter(requireActivity() as MainActivity).also { a -> adapter = a }
             it.root
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerViewLayout.recyclerView)
     }
 
     override fun scrollToTop() {

@@ -68,4 +68,6 @@
     <string name="landscape_chat_width">Landscape chat width</string>
     <string name="percentage_of_screen">% of the screen</string>
     <string name="network_error">Network error</string>
+    <string name="portrait_column_count">Portrait column count</string>
+    <string name="landscape_column_count">Landscape column count</string>
 </resources>

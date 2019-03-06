@@ -14,6 +14,7 @@
         <item name="secondaryTextColor">@color/secondaryTextColorDark</item>
         <item name="colorButtonNormal">@color/secondaryDark</item>
         <item name="android:dialogTheme">@style/DialogDark</item>
+        <item name="alertDialogTheme">@style/DialogDark</item>
         <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
 
@@ -31,6 +32,7 @@
         <item name="secondaryTextColor">@color/secondaryTextColorLight</item>
         <item name="colorButtonNormal">@color/secondaryLight</item>
         <item name="android:dialogTheme">@style/DialogLight</item>
+        <item name="alertDialogTheme">@style/DialogLight</item>
         <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
 
@@ -78,12 +80,17 @@
     <style name="DialogDark" parent="Theme.MaterialComponents.Dialog">
         <item name="android:background">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
     </style>
 
     <style name="DialogLight" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="android:background">@color/primaryLight</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
+    </style>
 
+    <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/accent</item>
     </style>
     
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">

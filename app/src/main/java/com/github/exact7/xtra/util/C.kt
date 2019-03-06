@@ -14,4 +14,6 @@ object C {
     const val CHANNEL = "channel"
     const val THEME = "theme"
     const val LANDSCAPE_CHAT_WIDTH = "landscape_chat_width"
+    const val PORTRAIT_COLUMN_COUNT = "columnsPortrait"
+    const val LANDSCAPE_COLUMN_COUNT = "columnsLandscape"
 }

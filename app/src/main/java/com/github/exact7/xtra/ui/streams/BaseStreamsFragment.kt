@@ -9,6 +9,7 @@ import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
 import kotlinx.android.synthetic.main.fragment_streams.*
 
@@ -31,6 +32,10 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
                 it.root
             }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerViewLayout.recyclerView)
+    }
 
     override fun scrollToTop() {
         recyclerViewLayout.recyclerView.scrollToPosition(0)

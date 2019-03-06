@@ -13,6 +13,7 @@ import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
 
@@ -39,6 +40,11 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDownloadsBinding.inflate(inflater, container, false).apply { setLifecycleOwner(viewLifecycleOwner) }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerView)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

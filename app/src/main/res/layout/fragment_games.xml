@@ -13,9 +13,7 @@
         <include
             android:id="@+id/recyclerViewLayout"
             layout="@layout/common_recycler_view_layout"
-            app:spanCount="@{1}"
-            app:viewModel="@{(com.github.exact7.xtra.ui.common.PagedListViewModel)viewModel}"
-            app:divider="@{com.github.exact7.xtra.ui.DividerType.SIMPLE}"/>
+            app:viewModel="@{(com.github.exact7.xtra.ui.common.PagedListViewModel)viewModel}" />
 
     </LinearLayout>
 

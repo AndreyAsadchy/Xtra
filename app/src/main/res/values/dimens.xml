@@ -4,6 +4,5 @@
     <dimen name="playerHeight">230dp</dimen>
     <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
-    <integer name="media_columns">1</integer>
     <dimen name="divider_margin">5dp</dimen>
 </resources>
