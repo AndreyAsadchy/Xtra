@@ -5,11 +5,24 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+
     <string-array name="landscapeColumnCount">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
+    </string-array>
+
+    <string-array name="networkDownloadPreferencesEntries">
+        <item>@string/any_network</item>
+        <item>@string/wifi_only</item>
+        <item>@string/ask_every_time</item>
+    </string-array>
+
+    <string-array name="networkDownloadPreferencesValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 </resources>

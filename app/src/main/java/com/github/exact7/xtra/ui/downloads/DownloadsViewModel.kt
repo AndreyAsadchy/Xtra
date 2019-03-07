@@ -52,7 +52,7 @@ class DownloadsViewModel @Inject internal constructor(
                     file.delete()
                 }
             } else {
-                with(fetchProvider.get()) {
+                with(fetchProvider.get(false)) {
                     val group = video.id
                     cancelGroup(group)
                     deleteGroup(group)

@@ -20,15 +20,17 @@ import com.github.exact7.xtra.model.offline.VideoRequest
 import com.github.exact7.xtra.ui.download.DownloadService
 import com.github.exact7.xtra.ui.download.KEY_REQUEST
 import com.github.exact7.xtra.ui.download.KEY_TYPE
+import com.github.exact7.xtra.ui.download.KEY_WIFI
 import com.google.gson.Gson
 import java.util.Calendar
 
 object DownloadUtils {
 
-    fun download(context: Context, request: Request) {
+    fun download(context: Context, request: Request, wifiOnly: Boolean = false) {
         val intent = Intent(context, DownloadService::class.java)
                 .putExtra(KEY_REQUEST, Gson().toJson(request))
                 .putExtra(KEY_TYPE, request is VideoRequest)
+                .putExtra(KEY_WIFI, wifiOnly)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent)
         } else {

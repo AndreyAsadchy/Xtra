@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:divider="@{com.github.exact7.xtra.ui.DividerType.SIMPLE}"
             tools:listitem="@layout/fragment_search_channels_list_item"
             />
 

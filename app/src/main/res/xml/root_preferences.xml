@@ -33,4 +33,13 @@
         app:iconSpaceReserved="false"
         />
 
+    <ListPreference
+        android:key="downloadNetworkPreference"
+        android:title="@string/download_preference"
+        android:entries="@array/networkDownloadPreferencesEntries"
+        android:entryValues="@array/networkDownloadPreferencesValues"
+        android:defaultValue="3"
+        app:iconSpaceReserved="false"
+        />
+
 </androidx.preference.PreferenceScreen>

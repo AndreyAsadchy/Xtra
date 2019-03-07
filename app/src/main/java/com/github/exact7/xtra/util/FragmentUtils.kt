@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.common.MarginItemDecorator
+import com.github.exact7.xtra.ui.common.MarginItemDecoration
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 
 object FragmentUtils {
@@ -39,17 +39,13 @@ object FragmentUtils {
         if (recyclerView.layoutManager is GridLayoutManager) {
             val context = recyclerView.context
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            with(recyclerView.layoutManager as GridLayoutManager) {
-                if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    val count = prefs.getString(C.PORTRAIT_COLUMN_COUNT, "1")!!.toInt()
-                    recyclerView.addItemDecoration(if (count > 1) MarginItemDecorator(R.dimen.divider_margin) else DividerItemDecoration(context, GridLayoutManager.VERTICAL))
-                    spanCount = count
-                } else {
-                    val count = prefs.getString(C.LANDSCAPE_COLUMN_COUNT, "1")!!.toInt()
-                    recyclerView.addItemDecoration(if (count > 1) MarginItemDecorator(R.dimen.divider_margin) else DividerItemDecoration(context, GridLayoutManager.VERTICAL))
-                    spanCount = count
-                }
+            val count = if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                prefs.getString(C.PORTRAIT_COLUMN_COUNT, "1")!!.toInt()
+            } else {
+                prefs.getString(C.LANDSCAPE_COLUMN_COUNT, "2")!!.toInt()
             }
+            (recyclerView.layoutManager as GridLayoutManager).spanCount = count
+            recyclerView.addItemDecoration(if (count > 1) MarginItemDecoration(context.resources.getDimension(R.dimen.divider_margin).toInt(), count) else DividerItemDecoration(context, GridLayoutManager.VERTICAL))
         }
     }
 }

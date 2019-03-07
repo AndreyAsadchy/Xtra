@@ -47,6 +47,7 @@ const val TAG = "DownloadService"
 const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
 const val KEY_REQUEST = "request"
 const val KEY_TYPE = "type"
+const val KEY_WIFI = "wifi"
 
 class DownloadService : IntentService(TAG), Injectable {
 
@@ -72,12 +73,12 @@ class DownloadService : IntentService(TAG), Injectable {
 
     override fun onHandleIntent(intent: Intent?) {
         Log.d(TAG, "Starting download")
-        request = with(intent!!) {
-            Gson().fromJson(getStringExtra(KEY_REQUEST), if (getBooleanExtra(KEY_TYPE, true)) VideoRequest::class.java else ClipRequest::class.java)
+         with(intent!!) {
+            fetch = fetchProvider.get(getBooleanExtra(KEY_WIFI, false))
+            request = Gson().fromJson(getStringExtra(KEY_REQUEST), if (getBooleanExtra(KEY_TYPE, true)) VideoRequest::class.java else ClipRequest::class.java)
         }
         offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) } ?: return //Download was canceled
         val countDownLatch = CountDownLatch(1)
-        fetch = fetchProvider.get()
         val channelId = getString(R.string.notification_channel_id)
         notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(android.R.drawable.stat_sys_download)

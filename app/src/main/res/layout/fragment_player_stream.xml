@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:weightSum="9">
+<!--TODO change to weight everywhere -->
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
         app:controller_layout_id="@layout/player_stream"
@@ -14,7 +15,7 @@
         android:id="@+id/chatContainer"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="?android:colorBackground">
 
         <com.github.exact7.xtra.ui.view.ChatView

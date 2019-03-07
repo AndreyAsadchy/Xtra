@@ -1,10 +1,10 @@
 package com.github.exact7.xtra.ui.downloads
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -13,11 +13,12 @@ import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
 
-class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollable {
+class DownloadsFragment : Fragment(), Injectable, Scrollable {
 
     interface OnVideoSelectedListener {
         fun startOfflineVideo(video: OfflineVideo)
@@ -26,19 +27,9 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var binding: FragmentDownloadsBinding
-    private var listener: OnVideoSelectedListener? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnVideoSelectedListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnVideoSelectedListener")
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentDownloadsBinding.inflate(inflater, container, false).apply { setLifecycleOwner(viewLifecycleOwner) }
+        binding = FragmentDownloadsBinding.inflate(inflater, container, false).apply { lifecycleOwner = viewLifecycleOwner }
         return binding.root
     }
 
@@ -51,7 +42,7 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(DownloadsViewModel::class.java)
         binding.viewModel = viewModel
-        val adapter = DownloadsAdapter(listener!!, viewModel::delete)
+        val adapter = DownloadsAdapter(requireActivity() as MainActivity, viewModel::delete)
         viewModel.list.observe(this, Observer(adapter::submitList))
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -61,11 +52,6 @@ class DownloadsFragment : androidx.fragment.app.Fragment(), Injectable, Scrollab
             }
         })
         recyclerView.adapter = adapter
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     override fun scrollToTop() {

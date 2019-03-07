@@ -2,10 +2,12 @@ package com.github.exact7.xtra.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
@@ -49,6 +51,14 @@ class SettingsActivity : AppCompatActivity() {
                 val chatWidth = (deviceLandscapeWidth * (newValue as Int / 100f)).toInt()
                 PreferenceManager.getDefaultSharedPreferences(context).edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 activity.setResult(Activity.RESULT_OK, Intent().putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
+                true
+            }
+            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
+                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT))
+                true
+            }
+            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
+                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE))
                 true
             }
         }

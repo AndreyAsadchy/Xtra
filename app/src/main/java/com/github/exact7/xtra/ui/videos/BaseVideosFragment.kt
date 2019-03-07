@@ -29,7 +29,7 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentVideosBinding.inflate(inflater, container, false).let {
             binding = it
-            it.setLifecycleOwner(viewLifecycleOwner)
+            it.lifecycleOwner = viewLifecycleOwner
             it.root.recyclerView.adapter = VideosAdapter(requireActivity() as MainActivity).also { a -> adapter = a }
             it.root
         }

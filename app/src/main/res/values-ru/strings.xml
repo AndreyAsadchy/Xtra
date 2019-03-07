@@ -70,5 +70,13 @@
     <string name="network_error">Ошибка соединения с сервером</string>
     <string name="portrait_column_count">Количество столбцов в альбомной ориентации</string>
     <string name="landscape_column_count">Количество столбцов в книжной ориентации</string>
+    <string name="download_via_wifi">Загрузка через Wi-Fi</string>
+    <string name="always">Всегда</string>
+    <string name="just_once">Только сейчас</string>
+    <string name="download_preference">Скачивание видео</string>
+    <string name="any_network">Любая сеть</string>
+    <string name="wifi_only">Только через Wi-Fi</string>
+    <string name="ask_every_time">Всегда спрашивать</string>
+    <string name="download_size_warning">Длинные видео могут иметь размер более 10ГБ. Скачать только через Wi-Fi?</string>
 
 </resources>

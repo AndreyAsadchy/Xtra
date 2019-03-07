@@ -76,7 +76,7 @@ class VideoDownloadViewModel @Inject constructor(
         _videoInfo.value = videoInfo
     }
 
-    fun download(url: String, quality: String, fromIndex: Int, toIndex: Int) {
+    fun download(url: String, quality: String, fromIndex: Int, toIndex: Int, wifiOnly: Boolean) {
         GlobalScope.launch {
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
@@ -84,7 +84,7 @@ class VideoDownloadViewModel @Inject constructor(
                 val path = context.getExternalFilesDir(".downloads${File.separator}${video.id}$quality")!!.absolutePath + File.separator
                 val offlineVideo = DownloadUtils.prepareDownload(context, video, path, duration)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
-                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, path, fromIndex, toIndex))
+                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, path, fromIndex, toIndex), wifiOnly)
             }
         }
     }

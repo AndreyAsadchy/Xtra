@@ -27,7 +27,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             FragmentStreamsBinding.inflate(inflater, container, false).let {
                 binding = it
-                it.setLifecycleOwner(viewLifecycleOwner)
+                it.lifecycleOwner = viewLifecycleOwner
                 it.root.recyclerView.adapter =  StreamsAdapter(requireActivity() as MainActivity).also { a -> adapter = a }
                 it.root
             }

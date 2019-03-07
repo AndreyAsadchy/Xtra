@@ -56,6 +56,9 @@ class MenuFragment : Fragment() {
                     activity.playerContainer?.chatContainer?.updateLayoutParams { width = value }
                 }
             }
+            if (it.getBooleanExtra("shouldRecreate", false)) {
+                activity.recreate()
+            }
         }
     }
 }

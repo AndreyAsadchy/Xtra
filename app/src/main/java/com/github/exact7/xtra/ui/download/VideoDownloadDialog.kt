@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.download
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,11 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
 import com.github.exact7.xtra.di.Injectable
@@ -42,7 +46,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  =
             DialogVideoDownloadBinding.inflate(inflater, container, false).let {
                 binding = it
-                it.setLifecycleOwner(viewLifecycleOwner)
+                it.lifecycleOwner = viewLifecycleOwner
                 binding.root
             }
 
@@ -62,9 +66,11 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun init(videoInfo: VideoDownloadInfo) {
         with(videoInfo) {
-            spinner.adapter = ArrayAdapter(requireContext(), R.layout.spinner_quality_item, qualities.keys.toTypedArray())
+            val context = requireContext()
+            spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
             binding.duration = DateUtils.formatElapsedTime(totalDuration)
             binding.currentPosition = DateUtils.formatElapsedTime(currentPosition)
             timeFrom.addTextChangedListener(object : TextWatcher {
@@ -112,10 +118,32 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                 }
                             })
                         }
-                        val quality = spinner.selectedItem.toString()
-                        val url = qualities.getValue(quality).substringBeforeLast('/') + "/"
-                        viewModel.download(url, quality, fromIndex, toIndex)
-                        dismiss()
+
+                        fun download(wifiOnly: Boolean = false) {
+                            val quality = spinner.selectedItem.toString()
+                            val url = qualities.getValue(quality).substringBeforeLast('/') + "/"
+                            viewModel.download(url, quality, fromIndex, toIndex, wifiOnly)
+                            dismiss()
+                        }
+
+                        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                        val preference = prefs.getString("downloadNetworkPreference", "3")
+                        var wifiOnly = preference == "2"
+                        if (preference != "3") {
+                            download(wifiOnly)
+                        } else {
+                            wifiOnly = true
+                            AlertDialog.Builder(context)
+                                    .setMultiChoiceItems(arrayOf(getString(R.string.wifi_only)), BooleanArray(1) { true }) { _, _, isChecked -> wifiOnly = isChecked }
+                                    .setPositiveButton(getString(R.string.always)) { _, _ ->
+                                        prefs.edit { putString("downloadNetworkPreference", if (wifiOnly) "2" else "1") }
+                                        download(wifiOnly)
+                                    }
+                                    .setNegativeButton(getString(R.string.just_once)) { _, _ -> download(wifiOnly) }
+                                    .setNeutralButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                                    .setCustomTitle(LayoutInflater.from(context).inflate(R.layout.view_download_warning, null))
+                                    .show()
+                        }
                     }
                     from >= to -> timeFrom.error = getString(R.string.from_is_greater)
                     else -> timeTo.error = getString(R.string.to_is_lesser)

@@ -70,4 +70,12 @@
     <string name="network_error">Network error</string>
     <string name="portrait_column_count">Portrait column count</string>
     <string name="landscape_column_count">Landscape column count</string>
+    <string name="download_via_wifi">Download using Wi-Fi</string>
+    <string name="always">Always</string>
+    <string name="just_once">Just once</string>
+    <string name="download_preference">Download network preference</string>
+    <string name="any_network">Over any network</string>
+    <string name="wifi_only">Over Wi-Fi only</string>
+    <string name="ask_every_time">Ask me every time</string>
+    <string name="download_size_warning">Long videos can be up to 10GB in size. Do you want to download over Wi-Fi?</string>
 </resources>

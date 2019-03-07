@@ -18,7 +18,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         Log.d("NotifActionReceiver", "Canceled download")
         AndroidInjection.inject(this, context)
         GlobalScope.launch {
-            with(fetchProvider.get()) {
+            with(fetchProvider.get(false)) {
                 cancelAll()
                 deleteAll()
             }
