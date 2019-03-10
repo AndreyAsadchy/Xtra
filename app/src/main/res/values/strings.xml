@@ -78,4 +78,7 @@
     <string name="wifi_only">Over Wi-Fi only</string>
     <string name="ask_every_time">Ask me every time</string>
     <string name="download_size_warning">Long videos can be up to 10GB in size. Do you want to download over Wi-Fi?</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="sd_card">SD card</string>
+    <string name="save_to">Save to</string>
 </resources>

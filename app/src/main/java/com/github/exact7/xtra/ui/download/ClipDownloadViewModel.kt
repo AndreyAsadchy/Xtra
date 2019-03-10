@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.download
 
 import android.app.Application
+import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,10 +44,15 @@ class ClipDownloadViewModel @Inject constructor(
         }
     }
 
-    fun download(url: String, quality: String) {
+    fun download(url: String, quality: String, toInternalStorage: Boolean) {
         GlobalScope.launch {
             val context = getApplication<Application>()
-            val path = context.getExternalFilesDir(".downloads${File.separator}${clip.slug}$quality")!!.absolutePath
+            val directory = ".downloads${File.separator}${clip.slug}$quality"
+            val path = if (toInternalStorage) {
+                context.getExternalFilesDir(directory)
+            } else {
+                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), directory)
+            }.let { it!!.absolutePath }
             val offlineVideo = DownloadUtils.prepareDownload(context, clip, path, clip.duration.toLong())
             val videoId = offlineRepository.saveVideo(offlineVideo)
             DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))

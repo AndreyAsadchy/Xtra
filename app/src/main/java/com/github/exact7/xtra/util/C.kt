@@ -16,4 +16,5 @@ object C {
     const val LANDSCAPE_CHAT_WIDTH = "landscape_chat_width"
     const val PORTRAIT_COLUMN_COUNT = "columnsPortrait"
     const val LANDSCAPE_COLUMN_COUNT = "columnsLandscape"
+    const val DOWNLOAD_STORAGE = "downloadStorage"
 }

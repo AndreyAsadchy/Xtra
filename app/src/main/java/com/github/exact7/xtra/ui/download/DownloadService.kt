@@ -73,14 +73,13 @@ class DownloadService : IntentService(TAG), Injectable {
 
     override fun onHandleIntent(intent: Intent?) {
         Log.d(TAG, "Starting download")
-         with(intent!!) {
-            fetch = fetchProvider.get(getBooleanExtra(KEY_WIFI, false))
-            request = Gson().fromJson(getStringExtra(KEY_REQUEST), if (getBooleanExtra(KEY_TYPE, true)) VideoRequest::class.java else ClipRequest::class.java)
-        }
+        request = Gson().fromJson(intent!!.getStringExtra(KEY_REQUEST), if (intent.getBooleanExtra(KEY_TYPE, true)) VideoRequest::class.java else ClipRequest::class.java)
         offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) } ?: return //Download was canceled
+        fetch = fetchProvider.get(intent.getBooleanExtra(KEY_WIFI, false))
         val countDownLatch = CountDownLatch(1)
         val channelId = getString(R.string.notification_channel_id)
         notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
+            priority = NotificationCompat.PRIORITY_LOW
             setSmallIcon(android.R.drawable.stat_sys_download)
             setGroup(GROUP_KEY)
             setContentTitle(getString(R.string.downloading))
@@ -99,8 +98,7 @@ class DownloadService : IntentService(TAG), Injectable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (manager.getNotificationChannel(channelId) == null) {
-                NotificationChannel(channelId, getString(R.string.notification_downloads_channel), NotificationManager.IMPORTANCE_DEFAULT).apply {
-                    setSound(null, null)
+                NotificationChannel(channelId, getString(R.string.notification_downloads_channel), NotificationManager.IMPORTANCE_LOW).apply {
                     manager.createNotificationChannel(this)
                 }
             }
@@ -243,6 +241,7 @@ class DownloadService : IntentService(TAG), Injectable {
             putExtra("code", 1)
         }
         notificationBuilder.apply {
+            priority = NotificationCompat.PRIORITY_DEFAULT
             setAutoCancel(true)
             setContentTitle(getString(R.string.downloaded))
             setProgress(0, 0, false)
@@ -251,7 +250,9 @@ class DownloadService : IntentService(TAG), Injectable {
             setContentIntent(PendingIntent.getActivity(this@DownloadService, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT))
             mActions.clear()
         }
-        notificationManager.notify(request.id, notificationBuilder.build())
+        notificationManager.apply {
+            notify(request.id, notificationBuilder.build())
+        }
         completed = true
         stopForegroundInternal(false)
     }

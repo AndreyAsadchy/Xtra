@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <import type="android.view.View" />
@@ -14,7 +15,7 @@
             type="String" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -93,6 +94,10 @@
                     android:maxLength="8"/>
             </LinearLayout>
 
+            <include
+                android:id="@+id/storageSelectionContainer"
+                layout="@layout/storage_selection"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:orientation="horizontal"

@@ -23,7 +23,6 @@ import com.github.exact7.xtra.util.TlsSocketFactory
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
 import com.tonyodev.fetch2.FetchConfiguration
-import com.tonyodev.fetch2core.Downloader
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
 import dagger.Module
 import dagger.Provides
@@ -211,7 +210,7 @@ class XtraModule {
                 .enableLogging(BuildConfig.DEBUG)
                 .enableRetryOnNetworkGain(true)
                 .setDownloadConcurrentLimit(3)
-                .setHttpDownloader(OkHttpDownloader(okHttpClient, Downloader.FileDownloaderType.PARALLEL))
+                .setHttpDownloader(OkHttpDownloader(okHttpClient))
                 .setProgressReportingInterval(1000L)
     }
 }

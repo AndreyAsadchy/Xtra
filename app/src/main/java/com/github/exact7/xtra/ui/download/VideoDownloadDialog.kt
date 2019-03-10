@@ -23,8 +23,12 @@ import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.DownloadUtils
 import kotlinx.android.synthetic.main.dialog_video_download.*
+import kotlinx.android.synthetic.main.storage_selection.view.*
 import javax.inject.Inject
+
 
 class VideoDownloadDialog : DialogFragment(), Injectable {
 
@@ -68,8 +72,14 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
 
     @SuppressLint("InflateParams")
     private fun init(videoInfo: VideoDownloadInfo) {
+        val context = requireContext()
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val sdCardPresent = DownloadUtils.isSdCardPresent
+        if (sdCardPresent) {
+            storageSelectionContainer.visibility = View.VISIBLE
+            storageSelectionContainer.radioGroup.check(if (prefs.getBoolean(C.DOWNLOAD_STORAGE, true)) R.id.internalStorage else R.id.sdCard)
+        }
         with(videoInfo) {
-            val context = requireContext()
             spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
             binding.duration = DateUtils.formatElapsedTime(totalDuration)
             binding.currentPosition = DateUtils.formatElapsedTime(currentPosition)
@@ -122,11 +132,17 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                         fun download(wifiOnly: Boolean = false) {
                             val quality = spinner.selectedItem.toString()
                             val url = qualities.getValue(quality).substringBeforeLast('/') + "/"
-                            viewModel.download(url, quality, fromIndex, toIndex, wifiOnly)
-                            dismiss()
+                            val internalStorageSelected = storageSelectionContainer.radioGroup.checkedRadioButtonId != R.id.sdCard
+                            val toInternalStorage = !sdCardPresent || internalStorageSelected
+                            if (DownloadUtils.hasStoragePermission(requireActivity()).also { println(it) }) {
+                                viewModel.download(url, quality, fromIndex, toIndex, wifiOnly, toInternalStorage)
+                                if (sdCardPresent) {
+                                    prefs.edit { putBoolean(C.DOWNLOAD_STORAGE, internalStorageSelected) }
+                                }
+                                dismiss()
+                            }
                         }
 
-                        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
                         val preference = prefs.getString("downloadNetworkPreference", "3")
                         var wifiOnly = preference == "2"
                         if (preference != "3") {

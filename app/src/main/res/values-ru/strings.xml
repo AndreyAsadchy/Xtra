@@ -78,5 +78,8 @@
     <string name="wifi_only">Только через Wi-Fi</string>
     <string name="ask_every_time">Всегда спрашивать</string>
     <string name="download_size_warning">Длинные видео могут иметь размер более 10ГБ. Скачать только через Wi-Fi?</string>
+    <string name="internal_storage">Память телефона</string>
+    <string name="sd_card">Карта памяти</string>
+    <string name="save_to">Сохранить в</string>
 
 </resources>
