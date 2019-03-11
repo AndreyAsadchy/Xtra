@@ -28,7 +28,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             FragmentGamesBinding.inflate(inflater, container, false).let {
                 binding = it
-                it.setLifecycleOwner(viewLifecycleOwner)
+                it.lifecycleOwner = viewLifecycleOwner
                 binding.root
             }
 

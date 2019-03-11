@@ -34,7 +34,7 @@ class VideosAdapter(
         val activity = binding.root.context as MainActivity
         val showDialog = {
             lastSelectedItem = item!!
-            if (DownloadUtils.hasStoragePermission(activity)) {
+            if (DownloadUtils.hasInternalStoragePermission(activity)) {
                 VideoDownloadDialog.newInstance(video = item).show(activity.supportFragmentManager, null)
             }
         }

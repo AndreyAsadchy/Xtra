@@ -27,7 +27,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         const val TAG = "VideoPlayer"
     }
 
-    override lateinit var viewModel: VideoPlayerViewModel
+    private lateinit var viewModel: VideoPlayerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_video, container, false)
@@ -66,8 +66,26 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun showDownloadDialog() {
-        if (DownloadUtils.hasStoragePermission(requireActivity())) {
+        if (DownloadUtils.hasInternalStoragePermission(requireActivity())) {
             VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null)
+        }
+    }
+
+    override fun onMovedToForeground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
+        }
+    }
+
+    override fun onMovedToBackground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onPause()
+        }
+    }
+
+    override fun onNetworkRestored() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
         }
     }
 }

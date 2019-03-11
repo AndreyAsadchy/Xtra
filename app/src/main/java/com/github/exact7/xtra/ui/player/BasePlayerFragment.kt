@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.player_stream.*
 abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener {
 
     private lateinit var slidingLayout: SlidingLayout
-    protected abstract val viewModel: PlayerViewModel
     protected var isPortrait: Boolean = false
         private set
 
@@ -45,18 +44,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
             }
         }
-    }
-
-    override fun onMovedToForeground() {
-        viewModel.onResume()
-    }
-
-    override fun onMovedToBackground() {
-        viewModel.onPause()
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.onResume()
     }
 
 //    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it

@@ -33,7 +33,7 @@ class ClipsAdapter(
         binding.channelListener = mainActivity
         val showDialog = {
             lastSelectedItem = item!!
-            if (DownloadUtils.hasStoragePermission(mainActivity)) {
+            if (DownloadUtils.hasInternalStoragePermission(mainActivity)) {
                 ClipDownloadDialog.newInstance(item).show(mainActivity.supportFragmentManager, null)
             }
         }

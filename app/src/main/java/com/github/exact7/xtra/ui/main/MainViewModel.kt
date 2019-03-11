@@ -93,7 +93,7 @@ class MainViewModel @Inject constructor(
                     }, {
                         with(activity) {
                             Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                            startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2) //TODO if player don't start
+                            startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2) //TODO if player don't start <- dont need this TODO anymore?
                         }
                     })
                     .addTo(compositeDisposable)

@@ -47,7 +47,8 @@ class ClipDownloadViewModel @Inject constructor(
     fun download(url: String, quality: String, toInternalStorage: Boolean) {
         GlobalScope.launch {
             val context = getApplication<Application>()
-            val directory = ".downloads${File.separator}${clip.slug}$quality"
+            val rootDirectoryName = if (toInternalStorage) ".downloads" else ".xtra"
+            val directory = "$rootDirectoryName${File.separator}${clip.slug}$quality"
             val path = if (toInternalStorage) {
                 context.getExternalFilesDir(directory)
             } else {

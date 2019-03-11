@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
+import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
+import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
-class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
+class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 //    override fun play(obj: Parcelable) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
@@ -24,7 +26,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         const val TAG = "ClipPlayer"
     }
 
-    override lateinit var viewModel: ClipPlayerViewModel
+    private lateinit var viewModel: ClipPlayerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_video, container, false)
@@ -39,7 +41,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         settings.setColorFilter(Color.GRAY) //TODO
         download.setColorFilter(Color.GRAY)
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities.keys, viewModel.selectedQualityIndex) }
-        download.setOnClickListener { ClipDownloadDialog.newInstance(viewModel.clip.value!!, viewModel.qualities).show(childFragmentManager, null) }
+        download.setOnClickListener { showDownloadDialog() }
     }
 
     override fun initialize() {
@@ -58,5 +60,29 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index)
+    }
+
+    override fun showDownloadDialog() {
+        if (DownloadUtils.hasInternalStoragePermission(requireActivity())) {
+            ClipDownloadDialog.newInstance(viewModel.clip.value!!, viewModel.qualities).show(childFragmentManager, null)
+        }
+    }
+
+    override fun onMovedToForeground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
+        }
+    }
+
+    override fun onMovedToBackground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onPause()
+        }
+    }
+
+    override fun onNetworkRestored() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
+        }
     }
 }

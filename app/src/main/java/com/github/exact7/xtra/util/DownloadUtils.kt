@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
@@ -26,6 +26,8 @@ import com.google.gson.Gson
 import java.util.Calendar
 
 object DownloadUtils {
+
+    val isSdCardPresent get() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.isExternalStorageRemovable()
 
     fun download(context: Context, request: Request, wifiOnly: Boolean = false) {
         val intent = Intent(context, DownloadService::class.java)
@@ -53,14 +55,14 @@ object DownloadUtils {
         }
     }
 
-    fun hasStoragePermission(activity: Activity): Boolean {
+    fun hasInternalStoragePermission(activity: Activity): Boolean {
         fun requestPermissions() {
             ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 0)
         }
-//TODO require for sd card
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ||
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             return true
         }
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
@@ -77,5 +79,27 @@ object DownloadUtils {
         return false
     }
 
-    val isSdCardPresent get() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.isExternalStorageRemovable()
+    fun hasSdCardPermission(fragment: Fragment): Boolean {
+        fun requestPermissions() {
+            fragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 0)
+        }
+
+        val activity = fragment.requireActivity()
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true
+        }
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            AlertDialog.Builder(activity)
+                    .setMessage(R.string.sdcard_storage_permission_message)
+                    .setTitle(R.string.storage_permission_title)
+                    .setPositiveButton(android.R.string.ok) { _, _ -> requestPermissions() }
+                    .setNegativeButton(android.R.string.cancel) { _, _ -> Toast.makeText(activity, activity.getString(R.string.permission_denied), Toast.LENGTH_LONG).show() }
+                    .show()
+        } else {
+            requestPermissions()
+        }
+        return false
+    }
 }

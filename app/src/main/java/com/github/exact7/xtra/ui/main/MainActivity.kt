@@ -1,11 +1,13 @@
 package com.github.exact7.xtra.ui.main
 
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -63,7 +65,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 
-const val PLAYER_TAG = "player"
 const val INDEX_GAMES = FragNavController.TAB1
 const val INDEX_TOP = FragNavController.TAB2
 const val INDEX_FOLLOWED = FragNavController.TAB3
@@ -95,7 +96,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
             setTheme(if (prefs.getBoolean(C.THEME, true).also { isDarkTheme = it }) R.style.DarkTheme else R.style.LightTheme)
         } else {
-            prefs.edit { putBoolean(C.FIRST_LAUNCH, false) }
+            prefs.edit {
+                putBoolean(C.FIRST_LAUNCH, false)
+                putLong("firstLaunchDate", System.currentTimeMillis())
+            }
             AlertDialog.Builder(this)
                     .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.light)), 0) { _, which -> isDarkTheme = which == 0 }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -106,6 +110,28 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     }
                     .setTitle(getString(R.string.choose_theme))
                     .show()
+        }
+        if (prefs.getBoolean("showRateAppDialog", true) && savedInstanceState == null) {
+            val launchCount = prefs.getInt("launchCount", 0) + 1
+            val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
+            if (System.currentTimeMillis() >= dateOfFirstLaunch + 259200000L && launchCount >= 3) { //3 days passed and launched at least 3 times
+                AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.thank_you))
+                        .setMessage(getString(R.string.rate_app_message))
+                        .setPositiveButton(getString(R.string.rate)) { _, _ ->
+                            prefs.edit { putBoolean("showRateAppDialog", false) }
+                            try {
+                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                            } catch (e: ActivityNotFoundException) {
+                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                            }
+                        }
+                        .setNegativeButton(getString(R.string.remind_me_later), null)
+                        .setNeutralButton(getString(R.string.no_thanks)) { _, _ -> prefs.edit { putBoolean("showRateAppDialog", false) } }
+                        .show()
+            } else {
+                prefs.edit { putInt("launchCount", launchCount) }
+            }
         }
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
@@ -167,7 +193,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onResume() {
         super.onResume()
         if (viewModel.isPlayerOpened) {
-            playerFragment = supportFragmentManager.findFragmentByTag(PLAYER_TAG) as BasePlayerFragment?
+            playerFragment = supportFragmentManager.findFragmentById(R.id.playerContainer) as BasePlayerFragment?
         }
     }
 
@@ -235,13 +261,17 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) {
-            val fragment = fragNavController.currentFrag
-            if (fragment is MediaPagerFragment && fragment.currentFragment is HasDownloadDialog) {
-                (fragment.currentFragment as HasDownloadDialog).showDownloadDialog()
+        when (requestCode) {
+            0 -> {
+                if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) {
+                    val fragment = fragNavController.currentFrag
+                    if (fragment is MediaPagerFragment && fragment.currentFragment is HasDownloadDialog) {
+                        (fragment.currentFragment as HasDownloadDialog).showDownloadDialog()
+                    }
+                } else {
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
+                }
             }
-        } else {
-            Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -309,14 +339,14 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private fun startPlayer(fragment: BasePlayerFragment, argKey: String, argValue: Parcelable) {
 //        if (playerFragment == null) {
         playerFragment = fragment.apply { arguments = bundleOf(argKey to argValue) }
-        supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment, PLAYER_TAG).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment).commit()
         viewModel.onPlayerStarted()
     }
 
     private fun closePlayer() {
         supportFragmentManager.beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .remove(playerFragment!!)
+                .remove(supportFragmentManager.findFragmentById(R.id.playerContainer)!!)
                 .commit()
         playerFragment = null
         viewModel.onPlayerClosed()

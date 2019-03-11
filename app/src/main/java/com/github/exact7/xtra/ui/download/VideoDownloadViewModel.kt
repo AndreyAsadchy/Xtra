@@ -82,7 +82,8 @@ class VideoDownloadViewModel @Inject constructor(
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
                 val duration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]
-                val directory = ".downloads${File.separator}${video.id}$quality"
+                val rootDirectoryName = if (toInternalStorage) ".downloads" else ".xtra"
+                val directory = "$rootDirectoryName${File.separator}${video.id}$quality"
                 val path = if (toInternalStorage) {
                     context.getExternalFilesDir(directory)
                 } else {

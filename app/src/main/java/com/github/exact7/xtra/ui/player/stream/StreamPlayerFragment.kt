@@ -34,7 +34,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     private lateinit var prefs: SharedPreferences
 
-    override lateinit var viewModel: StreamPlayerViewModel
+    private lateinit var viewModel: StreamPlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,5 +126,23 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         minimizePlayer.visibility = View.GONE
         chatContainer.visibility = View.VISIBLE
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+    }
+
+    override fun onMovedToForeground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
+        }
+    }
+
+    override fun onMovedToBackground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onPause()
+        }
+    }
+
+    override fun onNetworkRestored() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
+        }
     }
 }

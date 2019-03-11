@@ -55,6 +55,7 @@
     <string name="downloads_empty">Здесь будут отображаться скачанные видео</string>
     <string name="notification_downloads_channel">Загрузки</string>
     <string name="storage_permission_message">Для скачивания видео необходимо разрешение на доступ к памяти.</string>
+    <string name="sdcard_storage_permission_message">Для скачивания видео на карту памяти необходимо разрешение.</string>
     <string name="storage_permission_title">Приложению необходимо разрешение</string>
     <string name="permission_denied">Необходимые разрешения не были предоставлены</string>
     <string name="nothing_here">Здесь пусто</string>
@@ -81,5 +82,9 @@
     <string name="internal_storage">Память телефона</string>
     <string name="sd_card">Карта памяти</string>
     <string name="save_to">Сохранить в</string>
-
+    <string name="thank_you">Спасибо!</string>
+    <string name="rate_app_message">Если Вам нравится приложение, пожалуйста, уделите минуту чтобы оставить отзыв. Спасибо за Вашу поддержку!</string>
+    <string name="rate">Оценить</string>
+    <string name="remind_me_later">Напомнить позже</string>
+    <string name="no_thanks">Нет, спасибо</string>
 </resources>

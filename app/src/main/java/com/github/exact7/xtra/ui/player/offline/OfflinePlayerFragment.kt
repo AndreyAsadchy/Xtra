@@ -14,7 +14,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    override lateinit var viewModel: OfflinePlayerViewModel
+    private lateinit var viewModel: OfflinePlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableNetworkCheck = false
@@ -33,5 +33,17 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 
     override fun onNetworkRestored() {
         //do nothing
+    }
+
+    override fun onMovedToForeground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onResume()
+        }
+    }
+
+    override fun onMovedToBackground() {
+        if (this::viewModel.isInitialized) {
+            viewModel.onPause()
+        }
     }
 }

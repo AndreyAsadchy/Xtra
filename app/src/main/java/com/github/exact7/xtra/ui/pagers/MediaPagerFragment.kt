@@ -14,7 +14,7 @@ abstract class MediaPagerFragment : Fragment(), ItemAwarePagerFragment, Scrollab
     private lateinit var adapter: ItemAwareFragmentPagerAdapter
     private lateinit var viewPager: ViewPager
 
-    override val currentFragment: Fragment
+    override val currentFragment: Fragment?
         get() = adapter.currentFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,6 +36,8 @@ abstract class MediaPagerFragment : Fragment(), ItemAwarePagerFragment, Scrollab
     }
 
     override fun scrollToTop() {
-        (currentFragment as Scrollable).scrollToTop()
+        if (currentFragment is Scrollable) {
+            (currentFragment as Scrollable).scrollToTop()
+        }
     }
 }

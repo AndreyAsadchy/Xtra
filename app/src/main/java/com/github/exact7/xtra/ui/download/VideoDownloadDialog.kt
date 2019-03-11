@@ -13,14 +13,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.util.C
@@ -30,7 +27,7 @@ import kotlinx.android.synthetic.main.storage_selection.view.*
 import javax.inject.Inject
 
 
-class VideoDownloadDialog : DialogFragment(), Injectable {
+class VideoDownloadDialog : BaseDownloadDialog() {
 
     companion object {
         private const val KEY_VIDEO_INFO = "videoInfo"
@@ -47,6 +44,11 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
     private lateinit var viewModel: VideoDownloadViewModel
     private lateinit var binding: DialogVideoDownloadBinding
 
+    private lateinit var videoInfo: VideoDownloadInfo
+    private var wifiOnly = false
+    private var fromIndex = 0
+    private var toIndex = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  =
             DialogVideoDownloadBinding.inflate(inflater, container, false).let {
                 binding = it
@@ -59,7 +61,8 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoDownloadViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.videoInfo.observe(viewLifecycleOwner, Observer {
-            init(it)
+            videoInfo = it
+            init()
         })
         arguments!!.getParcelable<VideoDownloadInfo?>(KEY_VIDEO_INFO).let {
             if (it == null) {
@@ -70,11 +73,10 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
+
     @SuppressLint("InflateParams")
-    private fun init(videoInfo: VideoDownloadInfo) {
+    private fun init() {
         val context = requireContext()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val sdCardPresent = DownloadUtils.isSdCardPresent
         if (sdCardPresent) {
             storageSelectionContainer.visibility = View.VISIBLE
             storageSelectionContainer.radioGroup.check(if (prefs.getBoolean(C.DOWNLOAD_STORAGE, true)) R.id.internalStorage else R.id.sdCard)
@@ -104,7 +106,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                 when {
                     to > totalDuration -> timeTo.error = getString(R.string.to_is_longer)
                     from < to -> {
-                        val fromIndex = if (from == 0L) {
+                        fromIndex = if (from == 0L) {
                             0
                         } else {
                             val min = from - targetDuration
@@ -116,7 +118,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                 }
                             })
                         }
-                        val toIndex = if (to in relativeStartTimes.last()..totalDuration) {
+                        toIndex = if (to in relativeStartTimes.last()..totalDuration) {
                             relativeStartTimes.lastIndex
                         } else {
                             val max = to + targetDuration
@@ -128,34 +130,19 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                                 }
                             })
                         }
-
-                        fun download(wifiOnly: Boolean = false) {
-                            val quality = spinner.selectedItem.toString()
-                            val url = qualities.getValue(quality).substringBeforeLast('/') + "/"
-                            val internalStorageSelected = storageSelectionContainer.radioGroup.checkedRadioButtonId != R.id.sdCard
-                            val toInternalStorage = !sdCardPresent || internalStorageSelected
-                            if (DownloadUtils.hasStoragePermission(requireActivity()).also { println(it) }) {
-                                viewModel.download(url, quality, fromIndex, toIndex, wifiOnly, toInternalStorage)
-                                if (sdCardPresent) {
-                                    prefs.edit { putBoolean(C.DOWNLOAD_STORAGE, internalStorageSelected) }
-                                }
-                                dismiss()
-                            }
-                        }
-
                         val preference = prefs.getString("downloadNetworkPreference", "3")
-                        var wifiOnly = preference == "2"
+                        wifiOnly = preference == "2"
                         if (preference != "3") {
-                            download(wifiOnly)
+                            download()
                         } else {
                             wifiOnly = true
                             AlertDialog.Builder(context)
                                     .setMultiChoiceItems(arrayOf(getString(R.string.wifi_only)), BooleanArray(1) { true }) { _, _, isChecked -> wifiOnly = isChecked }
                                     .setPositiveButton(getString(R.string.always)) { _, _ ->
                                         prefs.edit { putString("downloadNetworkPreference", if (wifiOnly) "2" else "1") }
-                                        download(wifiOnly)
+                                        download()
                                     }
-                                    .setNegativeButton(getString(R.string.just_once)) { _, _ -> download(wifiOnly) }
+                                    .setNegativeButton(getString(R.string.just_once)) { _, _ -> download() }
                                     .setNeutralButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
                                     .setCustomTitle(LayoutInflater.from(context).inflate(R.layout.view_download_warning, null))
                                     .show()
@@ -168,8 +155,31 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
         }
     }
 
+    override fun download() {
+        val quality = spinner.selectedItem.toString()
+        val url = videoInfo.qualities.getValue(quality).substringBeforeLast('/') + "/"
+        val internalStorageSelected = storageSelectionContainer.radioGroup.checkedRadioButtonId != R.id.sdCard
+        val toInternalStorage = !sdCardPresent || internalStorageSelected
+
+        fun startDownload() {
+            if (sdCardPresent) {
+                prefs.edit { putBoolean(C.DOWNLOAD_STORAGE, internalStorageSelected) }
+            }
+            viewModel.download(url, quality, fromIndex, toIndex, wifiOnly, toInternalStorage)
+            dismiss()
+        }
+
+        if (toInternalStorage) {
+            startDownload()
+        } else {
+            if (DownloadUtils.hasSdCardPermission(this)) {
+                startDownload()
+            }
+        }
+    }
+
     private fun parseTime(textView: TextView): Long? {
-        with (textView) {
+        with(textView) {
             val value = if (text.isEmpty()) hint else text
             val time = value.split(":")
             try {
