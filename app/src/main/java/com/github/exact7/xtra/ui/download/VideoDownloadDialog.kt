@@ -9,29 +9,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
-import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.DownloadUtils
 import kotlinx.android.synthetic.main.dialog_video_download.*
-import kotlinx.android.synthetic.main.storage_selection.view.*
 import javax.inject.Inject
 
 
-class VideoDownloadDialog : DialogFragment(), Injectable {
+class VideoDownloadDialog : BaseDownloadDialog() {
 
     companion object {
         private const val KEY_VIDEO_INFO = "videoInfo"
@@ -75,25 +68,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
     @SuppressLint("InflateParams")
     private fun init(videoInfo: VideoDownloadInfo) {
         val context = requireContext()
-        val storage = DownloadUtils.getAvailableStorage(context)
-        val isExternalStorageAvailable = DownloadUtils.isExternalStorageAvailable
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        if (isExternalStorageAvailable) {
-            if (storage.size > 1) {
-                storageSelectionContainer.visibility = View.VISIBLE
-                for (s in storage) {
-                    storageSelectionContainer.radioGroup.addView(RadioButton(context).apply {
-                        id = s.id
-                        text = s.name
-                    })
-                }
-                storageSelectionContainer.radioGroup.check(prefs.getInt(C.DOWNLOAD_STORAGE, 0))
-            }
-        } else {
-            storageSelectionContainer.visibility = View.VISIBLE
-            storageSelectionContainer.noStorageDetected.visibility = View.VISIBLE
-            download.visibility = View.GONE
-        }
+        init(context)
         with(videoInfo) {
             spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
             binding.duration = DateUtils.formatElapsedTime(totalDuration)
@@ -150,14 +125,7 @@ class VideoDownloadDialog : DialogFragment(), Injectable {
                         fun download() {
                             val quality = spinner.selectedItem.toString()
                             val url = videoInfo.qualities.getValue(quality).substringBeforeLast('/') + "/"
-                            val index = if (storage.size == 1) {
-                                0
-                            } else {
-                                val checked = storageSelectionContainer.radioGroup.checkedRadioButtonId
-                                prefs.edit { putInt(C.DOWNLOAD_STORAGE, checked) }
-                                checked
-                            }
-                            viewModel.download(url, storage[index].path.also { println(it) }, quality, fromIndex, toIndex, wifiOnly)
+                            viewModel.download(url, downloadPath, quality, fromIndex, toIndex, wifiOnly)
                             dismiss()
                         }
 

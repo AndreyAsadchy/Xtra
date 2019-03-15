@@ -18,12 +18,9 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="Player.Control">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="Player.Image" parent="Player.Control">
+    <style name="Player.Image">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:tint">@android:color/white</item>
     </style>
@@ -101,6 +98,20 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginEnd">10dp</item>
+    </style>
+    
+    <style name="Player.Resume">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:src">@drawable/baseline_fast_forward_black_48</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:visibility">gone</item>
     </style>
 
 </resources>

@@ -18,6 +18,7 @@ import com.github.exact7.xtra.model.offline.Downloadable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.model.offline.VideoRequest
+import com.github.exact7.xtra.ui.download.BaseDownloadDialog.Storage
 import com.github.exact7.xtra.ui.download.DownloadService
 import com.github.exact7.xtra.ui.download.KEY_REQUEST
 import com.github.exact7.xtra.ui.download.KEY_TYPE
@@ -102,9 +103,4 @@ object DownloadUtils {
         }
         return list
     }
-
-    data class Storage(
-            val id: Int,
-            val name: String,
-            val path: String)
 }
