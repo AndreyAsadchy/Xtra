@@ -68,8 +68,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
         playerView.player = viewModel.player
-        settings.isEnabled = false
-        settings.setColorFilter(Color.GRAY)
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO

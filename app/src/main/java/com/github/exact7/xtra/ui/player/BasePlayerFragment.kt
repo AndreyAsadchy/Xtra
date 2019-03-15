@@ -2,14 +2,21 @@ package com.github.exact7.xtra.ui.player
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageButton
+import androidx.preference.PreferenceManager
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
+import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.LifecycleListener
+import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
@@ -42,6 +49,39 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 }
 
+            }
+        }
+        if (this !is OfflinePlayerFragment) {
+            view.findViewById<ImageButton>(R.id.settings).apply {
+                isEnabled = false
+                setColorFilter(Color.GRAY)
+            }
+        }
+        if (this !is StreamPlayerFragment) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+            val rewind = prefs.getInt("playerRewind", 5000)
+            val forward = prefs.getInt("playerForward", 5000)
+            val rewindImage = when (rewind) {
+                5000 -> R.drawable.baseline_replay_5_black_48
+                10000 -> R.drawable.baseline_replay_10_black_48
+                else -> R.drawable.baseline_replay_30_black_48
+            }
+            val forwardImage = when (forward) {
+                5000 -> R.drawable.baseline_forward_5_black_48
+                10000 -> R.drawable.baseline_forward_10_black_48
+                else -> R.drawable.baseline_forward_30_black_48
+            }
+            view.findViewById<PlayerView>(R.id.playerView).apply {
+                setRewindIncrementMs(rewind)
+                setFastForwardIncrementMs(forward)
+            }
+            view.findViewById<ImageButton>(com.google.android.exoplayer2.ui.R.id.exo_rew).setImageResource(rewindImage)
+            view.findViewById<ImageButton>(com.google.android.exoplayer2.ui.R.id.exo_ffwd).setImageResource(forwardImage)
+            if (this !is OfflinePlayerFragment) {
+                view.findViewById<ImageButton>(R.id.download).apply {
+                    isEnabled = false
+                    setColorFilter(Color.GRAY)
+                }
             }
         }
     }

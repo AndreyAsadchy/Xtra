@@ -19,36 +19,42 @@
     </style>
 
     <style name="Player.Image">
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:tint">@android:color/white</item>
     </style>
 
-    <style name="Player.Play" parent="ExoMediaButton.Play">
+    <style name="Player.SmallImage" parent="Player.Image">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="Player.LargeImage" parent="Player.Image">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+    </style>
+
+    <style name="Player.Play" parent="Player.LargeImage">
         <item name="android:id">@id/exo_play</item>
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">100dp</item>
+        <item name="android:src">@drawable/baseline_play_arrow_black_48</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <style name="Player.Pause" parent="ExoMediaButton.Pause">
+    <style name="Player.Pause" parent="Player.LargeImage">
         <item name="android:id">@id/exo_pause</item>
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">100dp</item>
+        <item name="android:src">@drawable/baseline_pause_black_48</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <style name="Player.Minimize" parent="Player.Image">
+    <style name="Player.Minimize" parent="Player.SmallImage">
         <item name="android:src">@drawable/baseline_expand_more_black_48</item>
     </style>
 
-    <style name="Player.Settings" parent="Player.Image">
+    <style name="Player.Settings" parent="Player.SmallImage">
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:src">@drawable/baseline_settings_black_24</item>
     </style>
 
-    <style name="Player.Download" parent="Player.Image">
+    <style name="Player.Download" parent="Player.SmallImage">
         <item name="android:src">@drawable/ic_file_download_black_24dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
@@ -84,7 +90,7 @@
         <item name="android:layout_above">@id/exo_progress</item>
     </style>
 
-    <style name="Player.FullscreenEnter" parent="Player.Image">
+    <style name="Player.FullscreenEnter" parent="Player.SmallImage">
         <item name="android:src">@drawable/baseline_fullscreen_black_24</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -92,7 +98,7 @@
         <item name="android:layout_marginEnd">10dp</item>
     </style>
 
-    <style name="Player.FullscreenExit" parent="Player.Image">
+    <style name="Player.FullscreenExit" parent="Player.SmallImage">
         <item name="android:src">@drawable/baseline_fullscreen_exit_black_24</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -100,18 +106,30 @@
         <item name="android:layout_marginEnd">10dp</item>
     </style>
     
-    <style name="Player.Resume">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">100dp</item>
+    <style name="Player.Resume" parent="Player.LargeImage">
         <item name="android:src">@drawable/baseline_fast_forward_black_48</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:tint">@android:color/white</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginEnd">15dp</item>
         <item name="android:layout_marginRight">15dp</item>
         <item name="android:visibility">gone</item>
+    </style>
+    
+    <style name="Player.Rewind" parent="Player.LargeImage">
+        <item name="android:id">@id/exo_rew</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginStart">30dp</item>
+    </style>
+
+    <style name="Player.Forward" parent="Player.LargeImage">
+        <item name="android:id">@id/exo_ffwd</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginEnd">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
     </style>
 
 </resources>

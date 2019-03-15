@@ -11,6 +11,12 @@
         style="@style/Player.Pause"/>
 
     <ImageButton
+        style="@style/Player.Rewind"/>
+
+    <ImageButton
+        style="@style/Player.Forward"/>
+
+    <ImageButton
         android:id="@+id/minimize"
         style="@style/Player.Minimize" />
 
@@ -21,10 +27,6 @@
         style="@style/Player.Download"
         />
     
-    <ImageButton
-        android:layout_width=""
-        android:layout_height="" />
-
     <!--<ImageButton-->
     <!--android:id="@+id/profile"-->
     <!--android:layout_width="50dp"-->

@@ -37,10 +37,6 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         super.onViewCreated(view, savedInstanceState)
         //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(video.getChannelName().getName()));
         //TODO morebtn
-        settings.isEnabled = false
-        download.isEnabled = false
-        settings.setColorFilter(Color.GRAY) //TODO
-        download.setColorFilter(Color.GRAY)
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }

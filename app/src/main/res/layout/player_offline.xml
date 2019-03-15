@@ -11,6 +11,13 @@
         style="@style/Player.Pause"/>
 
     <ImageButton
+        android:id="@+id/back"
+        style="@style/Player.Rewind"/>
+
+    <ImageButton
+        style="@style/Player.Forward"/>
+
+    <ImageButton
         android:id="@+id/minimize"
         style="@style/Player.Minimize"/>
 
