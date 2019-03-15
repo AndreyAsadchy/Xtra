@@ -56,7 +56,6 @@
     <string name="notification_channel_id" translatable="false">xtra_download_channel</string>
     <string name="storage_permission_title">The app needs storage permission</string>
     <string name="storage_permission_message">Storage permission is required to download videos.</string>
-    <string name="sdcard_storage_permission_message">Storage permission is required to download to SD card.</string>
     <string name="permission_denied">Required permissions were denied</string>
     <string name="nothing_here">Nothing here</string>
     <string name="watch_live">Watch Live</string>
@@ -80,11 +79,11 @@
     <string name="ask_every_time">Ask me every time</string>
     <string name="download_size_warning">Long videos can be up to 10GB in size. Do you want to download over Wi-Fi?</string>
     <string name="internal_storage">Internal storage</string>
-    <string name="sd_card">SD card</string>
     <string name="save_to">Save to</string>
     <string name="thank_you">Thank you!</string>
     <string name="rate_app_message">If you enjoy using Xtra, please take a moment to rate it. It won\'t take more than a minute. Thanks for your support!</string>
     <string name="rate">Rate</string>
     <string name="remind_me_later">Remind me later</string>
     <string name="no_thanks">No, thanks</string>
+    <string name="no_storage_detected">No available storage detected (most likely the phone is connected to a computer).</string>
 </resources>

@@ -32,11 +32,18 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         AppInjector.init(this)
         RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this) //TODO remove after all devices updated to 1.1.9
-        if (prefs.all["chatWidth"] is String) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val all = prefs.all
+        if (all["chatWidth"] is String) { //TODO remove after all devices updated to 1.1.9
             prefs.edit {
                 remove("chatWidth")
                 putInt("chatWidth", prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, -1))
+            }
+        }
+        if (all[C.DOWNLOAD_STORAGE] is Boolean) { //TODO remove after all devices updated to 1.1.12
+            prefs.edit {
+                remove(C.DOWNLOAD_STORAGE)
+                putInt(C.DOWNLOAD_STORAGE, if (all[C.DOWNLOAD_STORAGE] == true) 0 else 1)
             }
         }
     }

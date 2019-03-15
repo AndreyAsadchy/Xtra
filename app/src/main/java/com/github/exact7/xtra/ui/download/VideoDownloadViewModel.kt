@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.download
 
 import android.app.Application
-import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -77,21 +76,15 @@ class VideoDownloadViewModel @Inject constructor(
         _videoInfo.value = videoInfo
     }
 
-    fun download(url: String, quality: String, fromIndex: Int, toIndex: Int, wifiOnly: Boolean, toInternalStorage: Boolean) {
+    fun download(url: String, path: String, quality: String, fromIndex: Int, toIndex: Int, wifiOnly: Boolean) {
         GlobalScope.launch {
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
                 val duration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]
-                val rootDirectoryName = if (toInternalStorage) ".downloads" else ".xtra"
-                val directory = "$rootDirectoryName${File.separator}${video.id}$quality"
-                val path = if (toInternalStorage) {
-                    context.getExternalFilesDir(directory)
-                } else {
-                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), directory)
-                }.let { it!!.absolutePath + File.separator }
-                val offlineVideo = DownloadUtils.prepareDownload(context, video, path, duration)
+                val directory = "$path${File.separator}${video.id}$quality${File.separator}"
+                val offlineVideo = DownloadUtils.prepareDownload(context, video, directory, duration)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
-                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, path, fromIndex, toIndex), wifiOnly)
+                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, fromIndex, toIndex), wifiOnly)
             }
         }
     }

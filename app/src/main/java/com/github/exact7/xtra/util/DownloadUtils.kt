@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
@@ -23,11 +23,12 @@ import com.github.exact7.xtra.ui.download.KEY_REQUEST
 import com.github.exact7.xtra.ui.download.KEY_TYPE
 import com.github.exact7.xtra.ui.download.KEY_WIFI
 import com.google.gson.Gson
+import java.io.File
 import java.util.Calendar
 
 object DownloadUtils {
 
-    val isSdCardPresent get() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.isExternalStorageRemovable()
+    val isExternalStorageAvailable get() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 
     fun download(context: Context, request: Request, wifiOnly: Boolean = false) {
         val intent = Intent(context, DownloadService::class.java)
@@ -79,27 +80,31 @@ object DownloadUtils {
         return false
     }
 
-    fun hasSdCardPermission(fragment: Fragment): Boolean {
-        fun requestPermissions() {
-            fragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 0)
+    fun getAvailableStorage(context: Context): List<Storage> {
+        val storage = ContextCompat.getExternalFilesDirs(context, ".downloads")
+        val list = mutableListOf<Storage>()
+        for (i in storage.indices) {
+            val storagePath = storage[i].absolutePath
+            val name = if (i == 0) {
+                context.getString(R.string.internal_storage)
+            } else {
+                val endRootIndex = storagePath.indexOf("/Android/data")
+                if (endRootIndex < 0) continue
+                var startRootIndex = 0
+                for (j in 1 until endRootIndex) {
+                    if (storagePath[j].toString() == File.separator) {
+                        startRootIndex = j
+                    }
+                }
+                storagePath.substring(startRootIndex + 1, endRootIndex)
+            }
+            list.add(Storage(i, name, storagePath))
         }
-
-        val activity = fragment.requireActivity()
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            return true
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            AlertDialog.Builder(activity)
-                    .setMessage(R.string.sdcard_storage_permission_message)
-                    .setTitle(R.string.storage_permission_title)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> requestPermissions() }
-                    .setNegativeButton(android.R.string.cancel) { _, _ -> Toast.makeText(activity, activity.getString(R.string.permission_denied), Toast.LENGTH_LONG).show() }
-                    .show()
-        } else {
-            requestPermissions()
-        }
-        return false
+        return list
     }
+
+    data class Storage(
+            val id: Int,
+            val name: String,
+            val path: String)
 }
