@@ -59,8 +59,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         }
         if (this !is StreamPlayerFragment) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
-            val rewind = prefs.getInt("playerRewind", 5000)
-            val forward = prefs.getInt("playerForward", 5000)
+            val rewind = prefs.getString("playerRewind", "5000")!!.toInt()
+            val forward = prefs.getString("playerForward", "5000")!!.toInt()
             val rewindImage = when (rewind) {
                 5000 -> R.drawable.baseline_replay_5_black_48
                 10000 -> R.drawable.baseline_replay_10_black_48

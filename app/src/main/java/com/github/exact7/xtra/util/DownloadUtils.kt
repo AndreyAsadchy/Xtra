@@ -36,11 +36,7 @@ object DownloadUtils {
                 .putExtra(KEY_REQUEST, Gson().toJson(request))
                 .putExtra(KEY_TYPE, request is VideoRequest)
                 .putExtra(KEY_WIFI, wifiOnly)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
-        }
+        context.startService(intent)
     }
 
     fun prepareDownload(context: Context, downloadable: Downloadable, path: String, duration: Long): OfflineVideo {

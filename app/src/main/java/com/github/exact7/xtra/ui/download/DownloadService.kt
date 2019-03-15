@@ -189,7 +189,9 @@ class DownloadService : IntentService(TAG), Injectable {
             if (this::fetch.isInitialized && !fetch.isClosed && fetch.hasActiveDownloads) {
                 fetch.deleteAll()
             }
-            offlineRepository.deleteVideo(offlineVideo)
+            if (this::offlineRepository.isInitialized) {
+                offlineRepository.deleteVideo(offlineVideo)
+            }
         }
         super.onDestroy()
     }

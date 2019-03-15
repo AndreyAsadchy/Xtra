@@ -73,7 +73,7 @@
     <string name="download_via_wifi">Download using Wi-Fi</string>
     <string name="always">Always</string>
     <string name="just_once">Just once</string>
-    <string name="download_preference">Download network preference</string>
+    <string name="download_preference">Preferred download network</string>
     <string name="any_network">Over any network</string>
     <string name="wifi_only">Over Wi-Fi only</string>
     <string name="ask_every_time">Ask me every time</string>
@@ -86,4 +86,7 @@
     <string name="remind_me_later">Remind me later</string>
     <string name="no_thanks">No, thanks</string>
     <string name="no_storage_detected">No available storage detected (most likely the phone is connected to a computer).</string>
+    <string name="rewind">Rewind</string>
+    <string name="forward">Fast forward</string>
+    <string name="seconds">%s seconds</string>
 </resources>

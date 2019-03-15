@@ -25,7 +25,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
             val index = if (storage.size == 1) {
                 0
             } else {
-                val checked = storageSelectionContainer.radioGroup.checkedRadioButtonId
+                val checked = storageSelectionContainer.radioGroup.checkedRadioButtonId.let { if (it > -1) it else 0 }
                 prefs.edit { putInt(C.DOWNLOAD_STORAGE, checked) }
                 checked
             }

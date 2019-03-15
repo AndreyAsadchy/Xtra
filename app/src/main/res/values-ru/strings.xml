@@ -86,4 +86,7 @@
     <string name="remind_me_later">Напомнить позже</string>
     <string name="no_thanks">Нет, спасибо</string>
     <string name="no_storage_detected">Хранилище телефона не доступно (вероятнее всего телефон подключен к компьютеру).</string>
+    <string name="rewind">Перемотка назад</string>
+    <string name="forward">Перемотка вперед</string>
+    <string name="seconds">%s секунд</string>
 </resources>

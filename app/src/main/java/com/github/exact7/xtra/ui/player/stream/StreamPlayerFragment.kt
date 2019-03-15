@@ -81,6 +81,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
+        resume.setOnClickListener { viewModel.player.seekToDefaultPosition() }
         val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
         mainViewModel.user.observe(viewLifecycleOwner, Observer {
             messageView.visibility = if (it is LoggedIn) {

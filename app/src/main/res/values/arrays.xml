@@ -25,4 +25,16 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+
+    <string-array name="playerSeekEntries">
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="playerSeekValues">
+        <item>5000</item>
+        <item>10000</item>
+        <item>30000</item>
+    </string-array>
 </resources>

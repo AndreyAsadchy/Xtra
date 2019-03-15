@@ -18,6 +18,7 @@
     <ListPreference
         android:key="columnsPortrait"
         android:title="@string/portrait_column_count"
+        android:summary="%s"
         android:entries="@array/portraitColumnCount"
         android:entryValues="@array/portraitColumnCount"
         android:defaultValue="1"
@@ -27,6 +28,7 @@
     <ListPreference
         android:key="columnsLandscape"
         android:title="@string/landscape_column_count"
+        android:summary="%s"
         android:entries="@array/landscapeColumnCount"
         android:entryValues="@array/landscapeColumnCount"
         android:defaultValue="2"
@@ -36,9 +38,30 @@
     <ListPreference
         android:key="downloadNetworkPreference"
         android:title="@string/download_preference"
+        android:summary="%s"
         android:entries="@array/networkDownloadPreferencesEntries"
         android:entryValues="@array/networkDownloadPreferencesValues"
         android:defaultValue="3"
+        app:iconSpaceReserved="false"
+        />
+
+    <ListPreference
+        android:key="playerRewind"
+        android:title="@string/rewind"
+        android:summary="@string/seconds"
+        android:entries="@array/playerSeekEntries"
+        android:entryValues="@array/playerSeekValues"
+        android:defaultValue="5000"
+        app:iconSpaceReserved="false"
+        />
+
+    <ListPreference
+        android:key="playerForward"
+        android:title="@string/forward"
+        android:summary="@string/seconds"
+        android:entries="@array/playerSeekEntries"
+        android:entryValues="@array/playerSeekValues"
+        android:defaultValue="5000"
         app:iconSpaceReserved="false"
         />
 
