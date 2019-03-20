@@ -30,7 +30,7 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
     override fun onCreate() {
         super.onCreate()
         AppInjector.init(this)
-        RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.network_error), Toast.LENGTH_LONG).show() }
+        RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.unknown_error), Toast.LENGTH_LONG).show() }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val all = prefs.all

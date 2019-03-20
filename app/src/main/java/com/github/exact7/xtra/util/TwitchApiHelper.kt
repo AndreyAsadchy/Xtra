@@ -5,7 +5,7 @@ import android.text.format.DateUtils
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.MessageListenerImpl
-import com.github.exact7.xtra.util.chat.OnChatMessageReceived
+import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -49,7 +49,7 @@ object TwitchApiHelper {
         return DateUtils.formatDateTime(context, date, format)
     }
 
-    fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageCallback: OnChatMessageReceived): LiveChatThread {
-        return LiveChatThread(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageCallback)).apply { start() }
+    fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageListener: OnChatMessageReceivedListener): LiveChatThread {
+        return LiveChatThread(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageListener)).apply { start() }
     }
 }

@@ -1,8 +1,10 @@
 package com.github.exact7.xtra.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.github.exact7.xtra.api.KrakenApi
+import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
@@ -25,6 +27,7 @@ import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
 import com.github.exact7.xtra.util.toLiveData
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -138,6 +141,7 @@ class KrakenRepository @Inject constructor(
     }
 
     override fun loadUserById(id: Int): LiveData<User> {
+        Log.d(TAG, "Loading user by id $id")
         return api.getUserById(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -145,6 +149,7 @@ class KrakenRepository @Inject constructor(
     }
 
     override fun loadUserByLogin(login: String): LiveData<User> {
+        Log.d(TAG, "Loading user by login $login")
         return api.getUserByLogin(login)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -152,6 +157,7 @@ class KrakenRepository @Inject constructor(
     }
 
     override fun loadUserEmotes(userId: Int): LiveData<List<Emote>> {
+        Log.d(TAG, "Loading user emotes")
         return api.getUserEmotes(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -160,6 +166,7 @@ class KrakenRepository @Inject constructor(
     }
 
     override fun loadChannels(query: String, compositeDisposable: CompositeDisposable): Listing<Channel> {
+        Log.d(TAG, "Loading channels containing: $query")
         val factory = ChannelsSearchDataSource.Factory(query, api, networkExecutor, compositeDisposable)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
@@ -168,5 +175,19 @@ class KrakenRepository @Inject constructor(
                 .setEnablePlaceholders(false)
                 .build()
         return Listing.create(factory, config, networkExecutor)
+    }
+
+    override fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse> {
+        Log.d(TAG, "Loading chat log for video $videoId. Offset in seconds: $offsetSeconds")
+        return api.getVideoChatLog(videoId.substring(1), offsetSeconds, 75)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse> {
+        Log.d(TAG, "Loading chat log for video $videoId. Cursor: $cursor")
+        return api.getVideoChatLogAfter(videoId.substring(1), cursor, 75)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 }

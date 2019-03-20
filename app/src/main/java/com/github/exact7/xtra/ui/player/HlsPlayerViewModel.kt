@@ -5,7 +5,6 @@ import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
@@ -17,25 +16,20 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import java.util.*
+import java.util.LinkedHashMap
+import java.util.LinkedList
 import java.util.regex.Pattern
 
-abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context), OnQualityChangeListener {
+const val VIDEO_RENDERER = 0
+const val AUDIO_RENDERER = 1
+const val TAG = "HlsPlayerViewModel"
 
-    private companion object {
-        const val VIDEO_RENDERER = 0
-        const val AUDIO_RENDERER = 1
-        const val TAG = "HlsPlayerViewModel"
-    }
+abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context), OnQualityChangeListener {
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()
     val loaded: LiveData<Boolean>
         get() = helper.loaded
-    val chatMessages: LiveData<MutableList<ChatMessage>>
-        get() = helper.chatMessages
-    val newMessage: LiveData<ChatMessage>
-        get() = helper.newMessage
     val selectedQualityIndex: Int
         get() = helper.selectedQualityIndex
     lateinit var qualities: List<String>

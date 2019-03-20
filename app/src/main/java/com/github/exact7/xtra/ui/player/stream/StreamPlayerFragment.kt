@@ -72,7 +72,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
         })
-        viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
+        chatView.submitList(viewModel.chatMessages)
         viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
         viewModel.chat.observe(viewLifecycleOwner, Observer(messageView::setCallback))
         val emoteObserver: Observer<List<Emote>> = Observer(chatView::addEmotes)

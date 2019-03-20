@@ -35,6 +35,7 @@ import com.tonyodev.fetch2.AbstractFetchListener
 import com.tonyodev.fetch2.Download
 import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.Request
+import com.tonyodev.fetch2core.DownloadBlock
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -109,11 +110,12 @@ class DownloadService : IntentService(TAG), Injectable {
                 fetch.addListener(object : AbstractFetchListener() {
                     var activeDownloadsCount = 0
 
-                    override fun onQueued(download: Download, waitingOnNetwork: Boolean) {
+                    override fun onStarted(download: Download, downloadBlocks: List<DownloadBlock>, totalBlocks: Int) {
                         activeDownloadsCount++
                     }
 
                     override fun onCompleted(download: Download) {
+                        Log.d(TAG, "$progress / $maxProgress")
                         if (++progress < maxProgress) {
                             updateProgress(maxProgress, progress)
                         } else {

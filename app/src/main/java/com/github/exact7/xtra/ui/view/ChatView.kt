@@ -40,9 +40,9 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        recyclerView.adapter = ChatAdapter(context).also { adapter = it }
+        recyclerView.adapter = ChatAdapter(context!!.applicationContext).also { adapter = it } //TODO check if error is from here
         recyclerView.itemAnimator = null
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = LinearLayoutManager(context!!.applicationContext)
         layoutManager.stackFromEnd = true
         recyclerView.layoutManager = layoutManager
         recyclerView.setOnTouchListener { _, event ->
@@ -67,7 +67,7 @@ class ChatView : RelativeLayout {
                 }
             }
         })
-        btnDown.setOnClickListener { recyclerView.scrollToPosition(getLastItemPosition()) }
+        btnDown.setOnClickListener { post { recyclerView.scrollToPosition(getLastItemPosition()) } }
     }
 
     fun notifyAdapter() {

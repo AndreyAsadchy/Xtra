@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.repository
 
 import androidx.lifecycle.LiveData
+import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
@@ -13,6 +14,7 @@ import com.github.exact7.xtra.model.kraken.user.User
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 interface TwitchService {
@@ -30,4 +32,6 @@ interface TwitchService {
     fun loadUserByLogin(login: String) : LiveData<User>
     fun loadUserEmotes(userId: Int) : LiveData<List<Emote>>
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
+    fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
+    fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse>
 }

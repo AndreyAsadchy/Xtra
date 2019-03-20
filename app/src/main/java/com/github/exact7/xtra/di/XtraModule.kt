@@ -37,6 +37,7 @@ import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
@@ -175,6 +176,9 @@ class XtraModule {
                     Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2", e)
                 }
             }
+            connectTimeout(5, TimeUnit.MINUTES)
+            writeTimeout(5, TimeUnit.MINUTES)
+            readTimeout(5, TimeUnit.MINUTES)
         }
         return builder.build()
     }

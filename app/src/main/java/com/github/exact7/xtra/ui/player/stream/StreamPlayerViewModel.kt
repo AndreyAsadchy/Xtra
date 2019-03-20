@@ -113,7 +113,7 @@ class StreamPlayerViewModel @Inject constructor(
                 it
             }
         }
-        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, userName, userToken, subscriberBadges, helper)
+        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, userName, userToken, subscriberBadges, this)
     }
 
     private fun stopChat() {

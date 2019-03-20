@@ -33,12 +33,6 @@ interface KrakenApi {
     @GET("streams/followed")
     fun getFollowedStreams(@Header("Authorization") token: String, @Query("stream_type") streamType: StreamType?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<StreamsResponse>
 
-    @GET("videos/{id}/comments")
-    fun getVideoChatLog(@Path("id") videoId: String, @Query("content_offset_seconds") offsetSeconds: Double, @Query("limit") limit: Int): Single<VideoMessagesResponse>
-
-    @GET("videos/{id}/comments")
-    fun getVideoChatLogAfter(@Path("id") videoId: String, @Query("cursor") cursor: String, @Query("limit") limit: Int): Single<VideoMessagesResponse>
-
     @GET("clips/top")
     fun getClips(@Query("channel") channel: String?, @Query("game") gameName: String?, @Query("language") languages: String?, @Query("period") period: Period?, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): Single<ClipsResponse>
 
@@ -68,4 +62,10 @@ interface KrakenApi {
 
     @GET("search/channels")
     fun getChannels(@Query("query") query: String, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<ChannelsSearchResponse>
+
+    @GET("https://api.twitch.tv/v5/videos/{id}/comments")
+    fun getVideoChatLog(@Path("id") videoId: String, @Query("content_offset_seconds") offsetSeconds: Double, @Query("limit") limit: Int): Single<VideoMessagesResponse>
+
+    @GET("https://api.twitch.tv/v5/videos/{id}/comments")
+    fun getVideoChatLogAfter(@Path("id") videoId: String, @Query("cursor") cursor: String, @Query("limit") limit: Int): Single<VideoMessagesResponse>
 }

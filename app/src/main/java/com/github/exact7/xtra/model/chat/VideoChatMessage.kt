@@ -23,11 +23,12 @@ data class VideoChatMessage(
         val commenter: Commenter,
         val source: String,
         val state: String,
+        @SerializedName("message")
         val messageObj: Message,
         @SerializedName("more_replies")
         val moreReplies: Boolean) : ChatMessage, Parcelable {
 
-    override val userName: String //TODO
+    override val userName: String
         get() = commenter.name
 
     override val message: String

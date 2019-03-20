@@ -10,7 +10,7 @@ import kotlin.collections.set
 
 class MessageListenerImpl(
         private val subscriberBadges: SubscriberBadgesResponse?,
-        private val callback: OnChatMessageReceived) : LiveChatThread.OnMessageReceivedListener {
+        private val callback: OnChatMessageReceivedListener) : LiveChatThread.OnMessageReceivedListener {
 
     companion object {
         private const val TAG = "MessageListenerImpl"

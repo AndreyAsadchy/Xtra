@@ -16,13 +16,11 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
+const val TAG = "ClipPlayerViewModel"
+
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository) : PlayerViewModel(context), OnQualityChangeListener {
-
-    private companion object {
-        const val TAG = "ClipPlayerViewModel"
-    }
 
     private val _clip = MutableLiveData<Clip>()
     val clip: LiveData<Clip>
@@ -37,10 +35,6 @@ class ClipPlayerViewModel @Inject constructor(
         get() = helper.loaded
     val selectedQualityIndex: Int
         get() = helper.selectedQualityIndex
-//    val chatMessages: LiveData<MutableList<ChatMessage>>
-//        get() = helper.chatMessages
-//    val newMessage: LiveData<ChatMessage>
-//        get() = helper.newMessage
 
     override fun changeQuality(index: Int) {
         playbackProgress = player.currentPosition

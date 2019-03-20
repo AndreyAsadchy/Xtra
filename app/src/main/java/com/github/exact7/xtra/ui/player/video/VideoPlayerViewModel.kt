@@ -2,24 +2,29 @@ package com.github.exact7.xtra.ui.player.video
 
 import android.app.Application
 import android.net.Uri
+import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import java.util.LinkedList
 import javax.inject.Inject
 
 
 class VideoPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository) : HlsPlayerViewModel(context) {
+        private val playerRepository: PlayerRepository,
+        private val repository: TwitchService) : HlsPlayerViewModel(context) {
 
     private val _video = MutableLiveData<Video>()
     val video: LiveData<Video>
@@ -30,6 +35,8 @@ class VideoPlayerViewModel @Inject constructor(
             val playlist = (player.currentManifest as HlsManifest).mediaPlaylist
             return VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
         }
+    private var chatLogDisposable: Disposable? = null
+    private var chatLogCursor: String? = null
 
     fun setVideo(video: Video) {
         if (_video.value != video) {
@@ -45,6 +52,29 @@ class VideoPlayerViewModel @Inject constructor(
 
                     })
                     .addTo(compositeDisposable)
+            chatLogDisposable = repository.loadVideoChatLog(video.id, 0.0)
+                    .subscribe({
+                        chatLogCursor = it.next
+                        val handler = Handler()
+                        val list = LinkedList(it.messages)
+                        val runnable = object : Runnable {
+                            override fun run() {
+                                var message = list.poll()
+                                while (message != null && message.contentOffsetSeconds <= player.currentPosition / 1000L) {
+                                    println("${message.displayName} : ${message.message}")
+                                    message = list.poll()
+                                }
+                                if (list.size > 10) {
+                                    handler.postDelayed(this, 250)
+                                } else {
+                                    println("FETCH MORE")
+                                }
+                            }
+                        }
+                        handler.post(runnable)
+                    }, {
+
+                    })
         }
     }
 

@@ -67,9 +67,9 @@
     <string name="dark_theme">Темная тема</string>
     <string name="landscape_chat_width">Ширина чата в полноэкранном режиме</string>
     <string name="percentage_of_screen">% от ширины экрана</string>
-    <string name="network_error">Ошибка соединения с сервером</string>
-    <string name="portrait_column_count">Количество столбцов в альбомной ориентации</string>
-    <string name="landscape_column_count">Количество столбцов в книжной ориентации</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="portrait_column_count">Количество столбцов в книжной ориентации</string>
+    <string name="landscape_column_count">Количество столбцов в альбомной ориентации</string>
     <string name="download_via_wifi">Загрузка через Wi-Fi</string>
     <string name="always">Всегда</string>
     <string name="just_once">Только сейчас</string>

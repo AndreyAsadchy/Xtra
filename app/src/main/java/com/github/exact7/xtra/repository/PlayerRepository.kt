@@ -17,15 +17,13 @@ import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
+const val TAG = "PlayerRepository"
+
 @Singleton
 class PlayerRepository @Inject constructor(
         private val api: ApiService,
         private val usher: UsherApi,
         private val misc: MiscApi) {
-
-    companion object {
-        private const val TAG = "PlayerRepository"
-    }
 
     fun fetchStreamPlaylist(channelName: String): Single<Uri> {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
