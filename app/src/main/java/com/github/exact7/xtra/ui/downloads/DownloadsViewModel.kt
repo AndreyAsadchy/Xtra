@@ -2,16 +2,24 @@ package com.github.exact7.xtra.ui.downloads
 
 
 import android.app.Application
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.AndroidViewModel
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
+import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.util.FetchProvider
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.PlaylistParser
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.io.FileFilter
 import javax.inject.Inject
 
 class DownloadsViewModel @Inject internal constructor(
@@ -25,31 +33,41 @@ class DownloadsViewModel @Inject internal constructor(
         repository.deleteVideo(video)
         GlobalScope.launch {
             if (video.downloaded) {
-                val file = File(video.url)
+                val playlistFile = File(video.url)
+                if (!playlistFile.exists()) {
+                    return@launch
+                }
                 if (video.vod) {
-                    val playlist = PlaylistParser(file.inputStream(), Format.EXT_M3U, Encoding.UTF_8).parse() //TODO check for other playlists in folder and don't remove shared tracks and images
-//                GlideApp.with(context) //remove images from cache
-//                        .load(item.channelLogo)
-//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                        .skipMemoryCache(true)
-//                        .into(binding.userImage)
-//                GlideApp.with(context)
-//                        .load(item.thumbnail)
-//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                        .skipMemoryCache(true)
-//                        .into(binding.thumbnail)
-                    for (track in playlist.mediaPlaylist.tracks) {
-                        File(track.uri).delete()
-                    }
-                    val directory = file.parentFile
-                    if (directory.list().size == 1) {
-                        file.delete()
-                        directory.delete()
+                    val directory = playlistFile.parentFile
+                    val playlists = directory.listFiles(FileFilter { it.extension == "m3u8" && it != playlistFile })
+                    if (playlists.isEmpty()) {
+                        val context = getApplication<Application>()
+                        fun deleteImage(url: String) {
+                            runBlocking(Dispatchers.Main) {
+                                GlideApp.with(context)
+                                        .load(url)
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .skipMemoryCache(true)
+                                        .into(object : SimpleTarget<Drawable>() {
+                                            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {}
+                                        })
+                            }
+                        }
+                        deleteImage(video.channelLogo)
+                        deleteImage(video.thumbnail)
+                        directory.deleteRecursively()
                     } else {
-                        file.delete()
+                        val playlist = PlaylistParser(playlistFile.inputStream(), Format.EXT_M3U, Encoding.UTF_8).parse()
+                        val tracksToDelete = playlist.mediaPlaylist.tracks.toMutableSet()
+                        playlists.forEach {
+                            val p = PlaylistParser(it.inputStream(), Format.EXT_M3U, Encoding.UTF_8).parse()
+                            tracksToDelete.removeAll(p.mediaPlaylist.tracks)
+                        }
+                        playlistFile.delete()
+                        tracksToDelete.forEach { File(it.uri).delete() }
                     }
                 } else {
-                    file.delete()
+                    playlistFile.delete()
                 }
             } else {
                 with(fetchProvider.get(false)) {

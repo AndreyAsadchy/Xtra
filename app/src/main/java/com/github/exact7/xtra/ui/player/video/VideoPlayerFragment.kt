@@ -18,14 +18,12 @@ import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
 
+const val TAG = "VideoPlayer"
+
 class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 //    override fun play(obj: Parcelable) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
-
-    private companion object {
-        const val TAG = "VideoPlayer"
-    }
 
     private lateinit var viewModel: VideoPlayerViewModel
 

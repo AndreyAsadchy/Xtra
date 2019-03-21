@@ -57,7 +57,7 @@ class VideoPlayerViewModel @Inject constructor(
                         chatLogCursor = it.next
                         val handler = Handler()
                         val list = LinkedList(it.messages)
-                        val runnable = object : Runnable {
+                        val runnable = object : Runnable { //TODO maybe there is a kotlin timer function
                             override fun run() {
                                 var message = list.poll()
                                 while (message != null && message.contentOffsetSeconds <= player.currentPosition / 1000L) {
