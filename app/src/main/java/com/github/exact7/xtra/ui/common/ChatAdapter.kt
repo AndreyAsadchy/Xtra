@@ -44,8 +44,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     private val savedColors = HashMap<String, Int>()
     private val emotes: HashMap<String, Emote> = initBttv().also { it.putAll(initFfz()) }
     private var userNickname: String? = null
-    private val emoteSize = convertDpToPixels(context, 26f)
-    private val badgeSize = convertDpToPixels(context, 18f)
+    private val emoteSize = convertDpToPixels(26f)
+    private val badgeSize = convertDpToPixels(18f)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -94,7 +94,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
             if (userColor == null) {
                 userColors[userName] ?: getRandomColor().also { userColors[userName] = it }
             } else {
-                savedColors[userColor] ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
+                savedColors[userColor]
+                        ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
             }
         }
         val userNameLength = userName.length
@@ -188,9 +189,9 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                         .load(url)
                         .into(object : SimpleTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                                val size = if (isEmote) emoteSize else badgeSize
-                                resource.setBounds(0, 0, if (width == null) size else convertPixelsToDp(context, width * 1.65f), size)
                                 try {
+                                    val size = if (isEmote) emoteSize else badgeSize
+                                    resource.setBounds(0, 0, if (width == null) size else convertPixelsToDp(width * 1.65f), size)
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: Exception) {
                                     //TODO find error
@@ -246,9 +247,17 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
 
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]
 
-    private fun convertDpToPixels(context: Context, dp: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
+    private fun convertDpToPixels(dp: Float) = try { //TODO
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
+    } catch (e: NullPointerException) {
+        0
+    }
 
-    private fun convertPixelsToDp(context: Context, pixels: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, pixels, context.resources.displayMetrics).toInt()
+    private fun convertPixelsToDp(pixels: Float) = try {
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, pixels, context.resources.displayMetrics).toInt()
+    } catch (e: NullPointerException) {
+        0
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

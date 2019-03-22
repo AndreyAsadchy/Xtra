@@ -17,7 +17,7 @@ import java.util.Calendar
 
 @SuppressLint("CheckResult")
 @BindingAdapter("imageUrl", "changes", "circle", requireAll = false)
-fun loadImage(imageView: ImageView, url: String, changes: Boolean, circle: Boolean) {
+fun loadImage(imageView: ImageView, url: String?, changes: Boolean, circle: Boolean) {
     val request = GlideApp.with(imageView.context)
             .load(url)
             .transition(DrawableTransitionOptions.withCrossFade())

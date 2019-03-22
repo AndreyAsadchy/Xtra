@@ -189,15 +189,16 @@ class DownloadService : IntentService(TAG), Injectable {
         stopForegroundInternal(true)
         if (!completed) {
             try {
-                if (!fetch.isClosed && fetch.hasActiveDownloads) { //TODO
+                if (!fetch.isClosed) { //TODO
                     fetch.deleteAll()
+                    fetch.close()
                 }
-            } catch (e: UninitializedPropertyAccessException) {
+            } catch (e: Exception) {
 
             }
             try {
                 offlineRepository.deleteVideo(offlineVideo)
-            } catch (e: UninitializedPropertyAccessException) {
+            } catch (e: Exception) {
 
             }
         }
