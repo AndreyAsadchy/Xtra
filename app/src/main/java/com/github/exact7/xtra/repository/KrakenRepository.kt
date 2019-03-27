@@ -35,14 +35,12 @@ import java.util.concurrent.Executor
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TAG = "KrakenRepository"
+
 @Singleton
 class KrakenRepository @Inject constructor(
         private val api: KrakenApi,
         private val networkExecutor: Executor) : TwitchService {
-
-    companion object {
-        private const val TAG = "KrakenRepository"
-    }
 
     override fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game> {
         val factory = GamesDataSource.Factory(api, networkExecutor, compositeDisposable)
@@ -196,14 +194,22 @@ class KrakenRepository @Inject constructor(
         return api.getUserFollows(userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { it.body()?.string()?.startsWith("{\r\n   \"created_at\"") == true }
+                .map { it.body()?.let { body -> body.string().length > 300 } == true }
     }
 
     override fun followChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean> {
-        TODO()
+        Log.d(TAG, "Following channel $channelId")
+        return api.followChannel(userToken, userId, channelId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { it.body() != null }
     }
 
     override fun unfollowChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean> {
-        TODO()
+        Log.d(TAG, "Unfollowing channel $channelId")
+        return api.unfollowChannel(userToken, userId, channelId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { it.body() != null }
     }
 }

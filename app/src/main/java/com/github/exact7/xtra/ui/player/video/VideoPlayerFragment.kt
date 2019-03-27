@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
+import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
@@ -53,6 +55,16 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         viewModel.setVideo(arguments!!.getParcelable(C.VIDEO)!!)
+        val mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.user.observe(viewLifecycleOwner, Observer {
+            if (it is LoggedIn) {
+                viewModel.setUser(it)
+                follow.visibility = View.VISIBLE
+            }
+        })
+        viewModel.follow.observe(viewLifecycleOwner, Observer {
+            follow.setImageResource(if (it) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)
+        })
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

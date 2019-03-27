@@ -45,20 +45,36 @@
         <item name="android:layout_centerInParent">true</item>
     </style>
 
+    <style name="Player.TopRightPanel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="Player.Minimize" parent="Player.SmallImage">
         <item name="android:src">@drawable/baseline_expand_more_black_48</item>
     </style>
 
     <style name="Player.Settings" parent="Player.SmallImage">
-        <item name="android:layout_marginTop">10dp</item>
         <item name="android:src">@drawable/baseline_settings_black_24</item>
+    </style>
+
+    <style name="Player.Profile" parent="Player.SmallImage">
+        <item name="android:src">@drawable/baseline_person_black_24</item>
     </style>
 
     <style name="Player.Download" parent="Player.SmallImage">
         <item name="android:src">@drawable/ic_file_download_black_24dp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginRight">10dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
+    <style name="Player.Follow" parent="Player.SmallImage">
+        <item name="android:src">@drawable/baseline_favorite_black_24</item>
+        <item name="android:visibility">gone</item>
     </style>
 
     <style name="Player.Text" parent="Outline">
