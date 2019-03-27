@@ -10,8 +10,10 @@ import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
@@ -27,11 +29,10 @@ class VideoPlayerViewModel @Inject constructor(
     val video: LiveData<Video>
         get() = _video
     private var playbackProgress: Long = 0
+    private lateinit var playlist: HlsMediaPlaylist
     val videoInfo: VideoDownloadInfo
-        get() {
-            val playlist = (player.currentManifest as HlsManifest).mediaPlaylist
-            return VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
-        }
+        get() = VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
+
 //    private var chatLogDisposable: Disposable? = null
 //    private var chatLogCursor: String? = null
 
@@ -49,7 +50,7 @@ class VideoPlayerViewModel @Inject constructor(
 
                     })
                     .addTo(compositeDisposable)
-//            chatLogDisposable = repository.loadVideoChatLog(video.id, 0.0)
+//                            chatLogDisposable = repository.loadVideoChatLog(video.id, 0.0)
 //                    .subscribe({
 //                        chatLogCursor = it.next
 //                        val handler = Handler()
@@ -57,8 +58,10 @@ class VideoPlayerViewModel @Inject constructor(
 //                        val runnable = object : Runnable { //TODO maybe there is a kotlin timer function
 //                            override fun run() {
 //                                var message = list.poll()
-//                                while (message != null && message.contentOffsetSeconds <= player.currentPosition / 1000L) {
+//                                while (message != null) {
 //                                    println("${message.displayName} : ${message.message}")
+//                                    handler.sto
+//                                        handler.postDelayed(message.contentOffsetSeconds - player.currentPosition / 1000L)
 //                                    message = list.poll()
 //                                }
 //                                if (list.size > 10) {
@@ -72,6 +75,7 @@ class VideoPlayerViewModel @Inject constructor(
 //                    }, {
 //
 //                    })
+//            })
         }
     }
 
@@ -91,5 +95,12 @@ class VideoPlayerViewModel @Inject constructor(
     override fun onPause() {
         super.onPause()
         playbackProgress = player.currentPosition
+    }
+
+    override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
+        super.onTimelineChanged(timeline, manifest, reason)
+        if (!this::playlist.isInitialized) {
+            playlist = (manifest as HlsManifest).mediaPlaylist
+        }
     }
 }

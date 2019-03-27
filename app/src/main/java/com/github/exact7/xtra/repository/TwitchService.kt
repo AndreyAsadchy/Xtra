@@ -34,4 +34,7 @@ interface TwitchService {
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
     fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
     fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse>
+    fun loadUserFollows(userId: Int, channelId: Int): Single<Boolean>
+    fun followChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean>
+    fun unfollowChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean>
 }

@@ -190,4 +190,20 @@ class KrakenRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
+
+    override fun loadUserFollows(userId: Int, channelId: Int): Single<Boolean> {
+        Log.d(TAG, "Loading if user is following channel $channelId")
+        return api.getUserFollows(userId, channelId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { it.body()?.string()?.startsWith("{\r\n   \"created_at\"") == true }
+    }
+
+    override fun followChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean> {
+        TODO()
+    }
+
+    override fun unfollowChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean> {
+        TODO()
+    }
 }

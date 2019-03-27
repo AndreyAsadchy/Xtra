@@ -14,8 +14,12 @@ import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.VideosResponse
 import io.reactivex.Single
+import okhttp3.ResponseBody
+import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -68,4 +72,13 @@ interface KrakenApi {
 
     @GET("https://api.twitch.tv/v5/videos/{id}/comments")
     fun getVideoChatLogAfter(@Path("id") videoId: String, @Query("cursor") cursor: String, @Query("limit") limit: Int): Single<VideoMessagesResponse>
+
+    @GET("users/{id}/follows/channels/{channelId}")
+    fun getUserFollows(@Path("id") userId: Int, @Path("channelId") channelId: Int): Single<Response<ResponseBody>>
+
+    @PUT("users/{id}/follows/channels/{channelId}")
+    fun followChannel(@Header("Authorization") token: String, @Path("id") userId: Int, @Path("channelId") channelId: Int): Single<Response<ResponseBody>>
+
+    @DELETE("users/{id}/follows/channels/{channelId}")
+    fun unfollowChannel(@Header("Authorization") token: String, @Path("id") userId: Int, @Path("channelId") channelId: Int): Single<Response<ResponseBody>>
 }
