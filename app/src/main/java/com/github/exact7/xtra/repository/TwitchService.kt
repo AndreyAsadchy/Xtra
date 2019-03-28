@@ -30,11 +30,11 @@ interface TwitchService {
     fun loadChannelVideos(channelId: String, broadcastType: BroadcastType, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>
     fun loadUserById(id: Int) : LiveData<User>
     fun loadUserByLogin(login: String) : LiveData<User>
-    fun loadUserEmotes(userId: Int) : LiveData<List<Emote>>
+    fun loadUserEmotes(userId: String) : LiveData<List<Emote>>
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
     fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
     fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse>
-    fun loadUserFollows(userId: Int, channelId: Int): Single<Boolean>
-    fun followChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean>
-    fun unfollowChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean>
+    fun loadUserFollows(userId: String, channelId: String): Single<Boolean>
+    fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
+    fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
 }

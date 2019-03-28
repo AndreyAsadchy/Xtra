@@ -4,10 +4,12 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.ui.common.FollowLiveData
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.google.android.exoplayer2.Timeline
@@ -32,6 +34,9 @@ class VideoPlayerViewModel @Inject constructor(
     private lateinit var playlist: HlsMediaPlaylist
     val videoInfo: VideoDownloadInfo
         get() = VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
+    private val _follow = FollowLiveData(repository, compositeDisposable)
+    val follow: LiveData<Boolean>
+        get() = _follow
 
 //    private var chatLogDisposable: Disposable? = null
 //    private var chatLogCursor: String? = null
@@ -77,6 +82,14 @@ class VideoPlayerViewModel @Inject constructor(
 //                    })
 //            })
         }
+    }
+
+    fun setUser(user: LoggedIn) {
+        _follow.initialize(user, video.value!!.channel.id)
+    }
+
+    fun setFollow(value: Boolean) {
+        _follow.value = value
     }
 
     override fun changeQuality(index: Int) {

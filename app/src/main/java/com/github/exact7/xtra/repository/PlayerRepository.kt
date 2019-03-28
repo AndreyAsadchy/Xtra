@@ -17,7 +17,7 @@ import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TAG = "PlayerRepository"
+private const val TAG = "PlayerRepository"
 
 @Singleton
 class PlayerRepository @Inject constructor(
