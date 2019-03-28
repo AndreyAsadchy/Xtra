@@ -89,4 +89,5 @@
     <string name="rewind">Перемотка назад</string>
     <string name="forward">Перемотка вперед</string>
     <string name="seconds">%s секунд</string>
+    <string name="unfollow">Отписаться от %s?</string>
 </resources>

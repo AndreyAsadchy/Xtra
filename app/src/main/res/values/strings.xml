@@ -89,4 +89,5 @@
     <string name="rewind">Rewind</string>
     <string name="forward">Fast forward</string>
     <string name="seconds">%s seconds</string>
+    <string name="unfollow">Unfollow %s?</string>
 </resources>

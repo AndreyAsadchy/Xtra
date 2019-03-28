@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -63,13 +62,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
                 viewModel.setUser(user)
                 follow.visibility = View.VISIBLE
                 viewModel.follow.observe(viewLifecycleOwner, Observer { following ->
-                    follow.setOnClickListener {
-                        if (following) {
-                            AlertDialog.Builder(activity)
-                                    .setMessage("Unfollow $vid")
-                        }
-                        viewModel.setFollow(!following)
-                    }
+                    follow.setOnClickListener { viewModel.setFollow(!following) }
                     follow.setImageResource(if (following) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)
                 })
             }
