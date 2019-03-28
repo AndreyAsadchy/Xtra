@@ -34,7 +34,7 @@ class VideoPlayerViewModel @Inject constructor(
     private lateinit var playlist: HlsMediaPlaylist
     val videoInfo: VideoDownloadInfo
         get() = VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000)
-    private val _follow = FollowLiveData(repository, compositeDisposable)
+    private val _follow = FollowLiveData(repository)
     val follow: LiveData<Boolean>
         get() = _follow
 

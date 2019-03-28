@@ -73,7 +73,7 @@
     </style>
 
     <style name="Player.Follow" parent="Player.SmallImage">
-        <item name="android:src">@drawable/baseline_favorite_black_24</item>
+        <item name="android:src">@drawable/baseline_favorite_border_black_24</item>
         <item name="android:visibility">gone</item>
     </style>
 

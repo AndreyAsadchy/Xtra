@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
                 if (online) {
-                    viewModel.validate(this@MainActivity)
+                    viewModel.validate(this)
                 }
                 if (flag) {
                     Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_SHORT).show()

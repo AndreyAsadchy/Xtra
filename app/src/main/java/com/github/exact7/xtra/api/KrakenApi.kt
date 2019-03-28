@@ -62,7 +62,7 @@ interface KrakenApi {
     fun getUsers(@Query("username") logins: String): Single<UsersResponse>
 
     @GET("users/{id}/emotes")
-    fun getUserEmotes(@Path("id") userId: Int): Single<UserEmotesResponse>
+    fun getUserEmotes(@Path("id") userId: String): Single<UserEmotesResponse>
 
     @GET("search/channels")
     fun getChannels(@Query("query") query: String, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<ChannelsSearchResponse>
@@ -74,11 +74,11 @@ interface KrakenApi {
     fun getVideoChatLogAfter(@Path("id") videoId: String, @Query("cursor") cursor: String, @Query("limit") limit: Int): Single<VideoMessagesResponse>
 
     @GET("users/{id}/follows/channels/{channelId}")
-    fun getUserFollows(@Path("id") userId: Int, @Path("channelId") channelId: Int): Single<Response<ResponseBody>>
+    fun getUserFollows(@Path("id") userId: String, @Path("channelId") channelId: String): Single<Response<ResponseBody>>
 
     @PUT("users/{id}/follows/channels/{channelId}")
-    fun followChannel(@Header("Authorization") token: String, @Path("id") userId: Int, @Path("channelId") channelId: Int): Single<Response<ResponseBody>>
+    fun followChannel(@Header("Authorization") token: String, @Path("id") userId: String, @Path("channelId") channelId: String): Single<Response<ResponseBody>>
 
     @DELETE("users/{id}/follows/channels/{channelId}")
-    fun unfollowChannel(@Header("Authorization") token: String, @Path("id") userId: Int, @Path("channelId") channelId: Int): Single<Response<ResponseBody>>
+    fun unfollowChannel(@Header("Authorization") token: String, @Path("id") userId: String, @Path("channelId") channelId: String): Single<Response<ResponseBody>>
 }

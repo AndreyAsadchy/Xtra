@@ -27,7 +27,6 @@ import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
 import com.github.exact7.xtra.util.toLiveData
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -154,7 +153,7 @@ class KrakenRepository @Inject constructor(
                 .toLiveData()
     }
 
-    override fun loadUserEmotes(userId: Int): LiveData<List<Emote>> {
+    override fun loadUserEmotes(userId: String): LiveData<List<Emote>> {
         Log.d(TAG, "Loading user emotes")
         return api.getUserEmotes(userId)
                 .subscribeOn(Schedulers.io())
@@ -175,41 +174,46 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse> {
+    override fun loadVideoChatLog(videoId: String, offsetSeconds: Double): LiveData<VideoMessagesResponse> {
         Log.d(TAG, "Loading chat log for video $videoId. Offset in seconds: $offsetSeconds")
         return api.getVideoChatLog(videoId.substring(1), offsetSeconds, 75)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .toLiveData()
     }
 
-    override fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse> {
+    override fun loadVideoChatAfter(videoId: String, cursor: String): LiveData<VideoMessagesResponse> {
         Log.d(TAG, "Loading chat log for video $videoId. Cursor: $cursor")
         return api.getVideoChatLogAfter(videoId.substring(1), cursor, 75)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .toLiveData()
     }
 
-    override fun loadUserFollows(userId: Int, channelId: Int): Single<Boolean> {
+    override fun loadUserFollows(userId: String, channelId: String): LiveData<Boolean> {
         Log.d(TAG, "Loading if user is following channel $channelId")
         return api.getUserFollows(userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.body()?.let { body -> body.string().length > 300 } == true }
+                .toLiveData()
     }
 
-    override fun followChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean> {
+    override fun followChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean> {
         Log.d(TAG, "Following channel $channelId")
-        return api.followChannel(userToken, userId, channelId)
+        return api.followChannel("OAuth $userToken", userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.body() != null }
+                .toLiveData()
     }
 
-    override fun unfollowChannel(userToken: String, userId: Int, channelId: Int): Single<Boolean> {
+    override fun unfollowChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean> {
         Log.d(TAG, "Unfollowing channel $channelId")
-        return api.unfollowChannel(userToken, userId, channelId)
+        return api.unfollowChannel("OAuth $userToken", userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { it.body() != null }
+                .map { it.code() == 204 }
+                .toLiveData()
     }
 }

@@ -14,7 +14,6 @@ import com.github.exact7.xtra.model.kraken.user.User
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 interface TwitchService {
@@ -32,9 +31,9 @@ interface TwitchService {
     fun loadUserByLogin(login: String) : LiveData<User>
     fun loadUserEmotes(userId: String) : LiveData<List<Emote>>
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
-    fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
-    fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse>
-    fun loadUserFollows(userId: String, channelId: String): Single<Boolean>
-    fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
-    fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
+    fun loadVideoChatLog(videoId: String, offsetSeconds: Double): LiveData<VideoMessagesResponse>
+    fun loadVideoChatAfter(videoId: String, cursor: String): LiveData<VideoMessagesResponse>
+    fun loadUserFollows(userId: String, channelId: String): LiveData<Boolean>
+    fun followChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean>
+    fun unfollowChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean>
 }

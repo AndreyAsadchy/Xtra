@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -55,15 +56,23 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         viewModel.setVideo(arguments!!.getParcelable(C.VIDEO)!!)
-        val mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(viewLifecycleOwner, Observer {
-            if (it is LoggedIn) {
-                viewModel.setUser(it)
+        val activity = requireActivity()
+        val mainViewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
+        mainViewModel.user.observe(viewLifecycleOwner, Observer { user ->
+            if (user is LoggedIn) {
+                viewModel.setUser(user)
                 follow.visibility = View.VISIBLE
+                viewModel.follow.observe(viewLifecycleOwner, Observer { following ->
+                    follow.setOnClickListener {
+                        if (following) {
+                            AlertDialog.Builder(activity)
+                                    .setMessage("Unfollow $vid")
+                        }
+                        viewModel.setFollow(!following)
+                    }
+                    follow.setImageResource(if (following) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)
+                })
             }
-        })
-        viewModel.follow.observe(viewLifecycleOwner, Observer {
-            follow.setImageResource(if (it) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)
         })
     }
 
