@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_videos.*
 
 class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
-    private lateinit var viewModel: ChannelVideosViewModel
+    override lateinit var viewModel: ChannelVideosViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelVideosViewModel::class.java)
@@ -22,12 +22,8 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.setChannelId(arguments!!.getParcelable<Channel>(C.CHANNEL)!!.id)
+        viewModel.setChannelId(requireArguments().getParcelable<Channel>(C.CHANNEL)!!.id)
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

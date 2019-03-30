@@ -90,4 +90,8 @@
     <string name="forward">Перемотка вперед</string>
     <string name="seconds">%s секунд</string>
     <string name="unfollow">Отписаться от %s?</string>
+    <string name="now_following">Вы подписались на %s</string>
+    <string name="unfollowed">Вы отписались от %s</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

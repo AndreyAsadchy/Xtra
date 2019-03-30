@@ -5,7 +5,11 @@ import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
+import com.github.exact7.xtra.ui.common.follow.FollowLiveData
+import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
@@ -22,9 +26,11 @@ import java.util.regex.Pattern
 
 const val VIDEO_RENDERER = 0
 const val AUDIO_RENDERER = 1
-const val TAG = "HlsPlayerViewModel"
+private const val TAG = "HlsPlayerViewModel"
 
-abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(context), OnQualityChangeListener {
+abstract class HlsPlayerViewModel(
+        context: Application,
+        private val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()
@@ -34,6 +40,7 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
         get() = helper.selectedQualityIndex
     lateinit var qualities: List<String>
         private set
+    override lateinit var follow: FollowLiveData
 
     override fun changeQuality(index: Int) {
         helper.selectedQualityIndex = index
@@ -126,6 +133,12 @@ abstract class HlsPlayerViewModel(context: Application) : PlayerViewModel(contex
                     }
                 }
             }
+        }
+    }
+
+    override fun setUser(user: LoggedIn) {
+        if (!this::follow.isInitialized) {
+            follow = FollowLiveData(repository, user, channelInfo.first)
         }
     }
 }

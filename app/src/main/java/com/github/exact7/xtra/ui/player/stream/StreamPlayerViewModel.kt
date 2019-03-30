@@ -11,6 +11,7 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
-        private val repository: PlayerRepository) : HlsPlayerViewModel(context) {
+        private val playerRepository: PlayerRepository,
+        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
@@ -38,13 +40,18 @@ class StreamPlayerViewModel @Inject constructor(
     private var subscriberBadges: SubscriberBadgesResponse? = null
     lateinit var user: User
         private set
+    override val channelInfo: Pair<String, String>
+        get() {
+            val s = stream.value!!
+            return s.channel.id to s.channel.name
+        }
 
     fun startStream(stream: Stream, user: User) {
         if (_stream.value != stream) {
             _stream.value = stream
             this.user = user
             val channel = stream.channel
-            repository.fetchStreamPlaylist(channel.name)
+            playerRepository.fetchStreamPlaylist(channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
@@ -53,7 +60,7 @@ class StreamPlayerViewModel @Inject constructor(
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
                     })
                     .addTo(compositeDisposable)
-            repository.fetchSubscriberBadges(channel.id)
+            playerRepository.fetchSubscriberBadges(channel.id)
                     .subscribe({
                         subscriberBadges = it
                         startChat()
@@ -61,14 +68,14 @@ class StreamPlayerViewModel @Inject constructor(
                         startChat()
                     })
                     .addTo(compositeDisposable)
-            repository.fetchBttvEmotes(channel.name)
+            playerRepository.fetchBttvEmotes(channel.name)
                     .subscribe({
                         _bttv.value = it
                     }, {
 
                     })
                     .addTo(compositeDisposable)
-            repository.fetchFfzEmotes(channel.name)
+            playerRepository.fetchFfzEmotes(channel.name)
                     .subscribe({
                         _ffz.value = it
                     }, {

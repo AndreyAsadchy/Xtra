@@ -13,8 +13,7 @@ import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
-import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
-import kotlinx.android.synthetic.main.fragment_games.*
+import kotlinx.android.synthetic.main.fragment_search.*
 
 class GamesFragment : BaseNetworkFragment(), Scrollable {
 
@@ -22,7 +21,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
         fun openGame(game: Game)
     }
 
-    private lateinit var viewModel: GamesViewModel
+    override lateinit var viewModel: GamesViewModel
     private lateinit var binding: FragmentGamesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -36,7 +35,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
         val adapter = GamesAdapter(requireActivity() as MainActivity)
-        recyclerViewLayout.recyclerView.adapter = adapter
+        recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
@@ -44,14 +43,10 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerViewLayout.recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
+        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
     }
 
     override fun scrollToTop() {
-        recyclerViewLayout.recyclerView.scrollToPosition(0)
+        recyclerView.scrollToPosition(0)
     }
 }

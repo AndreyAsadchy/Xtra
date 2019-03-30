@@ -12,8 +12,8 @@ import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.FragmentUtils
+import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
-import kotlinx.android.synthetic.main.fragment_videos.*
 
 abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownloadDialog {
 
@@ -37,11 +37,11 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        FragmentUtils.setRecyclerViewSpanCount(recyclerViewLayout.recyclerView)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerView)
     }
 
     override fun scrollToTop() {
-        recyclerViewLayout.recyclerView.scrollToPosition(0)
+        recyclerView.scrollToPosition(0)
     }
 
     override fun showDownloadDialog() {

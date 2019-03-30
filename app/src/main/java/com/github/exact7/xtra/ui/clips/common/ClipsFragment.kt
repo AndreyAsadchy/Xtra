@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_clips.*
 
 class ClipsFragment : BaseClipsFragment() {
 
-    private lateinit var viewModel: ClipsViewModel
+    override lateinit var viewModel: ClipsViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipsViewModel::class.java)
@@ -25,10 +25,6 @@ class ClipsFragment : BaseClipsFragment() {
         viewModel.loadClips(arguments?.getParcelable<Channel>(C.CHANNEL)?.name, arguments?.getParcelable<Game?>(C.GAME))
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
 
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

@@ -10,8 +10,8 @@ import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.FragmentUtils
+import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
-import kotlinx.android.synthetic.main.fragment_streams.*
 
 abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
 
@@ -34,10 +34,10 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        FragmentUtils.setRecyclerViewSpanCount(recyclerViewLayout.recyclerView)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerView)
     }
 
     override fun scrollToTop() {
-        recyclerViewLayout.recyclerView.scrollToPosition(0)
+        recyclerView.scrollToPosition(0)
     }
 }

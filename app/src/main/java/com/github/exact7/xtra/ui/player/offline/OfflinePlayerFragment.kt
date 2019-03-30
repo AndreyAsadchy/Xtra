@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import kotlinx.android.synthetic.main.fragment_player_offline.*
 
@@ -14,7 +15,9 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    private lateinit var viewModel: OfflinePlayerViewModel
+    override lateinit var viewModel: OfflinePlayerViewModel
+    override val channel: Channel
+        get() = null!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableNetworkCheck = false
@@ -28,7 +31,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(OfflinePlayerViewModel::class.java)
         playerView.player = viewModel.player
-        viewModel.setVideo(arguments!!.getParcelable("video")!!)
+        viewModel.setVideo(requireArguments().getParcelable("video")!!)
     }
 
     override fun onNetworkRestored() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.di.Injectable
@@ -19,6 +20,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         const val CREATED_KEY = "created"
     }
 
+    protected abstract val viewModel: ViewModel
     @Inject protected lateinit var viewModelFactory: ViewModelProvider.Factory
     protected var enableNetworkCheck = true
     private var lastState = false
@@ -27,7 +29,11 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     private var created = false
 
     abstract fun initialize()
-    abstract fun onNetworkRestored()
+    open fun onNetworkRestored() {
+        if (viewModel is PagedListViewModel<*>) {
+            (viewModel as PagedListViewModel<*>).retry()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -248,14 +248,16 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]
 
     private fun convertDpToPixels(dp: Float) = try { //TODO
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt().also { println("VAL $it") }
     } catch (e: NullPointerException) {
+        println("NULL $context")
         0
-    }
+    }.also { println("RETURN $it") }
 
     private fun convertPixelsToDp(pixels: Float) = try {
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, pixels, context.resources.displayMetrics).toInt()
     } catch (e: NullPointerException) {
+        println("NULL $context")
         0
     }
 

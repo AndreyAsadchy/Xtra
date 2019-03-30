@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -7,25 +7,27 @@
             type="com.github.exact7.xtra.ui.pagers.ChannelPagerViewModel" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        <!--<TextView-->
+            <!--android:id="@+id/watchLive"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="25dp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:text="@string/watch_live"-->
+            <!--android:gravity="center"-->
+            <!--app:visible="@{viewModel.stream.stream != null}"/>-->
 
-        <TextView
-            android:id="@+id/watchLive"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textStyle="bold"
-            android:text="@string/watch_live"
-            android:gravity="center"
-            app:visible="@{viewModel.stream.stream != null}"/>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <include
-            android:id="@+id/pagerLayout"
+            layout="@layout/toolbar"/>
+
+        <include
             layout="@layout/fragment_media_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

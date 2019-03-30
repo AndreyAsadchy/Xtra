@@ -7,7 +7,7 @@ import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 
 class FollowedStreamsFragment : BaseStreamsFragment() {
 
-    private lateinit var viewModel: FollowedStreamsViewModel
+    override lateinit var viewModel: FollowedStreamsViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FollowedStreamsViewModel::class.java)
@@ -19,9 +19,5 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
         mainViewModel.user.observe(viewLifecycleOwner, Observer {
             viewModel.setUser(it!!)
         })
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 }

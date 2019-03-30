@@ -9,28 +9,8 @@
         android:layout_height="match_parent"
         android:layout_above="@id/navBarContainer">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways|snap">
-
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:imeOptions="flagNoExtractUi"
-                    app:queryHint="@android:string/search_go"
-                    app:searchHintIcon="@null"/>
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
+        <include
+            layout="@layout/toolbar"/>
 
         <FrameLayout
             android:id="@+id/fragmentContainer"

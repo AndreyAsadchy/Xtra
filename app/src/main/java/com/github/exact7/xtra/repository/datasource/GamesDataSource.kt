@@ -22,7 +22,7 @@ class GamesDataSource(
 
     override fun loadRange(params: PositionalDataSource.LoadRangeParams, callback: PositionalDataSource.LoadRangeCallback<Game>) {
         super.loadRange(params, callback)
-        api.getTopGames(params.loadSize, params.startPosition)
+        api.getTopGames(params.loadSize, params.startPosition + 1)
                 .subscribe({ callback.onSuccess(it.games) }, { callback.onFailure(it, params) })
                 .addTo(compositeDisposable)
     }

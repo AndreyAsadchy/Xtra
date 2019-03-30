@@ -12,9 +12,9 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
@@ -62,6 +62,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
 
@@ -134,7 +135,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
             with(search) {
                 setQuery("", false)
@@ -369,7 +369,22 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())
             fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
             transactionListener = object : FragNavController.TransactionListener {
+
+                private val activityToolbar = findViewById<Toolbar>(R.id.toolbar)
+
+                fun updateToolbarIfNeeded(fragment: Fragment?) {
+                    if (fragment is ChannelPagerFragment) {
+                        activityToolbar.visibility = View.GONE
+//                        setSupportActionBar(fragment.view?.findViewById(R.id.toolbar))
+//                        supportActionBar?.show()
+                    } else {
+                        activityToolbar.visibility = View.VISIBLE
+                        setSupportActionBar(activityToolbar)
+                    }
+                }
+
                 override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
+                    updateToolbarIfNeeded(fragment)
                     if (isSearchOpened) {
                         supportActionBar?.setDisplayHomeAsUpEnabled(true)
                         search.updateLayoutParams { width = Toolbar.LayoutParams.MATCH_PARENT }
@@ -382,6 +397,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
 
                 override fun onTabTransaction(fragment: Fragment?, index: Int) {
+                    updateToolbarIfNeeded(fragment)
                 }
             }
         }

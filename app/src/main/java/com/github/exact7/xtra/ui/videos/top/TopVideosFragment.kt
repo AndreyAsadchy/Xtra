@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_videos.*
 
 class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
-    private lateinit var viewModel: TopVideosViewModel
+    override lateinit var viewModel: TopVideosViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopVideosViewModel::class.java)
@@ -21,10 +21,6 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
             adapter.submitList(it)
         })
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

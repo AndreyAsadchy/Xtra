@@ -7,7 +7,7 @@ import com.github.exact7.xtra.util.C
 
 class StreamsFragment : BaseStreamsFragment() {
 
-    private lateinit var viewModel: StreamsViewModel
+    override lateinit var viewModel: StreamsViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamsViewModel::class.java)
@@ -16,9 +16,5 @@ class StreamsFragment : BaseStreamsFragment() {
             adapter.submitList(it)
         })
         viewModel.loadStreams(arguments?.getParcelable(C.GAME))
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 }

@@ -44,4 +44,8 @@ class SearchViewModel @Inject constructor(
         compositeDisposable.clear()
         super.onCleared()
     }
+
+    fun retry() {
+        _query.value = query
+    }
 }

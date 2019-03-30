@@ -58,6 +58,9 @@
 
     <style name="Player.Minimize" parent="Player.SmallImage">
         <item name="android:src">@drawable/baseline_expand_more_black_48</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginStart">10dp</item>
     </style>
 
     <style name="Player.Settings" parent="Player.SmallImage">
@@ -145,6 +148,21 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginEnd">30dp</item>
         <item name="android:layout_marginRight">30dp</item>
+    </style>
+
+    <style name="Player.Channel" parent="Player.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_toRightOf">@id/minimize</item>
+        <item name="android:layout_toLeftOf">@id/topRightPanel</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginTop">17dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="autoSizeMaxTextSize">18sp</item>
+        <item name="autoSizeMinTextSize">14sp</item>
+        <item name="autoSizeStepGranularity">1sp</item>
+        <item name="autoSizeTextType">uniform</item>
     </style>
 
 </resources>

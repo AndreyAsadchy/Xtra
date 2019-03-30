@@ -8,13 +8,11 @@ import com.github.exact7.xtra.model.chat.TwitchEmote
 import java.util.HashMap
 import kotlin.collections.set
 
+private const val TAG = "MessageListenerImpl"
+
 class MessageListenerImpl(
         private val subscriberBadges: SubscriberBadgesResponse?,
         private val callback: OnChatMessageReceivedListener) : LiveChatThread.OnMessageReceivedListener {
-
-    companion object {
-        private const val TAG = "MessageListenerImpl"
-    }
 
     override fun onMessage(message: String) {
         val parts = message.split(" ".toRegex(), 2)
@@ -40,7 +38,7 @@ class MessageListenerImpl(
 
         var badgesList: MutableList<Badge>? = null
         var subscriberBadge: SubscriberBadge? = null
-        val badges = prefixes["@badges"]
+        val badges = prefixes["badges"]
         if (badges != null) {
             val entries = splitAndMakeMap(badges, ",", "/").entries
             badgesList = ArrayList(entries.size)

@@ -27,7 +27,7 @@ class FollowPagerFragment : MediaPagerFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentFollowBinding.inflate(inflater, container, false).let {
             binding = it
-            it.setLifecycleOwner(viewLifecycleOwner)
+            it.lifecycleOwner = viewLifecycleOwner
             binding.root
         }
     }

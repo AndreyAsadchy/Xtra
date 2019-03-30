@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.kraken.Channel
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_video.*
@@ -26,7 +29,15 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         const val TAG = "ClipPlayer"
     }
 
-    private lateinit var viewModel: ClipPlayerViewModel
+    override lateinit var viewModel: ClipPlayerViewModel
+    private lateinit var clip: Clip
+    override val channel: Channel
+        get() = clip.broadcaster
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        clip = requireArguments().getParcelable(C.CLIP)!!
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_video, container, false)
@@ -51,7 +62,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-        viewModel.setClip(arguments!!.getParcelable("clip")!!)
+        viewModel.setClip(clip)
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

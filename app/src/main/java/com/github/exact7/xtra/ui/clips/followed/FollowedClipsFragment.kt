@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_clips.*
 
 class FollowedClipsFragment : BaseClipsFragment() {
 
-    private lateinit var viewModel: FollowedClipsViewModel
+    override lateinit var viewModel: FollowedClipsViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(FollowedClipsViewModel::class.java)
@@ -24,10 +24,6 @@ class FollowedClipsFragment : BaseClipsFragment() {
             viewModel.setUser(it!!)
         })
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

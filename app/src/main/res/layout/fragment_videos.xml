@@ -20,7 +20,6 @@
             app:liveData="@{sortText}"/>
 
         <include
-            android:id="@+id/recyclerViewLayout"
             layout="@layout/common_recycler_view_layout"
             app:viewModel="@{viewModel}" />
 

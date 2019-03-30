@@ -55,9 +55,9 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         viewModel.videoInfo.observe(viewLifecycleOwner, Observer {
             init(it)
         })
-        arguments!!.getParcelable<VideoDownloadInfo?>(KEY_VIDEO_INFO).let {
+        requireArguments().getParcelable<VideoDownloadInfo?>(KEY_VIDEO_INFO).let {
             if (it == null) {
-                viewModel.setVideo(arguments!!.getParcelable(KEY_VIDEO)!!)
+                viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
             } else {
                 viewModel.setVideoInfo(it)
             }

@@ -13,8 +13,8 @@ import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.FragmentUtils
+import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
-import kotlinx.android.synthetic.main.fragment_clips.*
 
 abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 
@@ -38,11 +38,11 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        FragmentUtils.setRecyclerViewSpanCount(recyclerViewLayout.recyclerView)
+        FragmentUtils.setRecyclerViewSpanCount(recyclerView)
     }
 
     override fun scrollToTop() {
-        recyclerViewLayout.recyclerView.scrollToPosition(0)
+        recyclerView.scrollToPosition(0)
     }
 
     override fun showDownloadDialog() {

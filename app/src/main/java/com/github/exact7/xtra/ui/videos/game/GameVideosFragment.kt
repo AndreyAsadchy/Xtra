@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_videos.*
 
 class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {
 
-    private lateinit var viewModel: GameVideosViewModel
+    override lateinit var viewModel: GameVideosViewModel
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GameVideosViewModel::class.java)
@@ -23,10 +23,6 @@ class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {
         })
         viewModel.setGame(arguments?.getParcelable(C.GAME) as Game)
         sortBar.setOnClickListener { GameVideosSortDialog.newInstance(viewModel.sort, viewModel.period).show(childFragmentManager, null) }
-    }
-
-    override fun onNetworkRestored() {
-        viewModel.retry()
     }
 
     override fun onChange(sort: Sort, sortText: CharSequence, period: Period, periodText: CharSequence) {

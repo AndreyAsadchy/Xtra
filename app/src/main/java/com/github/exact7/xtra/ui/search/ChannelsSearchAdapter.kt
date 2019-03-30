@@ -13,7 +13,7 @@ class ChannelsSearchAdapter(
             override fun areItemsTheSame(oldItem: Channel, newItem: Channel): Boolean =
                     oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Channel, newItem: Channel): Boolean = false
+            override fun areContentsTheSame(oldItem: Channel, newItem: Channel): Boolean = true
         }) {
 
     override val itemId: Int

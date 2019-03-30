@@ -20,7 +20,12 @@
         android:id="@+id/minimize"
         style="@style/Player.Minimize"/>
 
+    <TextView
+        android:id="@+id/channel"
+        style="@style/Player.Channel"/>
+
     <LinearLayout
+        android:id="@+id/topRightPanel"
         style="@style/Player.TopRightPanel">
 
         <ImageButton

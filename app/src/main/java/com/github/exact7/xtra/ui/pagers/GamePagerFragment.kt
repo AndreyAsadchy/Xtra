@@ -9,7 +9,7 @@ class GamePagerFragment : MediaPagerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setAdapter(GamePagerAdapter(requireActivity(), childFragmentManager, arguments!!))
+        setAdapter(GamePagerAdapter(requireActivity(), childFragmentManager, requireArguments()))
     }
 
     companion object {

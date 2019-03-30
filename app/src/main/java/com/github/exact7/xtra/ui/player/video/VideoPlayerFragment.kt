@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.kraken.Channel
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
-import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
@@ -27,7 +27,15 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    private lateinit var viewModel: VideoPlayerViewModel
+    override lateinit var viewModel: VideoPlayerViewModel
+    private lateinit var video: Video
+    override val channel: Channel
+        get() = video.channel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        video = requireArguments().getParcelable(C.VIDEO)!!
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_player_video, container, false)
@@ -54,19 +62,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         })
 //        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
 //        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
-        viewModel.setVideo(arguments!!.getParcelable(C.VIDEO)!!)
-        val activity = requireActivity()
-        val mainViewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            if (user is LoggedIn) {
-                viewModel.setUser(user)
-                follow.visibility = View.VISIBLE
-                viewModel.follow.observe(viewLifecycleOwner, Observer { following ->
-                    follow.setOnClickListener { viewModel.setFollow(!following) }
-                    follow.setImageResource(if (following) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)
-                })
-            }
-        })
+        viewModel.setVideo(video)
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

@@ -90,4 +90,8 @@
     <string name="forward">Fast forward</string>
     <string name="seconds">%s seconds</string>
     <string name="unfollow">Unfollow %s?</string>
+    <string name="now_following">You\'re now following %s</string>
+    <string name="unfollowed">Unfollowed %s</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

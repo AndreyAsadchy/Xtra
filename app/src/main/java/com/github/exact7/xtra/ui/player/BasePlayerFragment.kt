@@ -7,11 +7,19 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.common.follow.FollowFragment
+import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
@@ -20,11 +28,13 @@ import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener {
+abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment {
 
     private lateinit var slidingLayout: SlidingLayout
     protected var isPortrait: Boolean = false
         private set
+    abstract override val viewModel: PlayerViewModel
+    abstract val channel: Channel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +66,16 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 isEnabled = false
                 setColorFilter(Color.GRAY)
             }
+            view.findViewById<ImageButton>(R.id.profile).setOnClickListener {
+                activity.viewChannel(channel)
+                slidingLayout.minimize()
+            }
+            view.findViewById<TextView>(R.id.channel).text = channel.displayName
+            ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
+                if (it is LoggedIn) {
+                    initializeFollow(this, viewModel as FollowViewModel, view.findViewById(R.id.follow), it)
+                }
+            })
         }
         if (this !is StreamPlayerFragment) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(activity)

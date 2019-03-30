@@ -15,6 +15,8 @@ import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.chat.Emote
+import com.github.exact7.xtra.model.kraken.Channel
+import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -34,11 +36,15 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     private lateinit var prefs: SharedPreferences
 
-    private lateinit var viewModel: StreamPlayerViewModel
+    override lateinit var viewModel: StreamPlayerViewModel
+    private lateinit var stream: Stream
+    override val channel: Channel
+        get() = stream.channel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+        stream = requireArguments().getParcelable(C.STREAM)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,7 +96,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             } else {
                 View.GONE
             }
-            viewModel.startStream(arguments!!.getParcelable(C.STREAM)!!, it)
+            viewModel.startStream(stream, it)
         })
 
 
