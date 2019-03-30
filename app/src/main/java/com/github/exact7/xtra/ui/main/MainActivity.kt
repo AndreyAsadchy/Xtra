@@ -142,8 +142,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        initNavigation()
         val user = Prefs.getUser(this)
+        viewModel.setUser(user)
+        initNavigation()
         if (user !is NotLoggedIn) {
             fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
             if (savedInstanceState == null) {
@@ -155,7 +156,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 navBar.selectedItemId = R.id.fragment_top
             }
         }
-        viewModel.setUser(user)
         var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
@@ -279,7 +279,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         intent?.let {
             when (it.getIntExtra("code", -1)) {
                 0 -> navBar.selectedItemId = R.id.fragment_downloads
-                1 -> startOfflineVideo(it.getParcelableExtra("video"))
+                1 -> startOfflineVideo(it.getParcelableExtra(C.VIDEO))
             }
         }
     }
@@ -366,7 +366,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     private fun initNavigation() {
         fragNavController.apply {
-            rootFragments = listOf(GamesFragment(), TopFragment(), FollowFragment(), DownloadsFragment(), MenuFragment())
+            rootFragments = listOf(GamesFragment(), TopFragment(), FollowFragment.newInstance(viewModel.user.value!!), DownloadsFragment(), MenuFragment())
             fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
             transactionListener = object : FragNavController.TransactionListener {
                 fun updateToolbarIfNeeded(fragment: Fragment?) {

@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.databinding.FragmentChannelBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.follow.FollowFragment

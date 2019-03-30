@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                     }
                 }
             }
-            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.clientId}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read")
+            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.getClientId()}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read")
         }
     }
 

@@ -20,6 +20,6 @@ class GameFragment : MediaFragment() {
             1 -> GameVideosFragment()
             else -> ClipsFragment()
         }
-        return fragment.apply { arguments = requireArguments() }
+        return fragment.also { it.arguments = requireArguments() }
     }
 }

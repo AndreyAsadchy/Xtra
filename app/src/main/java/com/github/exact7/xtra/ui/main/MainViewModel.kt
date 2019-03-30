@@ -13,7 +13,6 @@ import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.Event
-import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
@@ -26,19 +25,19 @@ class MainViewModel @Inject constructor(
     val user: LiveData<User>
         get() = _user
 
-    private val _playerMaximized = MutableLiveData<Boolean>()
-    val playerMaximized: LiveData<Boolean>
-        get() = _playerMaximized
-
+    private val playerMaximized = MutableLiveData<Boolean>()
     private val _isNetworkAvailable = MutableLiveData<Event<Boolean>>()
     val isNetworkAvailable: LiveData<Event<Boolean>>
         get() = _isNetworkAvailable
 
     val isPlayerMaximized: Boolean
-        get() = _playerMaximized.value ?: false
+        get() = playerMaximized.value == true
 
     var isPlayerOpened = false
         private set
+    private val _checkedValidity = MutableLiveData<Boolean>()
+    val checkedValidity: LiveData<Boolean>
+        get() = _checkedValidity
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -46,7 +45,7 @@ class MainViewModel @Inject constructor(
         if (_user.value == null) {
             _user.value = user.let {
                 if (it is NotValidated) {
-                    if (!TwitchApiHelper.validated) {
+                    if (checkedValidity.value != true) {
                         it
                     } else {
                         LoggedIn(it)
@@ -59,22 +58,22 @@ class MainViewModel @Inject constructor(
     }
 
     fun onMaximize() {
-        _playerMaximized.value = true
+        playerMaximized.value = true
     }
 
     fun onMinimize() {
-        if (_playerMaximized.value != false)
-            _playerMaximized.value = false
+        if (playerMaximized.value != false)
+            playerMaximized.value = false
     }
 
     fun onPlayerStarted() {
         isPlayerOpened = true
-        _playerMaximized.value = true
+        playerMaximized.value = true
     }
 
     fun onPlayerClosed() {
         isPlayerOpened = false
-        _playerMaximized.value = false
+        playerMaximized.value = false
     }
 
     fun setNetworkAvailable(available: Boolean) {
@@ -85,12 +84,13 @@ class MainViewModel @Inject constructor(
 
     fun validate(activity: Activity) {
         val user = user.value
-        if (user is NotValidated && !TwitchApiHelper.validated) {
+        if (user is NotValidated && checkedValidity.value != true) {
             authRepository.validate(user.token)
                     .subscribe({
-                        TwitchApiHelper.validated = true
+                        _checkedValidity.value = true
                         _user.value = LoggedIn(user)
                     }, {
+                        _checkedValidity.value = true
                         with(activity) {
                             Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
                             startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2) //TODO if player don't start <- dont need this TODO anymore?
@@ -98,5 +98,10 @@ class MainViewModel @Inject constructor(
                     })
                     .addTo(compositeDisposable)
         }
+    }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
     }
 }

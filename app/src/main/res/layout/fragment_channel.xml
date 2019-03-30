@@ -21,7 +21,6 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/"
             layout="@layout/toolbar"/>
 
         <include

@@ -189,7 +189,7 @@ class XtraModule {
     fun providesOkHttpClientWithClientId(@Named("okHttpDefault") okHttpClient: OkHttpClient): OkHttpClient {
         return okHttpClient.newBuilder().addInterceptor { chain ->
             val request = chain.request().newBuilder()
-                    .addHeader("Client-ID", TwitchApiHelper.clientId)
+                    .addHeader("Client-ID", TwitchApiHelper.getClientId())
                     .build()
             chain.proceed(request)
         }.build()

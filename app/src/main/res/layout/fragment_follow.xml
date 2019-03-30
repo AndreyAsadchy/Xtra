@@ -16,21 +16,19 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/pagerLayout"
-            layout="@layout/fragment_media_pager"
+            layout="@layout/fragment_media"
             app:visible="@{viewModel.user instanceof LoggedIn}"/>
 
         <include
-            android:id="@+id/notLoggedInLayout"
             layout="@layout/view_follow_not_logged"
-            app:visible="@{viewModel.user instanceof NotLoggedIn}"
+            app:visible="@{viewModel.user instanceof NotLoggedIn || (viewModel.checkedValidity &amp;&amp; viewModel.user instanceof NotValidated)}"
             />
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:visible="@{viewModel.user instanceof NotValidated}"/>
+            app:visible="@{viewModel.user instanceof NotValidated &amp;&amp; !viewModel.checkedValidity}"/>
 
     </FrameLayout>
 

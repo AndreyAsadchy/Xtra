@@ -13,10 +13,7 @@ import java.util.Locale
 
 object TwitchApiHelper {
 
-    val clientId: String
-        external get
-
-    var validated = false
+    external fun getClientId(): String
 
     init {
         System.loadLibrary("keys")

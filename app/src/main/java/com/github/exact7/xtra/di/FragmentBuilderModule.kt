@@ -7,7 +7,6 @@ import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.pagers.ChannelPagerFragment
-import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
@@ -66,9 +65,6 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeDownloadsFragment(): DownloadsFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeFollowPagerFragment(): FollowPagerFragment
 
     @ContributesAndroidInjector
     abstract fun contributeVideoDownloadDialog(): VideoDownloadDialog

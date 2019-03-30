@@ -23,7 +23,7 @@ abstract class MediaPagerFragment : Fragment(), ItemAwarePagerFragment, Scrollab
     protected fun setAdapter(adapter: ItemAwareFragmentPagerAdapter) {
         this.adapter = adapter
         viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = adapter.count
+//        viewPager.offscreenPageLimit = adapter.count
     }
 
     override fun scrollToTop() {

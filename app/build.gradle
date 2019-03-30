@@ -74,7 +74,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation 'androidx.multidex:multidex:2.0.0'
 
     implementation 'androidx.preference:preference:1.1.0-alpha03'
     testImplementation 'junit:junit:4.13-beta-1'
@@ -98,10 +97,10 @@ dependencies {
 
     //Misc
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
-    implementation 'com.ncapdevi:frag-nav:3.0.0-RC3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
+    implementation 'com.ncapdevi:frag-nav:3.2.0'
     implementation 'com.iheartradio.m3u8:open-m3u8:0.2.6'
 
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
@@ -121,7 +120,7 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
 
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
