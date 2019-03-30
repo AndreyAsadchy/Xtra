@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.github.exact7.xtra.databinding.FragmentChannelBinding
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
@@ -38,6 +38,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
 //        viewModel.stream.observe(viewLifecycleOwner, Observer {
 //            it.stream?.let { s -> watchLive.setOnClickListener { activity.startStream(s) } }
 //        })
+        activity.setSupportActionBar(view.findViewById(R.id.toolbar))
         setAdapter(ChannelPagerAdapter(activity, childFragmentManager, requireArguments()))
 //        ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
 //            if (it is LoggedIn) {

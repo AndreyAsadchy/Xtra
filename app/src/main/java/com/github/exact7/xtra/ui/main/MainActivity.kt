@@ -41,10 +41,10 @@ import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.menu.MenuFragment
 import com.github.exact7.xtra.ui.pagers.ChannelPagerFragment
-import com.github.exact7.xtra.ui.pagers.FollowPagerFragment
-import com.github.exact7.xtra.ui.pagers.GamePagerFragment
+import com.github.exact7.xtra.ui.pagers.FollowFragment
+import com.github.exact7.xtra.ui.pagers.GameFragment
 import com.github.exact7.xtra.ui.pagers.MediaPagerFragment
-import com.github.exact7.xtra.ui.pagers.TopPagerFragment
+import com.github.exact7.xtra.ui.pagers.TopFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
@@ -287,7 +287,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //Navigation listeners
 
     override fun openGame(game: Game) {
-        fragNavController.pushFragment(GamePagerFragment.newInstance(game))
+        fragNavController.pushFragment(GameFragment.newInstance(game))
     }
 
     override fun startStream(stream: Stream) {
@@ -366,20 +366,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     private fun initNavigation() {
         fragNavController.apply {
-            rootFragments = listOf(GamesFragment(), TopPagerFragment(), FollowPagerFragment(), DownloadsFragment(), MenuFragment())
+            rootFragments = listOf(GamesFragment(), TopFragment(), FollowFragment(), DownloadsFragment(), MenuFragment())
             fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
             transactionListener = object : FragNavController.TransactionListener {
-
-                private val activityToolbar = findViewById<Toolbar>(R.id.toolbar)
-
                 fun updateToolbarIfNeeded(fragment: Fragment?) {
                     if (fragment is ChannelPagerFragment) {
-                        activityToolbar.visibility = View.GONE
-//                        setSupportActionBar(fragment.view?.findViewById(R.id.toolbar))
-//                        supportActionBar?.show()
+                        toolbar.visibility = View.GONE
                     } else {
-                        activityToolbar.visibility = View.VISIBLE
-                        setSupportActionBar(activityToolbar)
+                        setSupportActionBar(toolbar)
+                        toolbar.visibility = View.VISIBLE
                     }
                 }
 

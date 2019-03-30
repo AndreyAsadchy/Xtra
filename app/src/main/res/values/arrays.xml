@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="spinnerMedia">
+        <item>@string/live</item>
+        <item>@string/videos</item>
+        <item>@string/clips</item>
+    </string-array>
+
     <string-array name="portraitColumnCount">
         <item>1</item>
         <item>2</item>

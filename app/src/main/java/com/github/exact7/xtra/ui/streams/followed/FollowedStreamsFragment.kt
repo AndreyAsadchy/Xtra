@@ -2,8 +2,8 @@ package com.github.exact7.xtra.ui.streams.followed
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
+import com.github.exact7.xtra.util.C
 
 class FollowedStreamsFragment : BaseStreamsFragment() {
 
@@ -15,9 +15,6 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-        val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(viewLifecycleOwner, Observer {
-            viewModel.setUser(it!!)
-        })
+        viewModel.setUser(requireArguments().getParcelable(C.USER)!!)
     }
 }

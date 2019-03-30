@@ -1,8 +1,12 @@
 package com.github.exact7.xtra.model
 
-sealed class User(val id: String,
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+open class User(val id: String,
                   val name: String,
-                  val token: String)
+                  val token: String) : Parcelable
 
 class LoggedIn(id: String, name: String, token: String) : User(id, name, token) {
     constructor(user: NotValidated) : this(user.id, user.name, user.token) //TODO inherit not validated?

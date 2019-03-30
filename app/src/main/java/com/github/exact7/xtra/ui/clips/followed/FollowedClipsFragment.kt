@@ -4,7 +4,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
-import com.github.exact7.xtra.ui.main.MainViewModel
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_clips.*
 
@@ -19,10 +19,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
         })
-        val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-        mainViewModel.user.observe(viewLifecycleOwner, Observer {
-            viewModel.setUser(it!!)
-        })
+        viewModel.setUser(requireArguments().getParcelable(C.USER)!!)
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
