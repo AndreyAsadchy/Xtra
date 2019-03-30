@@ -9,17 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.Prefs
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
+        setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
@@ -49,7 +49,7 @@ class SettingsActivity : AppCompatActivity() {
                     if (heightPixels > widthPixels) heightPixels else widthPixels
                 }
                 val chatWidth = (deviceLandscapeWidth * (newValue as Int / 100f)).toInt()
-                PreferenceManager.getDefaultSharedPreferences(context).edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
+                Prefs.get(activity).edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 activity.setResult(Activity.RESULT_OK, Intent().putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true
             }

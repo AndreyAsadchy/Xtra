@@ -3,33 +3,38 @@ package com.github.exact7.xtra.util
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.User
 
 object Prefs {
 
-    fun userPrefs(context: Context) = get(context, C.USER_PREFS)
-    fun authPrefs(context: Context) = get(context, C.AUTH_PREFS)
+    fun get(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun getUser(context: Context): User {
-        return with(authPrefs(context)) {
+        return with(get(context)) {
             val id = getString(C.USER_ID, null)
             if (id != null) {
-                NotValidated(id, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!)
+                val name = getString(C.USERNAME, null)!!
+                val token = getString(C.TOKEN, null)!!
+                if (TwitchApiHelper.validated) {
+                    LoggedIn(id, name, token)
+                } else {
+                    NotValidated(id, name, token)
+                }
             } else {
                 NotLoggedIn()
             }
         }
     }
 
-    fun saveUser(context: Context, id: String, name: String, token: String) {
-        authPrefs(context).edit {
-            putString(C.USER_ID, id)
-            putString(C.USERNAME, name)
-            putString(C.TOKEN, token)
+    fun setUser(context: Context, user: User?) {
+        get(context).edit {
+            putString(C.USER_ID, user?.id)
+            putString(C.USERNAME, user?.name)
+            putString(C.TOKEN, user?.token)
         }
     }
-
-    private fun get(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 }

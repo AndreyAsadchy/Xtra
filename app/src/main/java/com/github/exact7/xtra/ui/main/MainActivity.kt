@@ -14,18 +14,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -33,6 +31,7 @@ import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.OfflineVideo
+import com.github.exact7.xtra.ui.FollowValidationFragment
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.common.OnChannelSelectedListener
 import com.github.exact7.xtra.ui.common.Scrollable
@@ -41,7 +40,6 @@ import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.menu.MenuFragment
 import com.github.exact7.xtra.ui.pagers.ChannelPagerFragment
-import com.github.exact7.xtra.ui.pagers.FollowFragment
 import com.github.exact7.xtra.ui.pagers.GameFragment
 import com.github.exact7.xtra.ui.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.pagers.TopFragment
@@ -62,7 +60,6 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
 
@@ -93,7 +90,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val prefs = Prefs.get(this)
         if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
             setTheme(if (prefs.getBoolean(C.THEME, true).also { isDarkTheme = it }) R.style.DarkTheme else R.style.LightTheme)
         } else {
@@ -112,6 +109,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     .setTitle(getString(R.string.choose_theme))
                     .show()
         }
+
+        setContentView(R.layout.activity_main)
+
         if (prefs.getBoolean("showRateAppDialog", true) && savedInstanceState == null) {
             val launchCount = prefs.getInt("launchCount", 0) + 1
             val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
@@ -134,12 +134,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 prefs.edit { putInt("launchCount", launchCount) }
             }
         }
-        setContentView(R.layout.activity_main)
-        toolbar.setNavigationOnClickListener {
-            with(search) {
-                setQuery("", false)
-                isIconified = true
+        try { //TODO remove after updated to 1.2.0
+            with(getSharedPreferences("authPrefs", Context.MODE_PRIVATE).all) {
+                if (isNotEmpty()) {
+                    Prefs.setUser(this@MainActivity, LoggedIn(get(C.USER_ID) as String, get(C.USERNAME) as String, get(C.TOKEN) as String))
+                    clear()
+                }
             }
+        } catch (e: Exception) {
+
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         val user = Prefs.getUser(this)
@@ -170,20 +173,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         })
         if (isSearchOpened) {
-            search.updateLayoutParams { width = Toolbar.LayoutParams.MATCH_PARENT }
             hideNavigationBar()
         }
-        search.setOnCloseListener {
-            if (isSearchOpened) {
-                fragNavController.popFragment()
-            }
-            false
-        }
-        search.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus && !isSearchOpened) {
-                fragNavController.pushFragment(SearchFragment())
-            }
-        }
+//        search.setOnCloseListener {
+//            if (isSearchOpened) {
+//                fragNavController.popFragment()
+//            }
+//            false
+//        }
+//        search.setOnQueryTextFocusChangeListener { _, hasFocus ->
+//            if (hasFocus && !isSearchOpened) {
+//                fragNavController.pushFragment(SearchFragment())
+//            }
+//        }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         if (savedInstanceState == null) {
             handleIntent(intent)
@@ -217,7 +219,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         fun restartActivity() {
             finish()
             overridePendingTransition(0, 0)
@@ -308,16 +309,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun viewChannel(channel: Channel) {
-        if (fragNavController.currentFrag !is ChannelPagerFragment) {
-            val fragment = ChannelPagerFragment.newInstance(channel)
-            if (isSearchOpened) {
-                with(search) {
-                    setQuery("", false)
-                    isIconified = true
-                }
-            }
-            fragNavController.pushFragment(fragment)
-        }
+        fragNavController.pushFragment(ChannelPagerFragment.newInstance(channel))
     }
 
 //SlidingLayout.Listener
@@ -366,33 +358,18 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     private fun initNavigation() {
         fragNavController.apply {
-            rootFragments = listOf(GamesFragment(), TopFragment(), FollowFragment.newInstance(viewModel.user.value!!), DownloadsFragment(), MenuFragment())
-            fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
+            rootFragments = listOf(GamesFragment(), TopFragment(), FollowValidationFragment(), DownloadsFragment(), MenuFragment())
+            fragmentHideStrategy = FragNavController.HIDE
             transactionListener = object : FragNavController.TransactionListener {
-                fun updateToolbarIfNeeded(fragment: Fragment?) {
-                    if (fragment is ChannelPagerFragment) {
-                        toolbar.visibility = View.GONE
-                    } else {
-                        setSupportActionBar(toolbar)
-                        toolbar.visibility = View.VISIBLE
-                    }
-                }
-
                 override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
-                    updateToolbarIfNeeded(fragment)
                     if (isSearchOpened) {
-                        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                        search.updateLayoutParams { width = Toolbar.LayoutParams.MATCH_PARENT }
                         hideNavigationBar()
                     } else {
-                        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                        search.updateLayoutParams { width = Toolbar.LayoutParams.WRAP_CONTENT }
                         showNavigationBar()
                     }
                 }
 
                 override fun onTabTransaction(fragment: Fragment?, index: Int) {
-                    updateToolbarIfNeeded(fragment)
                 }
             }
         }

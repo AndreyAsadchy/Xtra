@@ -9,7 +9,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.ui.SettingsActivity
@@ -17,6 +16,7 @@ import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.Prefs
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.fragment_player_stream.view.*
@@ -43,7 +43,7 @@ class MenuFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val activity = requireActivity() as MainActivity
-        val darkTheme = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(C.THEME, true)
+        val darkTheme = Prefs.get(activity).getBoolean(C.THEME, true)
         if (activity.isDarkTheme != darkTheme) {
             activity.apply {
                 setTheme(if (darkTheme) R.style.DarkTheme else R.style.LightTheme)

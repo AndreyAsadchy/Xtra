@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -14,7 +13,6 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.toolbar.*
 
 class SearchFragment : BaseNetworkFragment(), Injectable {
 
@@ -39,26 +37,26 @@ class SearchFragment : BaseNetworkFragment(), Injectable {
         val activity = requireActivity() as MainActivity
         val adapter = ChannelsSearchAdapter(activity)
         recyclerView.adapter = adapter
-        val search = activity.search
+//        val search = activity.search
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(if (viewModel.query.isNotEmpty()) it else null)
         })
-        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                if (adapter.currentList?.isEmpty() != false) {
-                    viewModel.query = query
-                }
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                if (viewModel.query != newText) {
-                    adapter.submitList(null)
-                    viewModel.query = newText
-                }
-                return false
-            }
-        })
+//        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                if (adapter.currentList?.isEmpty() != false) {
+//                    viewModel.query = query
+//                }
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String): Boolean {
+//                if (viewModel.query != newText) {
+//                    adapter.submitList(null)
+//                    viewModel.query = newText
+//                }
+//                return false
+//            }
+//        })
     }
 
     override fun onNetworkRestored() {

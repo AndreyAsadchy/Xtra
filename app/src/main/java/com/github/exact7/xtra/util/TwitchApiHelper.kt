@@ -15,6 +15,8 @@ object TwitchApiHelper {
 
     external fun getClientId(): String
 
+    var validated = false
+
     init {
         System.loadLibrary("keys")
     }

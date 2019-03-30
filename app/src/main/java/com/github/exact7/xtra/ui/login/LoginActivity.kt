@@ -11,10 +11,10 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.Prefs
@@ -33,11 +33,10 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
+        setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         setContentView(R.layout.activity_login)
-        val prefs = Prefs.authPrefs(this)
-        val token = prefs.getString(C.TOKEN, null)
-        if (token == null) {
+        val user = Prefs.getUser(this)
+        if (user is NotLoggedIn) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
                 welcomeContainer.visibility = View.VISIBLE
                 loginText.setOnClickListener { initWebView() }
@@ -48,8 +47,8 @@ class LoginActivity : AppCompatActivity(), Injectable {
         } else {
             initWebView()
             if (!intent.getBooleanExtra("expired", false)) {
-                repository.revoke(token)
-                        .subscribe { _ -> prefs.edit { clear() } }
+                repository.revoke(user.token)
+                        .subscribe { _ -> Prefs.setUser(this, null) }
                         .addTo(compositeDisposable)
             }
         }
@@ -78,8 +77,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
-                                    TwitchApiHelper.validated = true
-                                    Prefs.saveUser(this@LoginActivity, response.userId, response.username, token)
+                                    Prefs.setUser(this@LoginActivity, LoggedIn(response.userId, response.username, token))
                                     setResult(RESULT_OK)
                                     finish()
                                 }

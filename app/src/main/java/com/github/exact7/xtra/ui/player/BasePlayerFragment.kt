@@ -10,7 +10,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -24,6 +23,7 @@ import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.LifecycleListener
+import com.github.exact7.xtra.util.Prefs
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.player_stream.*
 
@@ -78,7 +78,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             })
         }
         if (this !is StreamPlayerFragment) {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+            val prefs = Prefs.get(activity)
             val rewind = prefs.getString("playerRewind", "5000")!!.toInt()
             val forward = prefs.getString("playerForward", "5000")!!.toInt()
             val rewindImage = when (rewind) {

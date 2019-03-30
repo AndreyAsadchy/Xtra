@@ -12,7 +12,7 @@
 
     <RelativeLayout
         android:layout_height="match_parent"
-        android:layout_width="match_parent" >
+        android:layout_width="match_parent">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -33,7 +33,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/fragment_downloads_list_item"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        android:nestedScrollingEnabled="false"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

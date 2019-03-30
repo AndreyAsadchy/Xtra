@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -12,6 +11,7 @@ import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
+import com.github.exact7.xtra.util.Prefs
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -32,7 +32,7 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         AppInjector.init(this)
         RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.unknown_error), Toast.LENGTH_LONG).show() }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val prefs = Prefs.get(this)
         val all = prefs.all
         if (all["chatWidth"] is String) { //TODO remove after all devices updated to 1.1.9
             prefs.edit {

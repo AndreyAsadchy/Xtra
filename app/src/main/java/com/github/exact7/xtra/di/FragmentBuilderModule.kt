@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.di
 
+import com.github.exact7.xtra.ui.FollowValidationFragment
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
@@ -77,4 +78,7 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeChannelPagerFragment(): ChannelPagerFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeFollowValidationFragment(): FollowValidationFragment
 }

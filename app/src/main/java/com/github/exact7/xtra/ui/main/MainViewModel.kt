@@ -13,13 +13,14 @@ import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.Event
+import com.github.exact7.xtra.util.Prefs
+import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-        private val authRepository: AuthRepository
-): ViewModel() {
+        private val authRepository: AuthRepository): ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -83,8 +84,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun validate(activity: Activity) {
+        if (TwitchApiHelper.validated) {
+            _checkedValidity.value = true
+            return
+        }
         val user = user.value
-        if (user is NotValidated && checkedValidity.value != true) {
+        if (user is NotValidated) {
+            TwitchApiHelper.validated = true
             authRepository.validate(user.token)
                     .subscribe({
                         _checkedValidity.value = true
@@ -92,8 +98,11 @@ class MainViewModel @Inject constructor(
                     }, {
                         _checkedValidity.value = true
                         with(activity) {
+                            Prefs.setUser(activity, null)
                             Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                            startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2) //TODO if player don't start <- dont need this TODO anymore?
+                            if (!isPlayerMaximized) {
+                                startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2)
+                            }
                         }
                     })
                     .addTo(compositeDisposable)

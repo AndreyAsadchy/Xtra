@@ -11,7 +11,6 @@ import androidx.core.content.edit
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.chat.Emote
@@ -22,6 +21,7 @@ import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
+import com.github.exact7.xtra.util.Prefs
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
@@ -54,7 +54,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!isPortrait) {
-            PreferenceManager.getDefaultSharedPreferences(context).getInt(C.LANDSCAPE_CHAT_WIDTH, -1).let {
+            Prefs.get(requireContext()).getInt(C.LANDSCAPE_CHAT_WIDTH, -1).let {
                 if (it > -1) {
                     chatContainer.updateLayoutParams { width = it }
                 }

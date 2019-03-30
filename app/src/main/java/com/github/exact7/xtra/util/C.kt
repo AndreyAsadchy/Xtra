@@ -2,7 +2,6 @@ package com.github.exact7.xtra.util
 
 object C {
     const val USER_PREFS = "userPrefs"
-    const val AUTH_PREFS = "authPrefs"
     const val STREAM = "stream"
     const val VIDEO = "video"
     const val CLIP = "clip"

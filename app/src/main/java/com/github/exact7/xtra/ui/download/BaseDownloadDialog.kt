@@ -8,11 +8,11 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
-import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.Prefs
 import kotlinx.android.synthetic.main.storage_selection.view.*
 
 abstract class BaseDownloadDialog : DialogFragment(), Injectable {
@@ -33,7 +33,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
         }
 
     fun init(context: Context) {
-        prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs = Prefs.get(context)
         storage = DownloadUtils.getAvailableStorage(context)
         val storage = DownloadUtils.getAvailableStorage(context)
         storageSelectionContainer = view!!.findViewById(R.id.storageSelectionContainer)

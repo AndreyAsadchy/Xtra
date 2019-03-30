@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +39,7 @@ object FragmentUtils {
     fun setRecyclerViewSpanCount(recyclerView: RecyclerView) {
         if (recyclerView.layoutManager is GridLayoutManager) {
             val context = recyclerView.context
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val prefs = Prefs.get(context)
             val count = if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 prefs.getString(C.PORTRAIT_COLUMN_COUNT, "1")!!.toInt()
             } else {
