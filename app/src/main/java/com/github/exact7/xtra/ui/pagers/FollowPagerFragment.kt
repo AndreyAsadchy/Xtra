@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.pagers
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentFollowBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
-import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
-import kotlinx.android.synthetic.main.fragment_follow.*
-import kotlinx.android.synthetic.main.view_follow_not_logged.view.*
 import javax.inject.Inject
 
 class FollowPagerFragment : MediaPagerFragment(), Injectable {
@@ -42,7 +38,7 @@ class FollowPagerFragment : MediaPagerFragment(), Injectable {
                 isLoggedIn = true
                 setAdapter(FollowPagerAdapter(activity, childFragmentManager))
             } else {
-                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
+//                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
             }
         })
     }

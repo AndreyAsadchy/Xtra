@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +13,9 @@ import com.github.exact7.xtra.databinding.FragmentFollowBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.ui.common.Scrollable
-import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.pagers.FollowFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
-import kotlinx.android.synthetic.main.fragment_follow.*
-import kotlinx.android.synthetic.main.view_follow_not_logged.view.*
 import javax.inject.Inject
 
 class FollowValidationFragment : Fragment(), Injectable, Scrollable {
@@ -47,7 +43,7 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
                 childFragmentManager.beginTransaction().replace(R.id.followFragmentContainer, FollowFragment()).commit()
                 isLoggedIn = true
             } else {
-                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
+//                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
             }
         })
     }

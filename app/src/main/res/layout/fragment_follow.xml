@@ -16,53 +16,40 @@
         android:layout_height="match_parent">
 
 
-<!--            <include-->
-<!--                layout="@layout/toolbar">-->
-
         <com.google.android.material.appbar.AppBarLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways"
                 app:title="@string/app_name">
 
                 <ImageView
-                    android:id="@+id/search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_search_black_24"
-                    android:tint="@color/nav_bar_dark"
-                    android:background="?android:selectableItemBackground"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginRight="20dp" />
+                    style="@style/Search" />
 
             </androidx.appcompat.widget.Toolbar>
 
+            <Spinner
+                style="@style/MediaSpinner"/>
+
         </com.google.android.material.appbar.AppBarLayout>
 
-
-<androidx.core.widget.NestedScrollView
-
-        android:id="@+id/followFragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:visible="@{viewModel.user instanceof LoggedIn}"
-
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
+        <FrameLayout
+            android:id="@+id/followFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:visible="@{viewModel.user instanceof LoggedIn}"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <include
             android:id="@+id/notLoggedInLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             layout="@layout/view_follow_not_logged"
             app:visible="@{viewModel.user instanceof NotLoggedIn || (viewModel.user instanceof NotValidated &amp;&amp; viewModel.checkedValidity == true)}"
-            />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <ProgressBar
             android:layout_width="wrap_content"

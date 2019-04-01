@@ -33,8 +33,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/fragment_downloads_list_item"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        android:nestedScrollingEnabled="false"/>
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
