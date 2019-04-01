@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="video"
+            type="com.github.exact7.xtra.model.kraken.video.Video"/>
+        <variable
+            name="videoListener"
+            type="com.github.exact7.xtra.ui.videos.BaseVideosFragment.OnVideoSelectedListener"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:onClick="@{() -> videoListener.startVideo(video)}"
+        style="@style/Card"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                app:imageUrl="@{video.preview.large}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                style="@style/Thumbnail"/>
+
+            <TextView
+                android:id="@+id/date"
+                app:date="@{video.createdAt}"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginBottom="5dp"
+                android:layout_alignEnd="@id/thumbnail"
+                android:layout_alignRight="@id/thumbnail"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                tools:text="April 20, 2017"
+                style="@style/ThumbnailItem"/>
+
+            <TextView
+                android:id="@+id/views"
+                android:text="@{@plurals/views(video.views, video.views)}"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                tools:text="133769 views"
+                style="@style/ThumbnailItem"/>
+
+            <TextView
+                android:id="@+id/duration"
+                app:duration="@{video.length}"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                tools:text="13:37"
+                style="@style/VideoDuration"
+                />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{video.title}"
+                android:layout_below="@id/thumbnail"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toStartOf="@+id/options"
+                android:layout_toLeftOf="@+id/options"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="@sample/videos.json/vods/title" />
+
+            <TextView
+                android:id="@+id/gameName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{video.game}"
+                android:textColor="?attr/secondaryTextColor"
+                android:layout_below="@id/title"
+                android:layout_marginTop="1dp"
+                android:paddingBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                tools:text="@sample/videos.json/vods/game"
+                />
+
+            <ImageButton
+                android:id="@+id/options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                style="?android:attr/actionOverflowButtonStyle"
+                />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

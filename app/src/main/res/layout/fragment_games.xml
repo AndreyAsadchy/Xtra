@@ -6,14 +6,34 @@
         <variable name="viewModel" type="com.github.exact7.xtra.ui.games.GamesViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            layout="@layout/common_recycler_view_layout"
-            app:viewModel="@{(com.github.exact7.xtra.ui.common.PagedListViewModel)viewModel}" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="@string/app_name"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
+
+                <ImageView
+                    style="@style/Search"/>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/common_recycler_view_layout"
+            app:viewModel="@{(com.github.exact7.xtra.ui.common.PagedListViewModel)viewModel}"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

@@ -15,29 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:title="@string/app_name">
-
-                <ImageView
-                    style="@style/Search" />
-
-            </androidx.appcompat.widget.Toolbar>
-
-            <Spinner
-                style="@style/MediaSpinner"/>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
         <FrameLayout
-            android:id="@+id/followFragmentContainer"
+            android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:visible="@{viewModel.user instanceof LoggedIn}"

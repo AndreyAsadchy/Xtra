@@ -352,6 +352,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         navBarContainer.visibility = View.VISIBLE
     }
 
+    fun popFragment() {
+        fragNavController.popFragment()
+    }
+
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return dispatchingFragmentInjector
     }

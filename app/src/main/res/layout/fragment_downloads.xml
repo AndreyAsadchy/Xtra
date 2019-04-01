@@ -11,10 +11,22 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/app_name"
+            app:layout_scrollFlags="scroll|enterAlways|snap">
+
+            <ImageView
+                style="@style/Search"/>
+        </androidx.appcompat.widget.Toolbar>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/fragment_downloads_list_item"
             />

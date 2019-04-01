@@ -1,9 +1,11 @@
 package com.github.exact7.xtra.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,9 +15,12 @@ import com.github.exact7.xtra.databinding.FragmentFollowBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
-import com.github.exact7.xtra.ui.pagers.FollowFragment
+import com.github.exact7.xtra.ui.pagers.FollowMediaFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
+import kotlinx.android.synthetic.main.fragment_follow.*
+import kotlinx.android.synthetic.main.view_follow_not_logged.view.*
 import javax.inject.Inject
 
 class FollowValidationFragment : Fragment(), Injectable, Scrollable {
@@ -40,10 +45,11 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
         binding.viewModel = viewModel
         viewModel.user.observe(viewLifecycleOwner, Observer {
             if (it is LoggedIn) {
-                childFragmentManager.beginTransaction().replace(R.id.followFragmentContainer, FollowFragment()).commit()
+                childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, FollowMediaFragment()).commit()
                 isLoggedIn = true
+                fragmentContainer.post { fragmentContainer.findViewById<Toolbar>(R.id.toolbar).title = activity.getString(R.string.app_name) }
             } else {
-//                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
+                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
             }
         })
     }

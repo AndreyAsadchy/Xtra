@@ -144,15 +144,14 @@
     </style>
 
     <style name="Search">
-        <item name="android:id">@id/search</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/baseline_search_black_24</item>
-        <item name="android:tint">@color/nav_bar_dark</item>
+        <item name="android:tint">?attr/textColor</item>
         <item name="android:background">?android:selectableItemBackground</item>
         <item name="android:layout_gravity">end</item>
-        <item name="android:layout_marginEnd">20dp</item>
-        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
     </style>
 
     <style name="MediaSpinner">

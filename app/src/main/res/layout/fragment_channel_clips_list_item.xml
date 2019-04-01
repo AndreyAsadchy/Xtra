@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="clip"
+            type="com.github.exact7.xtra.model.kraken.clip.Clip"/>
+        <variable
+            name="clipListener"
+            type="com.github.exact7.xtra.ui.clips.BaseClipsFragment.OnClipSelectedListener"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:onClick="@{() -> clipListener.startClip(clip)}"
+        style="@style/Card"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                app:imageUrl="@{clip.thumbnails.medium}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                style="@style/Thumbnail"
+                />
+
+            <TextView
+                android:id="@+id/date"
+                app:date="@{clip.createdAt}"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginBottom="5dp"
+                android:layout_alignEnd="@id/thumbnail"
+                android:layout_alignRight="@id/thumbnail"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                tools:text="April 20, 2017"
+                style="@style/ThumbnailItem"/>
+
+            <TextView
+                android:id="@+id/views"
+                android:text="@{@plurals/views(clip.views, clip.views)}"
+                android:layout_alignBottom="@id/thumbnail"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                tools:text="133769 views"
+                style="@style/ThumbnailItem"/>
+
+            <TextView
+                android:id="@+id/duration"
+                app:duration="@{(long)clip.duration}"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                tools:text="13:37"
+                style="@style/VideoDuration"
+                />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{clip.title}"
+                android:layout_marginTop="7dp"
+                android:layout_below="@id/thumbnail"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                tools:text="@sample/clips.json/clips/title"
+                style="@style/VideoTitle"
+                />
+
+            <TextView
+                android:id="@+id/gameName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{clip.game}"
+                android:textColor="?attr/secondaryTextColor"
+                android:paddingBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@id/title"
+                tools:text="@sample/clips.json/clips/game"
+                />
+
+            <ImageButton
+                android:id="@+id/options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thumbnail"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                style="?android:attr/actionOverflowButtonStyle"
+                />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

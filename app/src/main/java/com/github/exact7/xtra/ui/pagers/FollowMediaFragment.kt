@@ -5,7 +5,7 @@ import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
 import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 
-class FollowFragment : MediaFragment() {
+class FollowMediaFragment : MediaFragment() {
 
     override fun onSpinnerItemSelected(position: Int): Fragment {
         return when (position) {
