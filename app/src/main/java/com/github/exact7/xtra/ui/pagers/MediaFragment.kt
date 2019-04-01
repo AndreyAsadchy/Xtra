@@ -22,7 +22,7 @@ abstract class MediaFragment : Fragment(), Scrollable {
         super.onViewCreated(view, savedInstanceState)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, onSpinnerItemSelected(0)).commit()
+                childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, onSpinnerItemSelected(position)).commit()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}

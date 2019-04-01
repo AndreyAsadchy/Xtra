@@ -7,6 +7,16 @@
     android:gravity="center_horizontal"
     >
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/app_name">
+
+        <ImageView
+            style="@style/Search"/>
+    </androidx.appcompat.widget.Toolbar>
+
     <TextView
         android:layout_width="400dp"
         android:layout_height="100dp"

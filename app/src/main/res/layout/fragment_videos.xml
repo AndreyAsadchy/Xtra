@@ -20,16 +20,20 @@
 
             <include
                 android:id="@+id/sortBar"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
                 layout="@layout/sort_bar"
                 app:liveData="@{sortText}"
                 app:layout_scrollFlags="scroll"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
         <include
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             layout="@layout/common_recycler_view_layout"
-            app:viewModel="@{viewModel}"/>
+            app:viewModel="@{viewModel}"
+            />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
