@@ -1,16 +1,17 @@
-package com.github.exact7.xtra.ui.videos
+package com.github.exact7.xtra.ui.videos.channel
 
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.FragmentVideosListItemBinding
+import com.github.exact7.xtra.databinding.FragmentChannelVideosListItemBinding
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.ui.videos.TempBaseAdapter
 import com.github.exact7.xtra.util.DownloadUtils
 
-class VideosAdapter(
-        private val mainActivity: MainActivity) : TempBaseAdapter<Video, FragmentVideosListItemBinding>(
+class ChannelVideosAdapter(
+        private val mainActivity: MainActivity) : TempBaseAdapter<Video, FragmentChannelVideosListItemBinding>(
         object : DiffUtil.ItemCallback<Video>() {
             override fun areItemsTheSame(oldItem: Video, newItem: Video): Boolean =
                     oldItem.id == newItem.id
@@ -21,12 +22,14 @@ class VideosAdapter(
                             oldItem.title == newItem.title
         }) {
 
-    override val itemId: Int = R.layout.fragment_videos_list_item
+    //    lateinit var lastSelectedItem: Clip
+//        private set
 
-    override fun bind(binding: FragmentVideosListItemBinding, item: Video?) {
+    override val itemId: Int = R.layout.fragment_channel_videos_list_item
+
+    override fun bind(binding: FragmentChannelVideosListItemBinding, item: Video?) {
         binding.video = item
         binding.videoListener = mainActivity
-        binding.channelListener = mainActivity
         val activity = binding.root.context as MainActivity
         val showDialog = {
             lastSelectedItem = item!!

@@ -2,31 +2,88 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.github.exact7.xtra.model.LoggedIn"/>
         <variable
             name="viewModel"
             type="com.github.exact7.xtra.ui.pagers.ChannelPagerViewModel" />
     </data>
 
-        <!--<TextView-->
-            <!--android:id="@+id/watchLive"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="25dp"-->
-            <!--android:textStyle="bold"-->
-            <!--android:text="@string/watch_live"-->
-            <!--android:gravity="center"-->
-            <!--app:visible="@{viewModel.stream.stream != null}"/>-->
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
 
-<!--        <include-->
-<!--            layout="@layout/toolbar"/>-->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:title="@{viewModel.channel.displayName}"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleGravity="bottom|center_horizontal"
+                app:expandedTitleMarginBottom="10dp">
+
+                <ImageButton
+                    android:id="@+id/follow"
+                    android:src="@drawable/baseline_favorite_border_black_24"
+                    android:layout_gravity="end"
+                    app:layout_collapseMode="parallax"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="45dp"
+                    android:layout_marginEnd="45dp"
+                    android:visibility="gone"
+                    style="@style/Player.SmallImage"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/toolbarContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    app:layout_collapseMode="parallax" >
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        app:imageUrl="@{viewModel.channel.logo}"
+                        app:circle="@{true}" />
+
+                    <TextView
+                        android:id="@+id/watchLive"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
+                        android:text="@string/watch_live"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:layout_marginTop="40dp"
+                        app:visible="@{viewModel.stream.stream != null}"/>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin" >
+
+                    <ImageView
+                        android:id="@+id/search"
+                        style="@style/Search"/>
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <include
-            layout="@layout/fragment_media_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            layout="@layout/fragment_media_pager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

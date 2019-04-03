@@ -22,6 +22,7 @@
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
                 <ImageView
+                    android:id="@+id/search"
                     style="@style/Search"/>
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>

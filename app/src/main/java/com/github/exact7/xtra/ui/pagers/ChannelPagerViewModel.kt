@@ -17,8 +17,10 @@ class ChannelPagerViewModel @Inject constructor(
         private val repository: TwitchService) : ViewModel(), FollowViewModel {
 
     private val compositeDisposable = CompositeDisposable()
-    private val channel = MutableLiveData<Channel>()
-    private val _stream = Transformations.switchMap(channel) {
+    private val _channel = MutableLiveData<Channel>()
+    val channel: LiveData<Channel>
+        get() = _channel
+    private val _stream = Transformations.switchMap(_channel) {
         repository.loadStream(it.id, compositeDisposable)
     }
     val stream: LiveData<StreamWrapper>
@@ -26,7 +28,7 @@ class ChannelPagerViewModel @Inject constructor(
 
     override val channelInfo: Pair<String, String>
         get() {
-            val c = channel.value!!
+            val c = _channel.value!!
             return c.id to c.name
         }
 
@@ -39,8 +41,8 @@ class ChannelPagerViewModel @Inject constructor(
     }
 
     fun loadStream(channel: Channel) {
-        if (this.channel.value != channel) {
-            this.channel.value = channel
+        if (this._channel.value != channel) {
+            this._channel.value = channel
         }
     }
 }

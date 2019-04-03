@@ -94,4 +94,5 @@
     <string name="unfollowed">Вы отписались от %s</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="search">Поиск</string>
 </resources>

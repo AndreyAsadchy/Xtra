@@ -42,7 +42,8 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(DownloadsViewModel::class.java)
         binding.viewModel = viewModel
-        val adapter = DownloadsAdapter(requireActivity() as MainActivity, viewModel::delete)
+        val activity = requireActivity() as MainActivity
+        val adapter = DownloadsAdapter(activity, viewModel::delete)
         viewModel.list.observe(this, Observer(adapter::submitList))
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -51,6 +52,7 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
                 }
             }
         })
+        search.setOnClickListener { activity.openSearch() }
         recyclerView.adapter = adapter
     }
 

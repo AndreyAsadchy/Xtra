@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.Scrollable
+import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.fragment_media.*
 
@@ -27,8 +28,7 @@ abstract class MediaFragment : Fragment(), Scrollable {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        search.setOnClickListener { TODO() }
-
+        search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
     }
 
     abstract fun onSpinnerItemSelected(position: Int): Fragment

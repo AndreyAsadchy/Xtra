@@ -175,17 +175,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (isSearchOpened) {
             hideNavigationBar()
         }
-//        search.setOnCloseListener {
-//            if (isSearchOpened) {
-//                fragNavController.popFragment()
-//            }
-//            false
-//        }
-//        search.setOnQueryTextFocusChangeListener { _, hasFocus ->
-//            if (hasFocus && !isSearchOpened) {
-//                fragNavController.pushFragment(SearchFragment())
-//            }
-//        }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         if (savedInstanceState == null) {
             handleIntent(intent)
@@ -354,6 +343,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     fun popFragment() {
         fragNavController.popFragment()
+    }
+
+    fun openSearch() {
+        fragNavController.pushFragment(SearchFragment())
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {

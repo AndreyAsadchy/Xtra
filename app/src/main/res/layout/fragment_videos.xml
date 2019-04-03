@@ -9,31 +9,20 @@
             type="androidx.lifecycle.LiveData&lt;CharSequence>"/>
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <include
-                android:id="@+id/sortBar"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                layout="@layout/sort_bar"
-                app:liveData="@{sortText}"
-                app:layout_scrollFlags="scroll"/>
-
-        </com.google.android.material.appbar.AppBarLayout>
+        <include
+            android:id="@+id/sortBar"
+            layout="@layout/sort_bar"
+            app:liveData="@{sortText}"/>
 
         <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
             layout="@layout/common_recycler_view_layout"
             app:viewModel="@{viewModel}"
             />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 </layout>

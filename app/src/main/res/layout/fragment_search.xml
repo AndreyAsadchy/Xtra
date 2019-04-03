@@ -10,10 +10,32 @@
             type="com.github.exact7.xtra.ui.search.SearchViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?android:colorBackground">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.SearchView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textAutoComplete"
+                    app:queryBackground="@android:color/transparent"
+                    app:queryHint="@string/search"
+                    app:searchIcon="@null"
+                    app:iconifiedByDefault="false"
+                    />
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -21,6 +43,7 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/fragment_search_channels_list_item"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 
         <ProgressBar
@@ -29,6 +52,6 @@
             app:visible="@{viewModel.loadingState == LoadingState.LOADING}"
             android:layout_gravity="center"/>
 
-    </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

@@ -29,7 +29,7 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val activity = requireActivity()
+        val activity = requireActivity() as MainActivity
         val viewModel = ViewModelProviders.of(activity).get(MainViewModel::class.java)
         viewModel.user.observe(this, Observer { loginText.text = if (it !is NotLoggedIn) getString(R.string.log_out) else getString(R.string.log_in) })
         settings.setOnClickListener {
@@ -38,6 +38,7 @@ class MenuFragment : Fragment() {
         login.setOnClickListener {
             activity.startActivityForResult(Intent(activity, LoginActivity::class.java), if (viewModel.user.value is NotLoggedIn) 1 else 2)
         }
+        search.setOnClickListener { activity.openSearch() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

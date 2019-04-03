@@ -1,17 +1,17 @@
-package com.github.exact7.xtra.ui.clips
+package com.github.exact7.xtra.ui.clips.common
 
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.FragmentClipsListItemBinding
+import com.github.exact7.xtra.databinding.FragmentChannelClipsListItemBinding
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.videos.TempBaseAdapter
 import com.github.exact7.xtra.util.DownloadUtils
 
-class ClipsAdapter(
-        private val mainActivity: MainActivity) : TempBaseAdapter<Clip, FragmentClipsListItemBinding>(
+class ChannelClipsAdapter(
+        private val mainActivity: MainActivity) : TempBaseAdapter<Clip, FragmentChannelClipsListItemBinding>(
         object : DiffUtil.ItemCallback<Clip>() {
             override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
                     oldItem.slug == newItem.slug
@@ -25,12 +25,11 @@ class ClipsAdapter(
 //    lateinit var lastSelectedItem: Clip
 //        private set
 
-    override val itemId: Int = R.layout.fragment_clips_list_item
+    override val itemId: Int = R.layout.fragment_channel_clips_list_item
 
-    override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
+    override fun bind(binding: FragmentChannelClipsListItemBinding, item: Clip?) {
         binding.clip = item
         binding.clipListener = mainActivity
-        binding.channelListener = mainActivity
         val showDialog = {
             lastSelectedItem = item!!
             if (DownloadUtils.hasInternalStoragePermission(mainActivity)) {

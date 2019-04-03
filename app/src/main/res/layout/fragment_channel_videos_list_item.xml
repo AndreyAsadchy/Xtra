@@ -70,11 +70,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"
-                android:ellipsize="end"
-                android:maxLines="2"
-                tools:text="@sample/videos.json/vods/title" />
+                tools:text="@sample/videos.json/vods/title"
+                style="@style/VideoTitle"/>
 
             <TextView
                 android:id="@+id/gameName"

@@ -11,6 +11,8 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.ui.videos.channel.ChannelVideosAdapter
+import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.common_recycler_view_layout.view.*
@@ -21,7 +23,7 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
         fun startVideo(video: Video)
     }
 
-    protected lateinit var adapter: VideosAdapter
+    protected lateinit var adapter: TempBaseAdapter<Video, *>
         private set
     protected lateinit var binding: FragmentVideosBinding
         private set
@@ -30,7 +32,13 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
         return FragmentVideosBinding.inflate(inflater, container, false).let {
             binding = it
             it.lifecycleOwner = viewLifecycleOwner
-            it.root.recyclerView.adapter = VideosAdapter(requireActivity() as MainActivity).also { a -> adapter = a }
+            val activity = requireActivity() as MainActivity
+            adapter = if (this !is ChannelVideosFragment) {
+                VideosAdapter(activity)
+            } else {
+                ChannelVideosAdapter(activity)
+            }
+            it.root.recyclerView.adapter = adapter
             it.root
         }
     }
@@ -45,6 +53,6 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
     }
 
     override fun showDownloadDialog() {
-        VideoDownloadDialog.newInstance(video = adapter.lastSelectedItem).show(childFragmentManager, null)
+        VideoDownloadDialog.newInstance(video = adapter.lastSelectedItem!!).show(childFragmentManager, null)
     }
 }

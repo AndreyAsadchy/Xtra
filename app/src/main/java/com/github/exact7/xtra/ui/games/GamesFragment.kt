@@ -13,6 +13,7 @@ import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
+import kotlinx.android.synthetic.main.fragment_games.*
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class GamesFragment : BaseNetworkFragment(), Scrollable {
@@ -34,11 +35,13 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
-        val adapter = GamesAdapter(requireActivity() as MainActivity)
+        val activity = requireActivity() as MainActivity
+        val adapter = GamesAdapter(activity)
         recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
+        search.setOnClickListener { activity.openSearch() }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
