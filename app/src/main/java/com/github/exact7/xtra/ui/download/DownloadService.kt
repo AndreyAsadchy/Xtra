@@ -35,7 +35,6 @@ import com.tonyodev.fetch2.AbstractFetchListener
 import com.tonyodev.fetch2.Download
 import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.Request
-import com.tonyodev.fetch2core.DownloadBlock
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -43,12 +42,14 @@ import java.io.FileOutputStream
 import java.net.URL
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
+import kotlin.math.min
 
 const val TAG = "DownloadService"
 const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
 const val KEY_REQUEST = "request"
 const val KEY_TYPE = "type"
 const val KEY_WIFI = "wifi"
+private const val ENQUEUE_SIZE = 20
 
 class DownloadService : IntentService(TAG), Injectable {
 
@@ -110,14 +111,17 @@ class DownloadService : IntentService(TAG), Injectable {
                 fetch.addListener(object : AbstractFetchListener() {
                     var activeDownloadsCount = 0
 
-                    override fun onStarted(download: Download, downloadBlocks: List<DownloadBlock>, totalBlocks: Int) {
+                    override fun onAdded(download: Download) {
                         activeDownloadsCount++
                     }
 
                     override fun onCompleted(download: Download) {
-                        Log.d(TAG, "$progress / $maxProgress")
                         if (++progress < maxProgress) {
+                            Log.d(TAG, "$progress / $maxProgress")
                             updateProgress(maxProgress, progress)
+                            if (--activeDownloadsCount == 0) {
+                                enqueueNext()
+                            }
                         } else {
                             onDownloadCompleted()
                             countDownLatch.countDown()
@@ -148,10 +152,7 @@ class DownloadService : IntentService(TAG), Injectable {
                         }
                         .subscribe({ p ->
                             playlist = p
-                            val requests = p.tracks.subList(segmentFrom, segmentTo).map {
-                                Request(url + it.uri, path + it.uri).apply { groupId = offlineVideoId }
-                            }
-                            fetch.enqueue(requests)
+                            enqueueNext()
                         }, {
 
                         })
@@ -183,6 +184,19 @@ class DownloadService : IntentService(TAG), Injectable {
         startForeground(request.id, notificationBuilder.build())
         countDownLatch.await()
         fetch.close()
+    }
+
+    private fun enqueueNext() {
+        val requests = mutableListOf<Request>()
+        with(request as VideoRequest) {
+            val tracks = playlist.tracks
+            val current = segmentFrom + progress
+            for (i in current until min(current + ENQUEUE_SIZE, segmentTo)) {
+                val track = tracks[i]
+                requests.add(Request(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
+            }
+        }
+        fetch.enqueue(requests)
     }
 
     override fun onDestroy() {

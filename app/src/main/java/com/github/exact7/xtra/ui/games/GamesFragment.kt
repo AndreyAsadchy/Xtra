@@ -13,8 +13,8 @@ import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
+import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.fragment_games.*
-import kotlinx.android.synthetic.main.fragment_search.*
 
 class GamesFragment : BaseNetworkFragment(), Scrollable {
 
