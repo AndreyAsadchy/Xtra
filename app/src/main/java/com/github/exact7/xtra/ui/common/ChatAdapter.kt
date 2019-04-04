@@ -30,6 +30,7 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
 import com.github.exact7.xtra.util.ViewUtils.convertDpToPixels
 import com.github.exact7.xtra.util.ViewUtils.convertPixelsToDp
+import java.util.LinkedList
 import java.util.Random
 import kotlin.collections.set
 
@@ -38,7 +39,7 @@ const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
 class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
-    lateinit var messages: MutableList<ChatMessage>
+    lateinit var messages: LinkedList<ChatMessage>
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
     private val userColors = HashMap<String, Int>()
@@ -186,22 +187,18 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
         images.forEach { (url, start, end, isEmote, isPng, width) ->
             if (isPng) {
-                GlideApp.with(context)
+                GlideApp.with(holder.itemView.context)
                         .load(url)
                         .into(object : SimpleTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                                try {
-                                    val size = if (isEmote) emoteSize else badgeSize
-                                    resource.setBounds(0, 0, if (width == null) size else convertPixelsToDp(context, width * 1.65f), size)
-                                    builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
-                                } catch (e: Exception) {
-                                    //TODO find error
-                                }
+                                val size = if (isEmote) emoteSize else badgeSize
+                                resource.setBounds(0, 0, if (width == null) size else convertPixelsToDp(context, width * 1.65f), size)
+                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 holder.bind(builder)
                             }
                         })
             } else {
-                GlideApp.with(context)
+                GlideApp.with(holder.itemView.context)
                         .asGif()
                         .load(url)
                         .into(object : SimpleTarget<GifDrawable>() {
@@ -226,11 +223,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                                     this.callback = callback
                                     start()
                                 }
-                                try {
-                                    builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
-                                } catch (e: Exception) {
-                                    //TODO find error
-                                }
+                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 holder.bind(builder)
                             }
                         })

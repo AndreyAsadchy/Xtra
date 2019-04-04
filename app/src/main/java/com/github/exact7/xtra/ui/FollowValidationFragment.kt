@@ -44,9 +44,9 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
         val viewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.user.observe(viewLifecycleOwner, Observer {
-            if (it is LoggedIn) {
+            isLoggedIn = it is LoggedIn
+            if (isLoggedIn) {
                 childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, FollowMediaFragment()).commit()
-                isLoggedIn = true
                 fragmentContainer.post { fragmentContainer.findViewById<Toolbar>(R.id.toolbar).title = activity.getString(R.string.app_name) }
             } else {
                 notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }

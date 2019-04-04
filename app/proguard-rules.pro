@@ -119,5 +119,5 @@
 }
 
 -keepclasseswithmembernames class * {
-    native <fields>;
+    native <methods>;
 }

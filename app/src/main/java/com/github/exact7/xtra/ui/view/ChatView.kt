@@ -12,6 +12,7 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import kotlinx.android.synthetic.main.view_chat.view.*
+import java.util.LinkedList
 
 const val MAX_MESSAGE_COUNT = 125
 
@@ -73,7 +74,7 @@ class ChatView : RelativeLayout {
     fun notifyAdapter() {
         adapter.notifyItemInserted(getLastItemPosition())
         if (adapter.itemCount > MAX_MESSAGE_COUNT) {
-            adapter.messages.removeAt(0)
+            adapter.messages.removeFirst()
             adapter.notifyItemRemoved(0)
         }
         if (!isChatTouched && !isButtonShowing()) {
@@ -81,7 +82,7 @@ class ChatView : RelativeLayout {
         }
     }
 
-    fun submitList(list: MutableList<ChatMessage>) {
+    fun submitList(list: LinkedList<ChatMessage>) {
         adapter.messages = list
     }
 

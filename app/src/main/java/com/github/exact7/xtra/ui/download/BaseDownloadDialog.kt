@@ -35,8 +35,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
     fun init(context: Context) {
         prefs = Prefs.get(context)
         storage = DownloadUtils.getAvailableStorage(context)
-        val storage = DownloadUtils.getAvailableStorage(context)
-        storageSelectionContainer = view!!.findViewById(R.id.storageSelectionContainer)
+        storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
         if (DownloadUtils.isExternalStorageAvailable) {
             if (storage.size > 1) {
                 storageSelectionContainer.visibility = View.VISIBLE
