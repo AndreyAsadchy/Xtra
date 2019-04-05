@@ -43,7 +43,7 @@ class ClipPlayerViewModel @Inject constructor(
     override val channelInfo: Pair<String, String>
         get() {
             val c = clip.value!!
-            return c.broadcaster.id to c.broadcaster.name
+            return c.broadcaster.id to c.broadcaster.displayName
         }
     override lateinit var follow: FollowLiveData
 

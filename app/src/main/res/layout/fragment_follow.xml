@@ -27,14 +27,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             layout="@layout/view_follow_not_logged"
-            app:visible="@{viewModel.user instanceof NotLoggedIn || (viewModel.user instanceof NotValidated &amp;&amp; viewModel.checkedValidity == true)}"
+            app:visible="@{viewModel.user instanceof NotLoggedIn || (viewModel.user instanceof NotValidated &amp;&amp; safeUnbox(viewModel.checkedValidity))}"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:visible="@{viewModel.user instanceof NotValidated &amp;&amp; viewModel.checkedValidity != true}"/>
+            app:visible="@{viewModel.user instanceof NotValidated &amp;&amp; !safeUnbox(viewModel.checkedValidity)}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

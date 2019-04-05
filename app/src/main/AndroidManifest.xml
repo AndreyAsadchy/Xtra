@@ -40,6 +40,10 @@
             android:screenOrientation="portrait" />
         <service android:name=".ui.download.DownloadService" />
         <receiver android:name=".ui.download.NotificationActionReceiver" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c369e4413442968597c972a9b9116e4b458b163a" />
     </application>
 
 </manifest>

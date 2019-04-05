@@ -12,6 +12,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.ClipRequest
@@ -49,7 +50,7 @@ const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
 const val KEY_REQUEST = "request"
 const val KEY_TYPE = "type"
 const val KEY_WIFI = "wifi"
-private const val ENQUEUE_SIZE = 20
+private const val ENQUEUE_SIZE = 15
 
 class DownloadService : IntentService(TAG), Injectable {
 
@@ -208,12 +209,12 @@ class DownloadService : IntentService(TAG), Injectable {
                     fetch.close()
                 }
             } catch (e: Exception) {
-
+                Crashlytics.logException(e)
             }
             try {
                 offlineRepository.deleteVideo(offlineVideo)
             } catch (e: Exception) {
-
+                Crashlytics.logException(e)
             }
         }
         super.onDestroy()

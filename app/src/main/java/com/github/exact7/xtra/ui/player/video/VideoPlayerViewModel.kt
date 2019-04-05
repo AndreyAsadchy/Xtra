@@ -35,7 +35,7 @@ class VideoPlayerViewModel @Inject constructor(
     override val channelInfo: Pair<String, String>
         get()  {
             val v = video.value!!
-            return v.channel.id to v.channel.name
+            return v.channel.id to v.channel.displayName
         }
 //    private var chatLogDisposable: Disposable? = null
 //    private var chatLogCursor: String? = null

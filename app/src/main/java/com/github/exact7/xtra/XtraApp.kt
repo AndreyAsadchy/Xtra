@@ -4,9 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.C
@@ -17,6 +17,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
+import io.fabric.sdk.android.Fabric
 import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
 
@@ -30,7 +31,8 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
     override fun onCreate() {
         super.onCreate()
         AppInjector.init(this)
-        RxJavaPlugins.setErrorHandler { Toast.makeText(applicationContext, getString(R.string.unknown_error), Toast.LENGTH_LONG).show() }
+        Fabric.with(this, Crashlytics())
+        RxJavaPlugins.setErrorHandler { Crashlytics.logException(it) }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
         val prefs = Prefs.get(this)
         val all = prefs.all

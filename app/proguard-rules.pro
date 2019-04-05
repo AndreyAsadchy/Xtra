@@ -19,6 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file title.
 #-renamesourcefileattribute SourceFile
+-dontwarn com.github.exact7.xtra.ui.**
+-dontwarn com.iheartradio.m3u8.**
+
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.ImageHeaderParser$** {

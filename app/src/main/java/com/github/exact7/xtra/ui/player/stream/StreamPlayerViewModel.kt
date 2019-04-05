@@ -43,7 +43,7 @@ class StreamPlayerViewModel @Inject constructor(
     override val channelInfo: Pair<String, String>
         get() {
             val s = stream.value!!
-            return s.channel.id to s.channel.name
+            return s.channel.id to s.channel.displayName
         }
 
     fun startStream(stream: Stream, user: User) {

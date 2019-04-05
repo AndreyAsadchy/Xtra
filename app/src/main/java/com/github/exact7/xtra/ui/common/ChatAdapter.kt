@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
@@ -28,8 +29,8 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
-import com.github.exact7.xtra.util.ViewUtils.convertDpToPixels
-import com.github.exact7.xtra.util.ViewUtils.convertPixelsToDp
+import com.github.exact7.xtra.util.DisplayUtils.convertDpToPixels
+import com.github.exact7.xtra.util.DisplayUtils.getDisplayDensity
 import java.util.LinkedList
 import java.util.Random
 import kotlin.collections.set
@@ -54,8 +55,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val chatMessage = messages[position]
         val builder = SpannableStringBuilder()
+        val chatMessage = messages[position]
         val badgesUrl = "https://static-cdn.jtvnw.net/chat-badges/"
         val images = ArrayList<Image>()
         var index = 0
@@ -103,83 +104,87 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
         val userNameLength = userName.length
         builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
-        chatMessage.emotes?.let {
-            val copy = it.map { e -> e.copy() }
-            index += userNameLength + 2
-            for (e in copy) {
-                val begin = index + e.begin
-                builder.replace(begin, index + e.end + 1, ".") //TODO emojis break this
-                builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), begin, begin + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-                val length = e.end - e.begin
-                for (e1 in copy) {
-                    if (e.begin < e1.begin) {
-                        e1.begin -= length
-                        e1.end -= length
+        try {
+            chatMessage.emotes?.let {
+                val copy = it.map { e -> e.copy() }
+                index += userNameLength + 2
+                for (e in copy) {
+                    val begin = index + e.begin
+                    builder.replace(begin, index + e.end + 1, ".") //TODO emojis break this
+                    builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), begin, begin + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val length = e.end - e.begin
+                    for (e1 in copy) {
+                        if (e.begin < e1.begin) {
+                            e1.begin -= length
+                            e1.end -= length
+                        }
                     }
+                    e.end -= length
                 }
-                e.end -= length
+                copy.forEach { (id, begin, end) -> images.add(Image("$EMOTES_URL$id/2.0", index + begin, index + end + 1, true)) }
             }
-            copy.forEach { (id, begin, end) -> images.add(Image("$EMOTES_URL$id/2.0", index + begin, index + end + 1, true)) }
-        }
-        val split = builder.split(" ")
-        var builderIndex = 0
-        for (i in 0 until split.size) {
-            val value = split[i]
-            val length = value.length
-            val endIndex = builderIndex + length
-            val emote = emotes[value]
-            builderIndex += if (emote == null) {
-                if (Patterns.WEB_URL.matcher(value).matches()) {
-                    var url = value
-                    if (!value.startsWith("http")) {
-                        url = "https://$url"
+            val split = builder.split(" ")
+            var builderIndex = 0
+            for (i in 0 until split.size) {
+                val value = split[i]
+                val length = value.length
+                val endIndex = builderIndex + length
+                val emote = emotes[value]
+                builderIndex += if (emote == null) {
+                    if (Patterns.WEB_URL.matcher(value).matches()) {
+                        var url = value
+                        if (!value.startsWith("http")) {
+                            url = "https://$url"
+                        }
+                        builder.setSpan(URLSpan(url), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    } else {
+                        if (value.startsWith('@')) {
+                            builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        userNickname?.let {
+                            if (value.contains(it, true) && !value.endsWith(':')) {
+                                builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                            }
+                        }
                     }
-                    builder.setSpan(URLSpan(url), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    length + 1
                 } else {
-                    if (value.startsWith('@')) {
-                        builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-                    userNickname?.let {
-                        if (value.contains(it, true) && !value.endsWith(':')) {
-                            builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    chatMessage.emotes?.let {
+                        for (j in it.size - 1 downTo 0) {
+                            val e = images[j]
+                            if (e.start > builderIndex) {
+                                e.start -= length
+                                e.end -= length
+                            } else {
+                                break
+                            }
                         }
                     }
-                }
-                length + 1
-            } else {
-                chatMessage.emotes?.let {
-                    for (j in it.size - 1 downTo 0) {
-                        val e = images[j]
-                        if (e.start > builderIndex) {
-                            e.start -= length
-                            e.end -= length
-                        } else {
-                            break
+                    builder.replace(builderIndex, endIndex, ".")
+                    builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val url: String
+                    val isPng: Boolean
+                    val width: Float?
+                    if (emote is BttvEmote) {
+                        url = "$BTTV_URL${emote.id}/2x"
+                        isPng = emote.isPng
+                        width = null
+                    } else { //FFZ
+                        (emote as FfzEmote).also {
+                            url = it.url
+                            isPng = true
+                            width = it.width
                         }
                     }
+                    images.add(Image(url, builderIndex, builderIndex + 1, true, isPng, width))
+                    if (i != split.lastIndex) 2 else 1
                 }
-                builder.replace(builderIndex, endIndex, ".")
-                builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-                val url: String
-                val isPng: Boolean
-                val width: Float?
-                if (emote is BttvEmote) {
-                    url = "$BTTV_URL${emote.id}/2x"
-                    isPng = emote.isPng
-                    width = null
-                } else { //FFZ
-                    (emote as FfzEmote).also {
-                        url = it.url
-                        isPng = true
-                        width = it.width
-                    }
-                }
-                images.add(Image(url, builderIndex, builderIndex + 1, true, isPng, width))
-                if (i != split.lastIndex) 2 else 1
             }
+            loadImages(holder, images, builder)
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
         }
         holder.bind(builder)
-        loadImages(holder, images, builder)
     }
 
     override fun getItemCount(): Int = if (this::messages.isInitialized) messages.size else 0
@@ -192,8 +197,12 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                         .into(object : SimpleTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
-                                resource.setBounds(0, 0, if (width == null) size else convertPixelsToDp(context, width * 1.65f), size)
-                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                resource.setBounds(0, 0, if (width == null) size else (getDisplayDensity(context) * width * 0.9f).toInt(), size)
+                                try {
+                                    builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                } catch (e: IndexOutOfBoundsException) {
+
+                                }
                                 holder.bind(builder)
                             }
                         })
@@ -223,7 +232,11 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                                     this.callback = callback
                                     start()
                                 }
-                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                try {
+                                    builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                } catch (e: IndexOutOfBoundsException) {
+
+                                }
                                 holder.bind(builder)
                             }
                         })
