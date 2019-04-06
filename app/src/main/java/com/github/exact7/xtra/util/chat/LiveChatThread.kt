@@ -2,6 +2,7 @@ package com.github.exact7.xtra.util.chat
 
 import android.util.Log
 import com.github.exact7.xtra.ui.view.MessageView
+
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.IOException
@@ -12,12 +13,13 @@ import java.util.Random
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
+private const val TAG = "LiveChatThread"
+
 class LiveChatThread(
         private val userName: String?,
         private val userToken: String?,
         channelName: String,
         private val listener: OnMessageReceivedListener) : Thread(), MessageView.MessageSenderCallback {
-
     private var socketIn: Socket? = null
     private var socketOut: Socket? = null
     private lateinit var readerIn: BufferedReader
@@ -26,10 +28,6 @@ class LiveChatThread(
     private var writerOut: BufferedWriter? = null
     private val hashChannelName: String = "#$channelName"
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
-
-    companion object {
-        private const val TAG = "LiveChatThread"
-    }
 
     override fun run() {
 
@@ -61,7 +59,7 @@ class LiveChatThread(
                 }
             }
         } catch (e: IOException) {
-            Log.e(TAG, "Connection error", e)
+
         } finally {
             disconnect()
         }
@@ -93,7 +91,7 @@ class LiveChatThread(
         }
     }
 
-    private fun disconnect() {
+    fun disconnect() {
         Log.d(TAG, "Disconnecting from $hashChannelName")
         try {
             socketIn?.close()
@@ -101,35 +99,11 @@ class LiveChatThread(
         } catch (e: IOException) {
             Log.e(TAG, "Error while disconnecting", e)
         }
-
     }
 
     @Throws(IOException::class)
     private fun write(message: String, vararg writers: BufferedWriter?) {
         writers.forEach { it?.write(message + System.getProperty("line.separator")) }
-    }
-
-    fun cancel() { //TODO find a better way
-        fun shutdown(socket: Socket?) {
-            socket?.let {
-                if (!it.isClosed) {
-                    it.shutdownOutput()
-                }
-                if (!it.isClosed) {
-                    it.shutdownInput()
-                }
-            }
-        }
-        try {
-            shutdown(socketIn)
-        } catch (e: Exception) {
-
-        }
-        try {
-            shutdown(socketOut)
-        } catch (e: Exception) {
-
-        }
     }
 
     override fun send(message: String) {

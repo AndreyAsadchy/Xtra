@@ -14,12 +14,13 @@ import com.github.exact7.xtra.model.kraken.user.User
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 
 interface TwitchService {
 
     fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game>
-    fun loadStream(channelId: String, compositeDisposable: CompositeDisposable): LiveData<StreamWrapper>
+    fun loadStream(channelId: String): Single<StreamWrapper>
     fun loadStreams(game: String?, languages: String?, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
     fun loadFollowedStreams(userToken: String, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
     fun loadClips(channelName: String?, gameName: String?, languages: String?, period: Period?, trending: Boolean, compositeDisposable: CompositeDisposable): Listing<Clip>

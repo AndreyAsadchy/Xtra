@@ -27,6 +27,7 @@ import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
 import com.github.exact7.xtra.util.toLiveData
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -52,12 +53,12 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadStream(channelId: String, compositeDisposable: CompositeDisposable): LiveData<StreamWrapper> {
+    override fun loadStream(channelId: String): Single<StreamWrapper> {
         return api.getStream(channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { StreamWrapper(it.streams.firstOrNull()) }
-                .toLiveData()
+//                .toLiveData()
     }
 
     override fun loadStreams(game: String?, languages: String?, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream> {

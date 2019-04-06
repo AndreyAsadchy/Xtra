@@ -44,13 +44,12 @@ class ClipDownloadDialog : BaseDownloadDialog() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipDownloadViewModel::class.java)
         binding.viewModel = viewModel
-        viewModel.apply {
-            clip = requireArguments().getParcelable(KEY_CLIP)!!
-            setQualities(requireArguments().getSerializable(KEY_QUALITIES) as Map<String, String>?)
-            qualities.observe(viewLifecycleOwner, Observer {
-                init(it)
-            })
+        with(requireArguments()) {
+            viewModel.init(getParcelable(KEY_CLIP)!!, getSerializable(KEY_QUALITIES) as Map<String, String>?)
         }
+        viewModel.qualities.observe(viewLifecycleOwner, Observer {
+            init(it)
+        })
     }
 
     private fun init(qualities: Map<String, String>) {

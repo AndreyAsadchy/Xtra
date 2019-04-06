@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.login
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -35,6 +36,16 @@ class LoginActivity : AppCompatActivity(), Injectable {
         super.onCreate(savedInstanceState)
         setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         setContentView(R.layout.activity_login)
+        try { //TODO remove after updated to 1.2.0
+            with(getSharedPreferences("authPrefs", Context.MODE_PRIVATE).all) {
+                if (isNotEmpty()) {
+                    Prefs.setUser(this@LoginActivity, LoggedIn(get(C.USER_ID) as String, get(C.USERNAME) as String, get(C.TOKEN) as String))
+                    clear()
+                }
+            }
+        } catch (e: Exception) {
+
+        }
         val user = Prefs.getUser(this)
         if (user is NotLoggedIn) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {

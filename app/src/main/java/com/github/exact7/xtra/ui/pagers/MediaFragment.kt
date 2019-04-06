@@ -15,6 +15,13 @@ import kotlinx.android.synthetic.main.fragment_media.*
 
 abstract class MediaFragment : Fragment(), Scrollable {
 
+    private var previousItem = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        previousItem = savedInstanceState?.getInt("previousItem") ?: -1
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_media, container, false)
     }
@@ -23,12 +30,20 @@ abstract class MediaFragment : Fragment(), Scrollable {
         super.onViewCreated(view, savedInstanceState)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, onSpinnerItemSelected(position)).commit()
+                if (position != previousItem) {
+                    childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, onSpinnerItemSelected(position)).commit()
+                    previousItem = position
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("previousItem", previousItem)
     }
 
     abstract fun onSpinnerItemSelected(position: Int): Fragment

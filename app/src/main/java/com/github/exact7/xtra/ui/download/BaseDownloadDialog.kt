@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.util.C
@@ -30,12 +29,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
                 prefs.edit { putInt(C.DOWNLOAD_STORAGE, checked) }
                 checked
             }
-            return try {
-                storage[index].path
-            } catch (e: Exception) {
-                Crashlytics.logException(e)
-                requireContext().getExternalFilesDir(".downloads")!!.absolutePath
-            }
+            return storage[index].path
         }
 
     fun init(context: Context) {

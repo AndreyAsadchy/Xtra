@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
-import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -133,16 +132,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             } else {
                 prefs.edit { putInt("launchCount", launchCount) }
             }
-        }
-        try { //TODO remove after updated to 1.2.0
-            with(getSharedPreferences("authPrefs", Context.MODE_PRIVATE).all) {
-                if (isNotEmpty()) {
-                    Prefs.setUser(this@MainActivity, LoggedIn(get(C.USER_ID) as String, get(C.USERNAME) as String, get(C.TOKEN) as String))
-                    clear()
-                }
-            }
-        } catch (e: Exception) {
-
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         val user = Prefs.getUser(this)

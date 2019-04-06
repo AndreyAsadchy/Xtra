@@ -124,7 +124,7 @@ class StreamPlayerViewModel @Inject constructor(
     }
 
     private fun stopChat() {
-        _chat.value?.cancel()
+        _chat.value?.disconnect()
     }
 
     override fun onCleared() {

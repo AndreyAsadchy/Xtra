@@ -2,7 +2,6 @@ package com.github.exact7.xtra.ui.pagers
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
@@ -11,6 +10,8 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 class ChannelPagerViewModel @Inject constructor(
@@ -20,9 +21,7 @@ class ChannelPagerViewModel @Inject constructor(
     private val _channel = MutableLiveData<Channel>()
     val channel: LiveData<Channel>
         get() = _channel
-    private val _stream = Transformations.switchMap(_channel) {
-        repository.loadStream(it.id, compositeDisposable)
-    }
+    private val _stream = MutableLiveData<StreamWrapper>()
     val stream: LiveData<StreamWrapper>
         get() = _stream
 
@@ -41,8 +40,18 @@ class ChannelPagerViewModel @Inject constructor(
     }
 
     fun loadStream(channel: Channel) {
-        if (this._channel.value != channel) {
-            this._channel.value = channel
+        if (_channel.value != channel) {
+            repository.loadStream(channel.id)
+                    .subscribeBy(onSuccess = {
+                        _stream.value = it
+                    })
+                    .addTo(compositeDisposable)
+            _channel.value = channel
         }
+    }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
     }
 }

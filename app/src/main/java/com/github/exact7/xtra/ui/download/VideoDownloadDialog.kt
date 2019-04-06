@@ -64,7 +64,6 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         }
     }
 
-
     @SuppressLint("InflateParams")
     private fun init(videoInfo: VideoDownloadInfo) {
         val context = requireContext()

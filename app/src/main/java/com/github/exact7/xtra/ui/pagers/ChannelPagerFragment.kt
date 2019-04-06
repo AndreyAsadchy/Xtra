@@ -33,7 +33,6 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
     private lateinit var binding: FragmentChannelBinding
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             FragmentChannelBinding.inflate(inflater, container, false).let {
                 binding = it
