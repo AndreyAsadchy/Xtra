@@ -10,8 +10,7 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import javax.inject.Inject
 
-class OfflinePlayerViewModel @Inject constructor(
-        context: Application) : PlayerViewModel(context) {
+class OfflinePlayerViewModel @Inject constructor(context: Application) : PlayerViewModel(context) {
 
     private val _video = MutableLiveData<OfflineVideo>()
     val video: LiveData<OfflineVideo>

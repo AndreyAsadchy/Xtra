@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.repository
 
-import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -28,13 +27,13 @@ interface TwitchService {
     fun loadVideos(game: String?, period: com.github.exact7.xtra.model.kraken.video.Period, broadcastType: BroadcastType, language: String?, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>
     fun loadFollowedVideos(userToken: String, broadcastType: BroadcastType, language: String?, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>
     fun loadChannelVideos(channelId: String, broadcastType: BroadcastType, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>
-    fun loadUserById(id: Int) : LiveData<User>
-    fun loadUserByLogin(login: String) : LiveData<User>
-    fun loadUserEmotes(userId: String) : LiveData<List<Emote>>
+    fun loadUserById(id: Int) : Single<User>
+    fun loadUserByLogin(login: String) : Single<User>
+    fun loadUserEmotes(userId: String) : Single<List<Emote>>
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
     fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
-    fun loadVideoChatAfter(videoId: String, cursor: String): LiveData<VideoMessagesResponse>
-    fun loadUserFollows(userId: String, channelId: String): LiveData<Boolean>
-    fun followChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean>
-    fun unfollowChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean>
+    fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse>
+    fun loadUserFollows(userId: String, channelId: String): Single<Boolean>
+    fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
+    fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
 }

@@ -115,9 +115,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     initializeFollow(this, viewModel as FollowViewModel, view.findViewById(R.id.follow), it)
                 }
             })
-            chatView.submitList(viewModel.chatMessages)
+            viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
             viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
-            viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
             val emoteObserver: Observer<List<Emote>> = Observer(chatView::addEmotes)
             viewModel.bttv.observe(viewLifecycleOwner, emoteObserver)
             viewModel.ffz.observe(viewLifecycleOwner, emoteObserver)

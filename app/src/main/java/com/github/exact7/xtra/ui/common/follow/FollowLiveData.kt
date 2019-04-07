@@ -1,23 +1,33 @@
 package com.github.exact7.xtra.ui.common.follow
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.repository.TwitchService
+import io.reactivex.rxkotlin.subscribeBy
 
 class FollowLiveData(
         private val repository: TwitchService,
         private val user: LoggedIn,
         private val channelId: String) : MutableLiveData<Boolean>()  {
 
-    init {
-        repository.loadUserFollows(user.id, channelId).observeForever { super.setValue(it) }
-    }
+    private val disposable = repository.loadUserFollows(user.id, channelId)
+            .subscribeBy(onSuccess = { super.setValue(it) })
 
+
+    @SuppressLint("CheckResult")
     override fun setValue(value: Boolean?) {
         if (value == true) {
-            repository.followChannel(user.token, user.id, channelId).observeForever { super.setValue(it) }
+            repository.followChannel(user.token, user.id, channelId)
+                    .subscribeBy(onSuccess = { super.setValue(it) })
         } else {
-            repository.unfollowChannel(user.token, user.id, channelId).observeForever { super.setValue(!it) }
+            repository.unfollowChannel(user.token, user.id, channelId)
+                    .subscribeBy(onSuccess = { super.setValue(!it) })
         }
+    }
+
+    override fun onInactive() {
+        super.onInactive()
+        disposable.dispose()
     }
 }

@@ -12,15 +12,19 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
-        playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository, playerRepository) {
+        private val playerRepository: PlayerRepository,
+        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
+    private val _chat = MutableLiveData<LiveChatThread>()
+    val chat: LiveData<LiveChatThread>
+        get() = _chat
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
         get() = _stream
@@ -37,7 +41,7 @@ class StreamPlayerViewModel @Inject constructor(
             _stream.value = stream
             this.user = user
             val channel = stream.channel
-            playerRepository!!.fetchStreamPlaylist(channel.name)
+            playerRepository.fetchStreamPlaylist(channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
@@ -46,7 +50,7 @@ class StreamPlayerViewModel @Inject constructor(
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
                     })
                     .addTo(compositeDisposable)
-            init(channel.id, channel.name, streamChatCallback = this::startChat)
+            initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
          }
     }
 

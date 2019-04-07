@@ -13,6 +13,7 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
+import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
@@ -24,8 +25,8 @@ private const val TAG = "ClipPlayerViewModel"
 
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
-        playerRepository: PlayerRepository,
-        private val repository: TwitchService) : PlayerViewModel(context, playerRepository), OnQualityChangeListener, FollowViewModel {
+        private val playerRepository: PlayerRepository,
+        private val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
 
     private val _clip = MutableLiveData<Clip>()
     val clip: LiveData<Clip>
@@ -46,6 +47,7 @@ class ClipPlayerViewModel @Inject constructor(
             return c.broadcaster.id to c.broadcaster.displayName
         }
     override lateinit var follow: FollowLiveData
+    private lateinit var chatReplayManager: ChatReplayManager
 
     override fun changeQuality(index: Int) {
         playbackProgress = player.currentPosition
@@ -68,7 +70,7 @@ class ClipPlayerViewModel @Inject constructor(
     fun setClip(clip: Clip) {
         if (_clip.value != clip) {
             _clip.value = clip
-            playerRepository!!.fetchClipQualities(clip.slug)
+            playerRepository.fetchClipQualities(clip.slug)
                     .subscribe({
                         helper.urls = it
                         play(it.values.first())
@@ -78,10 +80,16 @@ class ClipPlayerViewModel @Inject constructor(
 
                     })
                     .addTo(compositeDisposable)
-            val isVodAvailable = clip.vod != null
-            init(clip.broadcaster.id, clip.channelName, isVodAvailable)
-            if (isVodAvailable) {
-                //TODO chat replay
+            clip.vod?.let { //TODO else show chat replay is not available
+                initChat(playerRepository, clip.broadcaster.id, clip.channelName)
+                val time = it.url.substringAfterLast('=').split("\\D".toRegex())
+                var offset = 0.0
+                var multiplier = 1.0
+                for (i in time.lastIndex - 1 downTo 0) {
+                    offset += time[i].toDouble() * multiplier
+                    multiplier *= 60
+                }
+                chatReplayManager = ChatReplayManager(repository, "v${it.id}", offset, player, this::onMessage, this::clearMessages)
             }
         }
     }
@@ -96,5 +104,10 @@ class ClipPlayerViewModel @Inject constructor(
         if (!this::follow.isInitialized) {
             follow = FollowLiveData(repository, user, channelInfo.first)
         }
+    }
+
+    override fun onCleared() {
+        chatReplayManager.stop()
+        super.onCleared()
     }
 }

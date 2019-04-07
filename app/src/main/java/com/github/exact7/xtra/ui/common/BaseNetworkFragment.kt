@@ -45,7 +45,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         super.onViewCreated(view, savedInstanceState)
 //        if (enableNetworkCheck) {
 //            if (!isInitialized && (created || (lastState && userVisibleHint))) {
-//                init()
+//                initChat()
 //            }
 //            val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
 //            viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
@@ -55,7 +55,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
 //                        if (isInitialized) {
 //                            onNetworkRestored()
 //                        } else {
-//                            init()
+//                            initChat()
 //                        }
 //                        false
 //                    } else {

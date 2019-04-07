@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
@@ -26,7 +25,6 @@ import com.github.exact7.xtra.repository.datasource.FollowedVideosDataSource
 import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
-import com.github.exact7.xtra.util.toLiveData
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -138,29 +136,26 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadUserById(id: Int): LiveData<User> {
+    override fun loadUserById(id: Int): Single<User> {
         Log.d(TAG, "Loading user by id $id")
         return api.getUserById(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .toLiveData()
     }
 
-    override fun loadUserByLogin(login: String): LiveData<User> {
+    override fun loadUserByLogin(login: String): Single<User> {
         Log.d(TAG, "Loading user by login $login")
         return api.getUserByLogin(login)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .toLiveData()
     }
 
-    override fun loadUserEmotes(userId: String): LiveData<List<Emote>> {
+    override fun loadUserEmotes(userId: String): Single<List<Emote>> {
         Log.d(TAG, "Loading user emotes")
         return api.getUserEmotes(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.emotes }
-                .toLiveData()
     }
 
     override fun loadChannels(query: String, compositeDisposable: CompositeDisposable): Listing<Channel> {
@@ -182,38 +177,34 @@ class KrakenRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun loadVideoChatAfter(videoId: String, cursor: String): LiveData<VideoMessagesResponse> {
+    override fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse> {
         Log.d(TAG, "Loading chat log for video $videoId. Cursor: $cursor")
         return api.getVideoChatLogAfter(videoId.substring(1), cursor, 75)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .toLiveData()
     }
 
-    override fun loadUserFollows(userId: String, channelId: String): LiveData<Boolean> {
+    override fun loadUserFollows(userId: String, channelId: String): Single<Boolean> {
         Log.d(TAG, "Loading if user is following channel $channelId")
         return api.getUserFollows(userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.body()?.let { body -> body.string().length > 300 } == true }
-                .toLiveData()
     }
 
-    override fun followChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean> {
+    override fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean> {
         Log.d(TAG, "Following channel $channelId")
         return api.followChannel("OAuth $userToken", userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.body() != null }
-                .toLiveData()
     }
 
-    override fun unfollowChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean> {
+    override fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean> {
         Log.d(TAG, "Unfollowing channel $channelId")
         return api.unfollowChannel("OAuth $userToken", userId, channelId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.code() == 204 }
-                .toLiveData()
     }
 }

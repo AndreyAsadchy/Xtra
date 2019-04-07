@@ -10,7 +10,6 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.repository.PlayerRepository
-import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -26,11 +25,14 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
 
-abstract class PlayerViewModel(
-        context: Application,
-        protected val playerRepository: PlayerRepository? = null) : AndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener {
+abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener {
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
     protected val trackSelector = DefaultTrackSelector()
@@ -38,17 +40,19 @@ abstract class PlayerViewModel(
     val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector).apply { addListener(this@PlayerViewModel) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
-    protected val _chat = MutableLiveData<LiveChatThread>()
-    val chat: LiveData<LiveChatThread>
-        get() = _chat
-    protected val _bttv = MutableLiveData<List<BttvEmote>>()
+
+    private val _bttv = MutableLiveData<List<BttvEmote>>()
     val bttv: LiveData<List<BttvEmote>>
         get() = _bttv
-    protected val _ffz = MutableLiveData<List<FfzEmote>>()
+    private val _ffz = MutableLiveData<List<FfzEmote>>()
     val ffz: LiveData<List<FfzEmote>>
         get() = _ffz
     protected var subscriberBadges: SubscriberBadgesResponse? = null
-    val chatMessages: LinkedList<ChatMessage> by lazy { LinkedList<ChatMessage>() }
+    private val _chatMessages: MutableLiveData<LinkedList<ChatMessage>> by lazy {
+        MutableLiveData<LinkedList<ChatMessage>>().apply { value = LinkedList() }
+    }
+    val chatMessages: LiveData<LinkedList<ChatMessage>>
+        get() = _chatMessages
     private val _newMessage: MutableLiveData<ChatMessage> by lazy { MutableLiveData<ChatMessage>() }
     val newMessage: LiveData<ChatMessage>
         get() = _newMessage
@@ -57,8 +61,12 @@ abstract class PlayerViewModel(
         message.badges?.find { it.id == "subscriber" }?.let {
             message.subscriberBadge = subscriberBadges?.getBadge(it.version.toInt())
         }
-        chatMessages.add(message)
+        _chatMessages.value?.add(message)
         _newMessage.postValue(message)
+    }
+
+    protected fun clearMessages() {
+        _chatMessages.postValue(LinkedList())
     }
 
     protected fun play() {
@@ -68,35 +76,33 @@ abstract class PlayerViewModel(
         }
     }
 
-    protected fun init(channelId: String, channelName: String, fetchSubscriberBadges: Boolean = true, streamChatCallback: (() -> Unit)? = null) {
-        if (playerRepository != null) {
-            if (fetchSubscriberBadges) {
-                playerRepository.fetchSubscriberBadges(channelId)
-                        .subscribe({
-                            it.badges
-                            subscriberBadges = it
-                            streamChatCallback?.invoke()
-                        }, {
-                            //no subscriber badges
-                            streamChatCallback?.invoke()
-                        })
-                        .addTo(compositeDisposable)
-            }
-            playerRepository.fetchBttvEmotes(channelName)
+    protected fun initChat(playerRepository: PlayerRepository, channelId: String?, channelName: String, streamChatCallback: (() -> Unit)? = null) {
+        channelId?.let { id ->
+            playerRepository.fetchSubscriberBadges(id)
                     .subscribe({
-                        _bttv.value = it
+                        it.badges
+                        subscriberBadges = it
+                        streamChatCallback?.invoke()
                     }, {
-
-                    })
-                    .addTo(compositeDisposable)
-            playerRepository.fetchFfzEmotes(channelName)
-                    .subscribe({
-                        _ffz.value = it
-                    }, {
-
+                        //no subscriber badges
+                        streamChatCallback?.invoke()
                     })
                     .addTo(compositeDisposable)
         }
+        playerRepository.fetchBttvEmotes(channelName)
+                .subscribe({
+                    _bttv.value = it
+                }, {
+
+                })
+                .addTo(compositeDisposable)
+        playerRepository.fetchFfzEmotes(channelName)
+                .subscribe({
+                    _ffz.value = it
+                }, {
+
+                })
+                .addTo(compositeDisposable)
     }
 
     open fun onResume() {
@@ -140,7 +146,12 @@ abstract class PlayerViewModel(
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-
+        GlobalScope.launch {
+            delay(1000L)
+            runBlocking(Dispatchers.Main) {
+                play()
+            }
+        }
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

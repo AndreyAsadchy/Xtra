@@ -42,6 +42,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
         })
+        viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }

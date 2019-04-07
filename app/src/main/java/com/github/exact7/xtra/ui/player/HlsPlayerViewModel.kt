@@ -6,7 +6,6 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
-import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
@@ -31,8 +30,7 @@ private const val TAG = "HlsPlayerViewModel"
 
 abstract class HlsPlayerViewModel(
         context: Application,
-        val repository: TwitchService,
-        playerRepository: PlayerRepository) : PlayerViewModel(context, playerRepository), OnQualityChangeListener, FollowViewModel {
+        val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()

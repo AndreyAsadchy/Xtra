@@ -123,6 +123,7 @@ class ChatView : RelativeLayout {
 
     fun submitList(list: LinkedList<ChatMessage>) {
         adapter.messages = list
+        adapter.notifyDataSetChanged()
     }
 
     fun addEmotes(list: List<Emote>) {

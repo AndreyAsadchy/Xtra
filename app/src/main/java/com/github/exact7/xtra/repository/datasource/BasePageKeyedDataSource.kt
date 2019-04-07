@@ -37,7 +37,7 @@ abstract class BasePageKeyedDataSource<T>(
     }
 
     protected fun PageKeyedDataSource.LoadInitialCallback<String, T>.onSuccess(data: List<T>, cursor: String) {
-        this.onResult(data, 0, data.size, null, cursor)
+        this.onResult(data, 0, data.size, null, cursor.let { if (it.isNotEmpty()) it else null })
         Log.d(tag, "Successfully loaded data")
         loadingState.postValue(LoadingState.LOADED)
         retry = null
