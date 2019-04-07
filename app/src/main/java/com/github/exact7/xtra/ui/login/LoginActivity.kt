@@ -12,6 +12,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -37,11 +38,14 @@ class LoginActivity : AppCompatActivity(), Injectable {
         setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         setContentView(R.layout.activity_login)
         try { //TODO remove after updated to 1.2.0
-            with(getSharedPreferences("authPrefs", Context.MODE_PRIVATE).all) {
-                if (isNotEmpty()) {
-                    Prefs.setUser(this@LoginActivity, LoggedIn(get(C.USER_ID) as String, get(C.USERNAME) as String, get(C.TOKEN) as String))
-                    clear()
+            val oldPrefs = getSharedPreferences("authPrefs", Context.MODE_PRIVATE)
+            if (oldPrefs.all.isNotEmpty()) {
+                with(oldPrefs) {
+                    if (getString(C.USER_ID, null) != null) {
+                        Prefs.setUser(this@LoginActivity, LoggedIn(getString(C.USER_ID, null)!!, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!))
+                    }
                 }
+                oldPrefs.edit { clear() }
             }
         } catch (e: Exception) {
 

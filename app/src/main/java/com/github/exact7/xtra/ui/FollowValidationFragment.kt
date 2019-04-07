@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -50,7 +49,6 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
                 if (childFragmentManager.findFragmentById(R.id.container) == null) {
                     childFragmentManager.beginTransaction().replace(R.id.container, FollowMediaFragment()).commit()
                 }
-                container.postDelayed({ container.findViewById<Toolbar>(R.id.toolbar).title = activity.getString(R.string.app_name) }, 100)
             } else {
                 notLoggedInLayout.search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
                 notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }

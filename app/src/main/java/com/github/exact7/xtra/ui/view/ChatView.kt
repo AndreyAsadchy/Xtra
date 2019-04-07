@@ -8,7 +8,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
@@ -54,7 +53,6 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        recyclerView.adapter = ChatAdapter(context).also { adapter = it }
         recyclerView.itemAnimator = null
         layoutManager = LinearLayoutManager(context)
         layoutManager.stackFromEnd = true
@@ -109,12 +107,8 @@ class ChatView : RelativeLayout {
     fun notifyAdapter() {
         adapter.notifyItemInserted(getLastItemPosition())
         if (adapter.itemCount > MAX_MESSAGE_COUNT) {
-            try {
-                adapter.messages.removeFirst()
-                adapter.notifyItemRemoved(0)
-            } catch (e: NoSuchElementException) {
-                Crashlytics.log("ChatView.notifyAdapter NoSuchElementException. Adapter item count: ${adapter.itemCount}. Messages size: ${adapter.messages.size}. Error: ${e.message}")
-            }
+            adapter.messages.removeFirst()
+            adapter.notifyItemRemoved(0)
         }
         if (!isChatTouched && !isButtonShowing()) {
             recyclerView.scrollToPosition(getLastItemPosition())
@@ -122,8 +116,8 @@ class ChatView : RelativeLayout {
     }
 
     fun submitList(list: LinkedList<ChatMessage>) {
-        adapter.messages = list
-        adapter.notifyDataSetChanged()
+        adapter = ChatAdapter(list, context)
+        recyclerView.adapter = adapter
     }
 
     fun addEmotes(list: List<Emote>) {

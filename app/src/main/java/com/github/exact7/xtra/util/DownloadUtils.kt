@@ -80,7 +80,7 @@ object DownloadUtils {
     fun getAvailableStorage(context: Context): List<Storage> {
         val storage = ContextCompat.getExternalFilesDirs(context, ".downloads")
         val list = mutableListOf<Storage>()
-        for (i in storage.indices) {
+        for (i in 0 until storage.size) {
             val storagePath = storage[i].absolutePath
             val name = if (i == 0) {
                 context.getString(R.string.internal_storage)

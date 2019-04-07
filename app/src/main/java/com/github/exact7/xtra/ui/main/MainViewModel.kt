@@ -36,14 +36,14 @@ class MainViewModel @Inject constructor(
 
     var isPlayerOpened = false
         private set
-    private val _checkedValidity = MutableLiveData<Boolean>()
+    private val _checkedValidity = MutableLiveData<Boolean>().apply { value = TwitchApiHelper.validated }
     val checkedValidity: LiveData<Boolean>
         get() = _checkedValidity
 
     private val compositeDisposable = CompositeDisposable()
 
     fun setUser(user: User) {
-        if (_user.value == null) {
+        if (_user.value != user) {
             _user.value = user.let {
                 if (it is NotValidated) {
                     if (checkedValidity.value != true) {

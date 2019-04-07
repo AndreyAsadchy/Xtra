@@ -38,9 +38,10 @@ import kotlin.collections.set
 const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
 const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
-class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(
+        val messages: LinkedList<ChatMessage>,
+        private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
-    lateinit var messages: LinkedList<ChatMessage>
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
     private val userColors = HashMap<String, Int>()
@@ -186,7 +187,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
         holder.bind(builder)
     }
 
-    override fun getItemCount(): Int = if (this::messages.isInitialized) messages.size else 0
+    override fun getItemCount(): Int = messages.size
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
         images.forEach { (url, start, end, isEmote, isPng, width) ->

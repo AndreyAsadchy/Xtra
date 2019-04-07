@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_media.*
 
 abstract class MediaFragment : Fragment(), Scrollable {
 
-    private var previousItem = 0
+    private var previousItem = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +42,8 @@ abstract class MediaFragment : Fragment(), Scrollable {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         outState.putInt("previousItem", previousItem)
+        super.onSaveInstanceState(outState)
     }
 
     abstract fun onSpinnerItemSelected(position: Int): Fragment

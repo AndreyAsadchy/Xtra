@@ -37,14 +37,14 @@ abstract class BasePageKeyedDataSource<T>(
     }
 
     protected fun PageKeyedDataSource.LoadInitialCallback<String, T>.onSuccess(data: List<T>, cursor: String) {
-        this.onResult(data, 0, data.size, null, cursor.let { if (it.isNotEmpty()) it else null })
+        this.onResult(data, 0, data.size, null, cursorOrNull(cursor))
         Log.d(tag, "Successfully loaded data")
         loadingState.postValue(LoadingState.LOADED)
         retry = null
     }
 
     protected fun PageKeyedDataSource.LoadCallback<String, T>.onSuccess(data: List<T>, cursor: String) {
-        this.onResult(data, cursor)
+        this.onResult(data, cursorOrNull(cursor))
         Log.d(tag, "Successfully loaded data")
         pagingState.postValue(LoadingState.LOADED)
         retry = null
@@ -63,4 +63,6 @@ abstract class BasePageKeyedDataSource<T>(
         retry = { loadAfter(params, this) }
         pagingState.postValue(LoadingState.FAILED)
     }
+
+    private fun cursorOrNull(cursor: String) = cursor.let { if (it.isNotEmpty()) it else null }
 }
