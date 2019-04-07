@@ -175,12 +175,11 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
-    override fun loadVideoChatLog(videoId: String, offsetSeconds: Double): LiveData<VideoMessagesResponse> {
+    override fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse> {
         Log.d(TAG, "Loading chat log for video $videoId. Offset in seconds: $offsetSeconds")
         return api.getVideoChatLog(videoId.substring(1), offsetSeconds, 75)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .toLiveData()
     }
 
     override fun loadVideoChatAfter(videoId: String, cursor: String): LiveData<VideoMessagesResponse> {

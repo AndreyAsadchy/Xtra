@@ -17,10 +17,7 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
-import kotlinx.android.synthetic.main.fragment_player_video.*
 import kotlinx.android.synthetic.main.player_video.*
-
-const val TAG = "VideoPlayer"
 
 class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 //    override fun play(obj: Parcelable) {
@@ -43,8 +40,6 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //        channelBtn.setOnClickListener(v -> channelListener.viewChannel(video.getChannelName().getName()));
-        //TODO morebtn
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
@@ -53,15 +48,12 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
-        playerView.player = viewModel.player
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             settings.isEnabled = true
             download.isEnabled = true
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-//        viewModel.helper.chatMessages.observe(this, Observer(chatView::submitList))
-//        viewModel.helper.newMessage.observe(this, Observer { chatView.notifyAdapter() })
         viewModel.setVideo(video)
     }
 

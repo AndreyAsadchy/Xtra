@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.VideoDownloadInfo
+import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
@@ -17,13 +18,15 @@ import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import java.util.LinkedList
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 class VideoPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
+        playerRepository: PlayerRepository,
+        repository: TwitchService) : HlsPlayerViewModel(context, repository, playerRepository) {
 
     private val _video = MutableLiveData<Video>()
     val video: LiveData<Video>
@@ -37,13 +40,13 @@ class VideoPlayerViewModel @Inject constructor(
             val v = video.value!!
             return v.channel.id to v.channel.displayName
         }
-//    private var chatLogDisposable: Disposable? = null
-//    private var chatLogCursor: String? = null
+    private val chatLogList = LinkedList<VideoChatMessage>()
+    private var chatLogCursor: String? = null
 
     fun setVideo(video: Video) {
         if (_video.value != video) {
             _video.value = video
-            playerRepository.fetchVideoPlaylist(video.id)
+            playerRepository!!.fetchVideoPlaylist(video.id)
                     .map { Uri.parse(it.raw().request().url().toString()) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -54,32 +57,30 @@ class VideoPlayerViewModel @Inject constructor(
 
                     })
                     .addTo(compositeDisposable)
-//                            chatLogDisposable = repository.loadVideoChatLog(video.id, 0.0)
-//                    .subscribe({
-//                        chatLogCursor = it.next
-//                        val handler = Handler()
-//                        val list = LinkedList(it.messages)
-//                        val runnable = object : Runnable { //TODO maybe there is a kotlin timer function
-//                            override fun run() {
-//                                var message = list.poll()
-//                                while (message != null) {
-//                                    println("${message.displayName} : ${message.message}")
-//                                    handler.sto
-//                                        handler.postDelayed(message.contentOffsetSeconds - player.currentPosition / 1000L)
-//                                    message = list.poll()
-//                                }
+            init(video.channel.id, video.channelName)
+            repository.loadVideoChatLog(video.id, 0.0)
+                    .subscribe({
+                        chatLogCursor = it.next
+                        chatLogList.addAll(it.messages)
+//                        chatMessages.addAll(it.messages)
+                        Thread {
+                            while (chatLogList.isNotEmpty()) {
+                                val message = chatLogList.poll()
+                                while (player.currentPosition / 1000.0 < message.contentOffsetSeconds) {
+                                    Thread.sleep(abs((message.contentOffsetSeconds - player.currentPosition / 1000.0) * 1000L).toLong())
+                                }
+                                onMessage(message)
 //                                if (list.size > 10) {
 //                                    handler.postDelayed(this, 250)
 //                                } else {
 //                                    println("FETCH MORE")
 //                                }
-//                            }
-//                        }
-//                        handler.post(runnable)
-//                    }, {
-//
-//                    })
-//            })
+                            }
+                        }.start()
+                    }, {
+
+                    })
+                    .addTo(compositeDisposable)
         }
     }
 
@@ -103,8 +104,8 @@ class VideoPlayerViewModel @Inject constructor(
 
     override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
         super.onTimelineChanged(timeline, manifest, reason)
-        if (!this::playlist.isInitialized) {
-            playlist = (manifest as HlsManifest).mediaPlaylist
+        if (!this::playlist.isInitialized && manifest is HlsManifest) {
+            playlist = manifest.mediaPlaylist
         }
     }
 }

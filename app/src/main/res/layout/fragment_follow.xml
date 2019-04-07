@@ -16,7 +16,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/fragmentContainer"
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:visible="@{viewModel.user instanceof LoggedIn}"

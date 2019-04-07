@@ -71,7 +71,7 @@ class SlidingLayout : LinearLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        id = R.id.sliding_layout
+        id = R.id.slidingLayout
     }
 
     override fun onFinishInflate() {

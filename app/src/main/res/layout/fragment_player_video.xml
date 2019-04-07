@@ -10,10 +10,8 @@
         app:controller_layout_id="@layout/player_video"
         style="@style/Player.Portrait"/>
 
-    <View
-        android:id="@id/chatView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/black"/>
+    <com.github.exact7.xtra.ui.view.ChatView
+        android:id="@+id/chatView"
+        style="@style/ChatViewPortrait"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

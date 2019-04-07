@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="sliding_layout" type="id" />
+    <item name="slidingLayout" type="id" />
+    <item name="showChat" type="id" />
+    <item name="hideChat" type="id" />
+    <item name="minimize" type="id" />
+    <item name="profile" type="id" />
+    <item name="settings" type="id" />
+    <item name="follow" type="id" />
+    <item name="topRightPanel" type="id" />
+    <item name="channel" type="id" />
+    <item name="fullscreenExit" type="id" />
+    <item name="fullscreenEnter" type="id" />
+    <item name="download" type="id" />
 </resources>

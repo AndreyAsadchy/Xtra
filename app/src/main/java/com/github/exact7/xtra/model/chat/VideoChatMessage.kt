@@ -2,6 +2,7 @@ package com.github.exact7.xtra.model.chat
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -34,9 +35,8 @@ data class VideoChatMessage(
     override val message: String
         get() = messageObj.body
 
-    override var color: String?
+    override val color: String?
         get() = messageObj.userColor
-        set(_) {}
 
     override val emotes: List<TwitchEmote>?
         get() = messageObj.emoticons
@@ -44,8 +44,8 @@ data class VideoChatMessage(
     override val badges: List<Badge>?
         get() = messageObj.userBadges
 
-    override val subscriberBadge: SubscriberBadge?
-        get() = null
+    @IgnoredOnParcel
+    override var subscriberBadge: SubscriberBadge? = null
 
     override val displayName: String
         get() = commenter.displayName

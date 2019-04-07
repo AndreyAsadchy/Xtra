@@ -17,34 +17,29 @@
         style="@style/Player.Forward"/>
 
     <ImageButton
-        android:id="@+id/minimize"
         style="@style/Player.Minimize" />
 
     <TextView
-        android:id="@+id/channel"
         style="@style/Player.Channel"/>
 
     <LinearLayout
-        android:id="@+id/topRightPanel"
         style="@style/Player.TopRightPanel">
 
         <ImageButton
-            android:id="@+id/download"
+            android:id="@id/download"
             style="@style/Player.Download"
             />
 
         <ImageButton
-            android:id="@+id/follow"
             style="@style/Player.Follow"
             />
 
         <ImageButton
-            android:id="@+id/profile"
             style="@style/Player.Profile"
             />
 
         <ImageButton
-            android:id="@+id/settings"
+            android:id="@id/settings"
             style="@style/Player.Settings"
             />
 
@@ -59,13 +54,10 @@
         />
 
     <TextView
-        android:layout_toLeftOf="@id/fullscreenEnter"
-        android:layout_toStartOf="@id/fullscreenEnter"
         style="@style/Player.Duration"
         />
 
     <ImageButton
-        android:id="@+id/fullscreenEnter"
         android:layout_above="@id/exo_progress"
         style="@style/Player.FullscreenEnter"/>
 

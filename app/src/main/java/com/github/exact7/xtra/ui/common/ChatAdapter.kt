@@ -97,8 +97,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
             if (userColor == null) {
                 userColors[userName] ?: getRandomColor().also { userColors[userName] = it }
             } else {
-                savedColors[userColor]
-                        ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
+                savedColors[userColor] ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
             }
         }
         val userNameLength = userName.length

@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.util.chat
 
 import android.util.Log
-import com.github.exact7.xtra.ui.view.MessageView
+import com.github.exact7.xtra.ui.view.ChatView
 
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -19,7 +19,7 @@ class LiveChatThread(
         private val userName: String?,
         private val userToken: String?,
         channelName: String,
-        private val listener: OnMessageReceivedListener) : Thread(), MessageView.MessageSenderCallback {
+        private val listener: OnMessageReceivedListener) : Thread(), ChatView.MessageSenderCallback {
     private var socketIn: Socket? = null
     private var socketOut: Socket? = null
     private lateinit var readerIn: BufferedReader

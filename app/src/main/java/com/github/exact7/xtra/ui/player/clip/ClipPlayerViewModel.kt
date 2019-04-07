@@ -24,8 +24,8 @@ private const val TAG = "ClipPlayerViewModel"
 
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository,
-        private val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
+        playerRepository: PlayerRepository,
+        private val repository: TwitchService) : PlayerViewModel(context, playerRepository), OnQualityChangeListener, FollowViewModel {
 
     private val _clip = MutableLiveData<Clip>()
     val clip: LiveData<Clip>
@@ -68,26 +68,21 @@ class ClipPlayerViewModel @Inject constructor(
     fun setClip(clip: Clip) {
         if (_clip.value != clip) {
             _clip.value = clip
-            playerRepository.fetchClipQualities(clip.slug)
+            playerRepository!!.fetchClipQualities(clip.slug)
                     .subscribe({
                         helper.urls = it
                         play(it.values.first())
                         helper.selectedQualityIndex = 0
                         helper.loaded.value = true
-//                    if (clip.vod != null) {
-//                        playerRepository.fetchSubscriberBadges(clip.broadcaster.id)
-//                                .subscribe({ response ->
-//
-//                                }, { t ->
-//
-//                                })
-//                                .addTo(compositeDisposable)
-//
-//                    }
                     }, {
 
                     })
                     .addTo(compositeDisposable)
+            val isVodAvailable = clip.vod != null
+            init(clip.broadcaster.id, clip.channelName, isVodAvailable)
+            if (isVodAvailable) {
+                //TODO chat replay
+            }
         }
     }
 

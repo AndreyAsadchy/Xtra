@@ -16,6 +16,7 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.login.LoginActivity
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.pagers.FollowMediaFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
@@ -46,11 +47,12 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
         viewModel.user.observe(viewLifecycleOwner, Observer {
             isLoggedIn = it is LoggedIn
             if (isLoggedIn) {
-                if (childFragmentManager.findFragmentById(R.id.fragmentContainer) == null) {
-                    childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, FollowMediaFragment()).commit()
+                if (childFragmentManager.findFragmentById(R.id.container) == null) {
+                    childFragmentManager.beginTransaction().replace(R.id.container, FollowMediaFragment()).commit()
                 }
-                fragmentContainer.postDelayed({ fragmentContainer.findViewById<Toolbar>(R.id.toolbar).title = activity.getString(R.string.app_name) }, 100)
+                container.postDelayed({ container.findViewById<Toolbar>(R.id.toolbar).title = activity.getString(R.string.app_name) }, 100)
             } else {
+                notLoggedInLayout.search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
                 notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
             }
         })

@@ -9,5 +9,5 @@ interface ChatMessage {
     val color: String?
     val emotes: List<TwitchEmote>?
     val badges: List<Badge>?
-    val subscriberBadge: SubscriberBadge?
+    var subscriberBadge: SubscriberBadge?
 }

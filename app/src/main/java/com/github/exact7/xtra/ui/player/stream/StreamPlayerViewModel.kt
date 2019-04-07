@@ -6,38 +6,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
-import com.github.exact7.xtra.model.chat.BttvEmote
-import com.github.exact7.xtra.model.chat.FfzEmote
-import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
-import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
+        playerRepository: PlayerRepository,
+        repository: TwitchService) : HlsPlayerViewModel(context, repository, playerRepository) {
 
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
         get() = _stream
-    private val _chat = MutableLiveData<LiveChatThread>()
-    val chat: LiveData<LiveChatThread>
-        get() = _chat
-    private val _bttv = MutableLiveData<List<BttvEmote>>()
-    val bttv: LiveData<List<BttvEmote>>
-        get() = _bttv
-    private val _ffz = MutableLiveData<List<FfzEmote>>()
-    val ffz: LiveData<List<FfzEmote>>
-        get() = _ffz
-    private var subscriberBadges: SubscriberBadgesResponse? = null
     lateinit var user: User
         private set
     override val channelInfo: Pair<String, String>
@@ -51,7 +37,7 @@ class StreamPlayerViewModel @Inject constructor(
             _stream.value = stream
             this.user = user
             val channel = stream.channel
-            playerRepository.fetchStreamPlaylist(channel.name)
+            playerRepository!!.fetchStreamPlaylist(channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
@@ -60,29 +46,8 @@ class StreamPlayerViewModel @Inject constructor(
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
                     })
                     .addTo(compositeDisposable)
-            playerRepository.fetchSubscriberBadges(channel.id)
-                    .subscribe({
-                        subscriberBadges = it
-                        startChat()
-                    }, { //no subscriber badges
-                        startChat()
-                    })
-                    .addTo(compositeDisposable)
-            playerRepository.fetchBttvEmotes(channel.name)
-                    .subscribe({
-                        _bttv.value = it
-                    }, {
-
-                    })
-                    .addTo(compositeDisposable)
-            playerRepository.fetchFfzEmotes(channel.name)
-                    .subscribe({
-                        _ffz.value = it
-                    }, {
-
-                    })
-                    .addTo(compositeDisposable)
-        }
+            init(channel.id, channel.name, streamChatCallback = this::startChat)
+         }
     }
 
     override fun changeQuality(index: Int) {

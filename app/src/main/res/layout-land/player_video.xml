@@ -17,34 +17,29 @@
         style="@style/Player.Forward"/>
 
     <ImageButton
-        android:id="@+id/minimize"
         style="@style/Player.Minimize"/>
 
     <TextView
-        android:id="@+id/channel"
         style="@style/Player.Channel"/>
 
     <LinearLayout
-        android:id="@+id/topRightPanel"
         style="@style/Player.TopRightPanel">
 
         <ImageButton
-            android:id="@+id/download"
+            android:id="@id/download"
             style="@style/Player.Download"
             />
 
         <ImageButton
-            android:id="@+id/follow"
             style="@style/Player.Follow"
             />
 
         <ImageButton
-            android:id="@+id/profile"
             style="@style/Player.Profile"
             />
 
         <ImageButton
-            android:id="@+id/settings"
+            android:id="@id/settings"
             style="@style/Player.Settings"
             />
 
@@ -55,18 +50,30 @@
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
-        style="@style/Player.Progress" />
+        style="@style/Player.Progress"
+        />
 
     <TextView
-        android:layout_toLeftOf="@id/fullscreenExit"
-        android:layout_toStartOf="@id/fullscreenExit"
         style="@style/Player.Duration"
         />
 
-    <ImageButton
-        android:id="@+id/fullscreenExit"
-        android:layout_above="@id/exo_progress"
-        style="@style/Player.FullscreenExit"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_above="@id/exo_progress" >
+
+        <ImageButton
+            style="@style/Player.ShowChat" />
+
+        <ImageButton
+            style="@style/Player.HideChat" />
+
+        <ImageButton
+            style="@style/Player.FullscreenExit"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

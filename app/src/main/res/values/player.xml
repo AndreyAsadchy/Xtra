@@ -8,8 +8,7 @@
 
     <style name="Player.Portrait" parent="Player">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/playerHeight</item>
-        <!--<item name="android:layout_weight">3</item>-->
+        <item name="android:layout_height">@dimen/player_height_portrait</item>
     </style>
 
     <style name="Player.Landscape" parent="Player">
@@ -46,6 +45,7 @@
     </style>
 
     <style name="Player.TopRightPanel">
+        <item name="android:id">@id/topRightPanel</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentEnd">true</item>
@@ -57,6 +57,7 @@
     </style>
 
     <style name="Player.Minimize" parent="Player.SmallImage">
+        <item name="android:id">@id/minimize</item>
         <item name="android:src">@drawable/baseline_expand_more_black_48</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginLeft">10dp</item>
@@ -64,18 +65,22 @@
     </style>
 
     <style name="Player.Settings" parent="Player.SmallImage">
+        <item name="android:id">@id/settings</item>
         <item name="android:src">@drawable/baseline_settings_black_24</item>
     </style>
 
     <style name="Player.Profile" parent="Player.SmallImage">
+        <item name="android:id">@id/profile</item>
         <item name="android:src">@drawable/baseline_person_black_24</item>
     </style>
 
     <style name="Player.Download" parent="Player.SmallImage">
+        <item name="android:id">@id/download</item>
         <item name="android:src">@drawable/ic_file_download_black_24dp</item>
     </style>
 
     <style name="Player.Follow" parent="Player.SmallImage">
+        <item name="android:id">@id/follow</item>
         <item name="android:src">@drawable/baseline_favorite_border_black_24</item>
         <item name="android:visibility">gone</item>
     </style>
@@ -89,16 +94,20 @@
 
     <style name="Player.Position" parent="Player.Text">
         <item name="android:id">@id/exo_position</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginStart">5dp</item>
-        <item name="android:layout_above">@id/exo_progress</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
     </style>
 
     <style name="Player.Duration" parent="Player.Text">
         <item name="android:id">@id/exo_duration</item>
-        <item name="android:layout_marginRight">5dp</item>
-        <item name="android:layout_marginEnd">5dp</item>
-        <item name="android:layout_above">@id/exo_progress</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_alignParentRight">true</item>
     </style>
 
     <style name="Player.Progress">
@@ -107,9 +116,19 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_above">@id/exo_progress</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_toEndOf">@id/exo_position</item>
+        <item name="android:layout_toRightOf">@id/exo_position</item>
+        <item name="android:layout_toLeftOf">@id/exo_duration</item>
+        <item name="android:layout_toStartOf">@id/exo_duration</item>
     </style>
 
     <style name="Player.FullscreenEnter" parent="Player.SmallImage">
+        <item name="android:id">@id/fullscreenEnter</item>
         <item name="android:src">@drawable/baseline_fullscreen_black_24</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -118,6 +137,7 @@
     </style>
 
     <style name="Player.FullscreenExit" parent="Player.SmallImage">
+        <item name="android:id">@id/fullscreenExit</item>
         <item name="android:src">@drawable/baseline_fullscreen_exit_black_24</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -151,6 +171,7 @@
     </style>
 
     <style name="Player.Channel" parent="Player.Text">
+        <item name="android:id">@id/channel</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_toRightOf">@id/minimize</item>
@@ -163,6 +184,22 @@
         <item name="autoSizeMinTextSize">14sp</item>
         <item name="autoSizeStepGranularity">1sp</item>
         <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="Player.HideChat" parent="Player.SmallImage">
+        <item name="android:id">@id/hideChat</item>
+        <item name="android:src">@drawable/baseline_unfold_more_black_24</item>
+        <item name="android:rotation">90</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="layout_marginRight">10dp</item>
+    </style>
+
+    <style name="Player.ShowChat" parent="Player.SmallImage">
+        <item name="android:id">@id/showChat</item>
+        <item name="android:src">@drawable/baseline_unfold_less_black_24</item>
+        <item name="android:rotation">90</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="layout_marginRight">10dp</item>
     </style>
 
 </resources>

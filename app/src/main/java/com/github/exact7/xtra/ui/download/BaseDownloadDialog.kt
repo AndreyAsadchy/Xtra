@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.util.C
@@ -37,15 +38,21 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
         storage = DownloadUtils.getAvailableStorage(context)
         storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
         if (DownloadUtils.isExternalStorageAvailable) {
-            if (storage.size > 1) {
-                storageSelectionContainer.visibility = View.VISIBLE
-                for (s in storage) {
-                    storageSelectionContainer.radioGroup.addView(RadioButton(context).apply {
-                        id = s.id
-                        text = s.name
-                    })
+            try {
+                if (storage.size > 1) {
+                    storageSelectionContainer.visibility = View.VISIBLE
+                    for (s in storage) {
+                        storageSelectionContainer.radioGroup.addView(RadioButton(context).apply {
+                            id = s.id
+                            text = s.name
+                        })
+                    }
+                    storageSelectionContainer.radioGroup.check(prefs.getInt(C.DOWNLOAD_STORAGE, 0))
                 }
-                storageSelectionContainer.radioGroup.check(prefs.getInt(C.DOWNLOAD_STORAGE, 0))
+            } catch (e: IllegalStateException) { //TODO i think this is fixed, check and remove later
+                Crashlytics.logException(e)
+                Crashlytics.log(e.message)
+                throw e
             }
         } else {
             storageSelectionContainer.visibility = View.VISIBLE

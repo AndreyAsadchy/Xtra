@@ -13,6 +13,7 @@
         app:title="@string/app_name">
 
         <ImageView
+            android:id="@+id/search"
             style="@style/Search"/>
     </androidx.appcompat.widget.Toolbar>
 

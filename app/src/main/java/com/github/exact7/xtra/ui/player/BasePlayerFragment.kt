@@ -1,5 +1,7 @@
 package com.github.exact7.xtra.ui.player
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
@@ -8,11 +10,14 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.content.edit
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
@@ -21,24 +26,35 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
+import com.github.exact7.xtra.ui.view.ChatView
 import com.github.exact7.xtra.ui.view.SlidingLayout
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.Prefs
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.player_stream.*
+
+private const val CHAT_OPENED = "ChatOpened"
 
 @Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment {
 
     private lateinit var slidingLayout: SlidingLayout
-    protected var isPortrait: Boolean = false
-        private set
+    private lateinit var playerView: PlayerView
+    private lateinit var chatView: ChatView
+    private lateinit var showChat: ImageButton
+    private lateinit var hideChat: ImageButton
+
+    private var isPortrait: Boolean = false
     abstract override val viewModel: PlayerViewModel
     abstract val channel: Channel
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        prefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,10 +66,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         slidingLayout.addListener(this)
         minimize.setOnClickListener { minimize() }
         if (isPortrait) {
-            fullscreenEnter.setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
             hideStatusBar()
-            fullscreenExit.setOnClickListener {
+            view.findViewById<ImageButton>(R.id.fullscreenExit).setOnClickListener {
                 activity.apply {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -61,7 +77,30 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
             }
         }
+        playerView = view.findViewById(R.id.playerView)
+        playerView.player = viewModel.player
         if (this !is OfflinePlayerFragment) {
+            chatView = view.findViewById(R.id.chatView)
+            if (!isPortrait) {
+                Prefs.get(requireContext()).getInt(C.LANDSCAPE_CHAT_WIDTH, -1).let {
+                    if (it > -1) {
+                        chatView.updateLayoutParams { width = it }
+                    }
+                }
+                hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
+                    setOnClickListener {
+                        hideChat()
+                        prefs.edit { putBoolean(CHAT_OPENED, false) }
+                    }
+                }
+                showChat = view.findViewById<ImageButton>(R.id.showChat).apply {
+                    setOnClickListener {
+                        showChat()
+                        prefs.edit { putBoolean(CHAT_OPENED, true) }
+                    }
+                }
+                if (prefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
+            }
             view.findViewById<ImageButton>(R.id.settings).apply {
                 isEnabled = false
                 setColorFilter(Color.GRAY)
@@ -76,6 +115,12 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     initializeFollow(this, viewModel as FollowViewModel, view.findViewById(R.id.follow), it)
                 }
             })
+            chatView.submitList(viewModel.chatMessages)
+            viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
+            viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
+            val emoteObserver: Observer<List<Emote>> = Observer(chatView::addEmotes)
+            viewModel.bttv.observe(viewLifecycleOwner, emoteObserver)
+            viewModel.ffz.observe(viewLifecycleOwner, emoteObserver)
         }
         if (this !is StreamPlayerFragment) {
             val prefs = Prefs.get(activity)
@@ -137,5 +182,19 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             showStatusBar()
         }
+    }
+
+    private fun hideChat() {
+        hideChat.visibility = View.GONE
+        showChat.visibility = View.VISIBLE
+        chatView.visibility = View.GONE
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+    }
+
+    private fun showChat() {
+        hideChat.visibility = View.VISIBLE
+        showChat.visibility = View.GONE
+        chatView.visibility = View.VISIBLE
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 }

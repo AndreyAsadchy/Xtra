@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
@@ -18,10 +20,21 @@ const val MAX_MESSAGE_COUNT = 125
 
 class ChatView : RelativeLayout {
 
+    interface MessageSenderCallback {
+        fun send(message: String)
+    }
+
     private lateinit var adapter: ChatAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private var isChatTouched: Boolean = false
     private var notTouched = true
+
+    var messageEnabled = false
+        set(value) {
+            messageView.visibility = if (value) View.VISIBLE else View.GONE
+            field = value
+        }
+    private var messageCallback: MessageSenderCallback? = null
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -69,13 +82,39 @@ class ChatView : RelativeLayout {
             }
         })
         btnDown.setOnClickListener { post { recyclerView.scrollToPosition(getLastItemPosition()) } }
+
+
+        editText.setOnEditorActionListener { v, actionId, _ ->
+            var handled = false
+            messageCallback?.let {
+                if (actionId == EditorInfo.IME_ACTION_SEND && v.text.isNotEmpty()) {
+                    it.send(v.text.toString())
+                    editText.text.clear()
+                    handled = true
+                }
+            }
+            handled
+        }
+        send.setOnClickListener {
+            messageCallback?.let {
+                val text = editText.text
+                if (text.isNotEmpty()) {
+                    it.send(text.toString())
+                    text.clear()
+                }
+            }
+        }
     }
 
     fun notifyAdapter() {
         adapter.notifyItemInserted(getLastItemPosition())
         if (adapter.itemCount > MAX_MESSAGE_COUNT) {
-            adapter.messages.removeFirst()
-            adapter.notifyItemRemoved(0)
+            try {
+                adapter.messages.removeFirst()
+                adapter.notifyItemRemoved(0)
+            } catch (e: NoSuchElementException) {
+                Crashlytics.log("ChatView.notifyAdapter NoSuchElementException. Adapter item count: ${adapter.itemCount}. Messages size: ${adapter.messages.size}. Error: ${e.message}")
+            }
         }
         if (!isChatTouched && !isButtonShowing()) {
             recyclerView.scrollToPosition(getLastItemPosition())
@@ -105,6 +144,10 @@ class ChatView : RelativeLayout {
         val extent = recyclerView.computeVerticalScrollExtent()
         val range = recyclerView.computeVerticalScrollRange()
         val percentage = (100f * offset / (range - extent).toFloat())
-        return percentage < 97f
+        return percentage < 96f
+    }
+
+    fun setCallback(callback: MessageSenderCallback) {
+        messageCallback = callback
     }
 }

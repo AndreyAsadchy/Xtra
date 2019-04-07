@@ -11,11 +11,9 @@
         style="@style/Player.Pause"/>
 
     <ImageButton
-        android:id="@+id/minimize"
         style="@style/Player.Minimize"/>
 
     <TextView
-        android:id="@+id/channel"
         style="@style/Player.Channel"/>
 
     <ImageButton
@@ -23,21 +21,17 @@
         style="@style/Player.Resume"/>
 
     <LinearLayout
-        android:id="@+id/topRightPanel"
         style="@style/Player.TopRightPanel">
 
         <ImageButton
-            android:id="@+id/follow"
             style="@style/Player.Follow"
             />
 
         <ImageButton
-            android:id="@+id/profile"
             style="@style/Player.Profile"
             />
 
         <ImageButton
-            android:id="@+id/settings"
             style="@style/Player.Settings"
             />
 
@@ -52,21 +46,10 @@
         android:layout_marginBottom="5dp">
 
         <ImageButton
-            android:id="@+id/minimizePlayer"
-            android:src="@drawable/baseline_unfold_less_black_24"
-            android:rotation="90"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            style="@style/Player.SmallImage" />
+            style="@style/Player.ShowChat" />
 
         <ImageButton
-            android:id="@+id/maximizePlayer"
-            android:src="@drawable/baseline_unfold_more_black_24"
-            android:rotation="90"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            style="@style/Player.SmallImage"
-            />
+            style="@style/Player.HideChat" />
 
         <!--<ImageButton-->
         <!--android:id="@+id/player_hide_chat"-->
@@ -80,7 +63,6 @@
         <!--android:src="@drawable/baseline_chat_black_24" />-->
 
         <ImageButton
-            android:id="@+id/fullscreenExit"
             style="@style/Player.FullscreenExit"/>
 
     </LinearLayout>

@@ -11,7 +11,7 @@ data class LiveChatMessage(
         override var color: String?,
         override val emotes: List<TwitchEmote>?,
         override val badges: List<Badge>?,
-        override val subscriberBadge: SubscriberBadge?,
+        override var subscriberBadge: SubscriberBadge?,
         val userId: Int,
         val userType: String?,
         override val displayName: String,

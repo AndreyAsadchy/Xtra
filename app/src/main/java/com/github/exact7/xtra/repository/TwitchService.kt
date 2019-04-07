@@ -32,7 +32,7 @@ interface TwitchService {
     fun loadUserByLogin(login: String) : LiveData<User>
     fun loadUserEmotes(userId: String) : LiveData<List<Emote>>
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
-    fun loadVideoChatLog(videoId: String, offsetSeconds: Double): LiveData<VideoMessagesResponse>
+    fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
     fun loadVideoChatAfter(videoId: String, cursor: String): LiveData<VideoMessagesResponse>
     fun loadUserFollows(userId: String, channelId: String): LiveData<Boolean>
     fun followChannel(userToken: String, userId: String, channelId: String): LiveData<Boolean>

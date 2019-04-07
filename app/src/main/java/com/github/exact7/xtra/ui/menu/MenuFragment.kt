@@ -15,11 +15,11 @@ import com.github.exact7.xtra.ui.SettingsActivity
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
+import com.github.exact7.xtra.ui.view.ChatView
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.Prefs
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_menu.*
-import kotlinx.android.synthetic.main.fragment_player_stream.view.*
 
 class MenuFragment : Fragment() {
 
@@ -54,7 +54,7 @@ class MenuFragment : Fragment() {
         data?.let {
             it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
                 if (value > -1 && activity.resources.configuration.orientation == 2) {
-                    activity.playerContainer?.chatContainer?.updateLayoutParams { width = value }
+                    activity.playerContainer?.findViewById<ChatView>(R.id.chatView)?.updateLayoutParams { width = value }
                 }
             }
             if (it.getBooleanExtra("shouldRecreate", false)) {

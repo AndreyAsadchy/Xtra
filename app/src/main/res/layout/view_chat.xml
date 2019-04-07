@@ -9,14 +9,50 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/chat_list_item"
-        />
+        android:layout_above="@id/messageView"
+        tools:listitem="@layout/chat_list_item" />
 
     <Button
         android:id="@+id/btnDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/scroll_down"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@id/recyclerView"
         android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/messageView"
+        android:orientation="horizontal"
+        android:background="?attr/primaryColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="textCapSentences|textAutoComplete"
+            android:imeOptions="actionSend"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <ImageButton
+            android:id="@+id/emotes"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_tag_faces_black_24dp"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"/>
+
+        <ImageButton
+            android:id="@+id/send"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_send_black_24dp"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"/>
+    </LinearLayout>
+
 </RelativeLayout>
