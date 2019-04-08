@@ -95,4 +95,5 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="search">Поиск</string>
+    <string name="chat_replay_unavailable">Повтор чата недоступен</string>
 </resources>

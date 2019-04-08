@@ -61,6 +61,7 @@ class LiveChatThread(
         } catch (e: IOException) {
 
         } finally {
+            Log.d(TAG, "Disconnecting from $hashChannelName")
             disconnect()
         }
     }
@@ -92,7 +93,6 @@ class LiveChatThread(
     }
 
     fun disconnect() {
-        Log.d(TAG, "Disconnecting from $hashChannelName")
         try {
             socketIn?.close()
             socketOut?.close()

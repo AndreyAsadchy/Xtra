@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.common
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -70,10 +69,6 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         } else {
             initialize()
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {

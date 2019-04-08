@@ -17,6 +17,8 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
+import com.github.exact7.xtra.util.visible
+import kotlinx.android.synthetic.main.fragment_player_clip.*
 import kotlinx.android.synthetic.main.player_video.*
 
 class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
@@ -35,19 +37,23 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_player_video, container, false)
+        return inflater.inflate(R.layout.fragment_player_clip, container, false)
     }
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipPlayerViewModel::class.java)
-        super.initialize()
+        viewModel.setClip(clip)
+        val enableChat = clip.vod != null
+        if (!enableChat) {
+            chatReplayUnavailable.visible()
+        }
+        initializeViewModel(viewModel, enableChat)
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             download.isEnabled = true
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-        viewModel.setClip(clip)
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities.keys, viewModel.selectedQualityIndex) }
         download.setOnClickListener { showDownloadDialog() }
     }

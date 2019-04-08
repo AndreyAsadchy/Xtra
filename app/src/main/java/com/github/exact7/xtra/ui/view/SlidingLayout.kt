@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isClick
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.DefaultTimeBar
@@ -106,7 +107,7 @@ class SlidingLayout : LinearLayout {
         secondView?.post {
             if (!isMaximized) {
                 if (!isPortrait) {
-                    secondView?.visibility = View.GONE
+                    secondView?.gone()
                 }
                 dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
@@ -218,7 +219,7 @@ class SlidingLayout : LinearLayout {
                 maximizedSecondViewVisibility = visibility
                 dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
-            visibility = View.GONE
+            gone()
         }
         animate(minScaleX, minScaleY)
         if (dragViewTop != 0) {

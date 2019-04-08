@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import kotlinx.android.synthetic.main.fragment_media_pager.*
 
-abstract class MediaPagerFragment : Fragment(), ItemAwarePagerFragment, Scrollable {
+abstract class MediaPagerFragment : BaseNetworkFragment(), ItemAwarePagerFragment, Scrollable {
 
     private lateinit var adapter: ItemAwareFragmentPagerAdapter
 

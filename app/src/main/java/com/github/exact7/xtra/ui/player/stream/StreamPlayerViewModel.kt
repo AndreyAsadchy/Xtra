@@ -13,6 +13,7 @@ import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
+import com.github.exact7.xtra.util.nullIfEmpty
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
@@ -51,7 +52,7 @@ class StreamPlayerViewModel @Inject constructor(
                     })
                     .addTo(compositeDisposable)
             initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
-         }
+        }
     }
 
     override fun changeQuality(index: Int) {
@@ -74,22 +75,8 @@ class StreamPlayerViewModel @Inject constructor(
     }
 
     private fun startChat() {
-        val userName = user.name.let {
-            if (it == "") {
-                null
-            } else {
-                it
-            }
-        }
-
-        val userToken = user.token.let {
-            if (it == "") {
-                null
-            } else {
-                it
-            }
-        }
-        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, userName, userToken, subscriberBadges, this)
+        stopChat()
+        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this)
     }
 
     private fun stopChat() {

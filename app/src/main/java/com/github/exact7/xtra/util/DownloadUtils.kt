@@ -11,7 +11,7 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.github.exact7.xtra.GlideApp
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.Downloadable
@@ -29,7 +29,17 @@ import java.util.Calendar
 
 object DownloadUtils {
 
-    val isExternalStorageAvailable get() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+    val isExternalStorageAvailable: Boolean
+        get() {
+            var state: String? = null
+            return try {
+                state = Environment.getExternalStorageState()
+                state == Environment.MEDIA_MOUNTED
+            } catch (e: Exception) {
+                Crashlytics.log("DownloadUtils.isExternalStorageAvailable: ${e.message}. State: $state ")
+                false
+            }
+        }
 
     fun download(context: Context, request: Request, wifiOnly: Boolean = false) {
         val intent = Intent(context, DownloadService::class.java)

@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.player
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,7 +31,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.LinkedList
 
 abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener {
 
@@ -48,10 +48,10 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     val ffz: LiveData<List<FfzEmote>>
         get() = _ffz
     protected var subscriberBadges: SubscriberBadgesResponse? = null
-    private val _chatMessages: MutableLiveData<LinkedList<ChatMessage>> by lazy {
-        MutableLiveData<LinkedList<ChatMessage>>().apply { value = LinkedList() }
+    private val _chatMessages: MutableLiveData<MutableList<ChatMessage>> by lazy {
+        MutableLiveData<MutableList<ChatMessage>>().apply { value = ArrayList() }
     }
-    val chatMessages: LiveData<LinkedList<ChatMessage>>
+    val chatMessages: LiveData<MutableList<ChatMessage>>
         get() = _chatMessages
     private val _newMessage: MutableLiveData<ChatMessage> by lazy { MutableLiveData<ChatMessage>() }
     val newMessage: LiveData<ChatMessage>
@@ -66,7 +66,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     }
 
     protected fun clearMessages() {
-        _chatMessages.postValue(LinkedList())
+        _chatMessages.postValue(ArrayList())
     }
 
     protected fun play() {
@@ -147,6 +147,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
 
     override fun onPlayerError(error: ExoPlaybackException) {
         GlobalScope.launch {
+            Log.e("PlayerViewModel", "Player error. Retrying...", error)
             delay(1000L)
             runBlocking(Dispatchers.Main) {
                 play()

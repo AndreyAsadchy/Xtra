@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.github.exact7.xtra.ui.view.SlidingLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <com.github.exact7.xtra.ui.view.CustomPlayerView
+        android:id="@+id/playerView"
+        app:controller_layout_id="@layout/player_video"
+        style="@style/Player.Landscape"/>
+
+    <com.github.exact7.xtra.ui.view.ChatView
+        android:id="@+id/chatView"
+        style="@style/ChatViewLandscape">
+
+        <TextView
+            android:id="@+id/chatReplayUnavailable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_replay_unavailable"
+            android:textColor="?attr/textColor"
+            android:layout_centerInParent="true"
+            android:maxLines="3"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:visibility="gone"/>
+
+    </com.github.exact7.xtra.ui.view.ChatView>
+
+</com.github.exact7.xtra.ui.view.SlidingLayout>

@@ -1,7 +1,5 @@
 package com.github.exact7.xtra.ui
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.text.format.DateUtils
@@ -10,33 +8,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.databinding.BindingAdapter
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.signature.ObjectKey
-import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.util.TwitchApiHelper
-import java.util.Calendar
+import com.github.exact7.xtra.util.loadImage
+import com.github.exact7.xtra.util.visible
 
-@SuppressLint("CheckResult")
 @BindingAdapter("imageUrl", "changes", "circle", requireAll = false)
 fun loadImage(imageView: ImageView, url: String?, changes: Boolean, circle: Boolean) {
-    val activity = imageView.context as Activity
-    if (activity.isFinishing) return
-    val request = GlideApp.with(activity)
-            .load(url)
-            .transition(DrawableTransitionOptions.withCrossFade())
-    if (changes) {
-        val calendar = Calendar.getInstance()
-        request.signature(ObjectKey(Math.floor(calendar.get(Calendar.MINUTE) / 10.0 * 2.0) / 2.0 + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
-    }
-    if (circle) {
-        request.circleCrop()
-    }
-    request.into(imageView)
+    imageView.loadImage(url, changes, circle)
 }
 
 @BindingAdapter("visible")
 fun setVisible(view: View, visible: Boolean?) {
-    view.visibility = if (visible == true) View.VISIBLE else View.GONE
+    view.visible(visible == true)
 }
 
 @BindingAdapter("enabled")

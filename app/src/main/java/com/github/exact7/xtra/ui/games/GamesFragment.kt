@@ -32,6 +32,11 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
                 binding.root
             }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+    }
+
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
@@ -42,11 +47,6 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
             adapter.submitList(it)
         })
         search.setOnClickListener { activity.openSearch() }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
     }
 
     override fun scrollToTop() {

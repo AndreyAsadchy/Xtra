@@ -22,7 +22,6 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crashlytics.android.Crashlytics
-import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
@@ -31,18 +30,22 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
 import com.github.exact7.xtra.util.DisplayUtils.convertDpToPixels
 import com.github.exact7.xtra.util.DisplayUtils.getDisplayDensity
-import java.util.LinkedList
 import java.util.Random
 import kotlin.collections.set
 
-const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
-const val BTTV_URL = "https://cdn.betterttv.net/emote/"
+private const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
+private const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
-class ChatAdapter(
-        val messages: LinkedList<ChatMessage>,
-        private val userNickname: String?,
-        private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
+    var messages: MutableList<ChatMessage>? = null
+        set(value) {
+            val oldSize = field?.size ?: 0
+            if (oldSize > 0) {
+                notifyItemRangeRemoved(0, oldSize)
+            }
+            field = value
+        }
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
     private val random = Random()
     private val userColors = HashMap<String, Int>()
@@ -50,6 +53,7 @@ class ChatAdapter(
     private val emotes: HashMap<String, Emote> = initBttv().also { it.putAll(initFfz()) }
     private val emoteSize = convertDpToPixels(context, 26f)
     private val badgeSize = convertDpToPixels(context, 18f)
+    private var username: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -57,7 +61,7 @@ class ChatAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val builder = SpannableStringBuilder()
-        val chatMessage = messages[position]
+        val chatMessage = messages?.get(position) ?: return
         val badgesUrl = "https://static-cdn.jtvnw.net/chat-badges/"
         val images = ArrayList<Image>()
         var index = 0
@@ -141,7 +145,7 @@ class ChatAdapter(
                         if (value.startsWith('@')) {
                             builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
-                        userNickname?.let {
+                        username?.let {
                             if (value.contains(it, true) && !value.endsWith(':')) {
                                 builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                             }
@@ -187,7 +191,7 @@ class ChatAdapter(
         holder.bind(builder)
     }
 
-    override fun getItemCount(): Int = messages.size
+    override fun getItemCount(): Int = messages?.size ?: 0
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
         images.forEach { (url, start, end, isEmote, isPng, width) ->
@@ -246,6 +250,10 @@ class ChatAdapter(
 
     fun addEmotes(list: List<Emote>) {
         emotes.putAll(list.associateBy { it.name })
+    }
+
+    fun setUsername(username: String) {
+        this.username = username
     }
 
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]

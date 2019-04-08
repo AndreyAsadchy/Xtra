@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.github.exact7.xtra.databinding.FragmentChannelBinding
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
@@ -20,8 +19,9 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
+import com.github.exact7.xtra.util.loadImage
+import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_channel.*
-import javax.inject.Inject
 
 
 class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
@@ -30,24 +30,40 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
         fun newInstance(channel: Channel) = ChannelPagerFragment().apply { arguments = bundleOf(C.CHANNEL to channel) }
     }
 
-    private lateinit var binding: FragmentChannelBinding
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    override lateinit var viewModel: ChannelPagerViewModel
+    private lateinit var channel: Channel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            FragmentChannelBinding.inflate(inflater, container, false).let {
-                binding = it
-                it.lifecycleOwner = viewLifecycleOwner
-                binding.root
-            }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channel = requireArguments().getParcelable(C.CHANNEL)!!
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_channel, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
         setAdapter(ChannelPagerAdapter(activity, childFragmentManager, requireArguments()))
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelPagerViewModel::class.java)
-        binding.viewModel = viewModel
-        viewModel.loadStream(requireArguments().getParcelable(C.CHANNEL)!!)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            appBar.setExpanded(false, false)
+        }
+        collapsingToolbar.title = channel.displayName
+        logo.loadImage(channel.logo, circle = true)
+        toolbar.apply {
+            navigationIcon = Utils.getNavigationIcon(activity)
+            setNavigationOnClickListener { activity.popFragment() }
+        }
+        search.setOnClickListener { activity.openSearch() }
+    }
+
+    override fun initialize() {
+        val activity = requireActivity() as MainActivity
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelPagerViewModel::class.java)
+        viewModel.loadStream(channel)
         viewModel.stream.observe(viewLifecycleOwner, Observer {
+            watchLive.visible(it.stream != null)
             it.stream?.let { s ->
                 toolbarContainer.updateLayoutParams { height = ViewGroup.LayoutParams.WRAP_CONTENT }
                 collapsingToolbar.expandedTitleMarginBottom = DisplayUtils.convertDpToPixels(activity, 50.5f)
@@ -59,13 +75,9 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
                 initializeFollow(this, viewModel, follow, it)
             }
         })
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            appBar.setExpanded(false, false)
-        }
-        toolbar.apply {
-            navigationIcon = Utils.getNavigationIcon(activity)
-            setNavigationOnClickListener { activity.popFragment() }
-        }
-        search.setOnClickListener { activity.openSearch() }
+    }
+
+    override fun onNetworkRestored() {
+        viewModel.retry()
     }
 }

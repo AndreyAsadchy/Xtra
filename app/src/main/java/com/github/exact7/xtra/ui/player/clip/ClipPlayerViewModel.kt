@@ -80,7 +80,7 @@ class ClipPlayerViewModel @Inject constructor(
 
                     })
                     .addTo(compositeDisposable)
-            clip.vod?.let { //TODO else show chat replay is not available
+            clip.vod?.let {
                 initChat(playerRepository, clip.broadcaster.id, clip.channelName)
                 val time = it.url.substringAfterLast('=').split("\\D".toRegex())
                 var offset = 0.0

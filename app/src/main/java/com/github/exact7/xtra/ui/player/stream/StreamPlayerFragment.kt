@@ -39,15 +39,10 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
         ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
-            chatView.messageEnabled = if (it is LoggedIn) {
-                chatView.setUserNickname(it.name)
-                true
-            } else {
-                false
-            }
             viewModel.startStream(stream, it)
+            initializeViewModel(viewModel)
+            chatView.messagingEnabled = it is LoggedIn
         })
-        super.initialize()
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO

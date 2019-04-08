@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.github.exact7.xtra.repository.LoadingState
+import com.github.exact7.xtra.util.nullIfEmpty
 import java.util.concurrent.Executor
 
 abstract class BasePageKeyedDataSource<T>(
@@ -37,14 +38,14 @@ abstract class BasePageKeyedDataSource<T>(
     }
 
     protected fun PageKeyedDataSource.LoadInitialCallback<String, T>.onSuccess(data: List<T>, cursor: String) {
-        this.onResult(data, 0, data.size, null, cursorOrNull(cursor))
+        this.onResult(data, 0, data.size, null, cursor.nullIfEmpty())
         Log.d(tag, "Successfully loaded data")
         loadingState.postValue(LoadingState.LOADED)
         retry = null
     }
 
     protected fun PageKeyedDataSource.LoadCallback<String, T>.onSuccess(data: List<T>, cursor: String) {
-        this.onResult(data, cursorOrNull(cursor))
+        this.onResult(data, cursor.nullIfEmpty())
         Log.d(tag, "Successfully loaded data")
         pagingState.postValue(LoadingState.LOADED)
         retry = null
@@ -63,6 +64,4 @@ abstract class BasePageKeyedDataSource<T>(
         retry = { loadAfter(params, this) }
         pagingState.postValue(LoadingState.FAILED)
     }
-
-    private fun cursorOrNull(cursor: String) = cursor.let { if (it.isNotEmpty()) it else null }
 }

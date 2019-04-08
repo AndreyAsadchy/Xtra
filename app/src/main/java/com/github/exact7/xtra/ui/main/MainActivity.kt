@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +53,8 @@ import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.NetworkUtils
 import com.github.exact7.xtra.util.Prefs
+import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.visible
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -244,7 +245,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             0 -> {
                 if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) {
                     val fragment = fragNavController.currentFrag
-                    if (fragment is MediaPagerFragment && fragment.currentFragment is HasDownloadDialog) {
+                    if (fragment is HasDownloadDialog) {
+                        fragment.showDownloadDialog()
+                    } else if (fragment is MediaPagerFragment && fragment.currentFragment is HasDownloadDialog) {
                         (fragment.currentFragment as HasDownloadDialog).showDownloadDialog()
                     }
                 } else {
@@ -263,7 +266,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-//Navigation listeners
+    //Navigation listeners
 
     override fun openGame(game: Game) {
         fragNavController.pushFragment(GameFragment.newInstance(game))
@@ -323,11 +326,11 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     private fun hideNavigationBar() {
-        navBarContainer.visibility = View.GONE
+        navBarContainer.gone()
     }
 
     private fun showNavigationBar() {
-        navBarContainer.visibility = View.VISIBLE
+        navBarContainer.visible()
     }
 
     fun popFragment() {
@@ -345,7 +348,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private fun initNavigation() {
         fragNavController.apply {
             rootFragments = listOf(GamesFragment(), TopFragment(), FollowValidationFragment(), DownloadsFragment(), MenuFragment())
-            fragmentHideStrategy = FragNavController.HIDE
+            fragmentHideStrategy = FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH
             transactionListener = object : FragNavController.TransactionListener {
                 override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType) {
                     if (isSearchOpened) {

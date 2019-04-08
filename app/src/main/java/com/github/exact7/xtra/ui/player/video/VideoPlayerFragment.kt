@@ -40,14 +40,14 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
-        super.initialize()
+        viewModel.setVideo(video)
+        initializeViewModel(viewModel)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             settings.isEnabled = true
             download.isEnabled = true
             settings.setColorFilter(Color.WHITE)
             download.setColorFilter(Color.WHITE)
         })
-        viewModel.setVideo(video)
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }

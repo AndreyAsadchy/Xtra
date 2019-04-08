@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
-import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
@@ -31,6 +30,8 @@ import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.Prefs
+import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.player_stream.*
@@ -47,9 +48,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private lateinit var hideChat: ImageButton
 
     private var isPortrait: Boolean = false
-    abstract override val viewModel: PlayerViewModel
-    abstract val channel: Channel
     private lateinit var prefs: SharedPreferences
+    abstract val channel: Channel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +57,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         prefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     }
 
-    override fun initialize() {
-        val view = requireView()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
         val activity = requireActivity() as MainActivity
         slidingLayout = view as SlidingLayout
@@ -78,7 +78,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             }
         }
         playerView = view.findViewById(R.id.playerView)
-        playerView.player = viewModel.player
         if (this !is OfflinePlayerFragment) {
             chatView = view.findViewById(R.id.chatView)
             if (!isPortrait) {
@@ -110,16 +109,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 slidingLayout.minimize()
             }
             view.findViewById<TextView>(R.id.channel).text = channel.displayName
-            ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
-                if (it is LoggedIn) {
-                    initializeFollow(this, viewModel as FollowViewModel, view.findViewById(R.id.follow), it)
-                }
-            })
-            viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
-            viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyAdapter() })
-            val emoteObserver: Observer<List<Emote>> = Observer(chatView::addEmotes)
-            viewModel.bttv.observe(viewLifecycleOwner, emoteObserver)
-            viewModel.ffz.observe(viewLifecycleOwner, emoteObserver)
         }
         if (this !is StreamPlayerFragment) {
             val prefs = Prefs.get(activity)
@@ -147,6 +136,29 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     setColorFilter(Color.GRAY)
                 }
             }
+        }
+    }
+
+    protected fun initializeViewModel(viewModel: PlayerViewModel, enableChat: Boolean = true) {
+        playerView.player = viewModel.player
+        if (this !is OfflinePlayerFragment) {
+            ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
+                if (it is LoggedIn) {
+                    if (enableChat) {
+                        chatView.setUsername(it.name)
+                    }
+                    if (viewModel is FollowViewModel) {
+                        initializeFollow(this, viewModel, requireView().findViewById(R.id.follow), it)
+                    }
+                }
+            })
+        }
+        if (enableChat) {
+            viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
+            viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyMessageAdded() })
+            val emotesObserver = Observer(chatView::addEmotes)
+            viewModel.bttv.observe(viewLifecycleOwner, emotesObserver)
+            viewModel.ffz.observe(viewLifecycleOwner, emotesObserver)
         }
     }
 
@@ -184,16 +196,16 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     private fun hideChat() {
-        hideChat.visibility = View.GONE
-        showChat.visibility = View.VISIBLE
-        chatView.visibility = View.GONE
+        hideChat.gone()
+        showChat.visible()
+        chatView.gone()
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
     }
 
     private fun showChat() {
-        hideChat.visibility = View.VISIBLE
-        showChat.visibility = View.GONE
-        chatView.visibility = View.VISIBLE
+        hideChat.visible()
+        showChat.gone()
+        chatView.visible()
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 }

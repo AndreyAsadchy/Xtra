@@ -11,10 +11,12 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.ui.common.ChatAdapter
+import com.github.exact7.xtra.util.isGone
+import com.github.exact7.xtra.util.toggleVisibility
+import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.view_chat.view.*
-import java.util.LinkedList
 
-const val MAX_MESSAGE_COUNT = 125
+private const val MAX_MESSAGE_COUNT = 125
 
 class ChatView : RelativeLayout {
 
@@ -22,17 +24,16 @@ class ChatView : RelativeLayout {
         fun send(message: String)
     }
 
-    private lateinit var adapter: ChatAdapter
-    private lateinit var layoutManager: LinearLayoutManager
+    private val adapter = ChatAdapter(context)
+    private val layoutManager = LinearLayoutManager(context)
     private var isChatTouched: Boolean = false
-    private var userNickname: String? = null
 
-    var messageEnabled = false
+    private var messageCallback: MessageSenderCallback? = null
+    var messagingEnabled = false
         set(value) {
-            messageView.visibility = if (value) View.VISIBLE else View.GONE
+            messageView.visible(value)
             field = value
         }
-    private var messageCallback: MessageSenderCallback? = null
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -52,26 +53,22 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        recyclerView.adapter = adapter
         recyclerView.itemAnimator = null
-        layoutManager = LinearLayoutManager(context)
         layoutManager.stackFromEnd = true
         recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 isChatTouched = newState == RecyclerView.SCROLL_STATE_DRAGGING
-                val showButton = shouldShowButton()
-                val buttonShowing = isButtonShowing()
-                if (!buttonShowing && showButton) {
-                    btnDown.visibility = View.VISIBLE
-                } else if (buttonShowing && !showButton) {
-                    btnDown.visibility = View.GONE
-                }
+                btnDown.visible(shouldShowButton())
             }
         })
         btnDown.setOnClickListener {
-            it.visibility = if (isButtonShowing()) View.GONE else View.VISIBLE
-            post { recyclerView.scrollToPosition(getLastItemPosition()) }
+            post {
+                recyclerView.scrollToPosition(getLastItemPosition())
+                it.toggleVisibility()
+            }
         }
 
 
@@ -97,32 +94,32 @@ class ChatView : RelativeLayout {
         }
     }
 
-    fun notifyAdapter() {
-        adapter.notifyItemInserted(getLastItemPosition())
-        if (adapter.itemCount > MAX_MESSAGE_COUNT) {
-            adapter.messages.removeFirst()
-            adapter.notifyItemRemoved(0)
-        }
-        if (!isChatTouched && !isButtonShowing()) {
-            recyclerView.scrollToPosition(getLastItemPosition())
-        }
+    fun submitList(list: MutableList<ChatMessage>) {
+        adapter.messages = list
     }
 
-    fun submitList(list: LinkedList<ChatMessage>) {
-        adapter = ChatAdapter(list, userNickname, context)
-        recyclerView.adapter = adapter
+    fun notifyMessageAdded() {
+        adapter.messages?.let {
+            adapter.notifyItemInserted(getLastItemPosition())
+            if (getLastItemPosition() > MAX_MESSAGE_COUNT) {
+                it.removeAt(0)
+                adapter.notifyItemRemoved(0)
+            }
+            if (!isChatTouched && btnDown.isGone()) {
+                recyclerView.scrollToPosition(getLastItemPosition())
+            }
+        }
     }
 
     fun addEmotes(list: List<Emote>) {
         adapter.addEmotes(list)
     }
 
-    fun setUserNickname(nickname: String) {
-        userNickname = nickname
+    fun setUsername(username: String) {
+        adapter.setUsername(username)
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1
-    private fun isButtonShowing(): Boolean = btnDown.visibility == View.VISIBLE
     private fun shouldShowButton(): Boolean {
         val offset = recyclerView.computeVerticalScrollOffset()
         if (offset < 0) {

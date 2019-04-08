@@ -41,17 +41,25 @@ class ChannelPagerViewModel @Inject constructor(
 
     fun loadStream(channel: Channel) {
         if (_channel.value != channel) {
+            _channel.value = channel
             repository.loadStream(channel.id)
                     .subscribeBy(onSuccess = {
                         _stream.value = it
                     })
                     .addTo(compositeDisposable)
-            _channel.value = channel
         }
     }
 
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()
+    }
+
+    fun retry() {
+        if (_stream.value == null) {
+            _channel.value?.let {
+                loadStream(it)
+            }
+        }
     }
 }

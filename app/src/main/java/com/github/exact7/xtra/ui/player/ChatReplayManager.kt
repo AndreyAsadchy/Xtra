@@ -24,7 +24,7 @@ class ChatReplayManager @Inject constructor(
         private val startTime: Double,
         private val player: ExoPlayer,
         private val addMessage: (ChatMessage) -> Unit,
-        private val clearList: () -> Unit) {
+        private val clearMessages: () -> Unit) {
 
     private var job: Job? = null
     private val timer: Timer
@@ -49,7 +49,7 @@ class ChatReplayManager @Inject constructor(
         if (disposable != null) {
             cancel()
             list.clear()
-            clearList.invoke()
+            clearMessages.invoke()
         }
         disposable = repository.loadVideoChatLog(videoId, offset)
                 .doOnSubscribe { isLoading = true }

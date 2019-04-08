@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.View
 import android.webkit.CookieManager
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -21,6 +20,8 @@ import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.visible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_login.*
@@ -53,7 +54,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
         val user = Prefs.getUser(this)
         if (user is NotLoggedIn) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
-                welcomeContainer.visibility = View.VISIBLE
+                welcomeContainer.visible()
                 loginText.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
             } else {
@@ -71,7 +72,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView.visibility = View.VISIBLE
+        webView.visible()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().removeAllCookies(null)
         } else {
@@ -86,12 +87,13 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                     val matcher = pattern.matcher(url)
                     if (matcher.find()) {
-                        webView.visibility = View.GONE
-                        welcomeContainer.visibility = View.GONE
-                        progressBar.visibility = View.VISIBLE
+                        webView.gone()
+                        welcomeContainer.gone()
+                        progressBar.visible()
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
+                                    TwitchApiHelper.validated = true
                                     Prefs.setUser(this@LoginActivity, LoggedIn(response.userId, response.username, token))
                                     setResult(RESULT_OK)
                                     finish()
