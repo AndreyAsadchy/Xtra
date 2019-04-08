@@ -12,7 +12,6 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.ClipRequest
@@ -62,8 +61,6 @@ class DownloadService : IntentService(TAG), Injectable {
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var request: com.github.exact7.xtra.model.offline.Request
     private lateinit var offlineVideo: OfflineVideo
-    private var stopped = false
-    private var completed = false
 
     init {
         setIntentRedelivery(true)
@@ -200,34 +197,11 @@ class DownloadService : IntentService(TAG), Injectable {
         fetch.enqueue(requests)
     }
 
-    override fun onDestroy() {
-        stopForegroundInternal(true)
-        if (!completed) {
-            try {
-                if (!fetch.isClosed) { //TODO
-                    fetch.deleteAll()
-                    fetch.close()
-                }
-            } catch (e: Exception) {
-                Crashlytics.logException(e)
-            }
-            try {
-                offlineRepository.deleteVideo(offlineVideo)
-            } catch (e: Exception) {
-                Crashlytics.logException(e)
-            }
-        }
-        super.onDestroy()
-    }
-
     private fun stopForegroundInternal(removeNotification: Boolean) {
-        if (!stopped) {
-            stopped = true
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                stopForeground(if (removeNotification) Service.STOP_FOREGROUND_REMOVE else Service.STOP_FOREGROUND_DETACH)
-            } else {
-                stopForeground(removeNotification)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(if (removeNotification) Service.STOP_FOREGROUND_REMOVE else Service.STOP_FOREGROUND_DETACH)
+        } else {
+            stopForeground(removeNotification)
         }
     }
 
@@ -279,7 +253,6 @@ class DownloadService : IntentService(TAG), Injectable {
         notificationManager.apply {
             notify(request.id, notificationBuilder.build())
         }
-        completed = true
         stopForegroundInternal(false)
     }
 

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.util.FetchProvider
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.GlobalScope
@@ -25,7 +26,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                     close()
                 }
             } catch (e: Exception) {
-
+                Crashlytics.logException(e)
             }
         }
     }

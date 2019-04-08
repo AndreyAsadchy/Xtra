@@ -38,15 +38,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
-        viewModel.loaded.observe(this, Observer {
-            settings.isEnabled = true
-            settings.setColorFilter(Color.WHITE) //TODO
-        })
-        viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
-        settings.setOnClickListener {
-            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
-        }
-        resume.setOnClickListener { viewModel.player.seekToDefaultPosition() }
         ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
             chatView.messageEnabled = if (it is LoggedIn) {
                 chatView.setUserNickname(it.name)
@@ -56,6 +47,16 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             }
             viewModel.startStream(stream, it)
         })
+        super.initialize()
+        viewModel.loaded.observe(this, Observer {
+            settings.isEnabled = true
+            settings.setColorFilter(Color.WHITE) //TODO
+        })
+        viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
+        settings.setOnClickListener {
+            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
+        }
+        resume.setOnClickListener { viewModel.player.seekToDefaultPosition() }
     }
 
 //    override fun play(obj: Parcelable) {

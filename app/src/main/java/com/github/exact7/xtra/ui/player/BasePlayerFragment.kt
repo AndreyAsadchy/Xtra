@@ -57,8 +57,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         prefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initialize() {
+        val view = requireView()
         view.keepScreenOn = true
         val activity = requireActivity() as MainActivity
         slidingLayout = view as SlidingLayout

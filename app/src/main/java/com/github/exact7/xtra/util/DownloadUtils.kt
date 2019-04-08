@@ -39,6 +39,8 @@ object DownloadUtils {
         context.startService(intent)
     }
 
+//    fun createClipRequest()
+
     fun prepareDownload(context: Context, downloadable: Downloadable, path: String, duration: Long): OfflineVideo {
         val offlinePath = if (downloadable is Video) {
             "$path${System.currentTimeMillis()}.m3u8"

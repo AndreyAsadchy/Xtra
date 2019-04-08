@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.text.format.DateUtils
@@ -18,7 +19,9 @@ import java.util.Calendar
 @SuppressLint("CheckResult")
 @BindingAdapter("imageUrl", "changes", "circle", requireAll = false)
 fun loadImage(imageView: ImageView, url: String?, changes: Boolean, circle: Boolean) {
-    val request = GlideApp.with(imageView.context)
+    val activity = imageView.context as Activity
+    if (activity.isFinishing) return
+    val request = GlideApp.with(activity)
             .load(url)
             .transition(DrawableTransitionOptions.withCrossFade())
     if (changes) {

@@ -3,9 +3,12 @@ package com.github.exact7.xtra.ui.common
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.di.Injectable
+import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.NetworkUtils
 import javax.inject.Inject
 
@@ -41,35 +44,38 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        if (enableNetworkCheck) {
-//            if (!isInitialized && (created || (lastState && userVisibleHint))) {
-//                initChat()
-//            }
-//            val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-//            viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
-//                val isOnline = it.peekContent()
-//                if (isOnline && !lastState) {
-//                    shouldRestore = if (userVisibleHint) {
-//                        if (isInitialized) {
-//                            onNetworkRestored()
-//                        } else {
-//                            initChat()
-//                        }
-//                        false
-//                    } else {
-//                        true
-//                    }
-//                }
-//                lastState = isOnline
-//            })
-//        } else {
-        if (userVisibleHint)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (enableNetworkCheck) {
+            if (!isInitialized && (created || (lastState && userVisibleHint))) {
+                init()
+            }
+            val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+            viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
+                val isOnline = it.peekContent()
+                if (isOnline && !lastState) {
+                    shouldRestore = if (userVisibleHint) {
+                        if (isInitialized) {
+                            onNetworkRestored()
+                        } else {
+                            init()
+                        }
+                        false
+                    } else {
+                        true
+                    }
+                }
+                lastState = isOnline
+            })
+        } else {
             initialize()
         }
-//    }
-//
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (enableNetworkCheck) {
@@ -81,7 +87,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         super.setUserVisibleHint(isVisibleToUser)
         if (enableNetworkCheck) {
             if (!isInitialized) {
-                if (isVisibleToUser && isResumed && lastState) {
+                if (isVisibleToUser && lastState) {
                     init()
                 }
             } else if (shouldRestore && lastState) {

@@ -2,7 +2,6 @@ package com.github.exact7.xtra.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
@@ -26,7 +25,7 @@ class ChatView : RelativeLayout {
     private lateinit var adapter: ChatAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private var isChatTouched: Boolean = false
-    private var notTouched = true
+    private var userNickname: String? = null
 
     var messageEnabled = false
         set(value) {
@@ -57,19 +56,10 @@ class ChatView : RelativeLayout {
         layoutManager = LinearLayoutManager(context)
         layoutManager.stackFromEnd = true
         recyclerView.layoutManager = layoutManager
-        recyclerView.setOnTouchListener { _, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> isChatTouched = true
-                MotionEvent.ACTION_UP -> {
-                    isChatTouched = false
-                    notTouched = false
-                }
-            }
-            false
-        }
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                isChatTouched = newState == RecyclerView.SCROLL_STATE_DRAGGING
                 val showButton = shouldShowButton()
                 val buttonShowing = isButtonShowing()
                 if (!buttonShowing && showButton) {
@@ -79,7 +69,10 @@ class ChatView : RelativeLayout {
                 }
             }
         })
-        btnDown.setOnClickListener { post { recyclerView.scrollToPosition(getLastItemPosition()) } }
+        btnDown.setOnClickListener {
+            it.visibility = if (isButtonShowing()) View.GONE else View.VISIBLE
+            post { recyclerView.scrollToPosition(getLastItemPosition()) }
+        }
 
 
         editText.setOnEditorActionListener { v, actionId, _ ->
@@ -116,7 +109,7 @@ class ChatView : RelativeLayout {
     }
 
     fun submitList(list: LinkedList<ChatMessage>) {
-        adapter = ChatAdapter(list, context)
+        adapter = ChatAdapter(list, userNickname, context)
         recyclerView.adapter = adapter
     }
 
@@ -125,13 +118,12 @@ class ChatView : RelativeLayout {
     }
 
     fun setUserNickname(nickname: String) {
-        adapter.setUserNickname(nickname)
+        userNickname = nickname
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1
     private fun isButtonShowing(): Boolean = btnDown.visibility == View.VISIBLE
     private fun shouldShowButton(): Boolean {
-        if (notTouched) return false
         val offset = recyclerView.computeVerticalScrollOffset()
         if (offset < 0) {
             return false
@@ -139,7 +131,7 @@ class ChatView : RelativeLayout {
         val extent = recyclerView.computeVerticalScrollExtent()
         val range = recyclerView.computeVerticalScrollRange()
         val percentage = (100f * offset / (range - extent).toFloat())
-        return percentage < 96f
+        return percentage < 97f
     }
 
     fun setCallback(callback: MessageSenderCallback) {

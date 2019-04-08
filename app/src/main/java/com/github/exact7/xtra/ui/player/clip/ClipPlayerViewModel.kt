@@ -47,7 +47,7 @@ class ClipPlayerViewModel @Inject constructor(
             return c.broadcaster.id to c.broadcaster.displayName
         }
     override lateinit var follow: FollowLiveData
-    private lateinit var chatReplayManager: ChatReplayManager
+    private var chatReplayManager: ChatReplayManager? = null
 
     override fun changeQuality(index: Int) {
         playbackProgress = player.currentPosition
@@ -107,7 +107,7 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        chatReplayManager.stop()
+        chatReplayManager?.stop()
         super.onCleared()
     }
 }

@@ -11,6 +11,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "videos")
 data class OfflineVideo(
         val url: String,
+//        val sourceUrl: String,
         val name: String,
         @ColumnInfo(name = "channel_name")
         val channelName: String,

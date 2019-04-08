@@ -40,6 +40,7 @@ const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
 class ChatAdapter(
         val messages: LinkedList<ChatMessage>,
+        private val userNickname: String?,
         private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     private val twitchColors = intArrayOf(-65536, -16776961, -16744448, -5103070, -32944, -6632142, -47872, -13726889, -2448096, -2987746, -10510688, -14774017, -38476, -7722014, -16711809)
@@ -47,7 +48,6 @@ class ChatAdapter(
     private val userColors = HashMap<String, Int>()
     private val savedColors = HashMap<String, Int>()
     private val emotes: HashMap<String, Emote> = initBttv().also { it.putAll(initFfz()) }
-    private var userNickname: String? = null
     private val emoteSize = convertDpToPixels(context, 26f)
     private val badgeSize = convertDpToPixels(context, 18f)
 
@@ -246,10 +246,6 @@ class ChatAdapter(
 
     fun addEmotes(list: List<Emote>) {
         emotes.putAll(list.associateBy { it.name })
-    }
-
-    fun setUserNickname(nickname: String) {
-        userNickname = nickname
     }
 
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]

@@ -38,14 +38,9 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         return inflater.inflate(R.layout.fragment_player_video, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities.keys, viewModel.selectedQualityIndex) }
-        download.setOnClickListener { showDownloadDialog() }
-    }
-
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipPlayerViewModel::class.java)
+        super.initialize()
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             download.isEnabled = true
@@ -53,6 +48,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             download.setColorFilter(Color.WHITE)
         })
         viewModel.setClip(clip)
+        settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities.keys, viewModel.selectedQualityIndex) }
+        download.setOnClickListener { showDownloadDialog() }
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
