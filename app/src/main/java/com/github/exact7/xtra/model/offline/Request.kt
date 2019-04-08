@@ -20,7 +20,6 @@ class VideoRequest(
         val videoId: String,
         url: String,
         path: String,
-        val token: String?,
         val segmentFrom: Int,
         val segmentTo: Int) : Request(offlineVideoId, url, path) {
 

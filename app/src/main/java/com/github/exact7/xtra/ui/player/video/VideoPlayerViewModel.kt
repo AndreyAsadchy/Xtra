@@ -4,8 +4,6 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.exact7.xtra.model.LoggedIn
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -42,10 +40,10 @@ class VideoPlayerViewModel @Inject constructor(
         }
     private lateinit var chatReplayManager: ChatReplayManager
 
-    fun setVideo(video: Video, user: User) {
+    fun setVideo(video: Video) {
         if (_video.value != video) {
             _video.value = video
-            playerRepository.fetchVideoPlaylist(video.id, if (user is LoggedIn) user.token else null)
+            playerRepository.fetchVideoPlaylist(video.id)
                     .map { Uri.parse(it.raw().request().url().toString()) }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

@@ -141,7 +141,7 @@ class DownloadService : IntentService(TAG), Injectable {
                         }
                     }
                 })
-                playerRepository.fetchVideoPlaylist(videoId, token)
+                playerRepository.fetchVideoPlaylist(videoId)
                         .map { response ->
                             val playlist = response.body()!!.string()
                             URL("https://.*\\.m3u8".toRegex().find(playlist)!!.value).openStream().use {

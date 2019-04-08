@@ -34,14 +34,12 @@ class VideoDownloadViewModel @Inject constructor(
     private val _videoInfo = MutableLiveData<VideoDownloadInfo>()
     val videoInfo: LiveData<VideoDownloadInfo>
         get() = _videoInfo
-    private var token: String? = null
 
     private val compositeDisposable = CompositeDisposable()
 
-    fun init(video: Video, token: String?) {
+    fun setVideo(video: Video) {
         if (_videoInfo.value == null) {
-            this.token = token
-            playerRepository.fetchVideoPlaylist(video.id, token)
+            playerRepository.fetchVideoPlaylist(video.id)
                     .map { response ->
                         val playlist = response.body()!!.string()
                         val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
@@ -90,7 +88,7 @@ class VideoDownloadViewModel @Inject constructor(
                 val directory = "$path${File.separator}${video.id}$quality${File.separator}"
                 val offlineVideo = DownloadUtils.prepareDownload(context, video, directory, duration)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
-                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, token, fromIndex, toIndex), wifiOnly)
+                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, fromIndex, toIndex), wifiOnly)
             }
         }
     }

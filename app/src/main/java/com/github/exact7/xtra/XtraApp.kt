@@ -24,7 +24,7 @@ import javax.inject.Inject
 class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
 
     companion object {
-        lateinit var INSTANCE: Application
+        var INSTANCE: Application? = null
     }
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
