@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
+import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.Downloadable

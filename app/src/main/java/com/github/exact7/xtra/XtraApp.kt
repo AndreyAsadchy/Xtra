@@ -23,6 +23,10 @@ import javax.inject.Inject
 
 class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
 
+    companion object {
+        lateinit var INSTANCE: Application
+    }
+
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
     @Inject lateinit var dispatchingBroadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
@@ -30,6 +34,7 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
 
     override fun onCreate() {
         super.onCreate()
+        INSTANCE = this
         AppInjector.init(this)
         Fabric.with(this, Crashlytics())
         RxJavaPlugins.setErrorHandler { Crashlytics.logException(it) }

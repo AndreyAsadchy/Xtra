@@ -22,6 +22,7 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crashlytics.android.Crashlytics
+import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage

@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
+import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import kotlinx.android.synthetic.main.dialog_video_download.*
@@ -29,10 +31,11 @@ class VideoDownloadDialog : BaseDownloadDialog() {
     companion object {
         private const val KEY_VIDEO_INFO = "videoInfo"
         private const val KEY_VIDEO = "video"
+        private const val KEY_USER = "user"
 
-        fun newInstance(videoInfo: VideoDownloadInfo? = null, video: Video? = null): VideoDownloadDialog {
+        fun newInstance(videoInfo: VideoDownloadInfo? = null, video: Video? = null, user: User): VideoDownloadDialog {
             return VideoDownloadDialog().apply {
-                arguments = bundleOf(KEY_VIDEO_INFO to videoInfo, KEY_VIDEO to video)
+                arguments = bundleOf(KEY_VIDEO_INFO to videoInfo, KEY_VIDEO to video, KEY_USER to user)
             }
         }
     }
@@ -55,9 +58,11 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         viewModel.videoInfo.observe(viewLifecycleOwner, Observer {
             init(it)
         })
-        requireArguments().getParcelable<VideoDownloadInfo?>(KEY_VIDEO_INFO).let {
+        val arguments = requireArguments()
+        arguments.getParcelable<VideoDownloadInfo?>(KEY_VIDEO_INFO).let {
             if (it == null) {
-                viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
+                val user = arguments.get(KEY_USER) as User
+                viewModel.init(arguments.getParcelable(KEY_VIDEO)!!, if (user is LoggedIn) user.token else null)
             } else {
                 viewModel.setVideoInfo(it)
             }

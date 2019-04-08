@@ -43,20 +43,20 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
+    fun fetchVideoPlaylist(videoId: String, token: String?): Single<Response<ResponseBody>> {
         Log.d(TAG, "Getting video playlist for video $videoId")
         val options = HashMap<String, String>()
         options["allow_source"] = "true"
         options["allow_audio_only"] = "true"
         options["type"] = "any"
         options["p"] = Random().nextInt(999999).toString()
-        return api.getVideoAccessToken(videoId)
+        val tokenHeader = token?.let { "OAuth $it"}
+        return api.getVideoAccessToken(tokenHeader, videoId)
                 .flatMap {
                     options["nauth"] = it.token
                     options["nauthsig"] = it.sig
-                    usher.getVideoPlaylist(videoId.substring(1), options) //substring 1 to remove v, should be removed when upgraded to new api
+                    usher.getVideoPlaylist(tokenHeader, videoId.substring(1), options) //substring 1 to remove v, should be removed when upgraded to new api
                 }
-
     }
 
     fun fetchClipQualities(slug: String): Single<Map<String, String>> {

@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.github.exact7.xtra.GlideApp
 import java.util.Calendar
 
 fun View.visible() {
