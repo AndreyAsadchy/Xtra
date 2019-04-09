@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 class SearchFragment : BaseNetworkFragment(), Injectable {
 
     private lateinit var binding: FragmentSearchBinding
+    private lateinit var adapter: ChannelsSearchAdapter
     override lateinit var viewModel: SearchViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -31,14 +32,19 @@ class SearchFragment : BaseNetworkFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+        val activity = requireActivity() as MainActivity
+        toolbar.apply {
+            navigationIcon = Utils.getNavigationIcon(activity)
+            setNavigationOnClickListener { activity.popFragment() }
+        }
+        recyclerView.adapter = ChannelsSearchAdapter(activity).also { adapter = it }
+        search.isIconified = false
+
     }
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java)
         binding.viewModel = viewModel
-        val activity = requireActivity() as MainActivity
-        val adapter = ChannelsSearchAdapter(activity)
-        recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(if (viewModel.query.isNotEmpty()) it else null)
         })
@@ -58,11 +64,6 @@ class SearchFragment : BaseNetworkFragment(), Injectable {
                 return false
             }
         })
-        search.isIconified = false
-        toolbar.apply {
-            navigationIcon = Utils.getNavigationIcon(activity)
-            setNavigationOnClickListener { activity.popFragment() }
-        }
     }
 
     override fun onNetworkRestored() {

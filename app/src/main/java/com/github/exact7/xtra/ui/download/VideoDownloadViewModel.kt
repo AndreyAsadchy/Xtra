@@ -84,8 +84,8 @@ class VideoDownloadViewModel @Inject constructor(
         GlobalScope.launch {
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
-                val duration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex]
-                val directory = "$path${File.separator}${video.id}$quality${File.separator}"
+                val duration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex] //TODO fix
+                val directory = "$path${File.separator}${video.id}${if (!quality.contains("Audio", true)) quality else "audio"}${File.separator}"
                 val offlineVideo = DownloadUtils.prepareDownload(context, video, directory, duration)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
                 DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, fromIndex, toIndex), wifiOnly)

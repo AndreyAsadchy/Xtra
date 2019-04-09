@@ -24,6 +24,6 @@ class VideoRequest(
         val segmentTo: Int) : Request(offlineVideoId, url, path) {
 
     var progress = 0
-    val maxProgress = segmentTo - segmentFrom
+    val maxProgress = segmentTo - segmentFrom + 1
     lateinit var playlist: MediaPlaylist
 }

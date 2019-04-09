@@ -12,7 +12,11 @@ class FetchProvider @Inject constructor(
 
     fun get(wifiOnly: Boolean): Fetch {
         if (instance == null || instance!!.isClosed) {
-            instance = Fetch.getInstance(configurationBuilder.setGlobalNetworkType(if (wifiOnly) NetworkType.WIFI_ONLY else NetworkType.ALL).build()).also { instance = it }
+            instance = Fetch.getInstance(
+                    configurationBuilder
+                            .setGlobalNetworkType(if (wifiOnly) NetworkType.WIFI_ONLY else NetworkType.ALL)
+                            .setNamespace("Fetch #${System.currentTimeMillis()}")
+                            .build())
         }
         return instance!!
     }

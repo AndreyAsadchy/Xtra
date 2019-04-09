@@ -23,6 +23,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     }
 
     override lateinit var viewModel: GamesViewModel
+    private lateinit var adapter: GamesAdapter
     private lateinit var binding: FragmentGamesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -34,19 +35,18 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+        val activity = requireActivity() as MainActivity
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
+        recyclerView.adapter = GamesAdapter(activity).also { adapter = it }
     }
 
     override fun initialize() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
         binding.viewModel = viewModel
-        val activity = requireActivity() as MainActivity
-        val adapter = GamesAdapter(activity)
-        recyclerView.adapter = adapter
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-        search.setOnClickListener { activity.openSearch() }
+        search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
     }
 
     override fun scrollToTop() {

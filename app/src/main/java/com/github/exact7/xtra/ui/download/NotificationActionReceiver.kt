@@ -23,7 +23,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 with(fetchProvider.get(false)) {
                     cancelAll()
                     deleteAll()
-                    close()
                 }
             } catch (e: Exception) {
                 Crashlytics.logException(e)

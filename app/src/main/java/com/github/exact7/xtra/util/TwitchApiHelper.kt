@@ -13,13 +13,13 @@ import java.util.Locale
 
 object TwitchApiHelper {
 
-    external fun getClientId(): String
-
-    var validated = false
-
     init {
         System.loadLibrary("keys")
     }
+
+    external fun getClientId(): String
+
+    var validated = false
 
     fun getTemplateUrl(url: String, width: Int, height: Int): String {
         return url.replace("{width}", width.toString()).replace("{height}", height.toString())

@@ -189,7 +189,7 @@ class DownloadService : IntentService(TAG), Injectable {
         with(request as VideoRequest) {
             val tracks = playlist.tracks
             val current = segmentFrom + progress
-            for (i in current until min(current + ENQUEUE_SIZE, segmentTo)) {
+            for (i in current..min(current + ENQUEUE_SIZE, segmentTo)) {
                 val track = tracks[i]
                 requests.add(Request(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
             }
@@ -211,8 +211,8 @@ class DownloadService : IntentService(TAG), Injectable {
             is VideoRequest -> {
                 Log.d(TAG, "Downloaded video")
                 with(request as VideoRequest) {
-                    val tracks = ArrayList<TrackData>(segmentTo - segmentFrom)
-                    for (i in segmentFrom until segmentTo) {
+                    val tracks = ArrayList<TrackData>(segmentTo - segmentFrom + 1)
+                    for (i in segmentFrom..segmentTo) {
                         val track = playlist.tracks[i] //TODO encrypt files
                         tracks.add(TrackData.Builder()
                                 .withUri("$path${track.uri}")
