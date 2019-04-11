@@ -41,7 +41,12 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
             viewModel.startStream(stream, it)
             initializeViewModel(viewModel)
-            chatView.messagingEnabled = it is LoggedIn
+            if (it is LoggedIn) {
+                chatView.messagingEnabled = true
+                viewModel.emotes.observe(viewLifecycleOwner, Observer {
+
+                })
+            }
         })
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true

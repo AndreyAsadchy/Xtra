@@ -10,8 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.ClipRequest
@@ -141,7 +143,7 @@ class DownloadService : IntentService(TAG), Injectable {
                         }
                     }
                 })
-                playerRepository.fetchVideoPlaylist(videoId)
+                playerRepository.loadVideoPlaylist(videoId)
                         .map { response ->
                             val playlist = response.body()!!.string()
                             URL("https://.*\\.m3u8".toRegex().find(playlist)!!.value).openStream().use {
@@ -189,9 +191,16 @@ class DownloadService : IntentService(TAG), Injectable {
         with(request as VideoRequest) {
             val tracks = playlist.tracks
             val current = segmentFrom + progress
-            for (i in current..min(current + ENQUEUE_SIZE, segmentTo)) {
-                val track = tracks[i]
-                requests.add(Request(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
+            try {
+                for (i in current..min(current + ENQUEUE_SIZE, segmentTo)) {
+                    val track = tracks[i]
+                    requests.add(Request(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
+                }
+            } catch (e: IndexOutOfBoundsException) {
+                Crashlytics.logException(e)
+                Crashlytics.log("DownloadService.enqueueNext: Playlist tracks size: ${playlist.tracks.size}. Segment to: $segmentTo. Current + ENQUEUE_SIZE: ${current + ENQUEUE_SIZE}.")
+                Toast.makeText(this@DownloadService, getString(R.string.download_error), Toast.LENGTH_LONG).show()
+                throw e
             }
         }
         fetch.enqueue(requests)

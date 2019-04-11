@@ -9,7 +9,7 @@
         app:controller_layout_id="@layout/player_video"
         style="@style/Player.Landscape"/>
 
-    <com.github.exact7.xtra.ui.view.ChatView
+    <com.github.exact7.xtra.ui.view.chat.ChatView
         android:id="@+id/chatView"
         style="@style/ChatViewLandscape"/>
 

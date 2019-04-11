@@ -62,7 +62,7 @@ interface KrakenApi {
     fun getUsers(@Query("username") logins: String): Single<UsersResponse>
 
     @GET("users/{id}/emotes")
-    fun getUserEmotes(@Path("id") userId: String): Single<UserEmotesResponse>
+    fun getUserEmotes(@Header("Authorization") token: String, @Path("id") userId: String): Single<UserEmotesResponse>
 
     @GET("search/channels")
     fun getChannels(@Query("query") query: String, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<ChannelsSearchResponse>

@@ -15,7 +15,7 @@ import com.github.exact7.xtra.ui.SettingsActivity
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
-import com.github.exact7.xtra.ui.view.ChatView
+import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.Prefs
 import kotlinx.android.synthetic.main.activity_main.*

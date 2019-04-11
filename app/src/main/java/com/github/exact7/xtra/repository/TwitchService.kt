@@ -29,7 +29,7 @@ interface TwitchService {
     fun loadChannelVideos(channelId: String, broadcastType: BroadcastType, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video>
     fun loadUserById(id: Int) : Single<User>
     fun loadUserByLogin(login: String) : Single<User>
-    fun loadUserEmotes(userId: String) : Single<List<Emote>>
+    fun loadUserEmotes(token: String, userId: String, compositeDisposable: CompositeDisposable)
     fun loadChannels(query: String, compositeDisposable: CompositeDisposable) : Listing<Channel>
     fun loadVideoChatLog(videoId: String, offsetSeconds: Double): Single<VideoMessagesResponse>
     fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse>

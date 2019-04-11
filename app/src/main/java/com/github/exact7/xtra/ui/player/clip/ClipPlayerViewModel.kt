@@ -70,7 +70,7 @@ class ClipPlayerViewModel @Inject constructor(
     fun setClip(clip: Clip) {
         if (_clip.value != clip) {
             _clip.value = clip
-            playerRepository.fetchClipQualities(clip.slug)
+            playerRepository.loadClipQualities(clip.slug)
                     .subscribe({
                         helper.urls = it
                         play(it.values.first())

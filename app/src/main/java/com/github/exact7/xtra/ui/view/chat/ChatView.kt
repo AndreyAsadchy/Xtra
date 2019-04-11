@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.view
+package com.github.exact7.xtra.ui.view.chat
 
 import android.content.Context
 import android.util.AttributeSet

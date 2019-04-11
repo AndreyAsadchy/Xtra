@@ -53,7 +53,11 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoDownloadViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.videoInfo.observe(viewLifecycleOwner, Observer {
-            init(it)
+            if (it != null) {
+                init(it)
+            } else {
+                dismiss()
+            }
         })
         requireArguments().getParcelable<VideoDownloadInfo?>(KEY_VIDEO_INFO).let {
             if (it == null) {

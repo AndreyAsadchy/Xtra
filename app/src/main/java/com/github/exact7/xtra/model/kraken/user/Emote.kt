@@ -1,5 +1,10 @@
 package com.github.exact7.xtra.model.kraken.user
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "emotes")
 data class Emote(
-        val code: String,
-        val id: Int)
+        @PrimaryKey
+        val id: Int,
+        val code: String)

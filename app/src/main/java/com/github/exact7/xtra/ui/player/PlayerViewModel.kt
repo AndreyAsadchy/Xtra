@@ -2,6 +2,7 @@ package com.github.exact7.xtra.ui.player
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,6 +27,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -78,30 +80,22 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
 
     protected fun initChat(playerRepository: PlayerRepository, channelId: String?, channelName: String, streamChatCallback: (() -> Unit)? = null) {
         channelId?.let { id ->
-            playerRepository.fetchSubscriberBadges(id)
-                    .subscribe({
+            playerRepository.loadSubscriberBadges(id)
+                    .subscribeBy(onSuccess = {
                         it.badges
                         subscriberBadges = it
                         streamChatCallback?.invoke()
-                    }, {
+                    }, onError = {
                         //no subscriber badges
                         streamChatCallback?.invoke()
                     })
                     .addTo(compositeDisposable)
         }
-        playerRepository.fetchBttvEmotes(channelName)
-                .subscribe({
-                    _bttv.value = it
-                }, {
-
-                })
+        playerRepository.loadBttvEmotes(channelName)
+                .subscribeBy(onSuccess = { _bttv.value = it })
                 .addTo(compositeDisposable)
-        playerRepository.fetchFfzEmotes(channelName)
-                .subscribe({
-                    _ffz.value = it
-                }, {
-
-                })
+        playerRepository.loadFfzEmotes(channelName)
+                .subscribeBy(onSuccess = { _ffz.value = it })
                 .addTo(compositeDisposable)
     }
 
@@ -146,6 +140,8 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
+        val context = getApplication<Application>()
+        Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
         GlobalScope.launch {
             Log.e("PlayerViewModel", "Player error. Retrying...", error)
             delay(1000L)

@@ -25,7 +25,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
-import com.github.exact7.xtra.ui.view.ChatView
+import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener

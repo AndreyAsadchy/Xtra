@@ -11,15 +11,18 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
+import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.Event
 import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
+        private val repository: TwitchService,
         private val authRepository: AuthRepository): ViewModel() {
 
     private val _user = MutableLiveData<User>()
@@ -95,6 +98,7 @@ class MainViewModel @Inject constructor(
                     .subscribe({
                         _checkedValidity.value = true
                         _user.value = LoggedIn(user)
+//                        repository.loadUserEmotes(user.token, user.id, compositeDisposable)
                     }, {
                         _checkedValidity.value = true
                         with(activity) {

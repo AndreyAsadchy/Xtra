@@ -10,7 +10,7 @@
         app:controller_layout_id="@layout/player_video"
         style="@style/Player.Portrait"/>
 
-    <com.github.exact7.xtra.ui.view.ChatView
+    <com.github.exact7.xtra.ui.view.chat.ChatView
         android:id="@+id/chatView"
         style="@style/ChatViewPortrait">
 
@@ -23,6 +23,6 @@
             android:layout_centerInParent="true"
             android:visibility="gone"/>
 
-    </com.github.exact7.xtra.ui.view.ChatView>
+    </com.github.exact7.xtra.ui.view.chat.ChatView>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

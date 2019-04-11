@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.download
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,42 +32,45 @@ class VideoDownloadViewModel @Inject constructor(
         private val offlineRepository: OfflineRepository
 ) : AndroidViewModel(application) {
 
-    private val _videoInfo = MutableLiveData<VideoDownloadInfo>()
-    val videoInfo: LiveData<VideoDownloadInfo>
+    private val _videoInfo = MutableLiveData<VideoDownloadInfo?>()
+    val videoInfo: LiveData<VideoDownloadInfo?>
         get() = _videoInfo
 
     private val compositeDisposable = CompositeDisposable()
 
     fun setVideo(video: Video) {
         if (_videoInfo.value == null) {
-            playerRepository.fetchVideoPlaylist(video.id)
-                    .map { response ->
-                        val playlist = response.body()!!.string()
-                        val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
-                        val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
-                        val audioIndex = qualities.indexOfFirst { it.equals("Audio Only", true) }
-                        qualities.removeAt(audioIndex)
-                        qualities.add(getApplication<Application>().getString(R.string.audio_only))
-                        urls.add(urls.removeAt(audioIndex))
-                        val map = qualities.zip(urls).toMap()
-                        val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
-                            PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
-                        }
-                        var totalDuration = 0L
-                        val relativeTimes = mutableListOf<Long>()
-                        var time = 0L
-                        mediaPlaylist.tracks.forEach {
-                            val duration = it.trackInfo.duration.toLong()
-                            totalDuration += duration
-                            relativeTimes.add(time)
-                            time += duration
-                        }
-                        VideoDownloadInfo(video, map, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0)
-                    }
+            playerRepository.loadVideoPlaylist(video.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        setVideoInfo(it)
+                    .subscribe({ response ->
+                        if (response.isSuccessful) {
+                            val playlist = response.body()!!.string()
+                            val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
+                            val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
+                            val audioIndex = qualities.indexOfFirst { it.equals("Audio Only", true) }
+                            qualities.removeAt(audioIndex)
+                            qualities.add(getApplication<Application>().getString(R.string.audio_only))
+                            urls.add(urls.removeAt(audioIndex))
+                            val map = qualities.zip(urls).toMap()
+                            val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
+                                PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                            }
+                            var totalDuration = 0L
+                            val relativeTimes = mutableListOf<Long>()
+                            var time = 0L
+                            mediaPlaylist.tracks.forEach {
+                                val duration = it.trackInfo.duration.toLong()
+                                totalDuration += duration
+                                relativeTimes.add(time)
+                                time += duration
+                            }
+                            setVideoInfo(VideoDownloadInfo(video, map, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0))
+                        } else if (response.code() == 403) {
+                            val context = getApplication<Application>()
+                            Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+                            _videoInfo.value = null
+                        }
                     }, {
 
                     })

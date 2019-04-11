@@ -29,7 +29,7 @@
     <string name="download">Download</string>
     <string name="downloading">Downloading</string>
     <string name="downloaded">Download complete</string>
-    <string name="download_error">Error downloading video</string>
+    <string name="download_error">Error downloading video. Please try again</string>
     <string name="uploaded_date">Uploaded %s</string>
     <string name="downloaded_date">Downloaded %s</string>
     <string name="welcome">Welcome</string>
@@ -96,4 +96,6 @@
     <string name="no">No</string>
     <string name="search">Search</string>
     <string name="chat_replay_unavailable">Chat replay is unavailable</string>
+    <string name="video_subscribers_only">This video is only available to subscribers</string>
+    <string name="player_error">Player error. Retrying...</string>
 </resources>

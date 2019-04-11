@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
@@ -49,7 +50,7 @@ class ChatReplayManager @Inject constructor(
         if (disposable != null) {
             cancel()
             list.clear()
-            clearMessages.invoke()
+            clearMessages()
         }
         disposable = repository.loadVideoChatLog(videoId, offset)
                 .doOnSubscribe { isLoading = true }
@@ -58,7 +59,7 @@ class ChatReplayManager @Inject constructor(
                     list.addAll(it.messages)
                     cursor = it.next
                     job = GlobalScope.launch {
-                        while (true) {
+                        while (isActive) {
                             val message: VideoChatMessage? = list.poll()
                             if (message != null) {
                                 val messageOffset = message.contentOffsetSeconds
@@ -67,7 +68,7 @@ class ChatReplayManager @Inject constructor(
                                     delay(max((messageOffset - position) * 1000.0, 0.0).toLong())
                                 }
                                 if (position - messageOffset < 20.0) {
-                                    addMessage.invoke(message)
+                                    addMessage(message)
                                     if (list.size == 15) {
                                         loadNext()
                                     }

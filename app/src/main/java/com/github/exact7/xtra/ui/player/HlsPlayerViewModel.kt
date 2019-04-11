@@ -89,7 +89,7 @@ abstract class HlsPlayerViewModel(
         updateQuality()
     }
 
-    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) { //TODO fix incorrect quality after resuming
         if (helper.loaded.value != true && trackSelector.currentMappedTrackInfo != null) {
             helper.loaded.value = true
             val index =  prefs.getString(TAG, "Auto").let { quality: String ->
@@ -107,8 +107,8 @@ abstract class HlsPlayerViewModel(
     }
 
     override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
-        if (helper.urls == null && manifest != null) {
-            (manifest as HlsManifest).masterPlaylist.let {
+        if (helper.urls == null && manifest is HlsManifest) {
+            manifest.masterPlaylist.let {
                 val context = getApplication<Application>()
                 val tags = it.tags
                 val urls = LinkedHashMap<String, String>(tags.size)

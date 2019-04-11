@@ -2,8 +2,10 @@ package com.github.exact7.xtra.ui.player.video
 
 import android.app.Application
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -17,6 +19,7 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -43,15 +46,17 @@ class VideoPlayerViewModel @Inject constructor(
     fun setVideo(video: Video) {
         if (_video.value != video) {
             _video.value = video
-            playerRepository.fetchVideoPlaylist(video.id)
-                    .map { Uri.parse(it.raw().request().url().toString()) }
+            playerRepository.loadVideoPlaylist(video.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
-                        play()
-                    }, {
-
+                    .subscribeBy(onSuccess = {
+                        if (it.isSuccessful) {
+                            mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(it.raw().request().url().toString()))
+                            play()
+                        } else if (it.code() == 403) {
+                            val context = getApplication<Application>()
+                            Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+                        }
                     })
                     .addTo(compositeDisposable)
             chatReplayManager = ChatReplayManager(repository, video.id, 0.0, player, this::onMessage, this::clearMessages)

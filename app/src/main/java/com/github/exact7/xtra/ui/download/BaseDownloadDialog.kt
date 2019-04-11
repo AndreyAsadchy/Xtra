@@ -35,11 +35,11 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
         }
 
     fun init(context: Context) {
-        prefs = Prefs.get(context)
-        storage = DownloadUtils.getAvailableStorage(context)
-        storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
-        if (DownloadUtils.isExternalStorageAvailable) {
-            try {
+        try {
+            prefs = Prefs.get(context)
+            storage = DownloadUtils.getAvailableStorage(context)
+            storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
+            if (DownloadUtils.isExternalStorageAvailable) {
                 if (storage.size > 1) {
                     storageSelectionContainer.visible()
                     for (s in storage) {
@@ -50,18 +50,23 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
                     }
                     storageSelectionContainer.radioGroup.check(prefs.getInt(C.DOWNLOAD_STORAGE, 0))
                 }
-            } catch (e: Exception) {
-                try {
-                    Crashlytics.log("BaseDownloadDialog.init(context): ${e.message}. Storage size: ${storage.size} Storage: $storage")
-                } catch (e: Exception) {
-                    Crashlytics.log("BaseDownloadDialog.init(context): ${e.message}. Error accessing storage variable")
-                }
+            } else {
+                showError()
             }
-        } else {
-            storageSelectionContainer.visible()
-            storageSelectionContainer.noStorageDetected.visible()
-            requireView().findViewById<Button>(R.id.download).gone()
+        } catch (e: Exception) {
+            try {
+                Crashlytics.log("BaseDownloadDialog.init(context): ${e.message}. Storage size: ${storage.size} Storage: $storage")
+            } catch (e: Exception) {
+                Crashlytics.log("BaseDownloadDialog.init(context): ${e.message}. Error accessing storage variable")
+            }
+            showError()
         }
+    }
+
+    private fun showError() {
+        storageSelectionContainer.visible()
+        storageSelectionContainer.noStorageDetected.visible()
+        requireView().findViewById<Button>(R.id.download).gone()
     }
 
     data class Storage(

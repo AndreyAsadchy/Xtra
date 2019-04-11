@@ -6,6 +6,7 @@ import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
+import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.FfzEmote
@@ -26,9 +27,10 @@ private const val TAG = "PlayerRepository"
 class PlayerRepository @Inject constructor(
         private val api: ApiService,
         private val usher: UsherApi,
-        private val misc: MiscApi) {
+        private val misc: MiscApi,
+        private val emotes: EmotesDao) {
 
-    fun fetchStreamPlaylist(channelName: String): Single<Uri> {
+    fun loadStreamPlaylist(channelName: String): Single<Uri> {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
         val options = HashMap<String, String>()
         options["allow_source"] = "true"
@@ -46,7 +48,7 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
+    fun loadVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
         Log.d(TAG, "Getting video playlist for video $videoId")
         val options = HashMap<String, String>()
         options["allow_source"] = "true"
@@ -63,7 +65,7 @@ class PlayerRepository @Inject constructor(
 
     }
 
-    fun fetchClipQualities(slug: String): Single<Map<String, String>> {
+    fun loadClipQualities(slug: String): Single<Map<String, String>> {
         return misc.getClipStatus(slug)
                 .map { response ->
                     response.qualityOptions.associateBy({ if (it.frameRate == 60) "${it.quality}p${it.frameRate}" else it.quality + "p" }, { it.source })
@@ -72,23 +74,25 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchSubscriberBadges(channelId: String): Single<SubscriberBadgesResponse> {
+    fun loadSubscriberBadges(channelId: String): Single<SubscriberBadgesResponse> {
         return misc.getSubscriberBadges(channelId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchBttvEmotes(channel: String): Single<List<BttvEmote>> {
+    fun loadBttvEmotes(channel: String): Single<List<BttvEmote>> {
         return misc.getBttvEmotes(channel)
                 .map { it.emotes }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }
 
-    fun fetchFfzEmotes(channel: String): Single<List<FfzEmote>> {
+    fun loadFfzEmotes(channel: String): Single<List<FfzEmote>> {
         return misc.getFfzEmotes(channel)
                 .map { it.emotes }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }
+
+    fun loadEmotes() = emotes.getAll()
 }

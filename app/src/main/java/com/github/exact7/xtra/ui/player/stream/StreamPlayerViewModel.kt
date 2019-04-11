@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -29,6 +30,7 @@ class StreamPlayerViewModel @Inject constructor(
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
         get() = _stream
+    val emotes by lazy { playerRepository.loadEmotes() }
     lateinit var user: User
         private set
     override val channelInfo: Pair<String, String>
@@ -42,7 +44,8 @@ class StreamPlayerViewModel @Inject constructor(
             _stream.value = stream
             this.user = user
             val channel = stream.channel
-            playerRepository.fetchStreamPlaylist(channel.name)
+            initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
+            playerRepository.loadStreamPlaylist(channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
@@ -51,7 +54,6 @@ class StreamPlayerViewModel @Inject constructor(
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
                     })
                     .addTo(compositeDisposable)
-            initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
         }
     }
 

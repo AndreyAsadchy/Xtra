@@ -1,7 +1,7 @@
 package com.github.exact7.xtra.util.chat
 
 import android.util.Log
-import com.github.exact7.xtra.ui.view.ChatView
+import com.github.exact7.xtra.ui.view.chat.ChatView
 
 import java.io.BufferedReader
 import java.io.BufferedWriter

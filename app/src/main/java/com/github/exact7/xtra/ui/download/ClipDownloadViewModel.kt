@@ -33,7 +33,7 @@ class ClipDownloadViewModel @Inject constructor(
         if (!this::clip.isInitialized) {
             this.clip = clip
             if (qualities == null) {
-                playerRepository.fetchClipQualities(clip.slug)
+                playerRepository.loadClipQualities(clip.slug)
                         .subscribe({
                             _qualities.value = it
                         }, {

@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.exact7.xtra.db.AppDatabase
+import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.util.TwitchApiHelper
@@ -22,31 +23,38 @@ class DatabaseModule {
     @Provides
     fun providesAppDatabase(application: Application): AppDatabase =
             Room.databaseBuilder(application, AppDatabase::class.java, "database")
-                    .addMigrations(object : Migration(1, 2) {
-                        override fun migrate(database: SupportSQLiteDatabase) {
-                            database.execSQL("CREATE TABLE videos1 (id INTEGER NOT NULL, url TEXT NOT NULL, name TEXT NOT NULL, channel_name TEXT NOT NULL, channel_logo TEXT NOT NULL, thumbnail TEXT NOT NULL, game TEXT NOT NULL, duration INTEGER NOT NULL, upload_date INTEGER NOT NULL, download_date INTEGER NOT NULL, is_vod INTEGER NOT NULL, downloaded INTEGER NOT NULL, PRIMARY KEY (id))")
-                            val cursor = database.query("SELECT * FROM videos")
-                            while (cursor.moveToNext()) {
-                                val values = ContentValues().apply {
-                                    put("id", cursor.getInt(0))
-                                    put("url", cursor.getString(2))
-                                    put("name", cursor.getString(3))
-                                    put("channel_name", cursor.getString(4))
-                                    put("channel_logo", cursor.getString(10))
-                                    put("thumbnail", cursor.getString(9))
-                                    put("game", cursor.getString(5))
-                                    put("duration", cursor.getLong(6))
-                                    put("upload_date", TwitchApiHelper.parseIso8601Date(cursor.getString(8)))
-                                    put("download_date", Calendar.getInstance().time.time)
-                                    put("is_vod", cursor.getInt(1))
-                                    put("downloaded", 1)
+                    .addMigrations(
+                            object : Migration(1, 2) {
+                                override fun migrate(database: SupportSQLiteDatabase) {
+                                    database.execSQL("CREATE TABLE videos1 (id INTEGER NOT NULL, url TEXT NOT NULL, name TEXT NOT NULL, channel_name TEXT NOT NULL, channel_logo TEXT NOT NULL, thumbnail TEXT NOT NULL, game TEXT NOT NULL, duration INTEGER NOT NULL, upload_date INTEGER NOT NULL, download_date INTEGER NOT NULL, is_vod INTEGER NOT NULL, downloaded INTEGER NOT NULL, PRIMARY KEY (id))")
+                                    val cursor = database.query("SELECT * FROM videos")
+                                    while (cursor.moveToNext()) {
+                                        val values = ContentValues().apply {
+                                            put("id", cursor.getInt(0))
+                                            put("url", cursor.getString(2))
+                                            put("name", cursor.getString(3))
+                                            put("channel_name", cursor.getString(4))
+                                            put("channel_logo", cursor.getString(10))
+                                            put("thumbnail", cursor.getString(9))
+                                            put("game", cursor.getString(5))
+                                            put("duration", cursor.getLong(6))
+                                            put("upload_date", TwitchApiHelper.parseIso8601Date(cursor.getString(8)))
+                                            put("download_date", Calendar.getInstance().time.time)
+                                            put("is_vod", cursor.getInt(1))
+                                            put("downloaded", 1)
+                                        }
+                                        database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
+                                    }
+                                    database.execSQL("DROP TABLE videos")
+                                    database.execSQL("ALTER TABLE videos1 RENAME TO videos")
                                 }
-                                database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
+                            },
+                            object : Migration(2, 3) {
+                                override fun migrate(database: SupportSQLiteDatabase) {
+                                    database.execSQL("CREATE TABLE IF NOT EXISTS emotes (id INTEGER NOT NULL, code TEXT NOT NULL, PRIMARY KEY (id))")
+                                }
                             }
-                            database.execSQL("DROP TABLE videos")
-                            database.execSQL("ALTER TABLE videos1 RENAME TO videos")
-                        }
-                    })
+                    )
                     .build()
 //                            object : Migration(2, 3) {
 //                                override fun migrate(database: SupportSQLiteDatabase) {
@@ -77,9 +85,13 @@ class DatabaseModule {
 
     @Singleton
     @Provides
+    fun providesRepository(videosDao: VideosDao): OfflineRepository = OfflineRepository(videosDao)
+
+    @Singleton
+    @Provides
     fun providesVideosDao(database: AppDatabase): VideosDao = database.videos()
 
     @Singleton
     @Provides
-    fun providesRepository(videosDao: VideosDao): OfflineRepository = OfflineRepository(videosDao)
+    fun providesEmotesDao(database: AppDatabase): EmotesDao = database.emotes()
 }

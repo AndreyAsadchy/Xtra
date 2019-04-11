@@ -3,6 +3,7 @@ package com.github.exact7.xtra.repository
 import android.util.Log
 import androidx.paging.PagedList
 import com.github.exact7.xtra.api.KrakenApi
+import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -28,6 +29,8 @@ import com.github.exact7.xtra.repository.datasource.VideosDataSource
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.Executor
 import javax.inject.Inject
@@ -38,7 +41,8 @@ private const val TAG = "KrakenRepository"
 @Singleton
 class KrakenRepository @Inject constructor(
         private val api: KrakenApi,
-        private val networkExecutor: Executor) : TwitchService {
+        private val networkExecutor: Executor,
+        private val emotesDao: EmotesDao) : TwitchService {
 
     override fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game> {
         val factory = GamesDataSource.Factory(api, networkExecutor, compositeDisposable)
@@ -150,12 +154,13 @@ class KrakenRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun loadUserEmotes(userId: String): Single<List<Emote>> {
+    override fun loadUserEmotes(token: String, userId: String, compositeDisposable: CompositeDisposable) {
         Log.d(TAG, "Loading user emotes")
-        return api.getUserEmotes(userId)
+        api.getUserEmotes("OAuth $token", userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { it.emotes }
+                .subscribeBy(onSuccess = { emotesDao.insertAll(it.emotes) })
+                .addTo(compositeDisposable)
     }
 
     override fun loadChannels(query: String, compositeDisposable: CompositeDisposable): Listing<Channel> {
