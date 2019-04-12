@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Build
 import android.view.View
 import android.widget.ImageView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.github.exact7.xtra.GlideApp
@@ -35,13 +36,14 @@ fun View.isGone() = visibility == View.GONE
 fun View.toggleVisibility() = if (isVisible()) gone() else visible()
 
 @SuppressLint("CheckResult")
-fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean = false) {
+fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean = false, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.AUTOMATIC) {
     val context = context ?: return
     if (context is Activity && ((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN && context.isDestroyed) || context.isFinishing)) {
         return
     }
     val request = GlideApp.with(context)
             .load(url)
+            .diskCacheStrategy(diskCacheStrategy)
             .transition(DrawableTransitionOptions.withCrossFade())
     if (changes) {
         val calendar = Calendar.getInstance()

@@ -98,7 +98,7 @@ class MainViewModel @Inject constructor(
                     .subscribe({
                         _checkedValidity.value = true
                         _user.value = LoggedIn(user)
-//                        repository.loadUserEmotes(user.token, user.id, compositeDisposable)
+                        repository.loadUserEmotes(user.token, user.id, compositeDisposable)
                     }, {
                         _checkedValidity.value = true
                         with(activity) {

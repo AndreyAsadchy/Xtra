@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -29,13 +30,14 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
+import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.DisplayUtils.convertDpToPixels
 import com.github.exact7.xtra.util.DisplayUtils.getDisplayDensity
 import java.util.Random
 import kotlin.collections.set
 
-private const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
-private const val BTTV_URL = "https://cdn.betterttv.net/emote/"
+const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
+const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
 class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
@@ -199,6 +201,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
             if (isPng) {
                 GlideApp.with(holder.itemView.context)
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(object : SimpleTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
@@ -215,6 +218,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                 GlideApp.with(holder.itemView.context)
                         .asGif()
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(object : SimpleTarget<GifDrawable>() {
                             override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
                                 val textView = holder.itemView as TextView

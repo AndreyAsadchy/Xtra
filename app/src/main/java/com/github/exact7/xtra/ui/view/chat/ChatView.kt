@@ -1,16 +1,26 @@
 package com.github.exact7.xtra.ui.view.chat
 
+import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.PagerAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.ui.common.ChatAdapter
+import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.util.isGone
 import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
@@ -26,7 +36,8 @@ class ChatView : RelativeLayout {
 
     private val adapter = ChatAdapter(context)
     private val layoutManager = LinearLayoutManager(context)
-    private var isChatTouched: Boolean = false
+    private var isChatTouched = false
+    private val emotes = arrayListOf<Emote>()
 
     private var messageCallback: MessageSenderCallback? = null
     var messagingEnabled = false
@@ -83,6 +94,7 @@ class ChatView : RelativeLayout {
             }
             handled
         }
+        editText.addTextChangedListener(onTextChanged = { text, _, _, _ -> send.visible(text?.isNotEmpty() == true) })
         send.setOnClickListener {
             messageCallback?.let {
                 val text = editText.text
@@ -91,6 +103,10 @@ class ChatView : RelativeLayout {
                     text.clear()
                 }
             }
+        }
+
+        viewPager.adapter = object : PagerAdapter() {
+
         }
     }
 
@@ -113,6 +129,7 @@ class ChatView : RelativeLayout {
 
     fun addEmotes(list: List<Emote>) {
         adapter.addEmotes(list)
+        emotes.addAll(list)
     }
 
     fun setUsername(username: String) {
@@ -133,5 +150,16 @@ class ChatView : RelativeLayout {
 
     fun setCallback(callback: MessageSenderCallback) {
         messageCallback = callback
+    }
+
+    private inner class EmotesFragment : Fragment() {
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            return inflater.inflate(R.layout.fragment_emotes, container, false)
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+            (view as RecyclerView).adapter = EmotesAdapter(adapter)
+        }
     }
 }

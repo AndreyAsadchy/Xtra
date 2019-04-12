@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- TODO android:textIsSelectable="true" -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/textView"
     android:textSize="14sp"

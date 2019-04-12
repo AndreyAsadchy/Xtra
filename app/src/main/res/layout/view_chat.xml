@@ -38,13 +38,13 @@
             android:inputType="textCapSentences|textAutoComplete"
             android:imeOptions="actionSend"/>
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/emotes"-->
-<!--            android:layout_width="60dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:src="@drawable/ic_tag_faces_black_24dp"-->
-<!--            android:tint="?attr/textColor"-->
-<!--            android:background="?android:selectableItemBackground"/>-->
+        <ImageButton
+            android:id="@+id/emotes"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_tag_faces_black_24dp"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"/>
 
         <ImageButton
             android:id="@+id/send"
@@ -52,13 +52,22 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_send_black_24dp"
             android:tint="?attr/textColor"
-            android:background="?android:selectableItemBackground"/>
+            android:background="?android:selectableItemBackground"
+            android:visibility="gone"/>
     </LinearLayout>
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/emotesRecyclerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
+            app:tabGravity="fill"/>
+
+    </androidx.viewpager.widget.ViewPager>
 
 </RelativeLayout>
