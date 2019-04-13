@@ -51,7 +51,7 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
                 }
             } else {
                 notLoggedInLayout.search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
-                notLoggedInLayout.loginText.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
+                notLoggedInLayout.login.setOnClickListener { activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 1) }
             }
         })
     }

@@ -9,7 +9,7 @@ data class BttvEmote(
         val id: String,
         @SerializedName("code")
         override val name: String,
-        val imageType: String) : Emote, Parcelable {
+        val imageType: String) : Emote(name), Parcelable {
     val isPng: Boolean
         get() = imageType.endsWith("png")
 }

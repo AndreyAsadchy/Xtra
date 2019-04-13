@@ -5,6 +5,7 @@ import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.clip.ClipStatusResponse
 import io.reactivex.Single
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -17,8 +18,8 @@ interface MiscApi {
     fun getSubscriberBadges(@Path("channelId") channelId: String): Single<SubscriberBadgesResponse>
 
     @GET("https://api.betterttv.net/2/channels/{channel}")
-    fun getBttvEmotes(@Path("channel") channel: String): Single<BttvEmotesResponse>
+    fun getBttvEmotes(@Path("channel") channel: String): Single<Response<BttvEmotesResponse>>
 
     @GET("https://api.frankerfacez.com/v1/room/{channel}")
-    fun getFfzEmotes(@Path("channel") channel: String): Single<FfzRoomResponse>
+    fun getFfzEmotes(@Path("channel") channel: String): Single<Response<FfzRoomResponse>>
 }

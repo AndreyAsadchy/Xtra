@@ -55,12 +55,13 @@ class LoginActivity : AppCompatActivity(), Injectable {
         if (user is NotLoggedIn) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
                 welcomeContainer.visible()
-                loginText.setOnClickListener { initWebView() }
+                login.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
             } else {
                 initWebView()
             }
         } else {
+            TwitchApiHelper.validated = false
             initWebView()
             if (!intent.getBooleanExtra("expired", false)) {
                 repository.revoke(user.token)

@@ -92,10 +92,10 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
                     .addTo(compositeDisposable)
         }
         playerRepository.loadBttvEmotes(channelName)
-                .subscribeBy(onSuccess = { _bttv.value = it })
+                .subscribeBy(onSuccess = { _bttv.value = it.body()?.emotes })
                 .addTo(compositeDisposable)
         playerRepository.loadFfzEmotes(channelName)
-                .subscribeBy(onSuccess = { _ffz.value = it })
+                .subscribeBy(onSuccess = { _ffz.value = it.body()?.emotes })
                 .addTo(compositeDisposable)
     }
 
@@ -144,7 +144,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
         Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
         GlobalScope.launch {
             Log.e("PlayerViewModel", "Player error. Retrying...", error)
-            delay(1000L)
+            delay(1500L)
             runBlocking(Dispatchers.Main) {
                 play()
             }

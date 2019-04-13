@@ -9,7 +9,9 @@ import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.chat.BttvEmote
+import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzEmote
+import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.Prefs
 import io.reactivex.Single
@@ -80,16 +82,14 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun loadBttvEmotes(channel: String): Single<List<BttvEmote>> {
+    fun loadBttvEmotes(channel: String): Single<Response<BttvEmotesResponse>> {
         return misc.getBttvEmotes(channel)
-                .map { it.emotes }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }
 
-    fun loadFfzEmotes(channel: String): Single<List<FfzEmote>> {
+    fun loadFfzEmotes(channel: String): Single<Response<FfzRoomResponse>> {
         return misc.getFfzEmotes(channel)
-                .map { it.emotes }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }

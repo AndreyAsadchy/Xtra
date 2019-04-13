@@ -78,7 +78,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     @Inject lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
-    private var playerFragment: BasePlayerFragment? = null
+    var playerFragment: BasePlayerFragment? = null
+        private set
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
     private val networkReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {

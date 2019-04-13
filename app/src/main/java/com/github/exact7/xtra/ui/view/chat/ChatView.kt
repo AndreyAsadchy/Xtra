@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.view.chat
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
@@ -21,6 +22,7 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
+import com.github.exact7.xtra.ui.common.MarginItemDecoration
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.util.isGone
@@ -43,8 +45,8 @@ class ChatView : RelativeLayout {
 
     private var emoteListsAddedCount = 0
     private var recentEmotes: List<Emote>? = null
-    private var twitchEmotes: List<Emote>? = null
-    private var otherEmotes: List<Emote>? = null
+    private var twitchEmotes: List<com.github.exact7.xtra.model.kraken.user.Emote>? = null
+    private var otherEmotes: MutableList<Emote>? = null
     private val emoteClickListener: (Emote) -> Unit = { editText.text.append(it.name) }
 
     private var messageCallback: MessageSenderCallback? = null
@@ -72,6 +74,7 @@ class ChatView : RelativeLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        layoutTransition = LayoutTransition()
         recyclerView.adapter = adapter
         recyclerView.itemAnimator = null
         layoutManager.stackFromEnd = true
@@ -112,6 +115,8 @@ class ChatView : RelativeLayout {
                 }
             }
         }
+        emotes.setOnClickListener { viewPager.toggleVisibility() }
+
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -132,15 +137,21 @@ class ChatView : RelativeLayout {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun addEmotes(list: List<Emote>) {
-        adapter.addEmotes(list)
-        val item = list.firstOrNull()
-        println("item $item")
-        when (item) {
-            is BttvEmote -> bttvEmotes = list as List<BttvEmote>
-            is FfzEmote -> ffzEmotes = list as List<FfzEmote>
-            is Emote -> twitchEmotes = list
+    fun addEmotes(list: List<Emote>?) {
+        list?.let {
+            adapter.addEmotes(it)
+            when (list.firstOrNull()) {
+                is BttvEmote, is FfzEmote -> {
+                    if (otherEmotes == null) {
+                        otherEmotes = it.toMutableList()
+                    } else {
+                        otherEmotes?.addAll(it)
+                    }
+                }
+                else -> twitchEmotes = list as List<com.github.exact7.xtra.model.kraken.user.Emote>
+            }
         }
+        println("TEST ${emoteListsAddedCount + 1}")
         if (++emoteListsAddedCount == 2) {
             initEmotesViewPager()
         }
@@ -150,25 +161,29 @@ class ChatView : RelativeLayout {
         adapter.setUsername(username)
     }
 
-    private fun getLastItemPosition(): Int = adapter.itemCount - 1
     fun setCallback(callback: MessageSenderCallback) {
         messageCallback = callback
     }
 
     private fun initEmotesViewPager() {
-        viewPager.adapter = object : FragmentPagerAdapter((context as MainActivity).supportFragmentManager) {
+        viewPager.adapter = object : FragmentPagerAdapter((context as MainActivity).playerFragment!!.childFragmentManager) {
+            val size = 2 + if (otherEmotes != null) 1 else 0
+
             override fun getItem(position: Int): Fragment {
-                val list: List<Emote>? = when (position) {
+//                val list: List<Emote>? = when (position) {
 //                    0 -> twitchEmotes
-                    0 -> bttvEmotes
-                    else -> ffzEmotes
-                }
-                return newEmotesFragment(list!!)
+//                    0 -> bttvEmotes
+//                    else -> ffzEmotes
+//                }
+//                return newEmotesFragment(list!!)
+                return EmotesFragment.newInstance(otherEmotes!!.sortedBy { it.name }.distinctBy { it.name })
             }
 
-            override fun getCount(): Int = 2
+            override fun getCount(): Int = 1
         }
     }
+
+    private fun getLastItemPosition(): Int = adapter.itemCount - 1
 
     private fun shouldShowButton(): Boolean {
         val offset = recyclerView.computeVerticalScrollOffset()
@@ -179,24 +194,5 @@ class ChatView : RelativeLayout {
         val range = recyclerView.computeVerticalScrollRange()
         val percentage = (100f * offset / (range - extent).toFloat())
         return percentage < 97f
-    }
-
-    private fun newEmotesFragment(emotes: List<Emote>) = EmotesFragment().apply { arguments = bundleOf("list" to emotes) }
-
-    class EmotesFragment : Fragment() {
-
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(R.layout.fragment_emotes, container, false)
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            (view as RecyclerView).apply {
-                val context = requireContext()
-                layoutManager = GridLayoutManager(context, 5)
-                adapter = EmotesAdapter(context, requireArguments().getSerializable("list") as List<Emote>)
-            }
-        }
     }
 }
