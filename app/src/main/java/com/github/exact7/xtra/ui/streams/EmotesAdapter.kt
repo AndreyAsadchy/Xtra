@@ -1,11 +1,13 @@
 package com.github.exact7.xtra.ui.streams
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
@@ -17,19 +19,10 @@ import com.github.exact7.xtra.util.loadImage
 
 class EmotesAdapter(
         context: Context,
-        private val list: List<Emote>,
-        private val clickListener: (Emote) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private val size = DisplayUtils.convertDpToPixels(context, 40f)
+        private val list: List<Emote>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val imageView = ImageView(parent.context).apply {
-            updateLayoutParams {
-                width = size
-                height = size
-            }
-        }
-        return object : RecyclerView.ViewHolder(imageView) {}
+        return object : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_emotes_list_item, parent, false)) {}
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -42,7 +35,7 @@ class EmotesAdapter(
         }
         (holder.itemView as ImageView).apply {
             loadImage(url, diskCacheStrategy = DiskCacheStrategy.RESOURCE)
-            setOnClickListener { clickListener(emote) }
+//            setOnClickListener { clickListener(emote) }
         }
     }
 

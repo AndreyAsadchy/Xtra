@@ -87,11 +87,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun validate(activity: Activity) {
+        val user = user.value
         if (TwitchApiHelper.validated) {
             _checkedValidity.value = true
+            user as LoggedIn
+            repository.loadUserEmotes(user.token, user.id, compositeDisposable)
             return
         }
-        val user = user.value
         if (user is NotValidated) {
             TwitchApiHelper.validated = true
             authRepository.validate(user.token)

@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.view.chat
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
@@ -9,17 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
+import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.util.isGone
 import com.github.exact7.xtra.util.toggleVisibility
@@ -35,9 +37,15 @@ class ChatView : RelativeLayout {
     }
 
     private val adapter = ChatAdapter(context)
+
     private val layoutManager = LinearLayoutManager(context)
     private var isChatTouched = false
-    private val emotes = arrayListOf<Emote>()
+
+    private var emoteListsAddedCount = 0
+    private var recentEmotes: List<Emote>? = null
+    private var twitchEmotes: List<Emote>? = null
+    private var otherEmotes: List<Emote>? = null
+    private val emoteClickListener: (Emote) -> Unit = { editText.text.append(it.name) }
 
     private var messageCallback: MessageSenderCallback? = null
     var messagingEnabled = false
@@ -104,10 +112,6 @@ class ChatView : RelativeLayout {
                 }
             }
         }
-
-        viewPager.adapter = object : PagerAdapter() {
-
-        }
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -127,9 +131,19 @@ class ChatView : RelativeLayout {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun addEmotes(list: List<Emote>) {
         adapter.addEmotes(list)
-        emotes.addAll(list)
+        val item = list.firstOrNull()
+        println("item $item")
+        when (item) {
+            is BttvEmote -> bttvEmotes = list as List<BttvEmote>
+            is FfzEmote -> ffzEmotes = list as List<FfzEmote>
+            is Emote -> twitchEmotes = list
+        }
+        if (++emoteListsAddedCount == 2) {
+            initEmotesViewPager()
+        }
     }
 
     fun setUsername(username: String) {
@@ -137,6 +151,25 @@ class ChatView : RelativeLayout {
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1
+    fun setCallback(callback: MessageSenderCallback) {
+        messageCallback = callback
+    }
+
+    private fun initEmotesViewPager() {
+        viewPager.adapter = object : FragmentPagerAdapter((context as MainActivity).supportFragmentManager) {
+            override fun getItem(position: Int): Fragment {
+                val list: List<Emote>? = when (position) {
+//                    0 -> twitchEmotes
+                    0 -> bttvEmotes
+                    else -> ffzEmotes
+                }
+                return newEmotesFragment(list!!)
+            }
+
+            override fun getCount(): Int = 2
+        }
+    }
+
     private fun shouldShowButton(): Boolean {
         val offset = recyclerView.computeVerticalScrollOffset()
         if (offset < 0) {
@@ -148,18 +181,22 @@ class ChatView : RelativeLayout {
         return percentage < 97f
     }
 
-    fun setCallback(callback: MessageSenderCallback) {
-        messageCallback = callback
-    }
+    private fun newEmotesFragment(emotes: List<Emote>) = EmotesFragment().apply { arguments = bundleOf("list" to emotes) }
 
-    private inner class EmotesFragment : Fragment() {
+    class EmotesFragment : Fragment() {
+
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.fragment_emotes, container, false)
         }
 
+        @Suppress("UNCHECKED_CAST")
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-            (view as RecyclerView).adapter = EmotesAdapter(adapter)
+            (view as RecyclerView).apply {
+                val context = requireContext()
+                layoutManager = GridLayoutManager(context, 5)
+                adapter = EmotesAdapter(context, requireArguments().getSerializable("list") as List<Emote>)
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import com.github.exact7.xtra.model.kraken.user.Emote
 @Dao
 interface EmotesDao {
 
-    @Query("SELECT * FROM emotes ORDER BY code ASC")
+    @Query("SELECT * FROM emotes ORDER BY code")
     fun getAll(): LiveData<List<Emote>>
 
     @Insert

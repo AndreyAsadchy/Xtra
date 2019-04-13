@@ -19,6 +19,7 @@ import com.iheartradio.m3u8.PlaylistParser
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -41,9 +42,7 @@ class VideoDownloadViewModel @Inject constructor(
     fun setVideo(video: Video) {
         if (_videoInfo.value == null) {
             playerRepository.loadVideoPlaylist(video.id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ response ->
+                    .map { response ->
                         if (response.isSuccessful) {
                             val playlist = response.body()!!.string()
                             val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
@@ -65,14 +64,21 @@ class VideoDownloadViewModel @Inject constructor(
                                 relativeTimes.add(time)
                                 time += duration
                             }
-                            setVideoInfo(VideoDownloadInfo(video, map, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0))
-                        } else if (response.code() == 403) {
+                            VideoDownloadInfo(video, map, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0)
+                        } else {
+                            throw IllegalAccessException()
+                        }
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(onSuccess = {
+                        setVideoInfo(it)
+                    }, onError = {
+                        if (it is IllegalAccessException) {
                             val context = getApplication<Application>()
                             Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
                             _videoInfo.value = null
                         }
-                    }, {
-
                     })
                     .addTo(compositeDisposable)
         }
