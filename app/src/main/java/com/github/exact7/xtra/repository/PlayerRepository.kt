@@ -94,5 +94,5 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun loadEmotes() = emotes.getAll().also { println("GET ${it.value}") }
+    fun loadEmotes() = emotes.getAll()
 }

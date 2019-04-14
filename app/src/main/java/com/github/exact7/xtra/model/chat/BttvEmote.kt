@@ -9,7 +9,10 @@ data class BttvEmote(
         val id: String,
         @SerializedName("code")
         override val name: String,
-        val imageType: String) : Emote(name), Parcelable {
+        val imageType: String) : Emote(), Parcelable {
     val isPng: Boolean
         get() = imageType.endsWith("png")
+
+    override fun equals(other: Any?): Boolean = super.equals(other)
+    override fun hashCode(): Int = super.hashCode()
 }

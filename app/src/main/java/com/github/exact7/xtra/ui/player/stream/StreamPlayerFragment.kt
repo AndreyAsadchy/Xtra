@@ -57,6 +57,8 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         resume.setOnClickListener { viewModel.player.seekToDefaultPosition() }
     }
 
+    fun hideEmotesMenu() = chatView.hideEmotesMenu()
+
 //    override fun play(obj: Parcelable) {
 //        val stream = obj as Stream
 //        if (viewModel.stream != stream) {

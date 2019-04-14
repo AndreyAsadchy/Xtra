@@ -174,13 +174,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (savedInstanceState == null) {
             handleIntent(intent)
         }
+        restorePlayerFragment()
     }
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.isPlayerOpened) {
-            playerFragment = supportFragmentManager.findFragmentById(R.id.playerContainer) as BasePlayerFragment?
-        }
+        restorePlayerFragment()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -240,7 +239,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 fragNavController.popFragment()
             }
         } else {
-            playerFragment?.minimize()
+            playerFragment?.let {
+                if (it is StreamPlayerFragment) {
+                    if (!it.hideEmotesMenu()) {
+                        it.minimize()
+                    }
+                } else {
+                    it.minimize()
+                }
+            }
         }
     }
 
@@ -330,6 +337,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         viewModel.onPlayerClosed()
     }
 
+    private fun restorePlayerFragment() {
+        if (viewModel.isPlayerOpened && playerFragment == null) {
+            playerFragment = supportFragmentManager.findFragmentById(R.id.playerContainer) as BasePlayerFragment?
+        }
+    }
+
     private fun hideNavigationBar() {
         navBarContainer.gone()
     }
@@ -401,5 +414,4 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
     }
-
 }

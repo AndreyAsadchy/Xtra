@@ -25,7 +25,9 @@ import com.github.exact7.xtra.ui.common.ChatAdapter
 import com.github.exact7.xtra.ui.common.MarginItemDecoration
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.streams.EmotesAdapter
+import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isGone
+import com.github.exact7.xtra.util.isVisible
 import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.view_chat.view.*
@@ -44,9 +46,9 @@ class ChatView : RelativeLayout {
     private var isChatTouched = false
 
     private var emoteListsAddedCount = 0
-    private var recentEmotes: List<Emote>? = null
+    //    private var recentEmotes: List<Emote>? = null
     private var twitchEmotes: List<com.github.exact7.xtra.model.kraken.user.Emote>? = null
-    private var otherEmotes: MutableList<Emote>? = null
+    private var otherEmotes: HashSet<Emote>? = null
     private val emoteClickListener: (Emote) -> Unit = { editText.text.append(it.name) }
 
     private var messageCallback: MessageSenderCallback? = null
@@ -115,8 +117,6 @@ class ChatView : RelativeLayout {
                 }
             }
         }
-        emotes.setOnClickListener { viewPager.toggleVisibility() }
-
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -138,12 +138,13 @@ class ChatView : RelativeLayout {
 
     @Suppress("UNCHECKED_CAST")
     fun addEmotes(list: List<Emote>?) {
+        println(list)
         list?.let {
             adapter.addEmotes(it)
             when (list.firstOrNull()) {
                 is BttvEmote, is FfzEmote -> {
                     if (otherEmotes == null) {
-                        otherEmotes = it.toMutableList()
+                        otherEmotes = it.toHashSet()
                     } else {
                         otherEmotes?.addAll(it)
                     }
@@ -151,8 +152,7 @@ class ChatView : RelativeLayout {
                 else -> twitchEmotes = list as List<com.github.exact7.xtra.model.kraken.user.Emote>
             }
         }
-        println("TEST ${emoteListsAddedCount + 1}")
-        if (++emoteListsAddedCount == 2) {
+        if (++emoteListsAddedCount == 3) {
             initEmotesViewPager()
         }
     }
@@ -165,22 +165,41 @@ class ChatView : RelativeLayout {
         messageCallback = callback
     }
 
+    fun hideEmotesMenu(): Boolean {
+        return if (viewPager.isVisible()) {
+            viewPager.gone()
+            true
+        } else {
+            false
+        }
+    }
+
     private fun initEmotesViewPager() {
+        val size = 1 + if (otherEmotes != null) 1 else 0
+        if (size == 1) {
+            tabLayout.gone()
+        }
         viewPager.adapter = object : FragmentPagerAdapter((context as MainActivity).playerFragment!!.childFragmentManager) {
-            val size = 2 + if (otherEmotes != null) 1 else 0
 
             override fun getItem(position: Int): Fragment {
-//                val list: List<Emote>? = when (position) {
-//                    0 -> twitchEmotes
-//                    0 -> bttvEmotes
-//                    else -> ffzEmotes
-//                }
-//                return newEmotesFragment(list!!)
-                return EmotesFragment.newInstance(otherEmotes!!.sortedBy { it.name }.distinctBy { it.name })
+                val list: Collection<Emote>? = when (position) {
+                    0 -> twitchEmotes
+                    else -> otherEmotes
+                }
+                return EmotesFragment.newInstance(list!!.sortedBy { it.name })
             }
 
-            override fun getCount(): Int = 1
+            override fun getCount(): Int = size
+
+            override fun getPageTitle(position: Int): CharSequence? {
+                return if (position == 0) {
+                    "Twitch"
+                } else {
+                    "BTTV/FFZ"
+                }
+            }
         }
+        emotes.setOnClickListener { viewPager.toggleVisibility() }
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1

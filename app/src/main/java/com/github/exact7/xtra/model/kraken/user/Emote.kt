@@ -11,4 +11,8 @@ data class Emote(
         @PrimaryKey
         val id: Int,
         @field:[SerializedName("code") ColumnInfo(name = "code")]
-        override val name: String) : Emote
+        override val name: String) : Emote() {
+
+        override fun equals(other: Any?): Boolean = super.equals(other)
+        override fun hashCode(): Int = super.hashCode()
+}

@@ -158,7 +158,7 @@ class KrakenRepository @Inject constructor(
         Log.d(TAG, "Loading user emotes")
         api.getUserEmotes("OAuth $token", userId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribeBy(onSuccess = { emotesDao.insertAll(it.emotes) })
                 .addTo(compositeDisposable)
     }

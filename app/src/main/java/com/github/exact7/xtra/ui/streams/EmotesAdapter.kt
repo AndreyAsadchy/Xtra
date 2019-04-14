@@ -25,9 +25,9 @@ class EmotesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val emote = list[position]
         val url = when (emote) {
-            is TwitchEmote -> "$EMOTES_URL${emote.name}/2.0"
             is BttvEmote -> "$BTTV_URL${emote.id}/2x"
             is FfzEmote -> emote.url
+            is com.github.exact7.xtra.model.kraken.user.Emote -> "$EMOTES_URL${emote.id}/2.0"
             else -> throw IllegalStateException("Unknown emote")
         }
         (holder.itemView as ImageView).apply {
