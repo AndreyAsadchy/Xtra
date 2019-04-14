@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
@@ -49,7 +50,6 @@ class ChatView : RelativeLayout {
     //    private var recentEmotes: List<Emote>? = null
     private var twitchEmotes: List<com.github.exact7.xtra.model.kraken.user.Emote>? = null
     private var otherEmotes: HashSet<Emote>? = null
-    private val emoteClickListener: (Emote) -> Unit = { editText.text.append(it.name) }
 
     private var messageCallback: MessageSenderCallback? = null
     var messagingEnabled = false
@@ -107,7 +107,15 @@ class ChatView : RelativeLayout {
             }
             handled
         }
-        editText.addTextChangedListener(onTextChanged = { text, _, _, _ -> send.visible(text?.isNotEmpty() == true) })
+        editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
+            val notEmpty = text?.isNotEmpty() == true
+            send.visible(notEmpty)
+            clear.visible(notEmpty)
+        })
+        clear.setOnClickListener {
+            val text = editText.text.toString().trimEnd()
+            editText.setText(text.substring(0, text.lastIndexOf(' ').let { if (it >= 0) it else 0 }))
+        }
         send.setOnClickListener {
             messageCallback?.let {
                 val text = editText.text
@@ -138,7 +146,6 @@ class ChatView : RelativeLayout {
 
     @Suppress("UNCHECKED_CAST")
     fun addEmotes(list: List<Emote>?) {
-        println(list)
         list?.let {
             adapter.addEmotes(it)
             when (list.firstOrNull()) {
@@ -186,7 +193,7 @@ class ChatView : RelativeLayout {
                     0 -> twitchEmotes
                     else -> otherEmotes
                 }
-                return EmotesFragment.newInstance(list!!.sortedBy { it.name })
+                return EmotesFragment.newInstance(list!!.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
             }
 
             override fun getCount(): Int = size

@@ -61,6 +61,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 initWebView()
             }
         } else {
+            repository.deleteAllEmotes()
             TwitchApiHelper.validated = false
             initWebView()
             if (!intent.getBooleanExtra("expired", false)) {

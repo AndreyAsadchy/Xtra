@@ -32,19 +32,28 @@
         android:background="?attr/primaryColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:inputType="textCapSentences|textAutoComplete"
+            android:inputType="textCapSentences|textAutoComplete|textNoSuggestions"
             android:imeOptions="actionSend"/>
 
         <ImageButton
+            android:id="@+id/clear"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_backspace_black_24"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"
+            android:visibility="gone"/>
+
+        <ImageButton
             android:id="@+id/emotes"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_tag_faces_black_24dp"
             android:tint="?attr/textColor"
@@ -52,7 +61,7 @@
 
         <ImageButton
             android:id="@+id/send"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_send_black_24dp"
             android:tint="?attr/textColor"
@@ -63,7 +72,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="300dp"
         android:visibility="gone">
 
         <com.google.android.material.tabs.TabLayout
