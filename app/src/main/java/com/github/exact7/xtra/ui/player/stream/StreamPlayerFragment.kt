@@ -20,7 +20,6 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
-import kotlinx.android.synthetic.main.view_chat.view.*
 
 @Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -86,13 +85,13 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
             viewModel.onPause()
         }
     }

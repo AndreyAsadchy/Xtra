@@ -69,13 +69,13 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
             viewModel.onPause()
         }
     }

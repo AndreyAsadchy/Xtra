@@ -46,8 +46,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private lateinit var chatView: ChatView
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
+    protected var isPortrait: Boolean = false
+        private set
+    protected var shouldHandleLifecycle = true
+        private set
 
-    private var isPortrait: Boolean = false
     private lateinit var prefs: SharedPreferences
     abstract val channel: Channel
 
@@ -193,6 +196,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             showStatusBar()
         }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        shouldHandleLifecycle = isInPictureInPictureMode //this fires faster than LifecycleListener, so set reverse value
+        chatView.visible(!isInPictureInPictureMode)
     }
 
     private fun hideChat() {

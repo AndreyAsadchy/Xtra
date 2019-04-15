@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.widget.Toast
@@ -266,6 +268,31 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized) {
+            enterPictureInPictureMode()
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        println("PICTURE")
+
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        println("CONFIG")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!isInPictureInPictureMode) {
+                recreate()
+            }
+        } else {
+            recreate()
         }
     }
 

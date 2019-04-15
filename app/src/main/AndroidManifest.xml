@@ -30,7 +30,11 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            tools:targetApi="n" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait" />
