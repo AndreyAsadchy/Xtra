@@ -5,8 +5,10 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
@@ -34,6 +36,8 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.player_stream.*
 
 private const val CHAT_OPENED = "ChatOpened"
@@ -46,13 +50,17 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private lateinit var chatView: ChatView
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
+    private lateinit var snackbar: Snackbar
     protected var isPortrait: Boolean = false
         private set
-    protected var shouldHandleLifecycle = true
+    protected var shouldRestore = true
         private set
 
     private lateinit var prefs: SharedPreferences
     abstract val channel: Channel
+
+    private var playerViewWidth = 0
+    private var playerViewHeight = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,10 +85,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 }
-
             }
         }
         playerView = view.findViewById(R.id.playerView)
+        playerView.post {
+            playerViewWidth = playerView.width
+            playerViewHeight = playerView.height
+        }
         if (this !is OfflinePlayerFragment) {
             chatView = view.findViewById(R.id.chatView)
             if (!isPortrait) {
@@ -90,18 +101,12 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     }
                 }
                 hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
-                    setOnClickListener {
-                        hideChat()
-                        prefs.edit { putBoolean(CHAT_OPENED, false) }
-                    }
+                    setOnClickListener { hideChat() }
                 }
                 showChat = view.findViewById<ImageButton>(R.id.showChat).apply {
-                    setOnClickListener {
-                        showChat()
-                        prefs.edit { putBoolean(CHAT_OPENED, true) }
-                    }
+                    setOnClickListener { showChat() }
                 }
-                if (prefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
+                setPreferredChatVisibility()
             }
             view.findViewById<ImageButton>(R.id.settings).apply {
                 isEnabled = false
@@ -140,12 +145,14 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
             }
         }
+        snackbar = Snackbar.make(requireActivity().findViewById(android.R.id.content), R.string.player_error, Snackbar.LENGTH_INDEFINITE)
     }
 
     protected fun initializeViewModel(viewModel: PlayerViewModel, enableChat: Boolean = true) {
         playerView.player = viewModel.player
         if (this !is OfflinePlayerFragment) {
-            ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
+            val mainViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
+            mainViewModel.user.observe(viewLifecycleOwner, Observer {
                 if (it is LoggedIn) {
                     if (enableChat) {
                         chatView.setUsername(it.name)
@@ -155,6 +162,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     }
                 }
             })
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mainViewModel.shouldRecreate.observe(viewLifecycleOwner, Observer { shouldRestore = !it })
+            }
         }
         if (enableChat) {
             viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
@@ -163,6 +173,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             viewModel.bttv.observe(viewLifecycleOwner, emotesObserver)
             viewModel.ffz.observe(viewLifecycleOwner, emotesObserver)
         }
+        snackbar.setAction(R.string.retry) { viewModel.play() }
+        viewModel.playerError.observe(viewLifecycleOwner, Observer {
+            if (snackbar.isShown) {
+                snackbar.duration = BaseTransientBottomBar.LENGTH_LONG
+            }
+            snackbar.show()
+        })
     }
 
 //    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
@@ -180,6 +197,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     override fun onMinimize() {
+        snackbar.dismiss()
+        playerView.hideController()
 //        if (!isPortrait) { //TODO fix drag view when show status bar
 //            showStatusBar()
 //        }
@@ -199,8 +218,30 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        shouldHandleLifecycle = isInPictureInPictureMode //this fires faster than LifecycleListener, so set reverse value
-        chatView.visible(!isInPictureInPictureMode)
+        if (isInPictureInPictureMode) {
+            chatView.gone()
+            playerView.apply {
+                hideController()
+                updateLayoutParams {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                    height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+            }
+        } else {
+            if (isPortrait) {
+                chatView.visible()
+            } else {
+                setPreferredChatVisibility()
+            }
+            playerView.updateLayoutParams {
+                width = playerViewWidth
+                height = playerViewHeight
+            }
+        }
+    }
+
+    private fun setPreferredChatVisibility() {
+        if (prefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
     }
 
     private fun hideChat() {
@@ -208,6 +249,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         showChat.visible()
         chatView.gone()
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+        prefs.edit { putBoolean(CHAT_OPENED, false) }
     }
 
     private fun showChat() {
@@ -215,5 +257,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         showChat.gone()
         chatView.visible()
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        prefs.edit { putBoolean(CHAT_OPENED, true) }
     }
 }

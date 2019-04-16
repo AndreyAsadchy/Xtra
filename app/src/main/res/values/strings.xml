@@ -97,5 +97,5 @@
     <string name="search">Search</string>
     <string name="chat_replay_unavailable">Chat replay is unavailable</string>
     <string name="video_subscribers_only">This video is only available to subscribers</string>
-    <string name="player_error">Player error. Retrying...</string>
+    <string name="player_error">Player error</string>
 </resources>

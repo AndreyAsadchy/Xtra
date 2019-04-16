@@ -230,7 +230,6 @@ class SlidingLayout : LinearLayout {
                 start()
             }
         }
-        dragView.hideController()
         listeners.forEach { it.onMinimize() }
     }
 

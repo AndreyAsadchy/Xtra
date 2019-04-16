@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -58,6 +59,9 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     private val _newMessage: MutableLiveData<ChatMessage> by lazy { MutableLiveData<ChatMessage>() }
     val newMessage: LiveData<ChatMessage>
         get() = _newMessage
+    private val _playerError = MutableLiveData<ExoPlaybackException>()
+    val playerError: LiveData<ExoPlaybackException>
+        get() = _playerError
 
     override fun onMessage(message: ChatMessage) {
         message.badges?.find { it.id == "subscriber" }?.let {
@@ -71,7 +75,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
         _chatMessages.postValue(ArrayList())
     }
 
-    protected fun play() {
+    fun play() {
         if (this::mediaSource.isInitialized) { //TODO
             player.prepare(mediaSource)
             player.playWhenReady = true
@@ -140,15 +144,8 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        val context = getApplication<Application>()
-        Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
-        GlobalScope.launch {
-            Log.e("PlayerViewModel", "Player error. Retrying...", error)
-            delay(1500L)
-            runBlocking(Dispatchers.Main) {
-                play()
-            }
-        }
+        Log.e("PlayerViewModel", "Player error", error)
+        _playerError.value = error
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

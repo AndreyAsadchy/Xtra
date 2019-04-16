@@ -31,7 +31,6 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:launchMode="singleTop"
-            android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             tools:targetApi="n" />

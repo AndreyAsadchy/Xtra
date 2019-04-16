@@ -39,13 +39,13 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
+        if (this::viewModel.isInitialized && shouldRestore) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
+        if (this::viewModel.isInitialized && shouldRestore) {
             viewModel.onPause()
         }
     }
