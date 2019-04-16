@@ -38,6 +38,9 @@ import com.tonyodev.fetch2.Download
 import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.Request
 import dagger.android.AndroidInjection
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileOutputStream
@@ -189,7 +192,16 @@ class DownloadService : IntentService(TAG), Injectable {
     private fun enqueueNext() {
         val requests = mutableListOf<Request>()
         with(request as VideoRequest) {
-            val tracks = playlist.tracks
+            val tracks: List<TrackData>
+            try {
+                tracks = playlist.tracks
+            } catch (e: UninitializedPropertyAccessException) {
+                GlobalScope.launch {
+                    delay(3000L)
+                    enqueueNext()
+                }
+                return
+            }
             val current = segmentFrom + progress
             try {
                 for (i in current..min(current + ENQUEUE_SIZE, segmentTo)) {

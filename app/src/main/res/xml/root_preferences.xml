@@ -65,4 +65,13 @@
         app:iconSpaceReserved="false"
         />
 
+    <SwitchPreferenceCompat
+        android:key="pictureInPicture"
+        android:title="@string/picture_in_picture"
+        android:summary="@string/continue_playback"
+        android:defaultValue="true"
+        app:iconSpaceReserved="false"
+        app:isPreferenceVisible="false"
+        />
+
 </androidx.preference.PreferenceScreen>

@@ -62,6 +62,8 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     private val _playerError = MutableLiveData<ExoPlaybackException>()
     val playerError: LiveData<ExoPlaybackException>
         get() = _playerError
+    var isResumed = true
+        private set
 
     override fun onMessage(message: ChatMessage) {
         message.badges?.find { it.id == "subscriber" }?.let {
@@ -105,10 +107,12 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
 
     open fun onResume() {
         play()
+        isResumed = true
     }
 
     open fun onPause() {
         player.stop()
+        isResumed = false
     }
 
     override fun onCleared() {

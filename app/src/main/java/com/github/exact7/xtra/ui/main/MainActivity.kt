@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.ConnectivityManager
@@ -97,12 +98,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         get() = fragNavController.currentFrag is SearchFragment
     var isDarkTheme = true
         private set
+    private lateinit var prefs: SharedPreferences
 
     //Lifecycle methods
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val prefs = Prefs.get(this)
+        prefs = Prefs.get(this)
         if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
             setTheme(if (prefs.getBoolean(C.THEME, true).also { isDarkTheme = it }) R.style.DarkTheme else R.style.LightTheme)
         } else {
@@ -186,7 +188,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onResume() {
         super.onResume()
+        if (viewModel.wasInPictureInPicture && viewModel.shouldRecreate.value == true) {
+            viewModel.wasInPictureInPicture = false
+            recreate()
+            return
+        }
         restorePlayerFragment()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (viewModel.wasInPictureInPicture) {
+            viewModel.shouldRecreate.value = true
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -277,19 +291,21 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && viewModel.isPlayerMaximized) {
             enterPictureInPictureMode(PictureInPictureParams.Builder().build())
         }
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        println(isInPictureInPictureMode)
         if (isInPictureInPictureMode) {
             viewModel.orientationBeforePictureInPicture = resources.configuration.orientation
             viewModel.shouldRecreate.value = false
-        } else if (viewModel.orientationBeforePictureInPicture != newConfig?.orientation) {
-            viewModel.shouldRecreate.value = true
+        } else {
+            viewModel.wasInPictureInPicture = true
+            if (viewModel.orientationBeforePictureInPicture != newConfig?.orientation) {
+                viewModel.shouldRecreate.value = true
+            }
         }
     }
 
@@ -298,8 +314,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (viewModel.shouldRecreate.value == true) {
                 recreate()
-            } else if (!isInPictureInPictureMode) {
-                viewModel.shouldRecreate.value = true
             }
         } else {
             recreate()

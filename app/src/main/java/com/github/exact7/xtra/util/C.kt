@@ -13,8 +13,10 @@ object C {
     const val FIRST_LAUNCH = "first_launch"
     const val CHANNEL = "channel"
     const val THEME = "theme"
+    const val PORTRAIT_PLAYER_HEIGHT  = "portrait_player_height"
     const val LANDSCAPE_CHAT_WIDTH = "landscape_chat_width"
     const val PORTRAIT_COLUMN_COUNT = "columnsPortrait"
     const val LANDSCAPE_COLUMN_COUNT = "columnsLandscape"
     const val DOWNLOAD_STORAGE = "downloadStorage"
+    const val PICTURE_IN_PICTURE = "pictureInPicture"
 }

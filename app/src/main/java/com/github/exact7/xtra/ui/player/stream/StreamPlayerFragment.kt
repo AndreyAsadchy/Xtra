@@ -18,6 +18,7 @@ import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
 
@@ -85,13 +86,14 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized && shouldRestore) {
+        if (this::viewModel.isInitialized && (!viewModel.isResumed || shouldHandleLifecycle)) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized && shouldRestore) {
+        super.onMovedToBackground()
+        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
             viewModel.onPause()
         }
     }

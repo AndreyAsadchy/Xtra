@@ -65,13 +65,14 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized && shouldRestore) {
+        if (this::viewModel.isInitialized && (!viewModel.isResumed || shouldHandleLifecycle)) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized && shouldRestore) {
+        super.onMovedToBackground()
+        if (this::viewModel.isInitialized && shouldHandleLifecycle) {
             viewModel.onPause()
         }
     }

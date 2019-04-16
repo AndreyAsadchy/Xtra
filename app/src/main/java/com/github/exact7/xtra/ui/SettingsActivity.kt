@@ -3,8 +3,8 @@ package com.github.exact7.xtra.ui
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.ListPreference
@@ -13,14 +13,15 @@ import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.Prefs
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         super.onCreate(savedInstanceState)
+        setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
@@ -43,12 +44,7 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
             findPreference<SeekBarPreference>("chatWidth").setOnPreferenceChangeListener { _, newValue ->
-                val displayMetrics = DisplayMetrics()
-                activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-                val deviceLandscapeWidth = with(displayMetrics) {
-                    if (heightPixels > widthPixels) heightPixels else widthPixels
-                }
-                val chatWidth = (deviceLandscapeWidth * (newValue as Int / 100f)).toInt()
+                val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(newValue as Int)
                 Prefs.get(activity).edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 activity.setResult(Activity.RESULT_OK, Intent().putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true
@@ -60,6 +56,9 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
                 activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE))
                 true
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE).isVisible = true
             }
         }
     }

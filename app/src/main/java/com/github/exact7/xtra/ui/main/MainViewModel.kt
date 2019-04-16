@@ -44,6 +44,7 @@ class MainViewModel @Inject constructor(
         get() = _checkedValidity
 
     val shouldRecreate = MutableLiveData<Boolean>().apply { value = true }
+    var wasInPictureInPicture = false
     var orientationBeforePictureInPicture = 0
 
     private val compositeDisposable = CompositeDisposable()

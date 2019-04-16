@@ -34,7 +34,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
             return storage[index].path
         }
 
-    fun init(context: Context) {
+    protected fun init(context: Context) {
         try {
             storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
             prefs = Prefs.get(context)

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="thumbnail_height">200dp</dimen>
-    <dimen name="player_height_portrait">230dp</dimen>
-    <dimen name="chat_width_landscape">180dp</dimen>
     <dimen name="design_bottom_navigation_text_size" tools:override="true">10sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">10sp</dimen>
     <dimen name="divider_margin">5dp</dimen>

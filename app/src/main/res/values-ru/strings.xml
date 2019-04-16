@@ -97,5 +97,7 @@
     <string name="search">Поиск</string>
     <string name="chat_replay_unavailable">Повтор чата недоступен</string>
     <string name="video_subscribers_only">This video is only available to subscribers</string>
-    <string name="player_error">Player error. Retrying...</string>
+    <string name="player_error">Ошибка воспроизведения</string>
+    <string name="picture_in_picture">Картинка в картинке</string>
+    <string name="continue_playback">Продолжить воспроизведение вне приложения</string>
 </resources>

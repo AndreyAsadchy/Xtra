@@ -10,6 +10,7 @@ import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.Prefs
 import dagger.android.AndroidInjector
@@ -41,7 +42,13 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
         val prefs = Prefs.get(this)
         val all = prefs.all
-        if (all["chatWidth"] is String) { //TODO remove after all devices updated to 1.1.9
+        if (all["chatWidth"] == null) {
+            val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(25)
+            prefs.edit {
+                putInt("chatWidth", 25)
+                putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth)
+            }
+        } else if (all["chatWidth"] is String) { //TODO remove after all devices updated to 1.1.9
             prefs.edit {
                 remove("chatWidth")
                 putInt("chatWidth", prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, -1))
@@ -51,6 +58,11 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
             prefs.edit {
                 remove(C.DOWNLOAD_STORAGE)
                 putInt(C.DOWNLOAD_STORAGE, if (all[C.DOWNLOAD_STORAGE] == true) 0 else 1)
+            }
+        }
+        if (all[C.PORTRAIT_PLAYER_HEIGHT] == null) {
+            prefs.edit {
+                putInt(C.PORTRAIT_PLAYER_HEIGHT, DisplayUtils.calculatePortraitHeightByPercent(33))
             }
         }
     }

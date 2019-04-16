@@ -16,7 +16,6 @@ import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isClick
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
 
@@ -109,7 +108,6 @@ class SlidingLayout : LinearLayout {
                 if (!isPortrait) {
                     secondView?.gone()
                 }
-                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
         }
     }
@@ -198,11 +196,6 @@ class SlidingLayout : LinearLayout {
                 View.VISIBLE
             } else {
                 shouldUpdateDragLayout = true
-                dragView.resizeMode = if (maximizedSecondViewVisibility == View.VISIBLE) {
-                    AspectRatioFrameLayout.RESIZE_MODE_FIT
-                } else {
-                    AspectRatioFrameLayout.RESIZE_MODE_FILL
-                }
                 maximizedSecondViewVisibility!!
             }
         }
@@ -217,7 +210,6 @@ class SlidingLayout : LinearLayout {
             if (!isPortrait) {
                 shouldUpdateDragLayout = true
                 maximizedSecondViewVisibility = visibility
-                dragView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             }
             gone()
         }
