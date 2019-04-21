@@ -53,7 +53,7 @@ data class Video(
     override val channelLogo: String
         get() = channel.logo
     override val channelName: String
-        get() = channel.name
+        get() = channel.displayName
     override val thumbnail: String
         get() = preview.large
     override val uploadDate: String

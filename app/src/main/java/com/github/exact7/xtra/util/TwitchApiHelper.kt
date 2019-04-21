@@ -51,4 +51,15 @@ object TwitchApiHelper {
     fun startChat(channelName: String, userName: String?, userToken: String?, subscriberBadges: SubscriberBadgesResponse?, newMessageListener: OnChatMessageReceivedListener): LiveChatThread {
         return LiveChatThread(userName, userToken, channelName, MessageListenerImpl(subscriberBadges, newMessageListener)).apply { start() }
     }
+
+    fun parseClipOffset(url: String): Double {
+        val time = url.substringAfterLast('=').split("\\D".toRegex())
+        var offset = 0.0
+        var multiplier = 1.0
+        for (i in time.lastIndex - 1 downTo 0) {
+            offset += time[i].toDouble() * multiplier
+            multiplier *= 60
+        }
+        return offset
+    }
 }

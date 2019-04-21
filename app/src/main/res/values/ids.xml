@@ -12,4 +12,5 @@
     <item name="fullscreenExit" type="id" />
     <item name="fullscreenEnter" type="id" />
     <item name="download" type="id" />
+    <item name="aspectRatio" type="id" />
 </resources>

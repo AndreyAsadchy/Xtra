@@ -13,6 +13,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.Prefs
+import com.google.android.gms.ads.MobileAds
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -38,6 +39,7 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         INSTANCE = this
         AppInjector.init(this)
         Fabric.with(this, Crashlytics())
+        MobileAds.initialize(this, "ca-app-pub-1890646946349307~2827896321")
         RxJavaPlugins.setErrorHandler { Crashlytics.logException(it) }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
         val prefs = Prefs.get(this)

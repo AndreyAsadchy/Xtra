@@ -52,7 +52,7 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
     }
 
     override fun scrollToTop() {
-        recyclerView.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 
     override fun showDownloadDialog() {

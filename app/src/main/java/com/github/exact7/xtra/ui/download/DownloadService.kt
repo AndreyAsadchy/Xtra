@@ -255,7 +255,7 @@ class DownloadService : IntentService(TAG), Injectable {
             }
             is ClipRequest -> Log.d(TAG, "Downloaded clip")
         }
-        offlineRepository.onDownloaded(offlineVideo)
+        offlineRepository.updateVideo(offlineVideo.apply { downloaded = true })
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("video", offlineVideo)

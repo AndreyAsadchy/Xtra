@@ -58,7 +58,7 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
 
     override fun scrollToTop() {
         if (isLoggedIn) {
-            recyclerView.scrollToPosition(0)
+            recyclerView?.scrollToPosition(0)
         }
     }
 }

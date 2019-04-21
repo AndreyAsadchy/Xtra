@@ -203,4 +203,9 @@
         <item name="layout_marginRight">10dp</item>
     </style>
 
+    <style name="Player.Ratio" parent="Player.SmallImage">
+        <item name="android:id">@id/aspectRatio</item>
+        <item name="android:src">@drawable/baseline_aspect_ratio_black_24</item>
+    </style>
+
 </resources>

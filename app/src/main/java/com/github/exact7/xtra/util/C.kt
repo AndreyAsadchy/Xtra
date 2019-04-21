@@ -19,4 +19,6 @@ object C {
     const val LANDSCAPE_COLUMN_COUNT = "columnsLandscape"
     const val DOWNLOAD_STORAGE = "downloadStorage"
     const val PICTURE_IN_PICTURE = "pictureInPicture"
+    const val ASPECT_RATIO_PORTRAIT = "aspectRatioPortrait"
+    const val ASPECT_RATIO_LANDSCAPE = "aspectRatioLandscape"
 }

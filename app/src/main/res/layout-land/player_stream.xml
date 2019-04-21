@@ -32,6 +32,10 @@
             />
 
         <ImageButton
+            style="@style/Player.Ratio"
+            />
+
+        <ImageButton
             style="@style/Player.Settings"
             />
 

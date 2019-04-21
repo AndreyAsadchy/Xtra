@@ -56,15 +56,18 @@ class VideoDownloadViewModel @Inject constructor(
                                 PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
                             }
                             var totalDuration = 0L
-                            val relativeTimes = mutableListOf<Long>()
+                            val size = mediaPlaylist.tracks.size
+                            val relativeTimes = ArrayList<Long>(size)
+                            val durations = ArrayList<Long>(size)
                             var time = 0L
                             mediaPlaylist.tracks.forEach {
-                                val duration = it.trackInfo.duration.toLong()
+                                val duration = (it.trackInfo.duration * 1000f).toLong()
+                                durations.add(duration)
                                 totalDuration += duration
                                 relativeTimes.add(time)
                                 time += duration
                             }
-                            VideoDownloadInfo(video, map, relativeTimes, totalDuration, mediaPlaylist.targetDuration.toLong(), 0)
+                            VideoDownloadInfo(video, map, relativeTimes, durations, totalDuration, mediaPlaylist.targetDuration * 1000L, 0)
                         } else {
                             throw IllegalAccessException()
                         }
@@ -94,9 +97,11 @@ class VideoDownloadViewModel @Inject constructor(
         GlobalScope.launch {
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
-                val duration = relativeStartTimes[toIndex] - relativeStartTimes[fromIndex] //TODO fix
+                val startPosition = relativeStartTimes[fromIndex]
+                val endPosition = relativeStartTimes[toIndex]
+                val duration = endPosition + durations[toIndex] - startPosition
                 val directory = "$path${File.separator}${video.id}${if (!quality.contains("Audio", true)) quality else "audio"}${File.separator}"
-                val offlineVideo = DownloadUtils.prepareDownload(context, video, directory, duration)
+                val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition, endPosition)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
                 DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, fromIndex, toIndex), wifiOnly)
             }

@@ -52,7 +52,7 @@ object DownloadUtils {
 
 //    fun createClipRequest()
 
-    fun prepareDownload(context: Context, downloadable: Downloadable, path: String, duration: Long): OfflineVideo {
+    fun prepareDownload(context: Context, downloadable: Downloadable, url: String, path: String, duration: Long, startPosition: Long?, endPosition: Long?): OfflineVideo {
         val offlinePath = if (downloadable is Video) {
             "$path${System.currentTimeMillis()}.m3u8"
         } else {
@@ -62,7 +62,7 @@ object DownloadUtils {
         return with(downloadable) {
             val thumbnail = glide.downloadOnly().load(thumbnail).submit().get().absolutePath
             val logo = glide.downloadOnly().load(channelLogo).submit().get().absolutePath
-            OfflineVideo(offlinePath, title, channelName, logo, thumbnail, game, duration, TwitchApiHelper.parseIso8601Date(uploadDate), Calendar.getInstance().time.time)
+            OfflineVideo(offlinePath, url, startPosition, endPosition, title, channelName, logo, thumbnail, game, duration, TwitchApiHelper.parseIso8601Date(uploadDate), Calendar.getInstance().time.time)
         }
     }
 

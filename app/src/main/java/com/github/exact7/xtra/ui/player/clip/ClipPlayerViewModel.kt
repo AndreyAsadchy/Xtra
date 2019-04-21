@@ -17,6 +17,7 @@ import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
@@ -82,14 +83,7 @@ class ClipPlayerViewModel @Inject constructor(
                     .addTo(compositeDisposable)
             clip.vod?.let {
                 initChat(playerRepository, clip.broadcaster.id, clip.channelName)
-                val time = it.url.substringAfterLast('=').split("\\D".toRegex())
-                var offset = 0.0
-                var multiplier = 1.0
-                for (i in time.lastIndex - 1 downTo 0) {
-                    offset += time[i].toDouble() * multiplier
-                    multiplier *= 60
-                }
-                chatReplayManager = ChatReplayManager(repository, "v${it.id}", offset, player, this::onMessage, this::clearMessages)
+                chatReplayManager = ChatReplayManager(repository, "v${it.id}", TwitchApiHelper.parseClipOffset(it.url), player, this::onMessage, this::clearMessages)
             }
         }
     }

@@ -74,8 +74,8 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         init(context)
         with(videoInfo) {
             spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
-            binding.duration = DateUtils.formatElapsedTime(totalDuration)
-            binding.currentPosition = DateUtils.formatElapsedTime(currentPosition)
+            binding.duration = DateUtils.formatElapsedTime(totalDuration / 1000L)
+            binding.currentPosition = DateUtils.formatElapsedTime(currentPosition / 1000L)
             timeFrom.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -164,7 +164,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                 val hours = time[0].toLong()
                 val minutes = time[1].toLong().also { if (it > 59) throw IllegalArgumentException()}
                 val seconds = time[2].toLong().also { if (it > 59) throw IllegalArgumentException()}
-                return (hours * 3600) + (minutes * 60) + seconds
+                return ((hours * 3600) + (minutes * 60) + seconds) * 1000
             } catch (ex: Exception) {
                 error = getString(R.string.invalid_time)
             }

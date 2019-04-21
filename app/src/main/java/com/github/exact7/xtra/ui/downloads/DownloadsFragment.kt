@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
@@ -54,9 +55,10 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
         })
         search.setOnClickListener { activity.openSearch() }
         recyclerView.adapter = adapter
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     override fun scrollToTop() {
-        recyclerView.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 }

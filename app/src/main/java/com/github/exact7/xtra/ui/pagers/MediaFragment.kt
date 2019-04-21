@@ -49,6 +49,6 @@ abstract class MediaFragment : Fragment(), Scrollable {
     abstract fun onSpinnerItemSelected(position: Int): Fragment
 
     override fun scrollToTop() {
-        recyclerView.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 }

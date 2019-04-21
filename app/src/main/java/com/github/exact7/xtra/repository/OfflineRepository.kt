@@ -27,8 +27,8 @@ class OfflineRepository @Inject constructor(
         GlobalScope.launch { videosDao.delete(video) }
     }
 
-    fun onDownloaded(video: OfflineVideo) {
-        GlobalScope.launch { videosDao.onDownloaded(video.id) }
+    fun updateVideo(video: OfflineVideo) {
+        GlobalScope.launch { videosDao.update(video) }
     }
 
     suspend fun getUnfinishedVideos() = withContext(Dispatchers.Default) {

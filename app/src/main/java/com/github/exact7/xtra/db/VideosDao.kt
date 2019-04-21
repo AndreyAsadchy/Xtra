@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.github.exact7.xtra.model.offline.OfflineVideo
 
 @Dao
@@ -25,6 +26,6 @@ interface VideosDao {
     @Query("SELECT * FROM videos WHERE downloaded = 0")
     fun getUnfinishedVideos(): List<OfflineVideo>
 
-    @Query("UPDATE videos SET downloaded = 1 WHERE id = :id")
-    fun onDownloaded(id: Int)
+    @Update
+    fun update(video: OfflineVideo)
 }

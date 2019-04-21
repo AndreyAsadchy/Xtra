@@ -49,7 +49,7 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
     }
 
     override fun scrollToTop() {
-        recyclerView.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 
     override fun showDownloadDialog() {

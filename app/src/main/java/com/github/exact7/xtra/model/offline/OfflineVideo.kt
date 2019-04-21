@@ -11,7 +11,12 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "videos")
 data class OfflineVideo(
         val url: String,
-//        val sourceUrl: String,
+        @ColumnInfo(name = "source_url")
+        val sourceUrl: String,
+        @ColumnInfo(name = "source_start_position")
+        val sourceStartPosition: Long?,
+        @ColumnInfo(name = "source_end_position")
+        val sourceEndPosition: Long?,
         val name: String,
         @ColumnInfo(name = "channel_name")
         val channelName: String,
@@ -34,5 +39,9 @@ data class OfflineVideo(
     var vod = url.endsWith(".m3u8")
 
     @IgnoredOnParcel
-    var downloaded = false //TODO add progress and update in interval in ui
+    var downloaded = false //TODO add progress and updateVideo in interval in ui
+
+    @IgnoredOnParcel
+    @ColumnInfo(name = "last_watch_position")
+    var lastWatchPosition = 0L
 }

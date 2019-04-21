@@ -9,6 +9,7 @@ import com.github.exact7.xtra.model.offline.ClipRequest
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.GlobalScope
@@ -50,7 +51,13 @@ class ClipDownloadViewModel @Inject constructor(
         GlobalScope.launch {
             val context = getApplication<Application>()
             val filePath = "$path${File.separator}${clip.slug}$quality"
-            val offlineVideo = DownloadUtils.prepareDownload(context, clip, filePath, clip.duration.toLong())
+            var startPosition: Double? = null
+            var endPosition: Double? = null
+            clip.vod?.let {
+                startPosition = TwitchApiHelper.parseClipOffset(it.url)
+                endPosition = startPosition!! + clip.duration
+            }
+            val offlineVideo = DownloadUtils.prepareDownload(context, clip, url, filePath, clip.duration.toLong(), startPosition?.toLong(), endPosition?.toLong())
             val videoId = offlineRepository.saveVideo(offlineVideo)
             DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))
         }

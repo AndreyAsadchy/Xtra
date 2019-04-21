@@ -34,7 +34,7 @@ data class Clip(
     override val thumbnail: String
         get() = thumbnails.medium
     override val channelName: String
-        get() = broadcaster.name
+        get() = broadcaster.displayName
     override val channelLogo: String
         get() = broadcaster.logo
     override val uploadDate: String

@@ -14,17 +14,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Rational
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewGroupCompat
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -65,8 +59,6 @@ import com.github.exact7.xtra.util.NetworkUtils
 import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.visible
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -188,11 +180,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.wasInPictureInPicture && viewModel.shouldRecreate.value == true) {
-            viewModel.wasInPictureInPicture = false
-            recreate()
-            return
-        }
         restorePlayerFragment()
     }
 
@@ -296,24 +283,37 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             viewModel.orientationBeforePictureInPicture = resources.configuration.orientation
-            viewModel.shouldRecreate.value = false
-        } else {
             viewModel.wasInPictureInPicture = true
-            if (viewModel.orientationBeforePictureInPicture != newConfig?.orientation) {
-                viewModel.shouldRecreate.value = true
-            }
+        } else {
+//            viewModel.shouldRecreate.value = viewModel.orientationBeforePictureInPicture != newConfig.orientation
+            println("PIC $isInPictureInPictureMode")
+//            if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
+//                viewModel.shouldRecreate.value = true
+//            }
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        println("CONFIG")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (viewModel.shouldRecreate.value == true) {
-                recreate()
+//            if (viewModel.shouldRecreate.value == true) {
+            if (!isInPictureInPictureMode) {
+                if (!viewModel.wasInPictureInPicture) {
+                    println("REC1")
+                    recreate()
+                } else {
+                    viewModel.wasInPictureInPicture = false
+                    println("${viewModel.orientationBeforePictureInPicture} ${newConfig.orientation}")
+                    if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
+                        println("REC2")
+                        recreate()
+                    }
+                }
             }
         } else {
             recreate()

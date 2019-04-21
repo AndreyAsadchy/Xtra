@@ -35,7 +35,18 @@ class VideoPlayerViewModel @Inject constructor(
     private var playbackProgress: Long = 0
     private lateinit var playlist: HlsMediaPlaylist
     val videoInfo: VideoDownloadInfo
-        get() = VideoDownloadInfo(_video.value!!, helper.urls!!, playlist.segments.map { it.relativeStartTimeUs / 1000000L }, playlist.durationUs / 1000000L, playlist.targetDurationUs / 1000000L, player.currentPosition / 1000L)
+        get() {
+            val segments = playlist.segments
+            val size = segments.size
+            val relativeTimes = ArrayList<Long>(size)
+            val durations = ArrayList<Long>(size)
+            for (i in 0 until size) {
+                val segment = segments[i]
+                relativeTimes.add(segment.relativeStartTimeUs / 1000L)
+                durations.add(segment.durationUs / 1000L)
+            }
+            return VideoDownloadInfo(_video.value!!, helper.urls!!, relativeTimes, durations, playlist.durationUs / 1000L, playlist.targetDurationUs / 1000L, player.currentPosition)
+        }
     override val channelInfo: Pair<String, String>
         get()  {
             val v = video.value!!

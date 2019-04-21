@@ -93,8 +93,17 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             }
         }
         playerView = view.findViewById(R.id.playerView)
-        if (isPortrait) {
+        var resizeMode = if (isPortrait) {
             playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0)  }
+            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
+        } else {
+            prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIT)
+        }
+        playerView.resizeMode = resizeMode //TODO TEST RESIZE AND PICTURE IN PICTURE, SHORT VIEWS 45k 1m AND ADS
+        view.findViewById<ImageButton>(R.id.aspectRatio).setOnClickListener {
+            resizeMode = (resizeMode + 1).let { if (it < 5) it else 0 }
+            playerView.resizeMode = resizeMode
+            prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
         }
         playerView.post {
             playerViewWidth = playerView.width
@@ -155,16 +164,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             }
         }
         snackbar = Snackbar.make(requireActivity().findViewById(android.R.id.content), R.string.player_error, Snackbar.LENGTH_INDEFINITE)
-        if (isInPictureInPictureMode) {
-//            secondView?.gone()
-        }
     }
 
     override fun onStop() {
         super.onStop()
-        if (isInPictureInPictureMode) {
-            onMovedToBackground()
-        }
+//        if (isInPictureInPictureMode) {
+//            onMovedToBackground()
+//        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

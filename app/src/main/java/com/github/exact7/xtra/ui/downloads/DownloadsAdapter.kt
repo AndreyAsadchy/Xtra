@@ -21,7 +21,7 @@ class DownloadsAdapter(
             }
 
             override fun areContentsTheSame(oldItem: OfflineVideo, newItem: OfflineVideo): Boolean {
-                return oldItem.downloaded == newItem.downloaded
+                return false //bug, oldItem and newItem are sometimes the same
             }
         }) {
 
@@ -61,5 +61,6 @@ class DownloadsAdapter(
                 show()
             }
         }
+        binding.progressBar.progress = (item.lastWatchPosition.toFloat() / item.duration * 100).toInt()
     }
 }

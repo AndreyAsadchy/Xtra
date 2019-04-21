@@ -50,6 +50,6 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     }
 
     override fun scrollToTop() {
-        recyclerView.scrollToPosition(0)
+        recyclerView?.scrollToPosition(0)
     }
 }

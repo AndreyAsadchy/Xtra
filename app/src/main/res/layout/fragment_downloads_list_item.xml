@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/duration"
-                app:duration="@{video.duration}"
+                app:duration="@{video.duration / 1000L}"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
@@ -130,6 +130,15 @@
                 style="?android:attr/actionOverflowButtonStyle"
                 />
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/thumbnail"
+                android:max="100"
+                android:scaleY="1.5"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
         </RelativeLayout>
 
         <TextView
@@ -140,6 +149,7 @@
             android:textColor="@android:color/white"
             android:textSize="30sp"
             android:textAllCaps="true"
+            android:visibility="gone"
             app:visible="@{!video.downloaded}"
             android:layout_gravity="center"
             android:background="#80000000"
