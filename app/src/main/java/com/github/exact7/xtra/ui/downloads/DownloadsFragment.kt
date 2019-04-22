@@ -49,7 +49,7 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
-                    recyclerView.smoothScrollToPosition(0)
+                    recyclerView?.smoothScrollToPosition(0)
                 }
             }
         })

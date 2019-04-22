@@ -56,7 +56,7 @@ class DatabaseModule {
                             },
                             object : Migration(3, 4) {
                                 override fun migrate(database: SupportSQLiteDatabase) {
-                                    database.execSQL("CREATE TABLE videos1 (id INTEGER NOT NULL, url TEXT NOT NULL, source_url TEXT NOT NULL, source_start_position INTEGER, source_end_position INTEGER, name TEXT NOT NULL, channel_name TEXT NOT NULL, channel_logo TEXT NOT NULL, thumbnail TEXT NOT NULL, game TEXT NOT NULL, duration INTEGER NOT NULL, upload_date INTEGER NOT NULL, download_date INTEGER NOT NULL, is_vod INTEGER NOT NULL, downloaded INTEGER NOT NULL, last_watch_position INTEGER NOT NULL, PRIMARY KEY (id))")
+                                    database.execSQL("CREATE TABLE videos1 (id INTEGER NOT NULL, url TEXT NOT NULL, source_url TEXT NOT NULL, source_start_position INTEGER, name TEXT NOT NULL, channel_name TEXT NOT NULL, channel_logo TEXT NOT NULL, thumbnail TEXT NOT NULL, game TEXT NOT NULL, duration INTEGER NOT NULL, upload_date INTEGER NOT NULL, download_date INTEGER NOT NULL, is_vod INTEGER NOT NULL, downloaded INTEGER NOT NULL, last_watch_position INTEGER NOT NULL, PRIMARY KEY (id))")
                                     val cursor = database.query("SELECT * FROM videos")
                                     while (cursor.moveToNext()) {
                                         val values = ContentValues().apply {
@@ -64,7 +64,6 @@ class DatabaseModule {
                                             put("url", cursor.getString(3))
                                             put("source_url", "")
                                             putNull("source_start_position")
-                                            putNull("source_end_position")
                                             put("name", cursor.getString(4))
                                             put("channel_name", cursor.getString(5))
                                             put("channel_logo", cursor.getString(6))

@@ -60,7 +60,11 @@ class ChatReplayManager @Inject constructor(
                     cursor = it.next
                     job = GlobalScope.launch {
                         while (isActive) {
-                            val message: VideoChatMessage? = list.poll()
+                            val message: VideoChatMessage? = try {
+                                list.poll()
+                            } catch (e: NoSuchElementException) { //wtf?
+                                null
+                            }
                             if (message != null) {
                                 val messageOffset = message.contentOffsetSeconds
                                 var position: Double

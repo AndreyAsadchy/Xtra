@@ -233,12 +233,20 @@ class DownloadService : IntentService(TAG), Injectable {
                 Log.d(TAG, "Downloaded video")
                 with(request as VideoRequest) {
                     val tracks = ArrayList<TrackData>(segmentTo - segmentFrom + 1)
-                    for (i in segmentFrom..segmentTo) {
-                        val track = playlist.tracks[i] //TODO encrypt files
-                        tracks.add(TrackData.Builder()
-                                .withUri("$path${track.uri}")
-                                .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
-                                .build())
+                    try {
+                        for (i in segmentFrom..segmentTo) {
+                            val track = playlist.tracks[i] //TODO encrypt files
+                            tracks.add(TrackData.Builder()
+                                    .withUri("$path${track.uri}")
+                                    .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
+                                    .build())
+                        }
+                    } catch (e: UninitializedPropertyAccessException) {
+                        GlobalScope.launch {
+                            delay(3000L)
+                            onDownloadCompleted()
+                        }
+                        return
                     }
                     val mediaPlaylist = MediaPlaylist.Builder()
                             .withTargetDuration(playlist.targetDuration)

@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +35,6 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.player_stream.*
 
 private const val CHAT_OPENED = "ChatOpened"
@@ -51,12 +48,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private var secondView: View? = null
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
-    private lateinit var snackbar: Snackbar
     protected var isPortrait: Boolean = false
         private set
-    protected var shouldHandleLifecycle = true
     protected var isInPictureInPictureMode = false
         private set
+    private var shouldRecreate = false
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
@@ -99,7 +95,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         } else {
             prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIT)
         }
-        playerView.resizeMode = resizeMode //TODO TEST RESIZE AND PICTURE IN PICTURE, SHORT VIEWS 45k 1m AND ADS
+        playerView.resizeMode = resizeMode
         view.findViewById<ImageButton>(R.id.aspectRatio).setOnClickListener {
             resizeMode = (resizeMode + 1).let { if (it < 5) it else 0 }
             playerView.resizeMode = resizeMode
@@ -163,14 +159,19 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
             }
         }
-        snackbar = Snackbar.make(requireActivity().findViewById(android.R.id.content), R.string.player_error, Snackbar.LENGTH_INDEFINITE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (shouldRecreate) {
+            shouldRecreate = false
+            requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-//        if (isInPictureInPictureMode) {
-//            onMovedToBackground()
-//        }
+        shouldRecreate = isInPictureInPictureMode
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -189,7 +190,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
             }
             secondView?.gone()
-        } else {
+        } else if (!shouldRecreate) {
             if (isPortrait) {
                 secondView?.visible()
             } else if (this !is OfflinePlayerFragment) {
@@ -202,12 +203,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     height = playerViewHeight
                 }
             }
-        }
-    }
-
-    override fun onMovedToBackground() {
-        if (!slidingLayout.isMaximized) {
-            shouldHandleLifecycle = true
         }
     }
 
@@ -226,14 +221,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     }
                 }
             })
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val pipEnabled = prefs.getBoolean(C.PICTURE_IN_PICTURE, true)
-                mainViewModel.shouldRecreate.observe(viewLifecycleOwner, Observer {
-                    if (pipEnabled) {
-                        shouldHandleLifecycle = !it || isInPictureInPictureMode
-                    }
-                })
-            }
         }
         if (enableChat) {
             viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
@@ -242,13 +229,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             viewModel.bttv.observe(viewLifecycleOwner, emotesObserver)
             viewModel.ffz.observe(viewLifecycleOwner, emotesObserver)
         }
-        snackbar.setAction(R.string.retry) { viewModel.play() }
-        viewModel.playerError.observe(viewLifecycleOwner, Observer {
-            if (snackbar.isShown) {
-                snackbar.duration = BaseTransientBottomBar.LENGTH_LONG
-            }
-            snackbar.show()
-        })
     }
 
 //    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
@@ -266,7 +246,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     override fun onMinimize() {
-        snackbar.dismiss()
         playerView.hideController()
 //        if (!isPortrait) { //TODO fix drag view when show status bar
 //            showStatusBar()
@@ -278,7 +257,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 //            hideStatusBar()
 //        }
     }
-
 
     override fun onClose() {
         if (!isPortrait) {

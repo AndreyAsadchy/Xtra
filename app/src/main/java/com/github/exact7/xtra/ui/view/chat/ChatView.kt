@@ -2,19 +2,13 @@ package com.github.exact7.xtra.ui.view.chat
 
 import android.animation.LayoutTransition
 import android.content.Context
-import android.os.Bundle
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
-import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
@@ -23,9 +17,7 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
-import com.github.exact7.xtra.ui.common.MarginItemDecoration
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isGone
 import com.github.exact7.xtra.util.isVisible
@@ -146,7 +138,7 @@ class ChatView : RelativeLayout {
 
     @Suppress("UNCHECKED_CAST")
     fun addEmotes(list: List<Emote>?) {
-        list?.let {
+        list?.also {
             adapter.addEmotes(it)
             when (list.firstOrNull()) {
                 is BttvEmote, is FfzEmote -> {
@@ -156,7 +148,7 @@ class ChatView : RelativeLayout {
                         otherEmotes?.addAll(it)
                     }
                 }
-                else -> twitchEmotes = list as List<com.github.exact7.xtra.model.kraken.user.Emote>
+                is com.github.exact7.xtra.model.kraken.user.Emote -> twitchEmotes = list as List<com.github.exact7.xtra.model.kraken.user.Emote>
             }
         }
         if (++emoteListsAddedCount == 3) {

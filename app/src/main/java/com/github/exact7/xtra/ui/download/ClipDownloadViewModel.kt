@@ -51,13 +51,8 @@ class ClipDownloadViewModel @Inject constructor(
         GlobalScope.launch {
             val context = getApplication<Application>()
             val filePath = "$path${File.separator}${clip.slug}$quality"
-            var startPosition: Double? = null
-            var endPosition: Double? = null
-            clip.vod?.let {
-                startPosition = TwitchApiHelper.parseClipOffset(it.url)
-                endPosition = startPosition!! + clip.duration
-            }
-            val offlineVideo = DownloadUtils.prepareDownload(context, clip, url, filePath, clip.duration.toLong(), startPosition?.toLong(), endPosition?.toLong())
+            val startPosition =  clip.vod?.let { TwitchApiHelper.parseClipOffset(it.url) }?.toLong()
+            val offlineVideo = DownloadUtils.prepareDownload(context, clip, url, filePath, clip.duration.toLong(), startPosition)
             val videoId = offlineRepository.saveVideo(offlineVideo)
             DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))
         }

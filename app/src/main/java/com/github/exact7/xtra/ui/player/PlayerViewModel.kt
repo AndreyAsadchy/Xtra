@@ -1,8 +1,6 @@
 package com.github.exact7.xtra.ui.player
 
 import android.app.Application
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,15 +23,9 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener {
 
@@ -42,7 +34,6 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     protected val compositeDisposable = CompositeDisposable()
     val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector).apply { addListener(this@PlayerViewModel) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
-
 
     private val _bttv = MutableLiveData<List<BttvEmote>>()
     val bttv: LiveData<List<BttvEmote>>
@@ -59,11 +50,6 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     private val _newMessage: MutableLiveData<ChatMessage> by lazy { MutableLiveData<ChatMessage>() }
     val newMessage: LiveData<ChatMessage>
         get() = _newMessage
-    private val _playerError = MutableLiveData<ExoPlaybackException>()
-    val playerError: LiveData<ExoPlaybackException>
-        get() = _playerError
-    var isResumed = true
-        private set
 
     override fun onMessage(message: ChatMessage) {
         message.badges?.find { it.id == "subscriber" }?.let {
@@ -77,7 +63,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
         _chatMessages.postValue(ArrayList())
     }
 
-    fun play() {
+    protected fun play() {
         if (this::mediaSource.isInitialized) { //TODO
             player.prepare(mediaSource)
             player.playWhenReady = true
@@ -107,12 +93,10 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
 
     open fun onResume() {
         play()
-        isResumed = true
     }
 
     open fun onPause() {
         player.stop()
-        isResumed = false
     }
 
     override fun onCleared() {
@@ -148,8 +132,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        Log.e("PlayerViewModel", "Player error", error)
-        _playerError.value = error
+
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

@@ -18,7 +18,6 @@ import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -43,7 +42,6 @@ class MainViewModel @Inject constructor(
     val checkedValidity: LiveData<Boolean>
         get() = _checkedValidity
 
-    val shouldRecreate = MutableLiveData<Boolean>().apply { value = true }
     var wasInPictureInPicture = false
     var orientationBeforePictureInPicture = 0
 

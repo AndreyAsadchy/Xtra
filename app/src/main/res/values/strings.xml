@@ -100,4 +100,6 @@
     <string name="player_error">Player error</string>
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="continue_playback">Continue playback outside of the app</string>
+    <string name="source_vod_start">Start: %s</string>
+    <string name="source_vod_end">End: %s</string>
 </resources>

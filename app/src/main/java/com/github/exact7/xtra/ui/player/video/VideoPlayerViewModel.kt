@@ -13,6 +13,7 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -98,6 +99,10 @@ class VideoPlayerViewModel @Inject constructor(
         if (!this::playlist.isInitialized && manifest is HlsManifest) {
             playlist = manifest.mediaPlaylist
         }
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException) {
+        playbackProgress = player.currentPosition
     }
 
     override fun onCleared() {

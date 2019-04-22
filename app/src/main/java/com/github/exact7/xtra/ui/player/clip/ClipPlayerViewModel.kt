@@ -18,6 +18,7 @@ import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
@@ -98,6 +99,10 @@ class ClipPlayerViewModel @Inject constructor(
         if (!this::follow.isInitialized) {
             follow = FollowLiveData(repository, user, channelInfo.first)
         }
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException) {
+        playbackProgress = player.currentPosition
     }
 
     override fun onCleared() {

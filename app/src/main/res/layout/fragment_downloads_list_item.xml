@@ -5,6 +5,7 @@
 
     <data>
         <import type="com.github.exact7.xtra.util.TwitchApiHelper"/>
+        <import type="android.text.format.DateUtils" />
         <variable name="video" type="com.github.exact7.xtra.model.offline.OfflineVideo"/>
     </data>
 
@@ -138,6 +139,27 @@
                 android:max="100"
                 android:scaleY="1.5"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
+            <TextView
+                android:id="@+id/sourceStart"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="17dp"
+                android:layout_marginEnd="17dp"
+                tools:text="Start: 13:37:69"
+                style="@style/ThumbnailItem"
+                />
+
+            <TextView
+                android:id="@+id/sourceEnd"
+                android:layout_below="@id/sourceStart"
+                android:layout_alignStart="@id/sourceStart"
+                android:layout_alignLeft="@id/sourceStart"
+                android:layout_marginTop="5dp"
+                tools:text="End: 69:13:37"
+                style="@style/ThumbnailItem"
+                />
 
         </RelativeLayout>
 

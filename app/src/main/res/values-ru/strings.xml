@@ -100,4 +100,6 @@
     <string name="player_error">Ошибка воспроизведения</string>
     <string name="picture_in_picture">Картинка в картинке</string>
     <string name="continue_playback">Продолжить воспроизведение вне приложения</string>
+    <string name="source_vod_start">Начало %s</string>
+    <string name="source_vod_end">Конец%s</string>
 </resources>

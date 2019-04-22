@@ -98,10 +98,9 @@ class VideoDownloadViewModel @Inject constructor(
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
                 val startPosition = relativeStartTimes[fromIndex]
-                val endPosition = relativeStartTimes[toIndex]
-                val duration = endPosition + durations[toIndex] - startPosition
+                val duration = relativeStartTimes[toIndex] + durations[toIndex] - startPosition
                 val directory = "$path${File.separator}${video.id}${if (!quality.contains("Audio", true)) quality else "audio"}${File.separator}"
-                val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition, endPosition)
+                val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
                 DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, fromIndex, toIndex), wifiOnly)
             }

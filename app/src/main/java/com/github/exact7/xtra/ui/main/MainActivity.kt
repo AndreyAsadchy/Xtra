@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.main
 
-import android.app.PictureInPictureParams
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -183,13 +182,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         restorePlayerFragment()
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (viewModel.wasInPictureInPicture) {
-            viewModel.shouldRecreate.value = true
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         fragNavController.onSaveInstanceState(outState)
@@ -278,8 +270,12 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && viewModel.isPlayerMaximized) {
-            enterPictureInPictureMode(PictureInPictureParams.Builder().build())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && viewModel.isPlayerMaximized) {
+            try {
+                enterPictureInPictureMode()
+            } catch (e: IllegalStateException) {
+                //device doesn't support PIP
+            }
         }
     }
 
@@ -288,29 +284,18 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (isInPictureInPictureMode) {
             viewModel.orientationBeforePictureInPicture = resources.configuration.orientation
             viewModel.wasInPictureInPicture = true
-        } else {
-//            viewModel.shouldRecreate.value = viewModel.orientationBeforePictureInPicture != newConfig.orientation
-            println("PIC $isInPictureInPictureMode")
-//            if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-//                viewModel.shouldRecreate.value = true
-//            }
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        println("CONFIG")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            if (viewModel.shouldRecreate.value == true) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (!isInPictureInPictureMode) {
                 if (!viewModel.wasInPictureInPicture) {
-                    println("REC1")
                     recreate()
                 } else {
                     viewModel.wasInPictureInPicture = false
-                    println("${viewModel.orientationBeforePictureInPicture} ${newConfig.orientation}")
                     if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-                        println("REC2")
                         recreate()
                     }
                 }
