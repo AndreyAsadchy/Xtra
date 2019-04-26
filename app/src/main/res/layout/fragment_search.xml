@@ -28,7 +28,7 @@
                     android:id="@+id/search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="flagNoExtractUi"
+                    android:imeOptions="flagNoFullscreen"
                     android:inputType="textAutoComplete"
                     app:queryBackground="@android:color/transparent"
                     app:queryHint="@string/search"

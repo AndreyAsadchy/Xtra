@@ -2,11 +2,13 @@ package com.github.exact7.xtra.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
 import java.util.Calendar
 
@@ -37,19 +39,23 @@ fun View.toggleVisibility() = if (isVisible()) gone() else visible()
 @SuppressLint("CheckResult")
 fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean = false, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.AUTOMATIC) {
     val context = context ?: return
-    if (context is Activity && !context.window.decorView.isShown) {
-        return
+    if (context is Activity && ((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN && context.isDestroyed) || context.isFinishing)) {
+        return //not enough on some devices?
     }
-    val request = GlideApp.with(context)
-            .load(url)
-            .diskCacheStrategy(diskCacheStrategy)
-            .transition(DrawableTransitionOptions.withCrossFade())
-    if (changes) {
-        val calendar = Calendar.getInstance()
-        request.signature(ObjectKey(Math.floor(calendar.get(Calendar.MINUTE) / 10.0 * 2.0) / 2.0 + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
+    try {
+        val request = GlideApp.with(context)
+                .load(url)
+                .diskCacheStrategy(diskCacheStrategy)
+                .transition(DrawableTransitionOptions.withCrossFade())
+        if (changes) {
+            val calendar = Calendar.getInstance()
+            request.signature(ObjectKey(Math.floor(calendar.get(Calendar.MINUTE) / 10.0 * 2.0) / 2.0 + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
+        }
+        if (circle) {
+            request.circleCrop()
+        }
+        request.into(this)
+    } catch (e: IllegalArgumentException) {
+        Crashlytics.logException(e)
     }
-    if (circle) {
-        request.circleCrop()
-    }
-    request.into(this)
 }

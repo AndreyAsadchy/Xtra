@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+
 object TwitchApiHelper {
 
     init {
@@ -61,5 +62,23 @@ object TwitchApiHelper {
             multiplier *= 60
         }
         return offset
+    }
+
+    fun formatCount(count: Int): String {
+        return if (count > 1000) {
+            val divider: Int
+            val suffix = if (count.toString().length < 7) {
+                divider = 1000
+                "K"
+            } else {
+                divider = 1_000_000
+                "M"
+            }
+            val truncated = count / (divider / 10)
+            val hasDecimal = truncated / 10.0 != (truncated / 10).toDouble()
+            if (hasDecimal) "${truncated / 10.0}$suffix" else "${truncated / 10}$suffix"
+        } else {
+            count.toString()
+        }
     }
 }

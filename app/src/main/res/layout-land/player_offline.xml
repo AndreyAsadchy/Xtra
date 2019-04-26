@@ -17,11 +17,9 @@
         style="@style/Player.Forward"/>
 
     <ImageButton
-        android:id="@+id/minimize"
         style="@style/Player.Minimize"/>
 
     <LinearLayout
-        android:id="@+id/topRightPanel"
         style="@style/Player.TopRightPanel">
 
         <ImageButton

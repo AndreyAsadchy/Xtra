@@ -11,11 +11,9 @@
         style="@style/Player.Pause"/>
 
     <ImageButton
-        android:id="@+id/minimize"
         style="@style/Player.Minimize"/>
 
     <TextView
-        android:id="@+id/channel"
         style="@style/Player.Channel"/>
 
     <ImageButton
@@ -23,16 +21,13 @@
         style="@style/Player.Resume"/>
 
     <LinearLayout
-        android:id="@+id/topRightPanel"
         style="@style/Player.TopRightPanel">
 
         <ImageButton
-            android:id="@+id/follow"
             style="@style/Player.Follow"
             />
 
         <ImageButton
-            android:id="@+id/profile"
             style="@style/Player.Profile"
             />
 
@@ -41,14 +36,12 @@
             />
 
         <ImageButton
-            android:id="@+id/settings"
             style="@style/Player.Settings"
             />
 
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/fullscreenEnter"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         style="@style/Player.FullscreenEnter"/>

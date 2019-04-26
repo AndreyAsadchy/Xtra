@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="views">
-        <item quantity="one">%d просмотр</item>
-        <item quantity="few">%d просмотра</item>
-        <item quantity="many">%d просмотров</item>
-        <item quantity="other">%d просмотров</item>
+        <item quantity="one">%s просмотр</item>
+        <item quantity="few">%s просмотра</item>
+        <item quantity="many">%s просмотров</item>
+        <item quantity="other">%s просмотров</item>
     </plurals>
     <plurals name="viewers">
-        <item quantity="one">%d зритель</item>
-        <item quantity="few">%d зрителя</item>
-        <item quantity="many">%d зрителей</item>
-        <item quantity="other">%d зрителей</item>
+        <item quantity="one">%s зритель</item>
+        <item quantity="few">%s зрителя</item>
+        <item quantity="many">%s зрителей</item>
+        <item quantity="other">%s зрителей</item>
     </plurals>
 </resources>

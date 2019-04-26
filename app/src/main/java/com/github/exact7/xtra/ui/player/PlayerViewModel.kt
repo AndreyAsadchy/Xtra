@@ -1,6 +1,8 @@
 package com.github.exact7.xtra.ui.player
 
 import android.app.Application
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +12,8 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
+import com.github.exact7.xtra.util.NetworkUtils
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -22,10 +26,16 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener {
 
@@ -132,7 +142,26 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-
+        Log.e("PlayerViewModel", "Player error", error)
+        val context = getApplication<Application>()
+        if (NetworkUtils.isConnected(context)) {
+            val sourceException = error.sourceException
+            if (this@PlayerViewModel is StreamPlayerViewModel && sourceException is HttpDataSource.InvalidResponseCodeException && sourceException.responseCode == 404) {
+                Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
+                GlobalScope.launch {
+                    delay(1500L)
+                    runBlocking(Dispatchers.Main) {
+                        if (this@PlayerViewModel is StreamPlayerViewModel) {
+                            play()
+                        } else {
+                            onResume()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

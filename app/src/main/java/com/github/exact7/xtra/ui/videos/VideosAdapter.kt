@@ -8,6 +8,7 @@ import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.TwitchApiHelper
 
 class VideosAdapter(
         private val mainActivity: MainActivity) : TempBaseAdapter<Video, FragmentVideosListItemBinding>(
@@ -47,6 +48,9 @@ class VideosAdapter(
         binding.root.setOnLongClickListener {
             showDialog.invoke()
             true
+        }
+        item?.views?.let {
+            binding.views.text = binding.views.resources.getQuantityString(R.plurals.views, it, TwitchApiHelper.formatCount(it))
         }
     }
 }

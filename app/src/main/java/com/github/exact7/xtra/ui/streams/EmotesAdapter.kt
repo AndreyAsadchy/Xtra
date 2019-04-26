@@ -4,12 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
-import com.github.exact7.xtra.model.chat.TwitchEmote
 import com.github.exact7.xtra.ui.common.BTTV_URL
 import com.github.exact7.xtra.ui.common.EMOTES_URL
 import com.github.exact7.xtra.util.loadImage
@@ -31,7 +29,7 @@ class EmotesAdapter(
             else -> throw IllegalStateException("Unknown emote")
         }
         (holder.itemView as ImageView).apply {
-            loadImage(url, diskCacheStrategy = DiskCacheStrategy.RESOURCE)
+            loadImage(url)
             setOnClickListener { clickListener(emote) }
         }
     }

@@ -35,9 +35,9 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import kotlinx.android.synthetic.main.player_stream.*
 
 private const val CHAT_OPENED = "ChatOpened"
+private const val WAS_IN_PIP = "wasInPip"
 
 @Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment {
@@ -52,6 +52,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         private set
     protected var isInPictureInPictureMode = false
         private set
+    protected var wasInPictureInPictureMode = false
     private var shouldRecreate = false
 
     private lateinit var prefs: SharedPreferences
@@ -63,8 +64,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         isInPictureInPictureMode = savedInstanceState?.getBoolean(C.PICTURE_IN_PICTURE) == true
+        wasInPictureInPictureMode = savedInstanceState?.getBoolean(WAS_IN_PIP) == true
         prefs = Prefs.get(requireContext())
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     }
@@ -72,11 +73,12 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
+        isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val activity = requireActivity() as MainActivity
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
-        minimize.setOnClickListener { minimize() }
+        view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
         if (isPortrait) {
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
@@ -146,7 +148,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 10000 -> R.drawable.baseline_forward_10_black_48
                 else -> R.drawable.baseline_forward_30_black_48
             }
-            view.findViewById<PlayerView>(R.id.playerView).apply {
+            playerView.apply {
                 setRewindIncrementMs(rewind)
                 setFastForwardIncrementMs(forward)
             }
@@ -163,6 +165,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     override fun onResume() {
         super.onResume()
+        wasInPictureInPictureMode = false
         if (shouldRecreate) {
             shouldRecreate = false
             requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
@@ -176,6 +179,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(C.PICTURE_IN_PICTURE, isInPictureInPictureMode)
+        outState.putBoolean(WAS_IN_PIP, wasInPictureInPictureMode)
         super.onSaveInstanceState(outState)
     }
 
@@ -191,6 +195,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             }
             secondView?.gone()
         } else if (!shouldRecreate) {
+            wasInPictureInPictureMode = true
             if (isPortrait) {
                 secondView?.visible()
             } else if (this !is OfflinePlayerFragment) {

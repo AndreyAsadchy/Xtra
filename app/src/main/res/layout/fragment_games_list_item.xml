@@ -48,7 +48,6 @@
                 android:id="@+id/viewers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{@plurals/viewers(game.viewers, game.viewers)}"
                 android:textColor="?attr/secondaryTextColor"
                 android:layout_below="@id/gameName"
                 android:layout_marginStart="10dp"

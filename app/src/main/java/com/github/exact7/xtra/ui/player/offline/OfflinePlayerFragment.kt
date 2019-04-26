@@ -39,13 +39,13 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onPause()
         }
     }

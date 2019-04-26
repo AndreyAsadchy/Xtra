@@ -5,6 +5,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentGamesListItemBinding
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
+import com.github.exact7.xtra.util.TwitchApiHelper
 
 class GamesAdapter(
         private val listener: GamesFragment.OnGameSelectedListener) : DataBoundPagedListAdapter<Game, FragmentGamesListItemBinding>(
@@ -22,5 +23,8 @@ class GamesAdapter(
     override fun bind(binding: FragmentGamesListItemBinding, item: Game?) {
         binding.game = item
         binding.listener = listener
+        item?.viewers?.let {
+            binding.viewers.text = binding.viewers.resources.getQuantityString(R.plurals.viewers, it, TwitchApiHelper.formatCount(it))
+        }
     }
 }

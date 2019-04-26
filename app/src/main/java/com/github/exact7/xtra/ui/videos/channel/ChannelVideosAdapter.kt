@@ -9,6 +9,7 @@ import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.videos.TempBaseAdapter
 import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.TwitchApiHelper
 
 class ChannelVideosAdapter(
         private val mainActivity: MainActivity) : TempBaseAdapter<Video, FragmentChannelVideosListItemBinding>(
@@ -50,6 +51,9 @@ class ChannelVideosAdapter(
         binding.root.setOnLongClickListener {
             showDialog.invoke()
             true
+        }
+        item?.views?.let {
+            binding.views.text = binding.views.resources.getQuantityString(R.plurals.views, it, TwitchApiHelper.formatCount(it))
         }
     }
 }

@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:inputType="textCapSentences|textAutoComplete|textNoSuggestions"
-            android:imeOptions="actionSend"/>
+            android:imeOptions="actionSend|flagNoFullscreen" />
 
         <ImageButton
             android:id="@+id/clear"
@@ -81,7 +81,8 @@
             android:layout_height="wrap_content"
             app:tabMaxWidth="0dp"
             app:tabMode="fixed"
-            app:tabGravity="fill"/>
+            app:tabGravity="fill"
+            android:visibility="gone"/>
 
     </androidx.viewpager.widget.ViewPager>
 

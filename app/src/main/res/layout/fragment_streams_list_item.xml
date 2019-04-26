@@ -34,7 +34,6 @@
 
             <TextView
                 android:id="@+id/viewers"
-                android:text="@{@plurals/viewers(stream.viewers, stream.viewers)}"
                 android:layout_alignBottom="@id/thumbnail"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="3dp"

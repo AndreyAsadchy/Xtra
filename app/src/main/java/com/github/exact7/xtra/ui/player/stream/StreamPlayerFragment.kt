@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -48,6 +49,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
                 viewModel.emotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))
             }
         })
+        val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
@@ -85,14 +87,14 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
-            viewModel.onPause() //TODO fires after orientation change?
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+            viewModel.onPause()
         }
     }
 

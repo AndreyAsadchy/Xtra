@@ -6,6 +6,7 @@ import com.github.exact7.xtra.databinding.FragmentStreamsListItemBinding
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.TwitchApiHelper
 
 class StreamsAdapter(
         private val mainActivity: MainActivity) : DataBoundPagedListAdapter<Stream, FragmentStreamsListItemBinding>(
@@ -25,5 +26,8 @@ class StreamsAdapter(
         binding.stream = item
         binding.streamListener = mainActivity
         binding.channelListener = mainActivity
+        item?.viewers?.let {
+            binding.viewers.text = binding.viewers.resources.getQuantityString(R.plurals.viewers, it, TwitchApiHelper.formatCount(it))
+        }
     }
 }

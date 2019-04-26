@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -17,7 +18,6 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
-import kotlinx.android.synthetic.main.player_video.*
 
 class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 //    override fun play(obj: Parcelable) {
@@ -42,6 +42,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoPlayerViewModel::class.java)
         viewModel.setVideo(video)
         initializeViewModel(viewModel)
+        val settings = requireView().findViewById<ImageButton>(R.id.settings)
+        val download = requireView().findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             settings.isEnabled = true
             download.isEnabled = true
@@ -65,13 +67,13 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onPause()
         }
     }

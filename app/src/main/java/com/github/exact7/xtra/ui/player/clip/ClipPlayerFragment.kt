@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
@@ -19,7 +20,6 @@ import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_player_clip.*
-import kotlinx.android.synthetic.main.player_video.*
 
 class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 //    override fun play(obj: Parcelable) {
@@ -48,6 +48,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             chatReplayUnavailable.visible()
         }
         initializeViewModel(viewModel, enableChat)
+        val settings = requireView().findViewById<ImageButton>(R.id.settings)
+        val download = requireView().findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             download.isEnabled = true
@@ -69,13 +71,13 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
             viewModel.onPause()
         }
     }

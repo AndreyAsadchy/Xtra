@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -78,7 +77,9 @@ class StreamPlayerViewModel @Inject constructor(
 
     private fun startChat() {
         stopChat()
-        _chat.value = TwitchApiHelper.startChat(stream.value!!.channel.name, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this)
+        stream.value?.let {
+            _chat.value = TwitchApiHelper.startChat(it.channel.name, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this)
+        }
     }
 
     private fun stopChat() {

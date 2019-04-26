@@ -10,8 +10,10 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -37,7 +39,16 @@ class LoginActivity : AppCompatActivity(), Injectable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
-        setContentView(R.layout.activity_login)
+        try {
+            setContentView(R.layout.activity_login)
+        } catch (e: Exception) {
+            Crashlytics.logException(e)
+            if (e.message?.contains("WebView") == true) {
+                Crashlytics.log("LoginActivity.onCreate: WebView not found. Message: ${e.message}")
+                Toast.makeText(this, "Error loading web browser. This might be because it's being updated right now. Please try again in a few minutes.", Toast.LENGTH_LONG).show()
+                finish()
+            }
+        }
         try { //TODO remove after updated to 1.2.0
             val oldPrefs = getSharedPreferences("authPrefs", Context.MODE_PRIVATE)
             if (oldPrefs.all.isNotEmpty()) {

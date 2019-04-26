@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
@@ -40,8 +41,8 @@ class ChatView : RelativeLayout {
 
     private var emoteListsAddedCount = 0
     //    private var recentEmotes: List<Emote>? = null
-    private var twitchEmotes: List<com.github.exact7.xtra.model.kraken.user.Emote>? = null
-    private var otherEmotes: HashSet<Emote>? = null
+    private var twitchEmotes: MutableList<Emote> = ArrayList()
+    private var otherEmotes: MutableSet<Emote> = HashSet()
 
     private var messageCallback: MessageSenderCallback? = null
     var messagingEnabled = false
@@ -117,6 +118,7 @@ class ChatView : RelativeLayout {
                 }
             }
         }
+        initEmotesViewPager()
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -136,23 +138,24 @@ class ChatView : RelativeLayout {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun addEmotes(list: List<Emote>?) {
-        list?.also {
-            adapter.addEmotes(it)
-            when (list.firstOrNull()) {
-                is BttvEmote, is FfzEmote -> {
-                    if (otherEmotes == null) {
-                        otherEmotes = it.toHashSet()
-                    } else {
-                        otherEmotes?.addAll(it)
+        try {
+            list?.also {
+                adapter.addEmotes(it)
+                when (list.firstOrNull()) {
+                    is BttvEmote, is FfzEmote -> {
+                        otherEmotes.addAll(it)
                     }
+                    else -> twitchEmotes.addAll(list)
                 }
-                is com.github.exact7.xtra.model.kraken.user.Emote -> twitchEmotes = list as List<com.github.exact7.xtra.model.kraken.user.Emote>
+                viewPager.adapter?.notifyDataSetChanged()
             }
-        }
-        if (++emoteListsAddedCount == 3) {
-            initEmotesViewPager()
+            if (++emoteListsAddedCount == 2 && otherEmotes.isNotEmpty()) {
+                tabLayout.visible()
+            }
+        } catch (e: NullPointerException) {
+            Crashlytics.logException(e)
+            Crashlytics.log("ChatView.addEmotes: Adapter: $adapter. List is null: ${list == null}. First or null: ${list?.firstOrNull()}. View pager: $viewPager. Tab layout: $tabLayout")
         }
     }
 
@@ -174,31 +177,29 @@ class ChatView : RelativeLayout {
     }
 
     private fun initEmotesViewPager() {
-        val size = 1 + if (otherEmotes != null) 1 else 0
-        if (size == 1) {
-            tabLayout.gone()
-        }
-        viewPager.adapter = object : FragmentPagerAdapter((context as MainActivity).playerFragment!!.childFragmentManager) {
+        val playerFragment = (context as MainActivity).playerFragment!!
+        if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
+        viewPager.adapter = object : FragmentPagerAdapter(playerFragment.childFragmentManager) {
 
-            override fun getItem(position: Int): Fragment {
-                val list: Collection<Emote>? = when (position) {
-                    0 -> twitchEmotes
-                    else -> otherEmotes
+                override fun getItem(position: Int): Fragment {
+                    val list = when (position) {
+                        0 -> twitchEmotes
+                        else -> otherEmotes
+                    }
+                    return EmotesFragment.newInstance(list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
                 }
-                return EmotesFragment.newInstance(list!!.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
-            }
 
-            override fun getCount(): Int = size
+                override fun getCount(): Int = 1 + if (otherEmotes.isNotEmpty()) 1 else 0
 
-            override fun getPageTitle(position: Int): CharSequence? {
-                return if (position == 0) {
-                    "Twitch"
-                } else {
-                    "BTTV/FFZ"
+                override fun getPageTitle(position: Int): CharSequence? {
+                    return if (position == 0) {
+                        "Twitch"
+                    } else {
+                        "BTTV/FFZ"
+                    }
                 }
             }
-        }
-        emotes.setOnClickListener { viewPager.toggleVisibility() }
+            emotes.setOnClickListener { viewPager.toggleVisibility() }
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1

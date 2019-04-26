@@ -26,7 +26,6 @@
         style="@style/Player.TopRightPanel">
 
         <ImageButton
-            android:id="@id/download"
             style="@style/Player.Download"
             />
 
@@ -42,7 +41,6 @@
             style="@style/Player.Ratio" />
 
         <ImageButton
-            android:id="@id/settings"
             style="@style/Player.Settings"
             />
 
