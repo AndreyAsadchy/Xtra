@@ -5,10 +5,10 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.edit
@@ -36,6 +36,7 @@ import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 
+
 private const val CHAT_OPENED = "ChatOpened"
 private const val WAS_IN_PIP = "wasInPip"
 
@@ -62,12 +63,21 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private var playerViewWidth = 0
     private var playerViewHeight = 0
 
+    private var flags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isInPictureInPictureMode = savedInstanceState?.getBoolean(C.PICTURE_IN_PICTURE) == true
         wasInPictureInPictureMode = savedInstanceState?.getBoolean(WAS_IN_PIP) == true
         prefs = requireContext().prefs()
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            flags = flags.or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,7 +92,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         if (isPortrait) {
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
         } else {
-            hideStatusBar()
+            slidingLayout.post {
+                if (slidingLayout.isMaximized) {
+                    hideStatusBar()
+                }
+            }
             view.findViewById<ImageButton>(R.id.fullscreenExit).setOnClickListener {
                 activity.apply {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -243,24 +257,24 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     private fun showStatusBar() {
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        requireActivity().window.decorView.systemUiVisibility = 0
     }
 
     private fun hideStatusBar() {
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        requireActivity().window.decorView.systemUiVisibility = flags
     }
 
     override fun onMinimize() {
         playerView.hideController()
-//        if (!isPortrait) { //TODO fix drag view when show status bar
-//            showStatusBar()
-//        }
+        if (!isPortrait) {
+            showStatusBar()
+        }
     }
 
     override fun onMaximize() {
-//        if (!isPortrait) {
-//            hideStatusBar()
-//        }
+        if (!isPortrait) {
+            hideStatusBar()
+        }
     }
 
     override fun onClose() {

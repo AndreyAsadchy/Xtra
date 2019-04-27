@@ -106,7 +106,7 @@ class LiveChatThread(
         writers.forEach { it?.write(message + System.getProperty("line.separator")) }
     }
 
-    override fun send(message: String) {
+    override fun send(message: CharSequence) {
         messageSenderExecutor.execute {
             try {
                 write("PRIVMSG $hashChannelName :$message", writerOut)

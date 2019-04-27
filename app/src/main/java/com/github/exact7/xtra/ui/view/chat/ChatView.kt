@@ -20,6 +20,7 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.hideKeyboard
 import com.github.exact7.xtra.util.isGone
 import com.github.exact7.xtra.util.isVisible
 import com.github.exact7.xtra.util.toggleVisibility
@@ -31,7 +32,7 @@ private const val MAX_MESSAGE_COUNT = 125
 class ChatView : RelativeLayout {
 
     interface MessageSenderCallback {
-        fun send(message: String)
+        fun send(message: CharSequence)
     }
 
     private val adapter = ChatAdapter(context)
@@ -89,36 +90,23 @@ class ChatView : RelativeLayout {
         }
         chatRecyclerView.layoutTransition = LayoutTransition()
 
-        editText.setOnEditorActionListener { v, actionId, _ ->
-            var handled = false
-            messageCallback?.let {
-                val text = v.text.trim()
-                if (actionId == EditorInfo.IME_ACTION_SEND && text.isNotEmpty()) {
-                    it.send(text.toString())
-                    editText.text.clear()
-                    handled = true
-                }
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                sendMessage()
+            } else {
+                false
             }
-            handled
         }
         editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
-            val notEmpty = text?.isNotEmpty() == true
-            send.visible(notEmpty)
-            clear.visible(notEmpty)
+            val notBlank = text?.isNotBlank() == true
+            send.visible(notBlank)
+            clear.visible(notBlank)
         })
         clear.setOnClickListener {
             val text = editText.text.toString().trimEnd()
             editText.setText(text.substring(0, text.lastIndexOf(' ').let { if (it >= 0) it else 0 }))
         }
-        send.setOnClickListener {
-            messageCallback?.let {
-                val text = editText.text
-                if (text.isNotEmpty()) {
-                    it.send(text.toString())
-                    text.clear()
-                }
-            }
-        }
+        send.setOnClickListener { sendMessage() }
         initEmotesViewPager()
     }
 
@@ -175,6 +163,21 @@ class ChatView : RelativeLayout {
         } else {
             false
         }
+    }
+
+    private fun sendMessage(): Boolean {
+        editText.hideKeyboard()
+        editText.clearFocus()
+        return messageCallback?.let {
+            val text = editText.text.trim()
+            editText.text.clear()
+            if (text.isNotEmpty()) {
+                it.send(text)
+                true
+            } else {
+                false
+            }
+        } == true
     }
 
     private fun initEmotesViewPager() {
