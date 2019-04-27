@@ -30,7 +30,6 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
-import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.DisplayUtils.convertDpToPixels
 import com.github.exact7.xtra.util.DisplayUtils.getDisplayDensity
 import java.util.Random
@@ -205,7 +204,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                         .into(object : SimpleTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
-                                resource.setBounds(0, 0, if (width == null) size else (getDisplayDensity(context) * width * 0.9f).toInt(), size)
+                                resource.setBounds(0, 0, if (width == null) size else (getDisplayDensity() * width * 0.9f).toInt(), size)
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: IndexOutOfBoundsException) {

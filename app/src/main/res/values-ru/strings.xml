@@ -103,4 +103,5 @@
     <string name="source_vod_start">Начало %s</string>
     <string name="source_vod_end">Конец%s</string>
     <string name="stream_ended">Трансляция завершилась</string>
+    <string name="webview_error">Ошибка при загрузке веб-браузера. Вероятнее всего он сейчас обновляется. Пожалуйста, попробуйте снова через пару минут</string>
 </resources>

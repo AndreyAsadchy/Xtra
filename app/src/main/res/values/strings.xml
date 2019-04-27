@@ -103,4 +103,5 @@
     <string name="source_vod_start">Start: %s</string>
     <string name="source_vod_end">End: %s</string>
     <string name="stream_ended">The stream has ended</string>
+    <string name="webview_error">Error loading web browser. This might be because it\'s being updated right now. Please try again in a few minutes</string>
 </resources>

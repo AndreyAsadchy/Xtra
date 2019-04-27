@@ -12,7 +12,8 @@ import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.LifecycleListener
-import com.github.exact7.xtra.util.Prefs
+import com.github.exact7.xtra.util.prefs
+import com.google.android.gms.ads.MobileAds
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -25,7 +26,7 @@ import javax.inject.Inject
 class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
 
     companion object {
-        var INSTANCE: Application? = null
+        lateinit var INSTANCE: Application
     }
 
     @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
@@ -38,10 +39,10 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         INSTANCE = this
         AppInjector.init(this)
         Fabric.with(this, Crashlytics())
-//        MobileAds.initialize(this, "ca-app-pub-1890646946349307~2827896321")
+        MobileAds.initialize(this, "ca-app-pub-1890646946349307~2827896321")
         RxJavaPlugins.setErrorHandler { Crashlytics.logException(it) }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
-        val prefs = Prefs.get(this)
+        val prefs = prefs()
         val all = prefs.all
         if (all["chatWidth"] == null) {
             val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(25)

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.main.MainViewModel
-import com.github.exact7.xtra.util.NetworkUtils
+import com.github.exact7.xtra.util.isNetworkAvailable
 import javax.inject.Inject
 
 abstract class BaseNetworkFragment : Fragment(), Injectable {
@@ -37,7 +37,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (enableNetworkCheck) {
-            lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: NetworkUtils.isConnected(requireContext())
+            lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: requireContext().isNetworkAvailable()
             shouldRestore = savedInstanceState?.getBoolean(RESTORE_KEY) ?: false
             created = savedInstanceState?.getBoolean(CREATED_KEY) ?: false
         }

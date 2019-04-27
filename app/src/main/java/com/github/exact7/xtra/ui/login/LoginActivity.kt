@@ -2,6 +2,7 @@ package com.github.exact7.xtra.ui.login
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -19,10 +20,11 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.repository.AuthRepository
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -38,15 +40,16 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
+        setTheme(if (prefs().getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         try {
             setContentView(R.layout.activity_login)
         } catch (e: Exception) {
             Crashlytics.logException(e)
             if (e.message?.contains("WebView") == true) {
                 Crashlytics.log("LoginActivity.onCreate: WebView not found. Message: ${e.message}")
-                Toast.makeText(this, "Error loading web browser. This might be because it's being updated right now. Please try again in a few minutes.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.webview_error), Toast.LENGTH_LONG).show()
                 finish()
+                startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
             }
         }
         try { //TODO remove after updated to 1.2.0

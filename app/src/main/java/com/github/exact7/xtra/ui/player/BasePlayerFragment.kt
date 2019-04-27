@@ -30,8 +30,8 @@ import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
-import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -66,7 +66,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         super.onCreate(savedInstanceState)
         isInPictureInPictureMode = savedInstanceState?.getBoolean(C.PICTURE_IN_PICTURE) == true
         wasInPictureInPictureMode = savedInstanceState?.getBoolean(WAS_IN_PIP) == true
-        prefs = Prefs.get(requireContext())
+        prefs = requireContext().prefs()
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     }
 
@@ -135,7 +135,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             }
         }
         if (this !is StreamPlayerFragment) {
-            val prefs = Prefs.get(activity)
+            val prefs = activity.prefs()
             val rewind = prefs.getString("playerRewind", "5000")!!.toInt()
             val forward = prefs.getString("playerForward", "5000")!!.toInt()
             val rewindImage = when (rewind) {

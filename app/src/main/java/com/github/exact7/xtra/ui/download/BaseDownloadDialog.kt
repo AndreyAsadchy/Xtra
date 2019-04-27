@@ -12,8 +12,8 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
-import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.storage_selection.view.*
 
@@ -37,7 +37,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
     protected fun init(context: Context) {
         try {
             storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
-            prefs = Prefs.get(context)
+            prefs = context.prefs()
             storage = DownloadUtils.getAvailableStorage(context)
             if (DownloadUtils.isExternalStorageAvailable) {
                 if (storage.size > 1) {

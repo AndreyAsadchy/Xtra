@@ -13,8 +13,8 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
-import com.github.exact7.xtra.util.NetworkUtils
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
+import com.github.exact7.xtra.util.isNetworkAvailable
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.PlaybackParameters
@@ -144,9 +144,10 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.e("PlayerViewModel", "Player error", error)
         val context = getApplication<Application>()
-        if (NetworkUtils.isConnected(context)) {
-            val sourceException = error.sourceException
-            if (this@PlayerViewModel is StreamPlayerViewModel && sourceException is HttpDataSource.InvalidResponseCodeException && sourceException.responseCode == 404) {
+        if (context.isNetworkAvailable()) {
+            if (error.type == ExoPlaybackException.TYPE_SOURCE &&
+                    this@PlayerViewModel is StreamPlayerViewModel &&
+                    error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404}) {
                 Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()

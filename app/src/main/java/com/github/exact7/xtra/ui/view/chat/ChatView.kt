@@ -141,10 +141,10 @@ class ChatView : RelativeLayout {
     fun addEmotes(list: List<Emote>?) {
         try {
             list?.also {
-                adapter.addEmotes(it)
                 when (list.firstOrNull()) {
                     is BttvEmote, is FfzEmote -> {
                         otherEmotes.addAll(it)
+                        adapter.addEmotes(it)
                     }
                     else -> twitchEmotes.addAll(list)
                 }

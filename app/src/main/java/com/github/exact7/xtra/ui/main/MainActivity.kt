@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
@@ -54,9 +55,9 @@ import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.NetworkUtils
-import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.isNetworkAvailable
+import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
     private val networkReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            viewModel.setNetworkAvailable(NetworkUtils.isConnected(context))
+            viewModel.setNetworkAvailable(isNetworkAvailable())
         }
     }
     private val isSearchOpened
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = Prefs.get(this)
+        prefs = prefs()
         if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
             setTheme(if (prefs.getBoolean(C.THEME, true).also { isDarkTheme = it }) R.style.DarkTheme else R.style.LightTheme)
         } else {
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (prefs.getBoolean("showRateAppDialog", true) && savedInstanceState == null) {
             val launchCount = prefs.getInt("launchCount", 0) + 1
             val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
-            if (System.currentTimeMillis() >= dateOfFirstLaunch + 259200000L && launchCount >= 3) { //3 days passed and launched at least 3 times
+            if (System.currentTimeMillis() >= dateOfFirstLaunch + 259200000L && launchCount >= 5) { //3 days passed and launched at least 5 times
                 AlertDialog.Builder(this)
                         .setTitle(getString(R.string.thank_you))
                         .setMessage(getString(R.string.rate_app_message))
@@ -140,7 +141,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        val user = Prefs.getUser(this)
+        val user = User.get(this)
         viewModel.setUser(user)
         initNavigation()
         if (user !is NotLoggedIn) {
@@ -154,7 +155,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 navBar.selectedItemId = R.id.fragment_top
             }
         }
-        var flag = savedInstanceState == null && !NetworkUtils.isConnected(this)
+        var flag = savedInstanceState == null && !isNetworkAvailable()
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
                 if (online) {

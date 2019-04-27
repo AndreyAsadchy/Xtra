@@ -15,14 +15,14 @@ import androidx.preference.SwitchPreferenceCompat
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
-import com.github.exact7.xtra.util.Prefs
+import com.github.exact7.xtra.util.prefs
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(if (Prefs.get(this).getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
+        setTheme(if (prefs().getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
@@ -46,7 +46,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             findPreference<SeekBarPreference>("chatWidth").setOnPreferenceChangeListener { _, newValue ->
                 val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(newValue as Int)
-                Prefs.get(activity).edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
+                activity.prefs().edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 activity.setResult(Activity.RESULT_OK, Intent().putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true
             }

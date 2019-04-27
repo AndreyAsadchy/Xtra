@@ -39,7 +39,7 @@ object FragmentUtils {
     fun setRecyclerViewSpanCount(recyclerView: RecyclerView) {
         if (recyclerView.layoutManager is GridLayoutManager) {
             val context = recyclerView.context
-            val prefs = Prefs.get(context)
+            val prefs = context.prefs()
             val count = if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 prefs.getString(C.PORTRAIT_COLUMN_COUNT, "1")!!.toInt()
             } else {
