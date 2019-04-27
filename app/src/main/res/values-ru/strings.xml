@@ -100,8 +100,8 @@
     <string name="player_error">Ошибка воспроизведения. Переподключение</string>
     <string name="picture_in_picture">Картинка в картинке</string>
     <string name="continue_playback">Продолжить воспроизведение вне приложения</string>
-    <string name="source_vod_start">Начало %s</string>
-    <string name="source_vod_end">Конец%s</string>
+    <string name="source_vod_start">Начало: %s</string>
+    <string name="source_vod_end">Конец: %s</string>
     <string name="stream_ended">Трансляция завершилась</string>
     <string name="webview_error">Ошибка при загрузке веб-браузера. Вероятнее всего он сейчас обновляется. Пожалуйста, попробуйте снова через пару минут</string>
 </resources>

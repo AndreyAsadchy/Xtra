@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.view
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -13,6 +14,11 @@ class CustomPlayerView : PlayerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        layoutTransition = LayoutTransition()
+    }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         if (ev.isClick(downTouchLocation)) {

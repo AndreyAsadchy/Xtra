@@ -20,7 +20,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.gif.GifDrawable
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
@@ -30,8 +30,8 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
-import com.github.exact7.xtra.util.DisplayUtils.convertDpToPixels
-import com.github.exact7.xtra.util.DisplayUtils.getDisplayDensity
+import com.github.exact7.xtra.util.convertDpToPixels
+import com.github.exact7.xtra.util.displayDensity
 import java.util.Random
 import kotlin.collections.set
 
@@ -53,8 +53,8 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     private val userColors = HashMap<String, Int>()
     private val savedColors = HashMap<String, Int>()
     private val emotes: HashMap<String, Emote> = initBttv().also { it.putAll(initFfz()) }
-    private val emoteSize = convertDpToPixels(context, 26f)
-    private val badgeSize = convertDpToPixels(context, 18f)
+    private val emoteSize = context.convertDpToPixels(26f)
+    private val badgeSize = context.convertDpToPixels(18f)
     private var username: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -201,10 +201,10 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                 GlideApp.with(holder.itemView.context)
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .into(object : SimpleTarget<Drawable>() {
+                        .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
-                                resource.setBounds(0, 0, if (width == null) size else (getDisplayDensity() * width * 0.9f).toInt(), size)
+                                resource.setBounds(0, 0, if (width == null) size else (context.displayDensity * width * 0.9f).toInt(), size)
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: IndexOutOfBoundsException) {
@@ -212,13 +212,16 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                                 }
                                 holder.bind(builder)
                             }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                            }
                         })
             } else {
                 GlideApp.with(holder.itemView.context)
                         .asGif()
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .into(object : SimpleTarget<GifDrawable>() {
+                        .into(object : CustomTarget<GifDrawable>() {
                             override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
                                 val textView = holder.itemView as TextView
                                 val callback = object : Drawable.Callback {
@@ -246,6 +249,9 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
 
                                 }
                                 holder.bind(builder)
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
                             }
                         })
             }

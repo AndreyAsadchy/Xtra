@@ -14,7 +14,6 @@ import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.Event
-import com.github.exact7.xtra.util.Prefs
 import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -107,7 +106,7 @@ class MainViewModel @Inject constructor(
                     }, {
                         _checkedValidity.value = true
                         with(activity) {
-                            Prefs.setUser(activity, null)
+                            User.set(activity, null)
                             Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
                             if (!isPlayerMaximized) {
                                 startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2)

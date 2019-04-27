@@ -12,7 +12,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.ui.view.GridAutofitLayoutManager
-import com.github.exact7.xtra.util.DisplayUtils
+import com.github.exact7.xtra.util.convertDpToPixels
 
 
 class EmotesFragment : Fragment() {
@@ -33,7 +33,7 @@ class EmotesFragment : Fragment() {
         val context = requireContext()
         (view as RecyclerView).apply {
             adapter = EmotesAdapter(requireArguments().getSerializable("list") as List<Emote>) { editText.text.append(it.name).append(' ') }
-            layoutManager = GridAutofitLayoutManager(context, DisplayUtils.convertDpToPixels(context, 50f))
+            layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f))
         }
     }
 }

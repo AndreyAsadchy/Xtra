@@ -45,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
             findPreference<SeekBarPreference>("chatWidth").setOnPreferenceChangeListener { _, newValue ->
-                val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(newValue as Int)
+                val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(activity, newValue as Int)
                 activity.prefs().edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 activity.setResult(Activity.RESULT_OK, Intent().putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true

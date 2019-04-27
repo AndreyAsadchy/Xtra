@@ -87,13 +87,14 @@ class ChatView : RelativeLayout {
                 it.toggleVisibility()
             }
         }
-
+        chatRecyclerView.layoutTransition = LayoutTransition()
 
         editText.setOnEditorActionListener { v, actionId, _ ->
             var handled = false
             messageCallback?.let {
-                if (actionId == EditorInfo.IME_ACTION_SEND && v.text.isNotEmpty()) {
-                    it.send(v.text.toString())
+                val text = v.text.trim()
+                if (actionId == EditorInfo.IME_ACTION_SEND && text.isNotEmpty()) {
+                    it.send(text.toString())
                     editText.text.clear()
                     handled = true
                 }
@@ -181,25 +182,28 @@ class ChatView : RelativeLayout {
         if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
         viewPager.adapter = object : FragmentPagerAdapter(playerFragment.childFragmentManager) {
 
-                override fun getItem(position: Int): Fragment {
-                    val list = when (position) {
-                        0 -> twitchEmotes
-                        else -> otherEmotes
-                    }
-                    return EmotesFragment.newInstance(list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
+            override fun getItem(position: Int): Fragment {
+                val list = when (position) {
+                    0 -> twitchEmotes
+                    else -> otherEmotes
                 }
+                return EmotesFragment.newInstance(list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
+            }
 
-                override fun getCount(): Int = 1 + if (otherEmotes.isNotEmpty()) 1 else 0
+            override fun getCount(): Int = 1 + if (otherEmotes.isNotEmpty()) 1 else 0
 
-                override fun getPageTitle(position: Int): CharSequence? {
-                    return if (position == 0) {
-                        "Twitch"
-                    } else {
-                        "BTTV/FFZ"
-                    }
+            override fun getPageTitle(position: Int): CharSequence? {
+                return if (position == 0) {
+                    "Twitch"
+                } else {
+                    "BTTV/FFZ"
                 }
             }
-            emotes.setOnClickListener { viewPager.toggleVisibility() }
+        }
+        emotes.setOnClickListener {
+            //TODO add animation
+            viewPager.toggleVisibility()
+        }
     }
 
     private fun getLastItemPosition(): Int = adapter.itemCount - 1

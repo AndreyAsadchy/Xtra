@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
     private val networkReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            viewModel.setNetworkAvailable(isNetworkAvailable())
+            viewModel.setNetworkAvailable(isNetworkAvailable)
         }
     }
     private val isSearchOpened
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 navBar.selectedItemId = R.id.fragment_top
             }
         }
-        var flag = savedInstanceState == null && !isNetworkAvailable()
+        var flag = savedInstanceState == null && !isNetworkAvailable
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online ->
                 if (online) {

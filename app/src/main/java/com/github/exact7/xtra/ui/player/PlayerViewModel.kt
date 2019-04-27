@@ -144,7 +144,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.e("PlayerViewModel", "Player error", error)
         val context = getApplication<Application>()
-        if (context.isNetworkAvailable()) {
+        if (context.isNetworkAvailable) {
             if (error.type == ExoPlaybackException.TYPE_SOURCE &&
                     this@PlayerViewModel is StreamPlayerViewModel &&
                     error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404}) {

@@ -37,7 +37,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (enableNetworkCheck) {
-            lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: requireContext().isNetworkAvailable()
+            lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: requireContext().isNetworkAvailable
             shouldRestore = savedInstanceState?.getBoolean(RESTORE_KEY) ?: false
             created = savedInstanceState?.getBoolean(CREATED_KEY) ?: false
         }

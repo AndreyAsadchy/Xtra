@@ -19,6 +19,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotLoggedIn
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
@@ -57,7 +58,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
             if (oldPrefs.all.isNotEmpty()) {
                 with(oldPrefs) {
                     if (getString(C.USER_ID, null) != null) {
-                        Prefs.setUser(this@LoginActivity, LoggedIn(getString(C.USER_ID, null)!!, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!))
+                        User.set(this@LoginActivity, LoggedIn(getString(C.USER_ID, null)!!, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!))
                     }
                 }
                 oldPrefs.edit { clear() }
@@ -65,7 +66,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
         } catch (e: Exception) {
 
         }
-        val user = Prefs.getUser(this)
+        val user = User.get(this)
         if (user is NotLoggedIn) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
                 welcomeContainer.visible()
@@ -80,7 +81,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
             initWebView()
             if (!intent.getBooleanExtra("expired", false)) {
                 repository.revoke(user.token)
-                        .subscribe { _ -> Prefs.setUser(this, null) }
+                        .subscribe { _ -> User.set(this, null) }
                         .addTo(compositeDisposable)
             }
         }
@@ -110,7 +111,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         repository.validate(token)
                                 .subscribe { response ->
                                     TwitchApiHelper.validated = true
-                                    Prefs.setUser(this@LoginActivity, LoggedIn(response.userId, response.username, token))
+                                    User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token))
                                     setResult(RESULT_OK)
                                     finish()
                                 }

@@ -5,7 +5,7 @@ import android.app.Application
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.AndroidViewModel
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.model.offline.OfflineVideo
@@ -48,8 +48,9 @@ class DownloadsViewModel @Inject internal constructor(
                                         .load(url)
                                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                                         .skipMemoryCache(true)
-                                        .into(object : SimpleTarget<Drawable>() {
+                                        .into(object : CustomTarget<Drawable>() {
                                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {}
+                                            override fun onLoadCleared(placeholder: Drawable?) {}
                                         })
                             }
                         }

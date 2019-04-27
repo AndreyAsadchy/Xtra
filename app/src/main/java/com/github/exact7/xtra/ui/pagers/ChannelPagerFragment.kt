@@ -18,7 +18,7 @@ import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.DisplayUtils
+import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_channel.*
@@ -66,7 +66,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
             watchLive.visible(it.stream != null)
             it.stream?.let { s ->
                 toolbarContainer.updateLayoutParams { height = ViewGroup.LayoutParams.WRAP_CONTENT }
-                collapsingToolbar.expandedTitleMarginBottom = DisplayUtils.convertDpToPixels(activity, 50.5f)
+                collapsingToolbar.expandedTitleMarginBottom = activity.convertDpToPixels(50.5f)
                 watchLive.setOnClickListener { activity.startStream(s) }
             }
         })

@@ -4,8 +4,10 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.Context
 import androidx.core.content.edit
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
@@ -45,7 +47,7 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         val prefs = prefs()
         val all = prefs.all
         if (all["chatWidth"] == null) {
-            val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(25)
+            val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(this, 25)
             prefs.edit {
                 putInt("chatWidth", 25)
                 putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth)
@@ -64,8 +66,15 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         }
         if (all[C.PORTRAIT_PLAYER_HEIGHT] == null) {
             prefs.edit {
-                putInt(C.PORTRAIT_PLAYER_HEIGHT, DisplayUtils.calculatePortraitHeightByPercent(33))
+                putInt(C.PORTRAIT_PLAYER_HEIGHT, DisplayUtils.calculatePortraitHeightByPercent(this@XtraApp, 33))
             }
+        }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        if (BuildConfig.DEBUG) {
+            MultiDex.install(this)
         }
     }
 
