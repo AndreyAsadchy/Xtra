@@ -72,7 +72,7 @@ class VideoPlayerViewModel @Inject constructor(
                     })
                     .addTo(compositeDisposable)
             chatReplayManager = ChatReplayManager(repository, video.id, 0.0, player, this::onMessage, this::clearMessages)
-            initChat(playerRepository, video.channel.id, video.channelName)
+            initChat(playerRepository, video.channel.id, video.channel.name)
         }
     }
 

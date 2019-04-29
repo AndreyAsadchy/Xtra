@@ -19,29 +19,26 @@ import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.FetchProvider
-import com.github.exact7.xtra.util.TlsSocketFactory
+import com.github.exact7.xtra.util.Tls12SocketFactory
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
 import com.tonyodev.fetch2.FetchConfiguration
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
 import dagger.Module
 import dagger.Provides
-import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.security.SecureRandom
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
+import java.security.KeyStore
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
+import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
 @Module
@@ -143,37 +140,17 @@ class XtraModule {
                 addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
             }
 
-            /***
-             * Enable TLS 1.2 on pre-lollipop devices
-             * https://github.com/square/okhttp/issues/2372#issuecomment-244807676
-             */
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                 try {
-                    val sc = SSLContext.getInstance("TLSv1.2")
-                    val trustManagers = arrayOf<TrustManager>(object : X509TrustManager {
-                        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-
-                        @Throws(CertificateException::class)
-                        override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {
-                        }
-
-                        @Throws(CertificateException::class)
-                        override fun checkServerTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {
-                        }
-                    })
-                    sc.init(null, trustManagers, SecureRandom())
-                    sslSocketFactory(TlsSocketFactory(sc.socketFactory), trustManagers[0] as X509TrustManager)
-                    val cs = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                            .tlsVersions(TlsVersion.TLS_1_2)
-                            .build()
-                    val specs = ArrayList<ConnectionSpec>().apply {
-                        add(cs)
-                        add(ConnectionSpec.COMPATIBLE_TLS)
-                        add(ConnectionSpec.CLEARTEXT)
+                    val trustManager = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).run {
+                        init(null as KeyStore?)
+                        trustManagers.first { it is X509TrustManager } as X509TrustManager
                     }
-                    connectionSpecs(specs)
+                    val sslContext = SSLContext.getInstance(TlsVersion.TLS_1_2.javaName())
+                    sslContext.init(null, arrayOf(trustManager), null)
+                    sslSocketFactory(Tls12SocketFactory(sslContext.socketFactory), trustManager)
                 } catch (e: Exception) {
-                    Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2", e)
+                    Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2 compatibility")
                 }
             }
             connectTimeout(5, TimeUnit.MINUTES)
@@ -216,5 +193,6 @@ class XtraModule {
                 .setDownloadConcurrentLimit(3)
                 .setHttpDownloader(OkHttpDownloader(okHttpClient))
                 .setProgressReportingInterval(1000L)
+                .setAutoRetryMaxAttempts(3)
     }
 }

@@ -4,12 +4,12 @@
         <item quantity="one">%s просмотр</item>
         <item quantity="few">%s просмотра</item>
         <item quantity="many">%s просмотров</item>
-        <item quantity="other">%s просмотров</item>
+        <item quantity="other">@string/views</item>
     </plurals>
     <plurals name="viewers">
         <item quantity="one">%s зритель</item>
         <item quantity="few">%s зрителя</item>
         <item quantity="many">%s зрителей</item>
-        <item quantity="other">%s зрителей</item>
+        <item quantity="other">@string/viewers</item>
     </plurals>
 </resources>

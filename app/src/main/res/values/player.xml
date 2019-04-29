@@ -86,7 +86,7 @@
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="Player.Text" parent="Outline">
+    <style name="Player.Text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
@@ -95,8 +95,10 @@
 
     <style name="Player.Position" parent="Player.Text">
         <item name="android:id">@id/exo_position</item>
-        <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_width">55sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginLeft">7dp</item>
+        <item name="android:layout_marginStart">7dp</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_alignParentBottom">true</item>
     </style>
@@ -116,12 +118,9 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:layout_above">@id/exo_progress</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginStart">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
         <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
         <item name="android:layout_toEndOf">@id/exo_position</item>
         <item name="android:layout_toRightOf">@id/exo_position</item>
         <item name="android:layout_toLeftOf">@id/exo_duration</item>
@@ -206,6 +205,13 @@
     <style name="Player.Ratio" parent="Player.SmallImage">
         <item name="android:id">@id/aspectRatio</item>
         <item name="android:src">@drawable/baseline_aspect_ratio_black_24</item>
+    </style>
+
+    <style name="Player.Shadow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="android:alpha">0.4</item>
     </style>
 
 </resources>

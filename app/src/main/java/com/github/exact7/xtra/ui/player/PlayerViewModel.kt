@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
@@ -145,22 +146,39 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
         Log.e("PlayerViewModel", "Player error", error)
         val context = getApplication<Application>()
         if (context.isNetworkAvailable) {
-            if (error.type == ExoPlaybackException.TYPE_SOURCE &&
-                    this@PlayerViewModel is StreamPlayerViewModel &&
-                    error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404}) {
-                Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
-                GlobalScope.launch {
-                    delay(1500L)
-                    runBlocking(Dispatchers.Main) {
-                        if (this@PlayerViewModel is StreamPlayerViewModel) {
-                            play()
-                        } else {
-                            onResume()
+            try {
+                val isStreamEnded = try {
+                    error.type == ExoPlaybackException.TYPE_SOURCE &&
+                            this@PlayerViewModel is StreamPlayerViewModel &&
+                            error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404 }
+                } catch (e: IllegalStateException) {
+                    Crashlytics.logException(e)
+                    Crashlytics.log("PlayerViewModel.onPlayerError: Stream end check error. Type: ${error.type}")
+                    return
+                }
+                if (isStreamEnded) {
+                    Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
+                    GlobalScope.launch {
+                        delay(1500L)
+                        runBlocking(Dispatchers.Main) {
+                            try {
+                                if (this@PlayerViewModel is StreamPlayerViewModel) {
+                                    play()
+                                } else {
+                                    onResume()
+                                }
+                            } catch (e: Exception) {
+                                Crashlytics.logException(e)
+                                Crashlytics.log("PlayerViewModel.onPlayerError: Retry error. ${e.message}")
+                            }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                Crashlytics.logException(e)
+                Crashlytics.log("PlayerViewModel.onPlayerError: ${e.message}")
             }
         }
     }

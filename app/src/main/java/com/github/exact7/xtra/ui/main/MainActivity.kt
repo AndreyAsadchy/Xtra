@@ -121,7 +121,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (prefs.getBoolean("showRateAppDialog", true) && savedInstanceState == null) {
             val launchCount = prefs.getInt("launchCount", 0) + 1
             val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
-            if (System.currentTimeMillis() >= dateOfFirstLaunch + 259200000L && launchCount >= 5) { //3 days passed and launched at least 5 times
+            if (System.currentTimeMillis() < dateOfFirstLaunch + 259200000L || launchCount < 5) {
+                prefs.edit { putInt("launchCount", launchCount) }
+            } else { //3 days passed and launched at least 5 times
                 AlertDialog.Builder(this)
                         .setTitle(getString(R.string.thank_you))
                         .setMessage(getString(R.string.rate_app_message))
@@ -136,8 +138,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                         .setNegativeButton(getString(R.string.remind_me_later), null)
                         .setNeutralButton(getString(R.string.no_thanks)) { _, _ -> prefs.edit { putBoolean("showRateAppDialog", false) } }
                         .show()
-            } else {
-                prefs.edit { putInt("launchCount", launchCount) }
             }
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)

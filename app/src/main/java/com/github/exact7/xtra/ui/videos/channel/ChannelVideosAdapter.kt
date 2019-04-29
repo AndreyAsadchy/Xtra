@@ -53,7 +53,11 @@ class ChannelVideosAdapter(
             true
         }
         item?.views?.let {
-            binding.views.text = binding.views.resources.getQuantityString(R.plurals.views, it, TwitchApiHelper.formatCount(it))
+            binding.views.text = if (it > 1000) {
+                binding.views.resources.getString(R.string.views, TwitchApiHelper.formatCount(it))
+            } else {
+                binding.views.resources.getQuantityString(R.plurals.views, it, it)
+            }
         }
     }
 }

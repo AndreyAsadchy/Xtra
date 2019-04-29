@@ -24,7 +24,11 @@ class GamesAdapter(
         binding.game = item
         binding.listener = listener
         item?.viewers?.let {
-            binding.viewers.text = binding.viewers.resources.getQuantityString(R.plurals.viewers, it, TwitchApiHelper.formatCount(it))
+            binding.viewers.text = if (it > 1000) {
+                binding.viewers.resources.getString(R.string.viewers, TwitchApiHelper.formatCount(it))
+            } else {
+                binding.viewers.resources.getQuantityString(R.plurals.viewers, it, it)
+            }
         }
     }
 }

@@ -100,8 +100,11 @@
     <string name="player_error">Player error. Retrying</string>
     <string name="picture_in_picture">Picture-in-picture</string>
     <string name="continue_playback">Continue playback outside of the app</string>
-    <string name="source_vod_start">Start: %s</string>
-    <string name="source_vod_end">End: %s</string>
+    <string name="source_vod_start">Start:</string>
+    <string name="source_vod_end">End:</string>
     <string name="stream_ended">The stream has ended</string>
     <string name="webview_error">Error loading web browser. This might be because it\'s being updated right now. Please try again in a few minutes</string>
+    <string name="viewers">%s viewers</string>
+    <string name="views">%s views</string>
+    <string name="play_services_not_available">Google Play Services are not available. Some functions may not work correctly</string>
 </resources>

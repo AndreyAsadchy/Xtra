@@ -141,23 +141,47 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/source_vod_start"
+                android:layout_alignTop="@id/sourceStart"
+                android:layout_toStartOf="@id/sourceStart"
+                android:layout_toLeftOf="@id/sourceStart"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                style="@style/ThumbnailItem"
+                />
+
+            <TextView
                 android:id="@+id/sourceStart"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="17dp"
-                android:layout_marginEnd="17dp"
-                tools:text="Start: 13:37:69"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                tools:text="13:37:69"
+                style="@style/ThumbnailItem"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/source_vod_end"
+                android:layout_alignTop="@id/sourceEnd"
+                android:layout_toStartOf="@id/sourceEnd"
+                android:layout_toLeftOf="@id/sourceEnd"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 style="@style/ThumbnailItem"
                 />
 
             <TextView
                 android:id="@+id/sourceEnd"
                 android:layout_below="@id/sourceStart"
-                android:layout_alignStart="@id/sourceStart"
-                android:layout_alignLeft="@id/sourceStart"
+                android:layout_alignEnd="@id/sourceStart"
+                android:layout_alignRight="@id/sourceStart"
                 android:layout_marginTop="5dp"
-                tools:text="End: 69:13:37"
+                tools:text="69:13:37"
                 style="@style/ThumbnailItem"
                 />
 

@@ -5,6 +5,8 @@ import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDex
@@ -15,6 +17,8 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.prefs
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.security.ProviderInstaller
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -23,6 +27,7 @@ import dagger.android.HasServiceInjector
 import io.fabric.sdk.android.Fabric
 import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
+import javax.net.ssl.SSLException
 
 class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
 
@@ -41,7 +46,24 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         AppInjector.init(this)
         Fabric.with(this, Crashlytics())
 //        MobileAds.initialize(this, "ca-app-pub-1890646946349307~2827896321")
-        RxJavaPlugins.setErrorHandler { Crashlytics.logException(it) }
+        RxJavaPlugins.setErrorHandler {
+            if (it is SSLException) {
+                ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
+                    override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
+                        GoogleApiAvailability.getInstance().apply {
+                            if (isUserResolvableError(errorCode)) {
+                                // Prompt the user to install/update/enable Google Play services.
+                                showErrorNotification(this@XtraApp, errorCode)
+                            } else {
+                                Toast.makeText(this@XtraApp, getString(R.string.play_services_not_available), Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                    override fun onProviderInstalled() {}
+                })
+            }
+            Crashlytics.logException(it)
+        }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
         val prefs = prefs()
         val all = prefs.all

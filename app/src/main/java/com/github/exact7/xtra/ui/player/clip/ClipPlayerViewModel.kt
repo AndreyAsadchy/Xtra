@@ -83,7 +83,7 @@ class ClipPlayerViewModel @Inject constructor(
                     })
                     .addTo(compositeDisposable)
             clip.vod?.let {
-                initChat(playerRepository, clip.broadcaster.id, clip.channelName)
+                initChat(playerRepository, clip.broadcaster.id, clip.broadcaster.name)
                 chatReplayManager = ChatReplayManager(repository, "v${it.id}", TwitchApiHelper.parseClipOffset(it.url), player, this::onMessage, this::clearMessages)
             }
         }

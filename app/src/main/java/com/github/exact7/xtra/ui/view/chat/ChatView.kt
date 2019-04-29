@@ -181,8 +181,12 @@ class ChatView : RelativeLayout {
     }
 
     private fun initEmotesViewPager() {
-        val playerFragment = (context as MainActivity).playerFragment!!
-        if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
+        val playerFragment = (context as MainActivity).playerFragment
+        if (playerFragment == null) {
+            Crashlytics.log("ChatView.initEmotesViewPager: playerFragment is null")
+            postDelayed(this::initEmotesViewPager, 500L)
+            return
+        } else if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
         viewPager.adapter = object : FragmentPagerAdapter(playerFragment.childFragmentManager) {
 
             override fun getItem(position: Int): Fragment {

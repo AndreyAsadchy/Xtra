@@ -49,6 +49,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private var secondView: View? = null
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
+
     protected var isPortrait: Boolean = false
         private set
     protected var isInPictureInPictureMode = false
@@ -63,7 +64,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private var playerViewWidth = 0
     private var playerViewHeight = 0
 
-    private var flags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    private var systemUiFlags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -76,7 +77,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         prefs = requireContext().prefs()
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            flags = flags.or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            systemUiFlags = systemUiFlags.or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
 
@@ -261,17 +262,18 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     private fun hideStatusBar() {
-        requireActivity().window.decorView.systemUiVisibility = flags
+        requireActivity().window.decorView.systemUiVisibility = systemUiFlags
     }
 
     override fun onMinimize() {
-        playerView.hideController()
+        playerView.useController = false
         if (!isPortrait) {
             showStatusBar()
         }
     }
 
     override fun onMaximize() {
+        playerView.useController = true
         if (!isPortrait) {
             hideStatusBar()
         }

@@ -2,10 +2,10 @@
 <resources>
     <plurals name="views">
         <item quantity="one">%s view</item>
-        <item quantity="other">%s views</item>
+        <item quantity="other">@string/views</item>
     </plurals>
     <plurals name="viewers">
         <item quantity="one">%s viewer</item>
-        <item quantity="other">%s viewers</item>
+        <item quantity="other">@string/viewers</item>
     </plurals>
 </resources>

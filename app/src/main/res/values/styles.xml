@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="BaseDarkTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">@color/accent</item>
         <item name="primaryColor">@color/primaryDark</item>
         <item name="textColor">@android:color/white</item>
@@ -18,7 +18,7 @@
         <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
 
-    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseLightTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/accent</item>
         <item name="primaryColor">@color/primaryLight</item>
         <item name="textColor">@android:color/black</item>
@@ -35,6 +35,9 @@
         <item name="alertDialogTheme">@style/DialogLight</item>
         <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
+
+    <style name="DarkTheme" parent="BaseDarkTheme" />
+    <style name="LightTheme" parent="BaseLightTheme" />
 
     <style name="Card">
         <item name="android:layout_width">match_parent</item>

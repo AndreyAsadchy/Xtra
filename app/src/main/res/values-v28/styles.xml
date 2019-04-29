@@ -1,0 +1,9 @@
+<resources>
+    <style name="DarkTheme" parent="BaseDarkTheme">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+
+    <style name="LightTheme" parent="BaseLightTheme">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+</resources>

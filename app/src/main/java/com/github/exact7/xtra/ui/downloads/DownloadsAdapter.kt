@@ -64,8 +64,8 @@ class DownloadsAdapter(
         }
         binding.progressBar.progress = (item.lastWatchPosition.toFloat() / item.duration * 100).toInt()
         item.sourceStartPosition?.let {
-            binding.sourceStart.text = context.getString(R.string.source_vod_start, DateUtils.formatElapsedTime(it / 1000L))
-            binding.sourceEnd.text = context.getString(R.string.source_vod_end, DateUtils.formatElapsedTime((it + item.duration) / 1000L))
+            binding.sourceStart.text = DateUtils.formatElapsedTime(it / 1000L)
+            binding.sourceEnd.text = DateUtils.formatElapsedTime((it + item.duration) / 1000L)
         }
     }
 }

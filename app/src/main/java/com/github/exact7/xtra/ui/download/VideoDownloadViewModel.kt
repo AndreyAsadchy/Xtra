@@ -98,7 +98,7 @@ class VideoDownloadViewModel @Inject constructor(
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
                 val startPosition = relativeStartTimes[fromIndex]
-                val duration = relativeStartTimes[toIndex] + durations[toIndex] - startPosition
+                val duration = (relativeStartTimes[toIndex] + durations[toIndex] - startPosition) - 1000L
                 val directory = "$path${File.separator}${video.id}${if (!quality.contains("Audio", true)) quality else "audio"}${File.separator}"
                 val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition)
                 val videoId = offlineRepository.saveVideo(offlineVideo)
