@@ -1,25 +1,27 @@
 package com.github.exact7.xtra.repository
 
+import com.github.exact7.xtra.db.RequestsDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.model.offline.OfflineVideo
-import kotlinx.coroutines.Dispatchers
+import com.github.exact7.xtra.model.offline.Request
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class OfflineRepository @Inject constructor(
-        private val videosDao: VideosDao) {
+        private val videosDao: VideosDao,
+        private val requestsDao: RequestsDao) {
 
     fun loadAllVideos() = videosDao.getAll()
 
-    suspend fun getVideoById(id: Int) = withContext(Dispatchers.Default) {
+    fun getVideoByIdAsync(id: Int) = GlobalScope.async {
         videosDao.getById(id)
     }
 
-    suspend fun saveVideo(video: OfflineVideo) = withContext(Dispatchers.Default) {
+    fun saveVideoAsync(video: OfflineVideo) = GlobalScope.async {
         videosDao.insert(video)
     }
 
@@ -31,7 +33,15 @@ class OfflineRepository @Inject constructor(
         GlobalScope.launch { videosDao.update(video) }
     }
 
-    suspend fun getUnfinishedVideos() = withContext(Dispatchers.Default) {
-        videosDao.getUnfinishedVideos()
+    fun getRequestsAsync() = GlobalScope.async {
+        requestsDao.getAll()
+    }
+
+    fun saveRequest(request: Request) {
+        GlobalScope.launch { requestsDao.insert(request) }
+    }
+
+    fun deleteRequest(request: Request) {
+        GlobalScope.launch { requestsDao.delete(request) }
     }
 }

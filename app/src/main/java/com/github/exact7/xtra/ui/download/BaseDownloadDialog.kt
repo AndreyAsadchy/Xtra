@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.util.C
@@ -16,6 +15,7 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.storage_selection.view.*
+import kotlin.math.max
 
 abstract class BaseDownloadDialog : DialogFragment(), Injectable {
 
@@ -27,7 +27,7 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
             val index = if (storage.size == 1) {
                 0
             } else {
-                val checked = storageSelectionContainer.radioGroup.checkedRadioButtonId.let { if (it > -1) it else 0 }
+                val checked = max(storageSelectionContainer.radioGroup.checkedRadioButtonId, 0)
                 prefs.edit { putInt(C.DOWNLOAD_STORAGE, checked) }
                 checked
             }
@@ -35,38 +35,25 @@ abstract class BaseDownloadDialog : DialogFragment(), Injectable {
         }
 
     protected fun init(context: Context) {
-        try {
-            storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
-            prefs = context.prefs()
-            storage = DownloadUtils.getAvailableStorage(context)
-            if (DownloadUtils.isExternalStorageAvailable) {
-                if (storage.size > 1) {
-                    storageSelectionContainer.visible()
-                    for (s in storage) {
-                        storageSelectionContainer.radioGroup.addView(RadioButton(context).apply {
-                            id = s.id
-                            text = s.name
-                        })
-                    }
-                    storageSelectionContainer.radioGroup.check(prefs.getInt(C.DOWNLOAD_STORAGE, 0))
+        storageSelectionContainer = requireView().findViewById(R.id.storageSelectionContainer)
+        prefs = context.prefs()
+        storage = DownloadUtils.getAvailableStorage(context)
+        if (DownloadUtils.isExternalStorageAvailable) {
+            if (storage.size > 1) {
+                storageSelectionContainer.visible()
+                for (s in storage) {
+                    storageSelectionContainer.radioGroup.addView(RadioButton(context).apply {
+                        id = s.id
+                        text = s.name
+                    })
                 }
-            } else {
-                showError()
+                storageSelectionContainer.radioGroup.check(prefs.getInt(C.DOWNLOAD_STORAGE, 0))
             }
-        } catch (e: Exception) {
-            try {
-                Crashlytics.log("BaseDownloadDialog.init(context): ${e.message}. Storage size: ${storage.size} Storage: $storage")
-            } catch (e: Exception) {
-                Crashlytics.log("BaseDownloadDialog.init(context): ${e.message}. Error accessing storage variable")
-            }
-            showError()
+        } else {
+            storageSelectionContainer.visible()
+            storageSelectionContainer.noStorageDetected.visible()
+            requireView().findViewById<Button>(R.id.download).gone()
         }
-    }
-
-    private fun showError() {
-        storageSelectionContainer.visible()
-        storageSelectionContainer.noStorageDetected.visible()
-        requireView().findViewById<Button>(R.id.download).gone()
     }
 
     data class Storage(

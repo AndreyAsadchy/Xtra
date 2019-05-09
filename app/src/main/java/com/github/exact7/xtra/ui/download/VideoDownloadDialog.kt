@@ -20,6 +20,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.dialog_video_download.*
 import javax.inject.Inject
 
@@ -95,7 +96,10 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                 val from = parseTime(timeFrom) ?: return@setOnClickListener
                 val to = parseTime(timeTo) ?: return@setOnClickListener
                 when {
-                    to > totalDuration -> timeTo.error = getString(R.string.to_is_longer)
+                    to > totalDuration -> {
+                        timeTo.requestFocus()
+                        timeTo.error = getString(R.string.to_is_longer)
+                    }
                     from < to -> {
                         val fromIndex = if (from == 0L) {
                             0
@@ -122,7 +126,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                             })
                         }
 
-                        val preference = prefs.getString("downloadNetworkPreference", "3")
+                        val preference = prefs.getString(C.DOWNLOAD_NETWORK_PREFERENCE, "3")
                         var wifiOnly = preference == "2"
 
                         fun download() {
@@ -139,7 +143,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                             AlertDialog.Builder(context)
                                     .setMultiChoiceItems(arrayOf(getString(R.string.wifi_only)), BooleanArray(1) { true }) { _, _, isChecked -> wifiOnly = isChecked }
                                     .setPositiveButton(getString(R.string.always)) { _, _ ->
-                                        prefs.edit { putString("downloadNetworkPreference", if (wifiOnly) "2" else "1") }
+                                        prefs.edit { putString(C.DOWNLOAD_NETWORK_PREFERENCE, if (wifiOnly) "2" else "1") }
                                         download()
                                     }
                                     .setNegativeButton(getString(R.string.just_once)) { _, _ -> download() }
@@ -148,8 +152,14 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                                     .show()
                         }
                     }
-                    from >= to -> timeFrom.error = getString(R.string.from_is_greater)
-                    else -> timeTo.error = getString(R.string.to_is_lesser)
+                    from >= to -> {
+                        timeFrom.requestFocus()
+                        timeFrom.error = getString(R.string.from_is_greater)
+                    }
+                    else -> {
+                        timeTo.requestFocus()
+                        timeTo.error = getString(R.string.to_is_lesser)
+                    }
                 }
             }
         }
@@ -166,6 +176,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                 val seconds = time[2].toLong().also { if (it > 59) throw IllegalArgumentException()}
                 return ((hours * 3600) + (minutes * 60) + seconds) * 1000
             } catch (ex: Exception) {
+                requestFocus()
                 error = getString(R.string.invalid_time)
             }
         }

@@ -26,6 +26,7 @@ import com.tonyodev.fetch2.FetchConfiguration
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
 import dagger.Module
 import dagger.Provides
+import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
@@ -149,6 +150,8 @@ class XtraModule {
                     val sslContext = SSLContext.getInstance(TlsVersion.TLS_1_2.javaName())
                     sslContext.init(null, arrayOf(trustManager), null)
                     sslSocketFactory(Tls12SocketFactory(sslContext.socketFactory), trustManager)
+                    val cs = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).tlsVersions(TlsVersion.TLS_1_2).build()
+                    connectionSpecs(arrayListOf(cs, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
                 } catch (e: Exception) {
                     Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2 compatibility")
                 }

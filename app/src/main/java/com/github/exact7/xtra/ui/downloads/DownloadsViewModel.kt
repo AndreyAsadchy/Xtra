@@ -32,7 +32,7 @@ class DownloadsViewModel @Inject internal constructor(
     fun delete(video: OfflineVideo) {
         repository.deleteVideo(video)
         GlobalScope.launch {
-            if (video.downloaded) {
+            if (video.status == OfflineVideo.STATUS_DOWNLOADED) {
                 val playlistFile = File(video.url)
                 if (!playlistFile.exists()) {
                     return@launch
@@ -71,11 +71,7 @@ class DownloadsViewModel @Inject internal constructor(
                     playlistFile.delete()
                 }
             } else {
-                with(fetchProvider.get(false)) {
-                    val group = video.id
-                    cancelGroup(group)
-                    deleteGroup(group)
-                }
+                fetchProvider.get(video.id).deleteGroup(video.id)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.main
 
 import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -11,17 +12,27 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotValidated
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
+import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.ui.download.DownloadService
 import com.github.exact7.xtra.ui.login.LoginActivity
+import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.Event
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.prefs
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
+        application: Application,
         private val repository: TwitchService,
-        private val authRepository: AuthRepository): ViewModel() {
+        private val authRepository: AuthRepository,
+        private val offlineRepository: OfflineRepository): ViewModel() {
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -45,6 +56,16 @@ class MainViewModel @Inject constructor(
     var orientationBeforePictureInPicture = 0
 
     private val compositeDisposable = CompositeDisposable()
+
+    init {
+        GlobalScope.launch {
+            offlineRepository.getRequestsAsync().await().forEach {
+                if (DownloadService.activeRequests.add(it.offlineVideoId)) {
+                    DownloadUtils.download(application, it, application.prefs().getString(C.DOWNLOAD_NETWORK_PREFERENCE, "3") == "2")
+                }
+            }
+        }
+    }
 
     fun setUser(user: User) {
         if (_user.value != user) {
@@ -104,12 +125,14 @@ class MainViewModel @Inject constructor(
                         _user.value = LoggedIn(user)
                         repository.loadUserEmotes(user.token, user.id, compositeDisposable)
                     }, {
-                        _checkedValidity.value = true
-                        with(activity) {
-                            User.set(activity, null)
-                            Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                            if (!isPlayerMaximized) {
-                                startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2)
+                        if (it is HttpException && it.code() == 401) {
+                            _checkedValidity.value = true
+                            with(activity) {
+                                User.set(activity, null)
+                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                                if (!isPlayerMaximized) {
+                                    startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2)
+                                }
                             }
                         }
                     })

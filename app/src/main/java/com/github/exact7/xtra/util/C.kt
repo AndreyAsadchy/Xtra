@@ -21,4 +21,5 @@ object C {
     const val PICTURE_IN_PICTURE = "pictureInPicture"
     const val ASPECT_RATIO_PORTRAIT = "aspectRatioPortrait"
     const val ASPECT_RATIO_LANDSCAPE = "aspectRatioLandscape"
+    const val DOWNLOAD_NETWORK_PREFERENCE = "downloadNetworkPreference"
 }

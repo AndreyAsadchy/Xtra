@@ -13,17 +13,20 @@ import javax.inject.Inject
 
 class NotificationActionReceiver : BroadcastReceiver() {
 
+    companion object {
+        const val KEY_VIDEO_ID = "videoId"
+    }
+
     @Inject lateinit var fetchProvider: FetchProvider
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("NotifActionReceiver", "Canceled download")
+        val videoId = intent.getIntExtra(KEY_VIDEO_ID, 0)
+        Log.d("NotifActionReceiver", "Canceled download. Id: $videoId")
         AndroidInjection.inject(this, context)
         GlobalScope.launch {
             try {
-                with(fetchProvider.get(false)) {
-                    cancelAll()
-                    deleteAll()
-                }
+                DownloadService.activeRequests.remove(videoId)
+                fetchProvider.get(videoId).deleteAll()
             } catch (e: Exception) {
                 Crashlytics.logException(e)
             }

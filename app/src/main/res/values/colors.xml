@@ -7,4 +7,5 @@
     <color name="primaryLight">#FFFFFF</color>
     <color name="secondaryLight">#CFCFCF</color>
     <color name="secondaryTextColorLight">#464646</color>
+    <color name="secondaryAmoled">#353535</color>
 </resources>

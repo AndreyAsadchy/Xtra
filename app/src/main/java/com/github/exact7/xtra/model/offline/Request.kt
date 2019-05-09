@@ -1,29 +1,25 @@
 package com.github.exact7.xtra.model.offline
 
-import com.iheartradio.m3u8.data.MediaPlaylist
+import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
-sealed class Request(
+@Parcelize
+@Entity(
+        tableName = "requests",
+        foreignKeys = [ForeignKey(entity = OfflineVideo::class, parentColumns = arrayOf("id"), childColumns = arrayOf("offline_video_id"), onDelete = ForeignKey.CASCADE)])
+data class Request(
+        @PrimaryKey
+        @ColumnInfo(name = "offline_video_id")
         val offlineVideoId: Int,
         val url: String,
-        val path: String) {
-    val id = System.currentTimeMillis().toInt()
-}
-
-class ClipRequest(
-        offlineVideoId: Int,
-        url: String,
-        path: String
-) : Request(offlineVideoId, url, path)
-
-class VideoRequest(
-        offlineVideoId: Int,
-        val videoId: String,
-        url: String,
-        path: String,
-        val segmentFrom: Int,
-        val segmentTo: Int) : Request(offlineVideoId, url, path) {
-
-    var progress = 0
-    val maxProgress = segmentTo - segmentFrom + 1
-    lateinit var playlist: MediaPlaylist
-}
+        val path: String,
+        @ColumnInfo(name = "video_id")
+        val videoId: String? = null,
+        @ColumnInfo(name = "segment_from")
+        val segmentFrom: Int? = null,
+        @ColumnInfo(name = "segment_to")
+        val segmentTo: Int? = null) : Parcelable

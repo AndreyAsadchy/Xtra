@@ -6,6 +6,18 @@
         <item>@string/clips</item>
     </string-array>
 
+    <string-array name="themeEntries">
+        <item>@string/dark</item>
+        <item>@string/amoled</item>
+        <item>@string/light</item>
+    </string-array>
+
+    <string-array name="themeValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="portraitColumnCount">
         <item>1</item>
         <item>2</item>

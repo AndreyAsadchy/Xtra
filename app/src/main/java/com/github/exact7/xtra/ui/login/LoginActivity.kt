@@ -24,8 +24,8 @@ import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(if (prefs().getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
+        applyTheme()
         try {
             setContentView(R.layout.activity_login)
         } catch (e: Exception) {

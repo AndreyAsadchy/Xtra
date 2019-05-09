@@ -26,8 +26,8 @@ android {
     defaultConfig {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 16
-        versionCode 34
-        versionName "1.2.6"
+        versionCode 36
+        versionName "1.2.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 28
         javaCompileOptions {
@@ -35,6 +35,9 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+//        ndk {
+//            abiFilters "armeabi-v7a"
+//        }
     }
     buildTypes {
         debug {
@@ -60,7 +63,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main {
+            java.srcDirs += 'src/main/kotlin'
+            jniLibs.srcDir 'src/main/libs'
+        }
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
     dataBinding {
@@ -100,7 +106,6 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.8'
-//    implementation 'com.google.firebase:firebase-ads:17.2.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
@@ -116,13 +121,12 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
-//    implementation "com.google.android.exoplayer:extension-cast:$exoplayer"
+    implementation "com.google.android.exoplayer:extension-cast:$exoplayer"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
-
-
+    
     implementation "com.google.dagger:dagger:$dagger"
     kapt "com.google.dagger:dagger-compiler:$dagger"
     implementation "com.google.dagger:dagger-android:$dagger"
@@ -136,8 +140,8 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide@aar"
 
-    implementation "com.tonyodev.fetch2:fetch2:$fetch"
-    implementation "com.tonyodev.fetch2okhttp:fetch2okhttp:$fetch"
+    implementation "androidx.tonyodev.fetch2:xfetch2:$fetch"
+    implementation "androidx.tonyodev.fetch2okhttp:xfetch2okhttp:$fetch"
 }
 
 repositories {

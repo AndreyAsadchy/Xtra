@@ -26,7 +26,13 @@ data class OfflineVideo(
         @ColumnInfo(name = "upload_date")
         val uploadDate: Long,
         @ColumnInfo(name = "download_date")
-        val downloadDate: Long) : Parcelable {
+        val downloadDate: Long,
+        @ColumnInfo(name = "last_watch_position")
+        var lastWatchPosition: Long,
+        var progress: Int,
+        @ColumnInfo(name = "max_progress")
+        var maxProgress: Int,
+        var status: Int = STATUS_PENDING) : Parcelable {
 
     @IgnoredOnParcel
     @PrimaryKey(autoGenerate = true)
@@ -36,10 +42,9 @@ data class OfflineVideo(
     @ColumnInfo(name = "is_vod")
     var vod = url.endsWith(".m3u8")
 
-    @IgnoredOnParcel
-    var downloaded = false //TODO add progress and updateVideo in interval in ui
-
-    @IgnoredOnParcel
-    @ColumnInfo(name = "last_watch_position")
-    var lastWatchPosition = 0L
+    companion object {
+        const val STATUS_PENDING = 0
+        const val STATUS_DOWNLOADING = 1
+        const val STATUS_DOWNLOADED = 2
+    }
 }

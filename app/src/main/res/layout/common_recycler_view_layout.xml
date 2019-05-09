@@ -28,12 +28,11 @@
                 app:onRefreshListener="@{viewModel::refresh}"
                 app:refreshing="@{safeUnbox(viewModel.loadedInitial) &amp;&amp; viewModel.loadingState == LoadingState.LOADING}">
 
-                    <androidx.recyclerview.widget.RecyclerView
+                    <com.github.exact7.xtra.ui.view.GridRecyclerView
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/fragment_downloads_list_item"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+                        tools:listitem="@layout/fragment_downloads_list_item"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -1,9 +1,12 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreferenceCompat
+    <ListPreference
         android:key="theme"
-        android:title="@string/dark_theme"
+        android:title="@string/theme"
+        android:summary="%s"
+        android:entries="@array/themeEntries"
+        android:entryValues="@array/themeValues"
         app:iconSpaceReserved="false"
         />
 

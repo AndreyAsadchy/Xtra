@@ -29,7 +29,6 @@
     <string name="download">Download</string>
     <string name="downloading">Downloading</string>
     <string name="downloaded">Download complete</string>
-    <string name="download_error">Error downloading video. Please try again</string>
     <string name="uploaded_date">Uploaded %s</string>
     <string name="downloaded_date">Downloaded %s</string>
     <string name="welcome">Welcome</string>
@@ -61,10 +60,11 @@
     <string name="watch_live">Watch Live</string>
     <string name="error_stream">Error when loading stream</string>
     <string name="dark">Dark</string>
+    <string name="amoled" translatable="false">AMOLED</string>
     <string name="light">Light</string>
     <string name="choose_theme">Choose a theme</string>
     <string name="settings">Settings</string>
-    <string name="dark_theme">Dark theme</string>
+    <string name="theme">Theme</string>
     <string name="landscape_chat_width">Landscape chat width</string>
     <string name="percentage_of_screen">% of the screen</string>
     <string name="unknown_error">Unknown error</string>

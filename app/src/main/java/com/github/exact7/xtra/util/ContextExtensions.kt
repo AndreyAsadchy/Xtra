@@ -1,10 +1,13 @@
 package com.github.exact7.xtra.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.util.TypedValue
 import androidx.preference.PreferenceManager
+import com.github.exact7.xtra.R
 
 val Context.isNetworkAvailable get() = getConnectivityManager(this).activeNetworkInfo?.isConnectedOrConnecting == true
 
@@ -25,3 +28,19 @@ fun Context.convertPixelsToDp(pixels: Float) = TypedValue.applyDimension(TypedVa
 
 val Context.displayDensity
     get() = this.resources.displayMetrics.density
+
+fun Activity.applyTheme(): String {
+    val theme = prefs().getString(C.THEME, "0")!!
+    setTheme(when(theme) {
+        "0" -> R.style.DarkTheme
+        "1" -> R.style.AmoledTheme
+        else -> R.style.LightTheme
+    })
+    return theme
+}
+
+val Context.isInPortraitOrientation
+    get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+val Context.isInLandscapeOrientation
+    get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE

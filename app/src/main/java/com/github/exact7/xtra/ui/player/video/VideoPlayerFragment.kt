@@ -61,7 +61,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun showDownloadDialog() {
-        if (DownloadUtils.hasInternalStoragePermission(requireActivity())) {
+        if (DownloadUtils.hasStoragePermission(requireActivity())) {
             VideoDownloadDialog.newInstance(viewModel.videoInfo).show(childFragmentManager, null)
         }
     }

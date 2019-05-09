@@ -6,4 +6,8 @@
     <style name="LightTheme" parent="BaseLightTheme">
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
+
+    <style name="AmoledTheme" parent="BaseAmoledTheme" >
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
 </resources>

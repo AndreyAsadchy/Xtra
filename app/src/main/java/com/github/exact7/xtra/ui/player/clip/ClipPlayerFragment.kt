@@ -65,7 +65,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     }
 
     override fun showDownloadDialog() {
-        if (DownloadUtils.hasInternalStoragePermission(requireActivity())) {
+        if (DownloadUtils.hasStoragePermission(requireActivity())) {
             ClipDownloadDialog.newInstance(viewModel.clip.value!!, viewModel.qualities).show(childFragmentManager, null)
         }
     }

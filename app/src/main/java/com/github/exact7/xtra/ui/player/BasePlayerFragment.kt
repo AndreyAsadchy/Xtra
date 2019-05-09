@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.player
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -31,6 +30,7 @@ import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.isInPortraitOrientation
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -50,8 +50,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
 
-    protected var isPortrait: Boolean = false
-        private set
+    private var isPortrait: Boolean = false
     protected var isInPictureInPictureMode = false
         private set
     protected var wasInPictureInPictureMode = false
@@ -77,25 +76,33 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         prefs = requireContext().prefs()
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            systemUiFlags = systemUiFlags.or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            systemUiFlags = systemUiFlags or (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
-        isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val activity = requireActivity() as MainActivity
+        isPortrait = activity.isInPortraitOrientation
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
         view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
         if (isPortrait) {
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            showStatusBar()
         } else {
+            activity.window.decorView.setOnSystemUiVisibilityChangeListener {
+                if (slidingLayout.isMaximized) {
+                    hideStatusBar()
+                }
+            }
             slidingLayout.post {
                 if (slidingLayout.isMaximized) {
                     hideStatusBar()
+                } else {
+                    showStatusBar()
                 }
             }
             view.findViewById<ImageButton>(R.id.fullscreenExit).setOnClickListener {
@@ -262,7 +269,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     private fun hideStatusBar() {
-        requireActivity().window.decorView.systemUiVisibility = systemUiFlags
+        if (isAdded) {
+            requireActivity().window.decorView.systemUiVisibility = systemUiFlags
+        }
     }
 
     override fun onMinimize() {

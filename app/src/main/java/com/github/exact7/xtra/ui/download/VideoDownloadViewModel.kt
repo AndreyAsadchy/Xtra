@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
-import com.github.exact7.xtra.model.offline.VideoRequest
+import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.util.DownloadUtils
@@ -97,12 +97,17 @@ class VideoDownloadViewModel @Inject constructor(
         GlobalScope.launch {
             with(_videoInfo.value!!) {
                 val context = getApplication<Application>()
+
                 val startPosition = relativeStartTimes[fromIndex]
                 val duration = (relativeStartTimes[toIndex] + durations[toIndex] - startPosition) - 1000L
                 val directory = "$path${File.separator}${video.id}${if (!quality.contains("Audio", true)) quality else "audio"}${File.separator}"
-                val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition)
-                val videoId = offlineRepository.saveVideo(offlineVideo)
-                DownloadUtils.download(context, VideoRequest(videoId.toInt(), video.id, url, directory, fromIndex, toIndex), wifiOnly)
+
+                val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition, fromIndex, toIndex)
+                val videoId = offlineRepository.saveVideoAsync(offlineVideo).await().toInt()
+                val request = Request(videoId, url, directory, video.id, fromIndex, toIndex)
+                offlineRepository.saveRequest(request)
+
+                DownloadUtils.download(context, request, wifiOnly)
             }
         }
     }

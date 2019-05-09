@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.pagers
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
+import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_channel.*
@@ -46,7 +46,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
         setAdapter(ChannelPagerAdapter(activity, childFragmentManager, requireArguments()))
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (activity.isInLandscapeOrientation) {
             appBar.setExpanded(false, false)
         }
         collapsingToolbar.title = channel.displayName

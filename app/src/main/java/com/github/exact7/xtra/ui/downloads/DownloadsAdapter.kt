@@ -47,11 +47,11 @@ class DownloadsAdapter(
             dialog.show()
             true
         }
-        binding.downloading.setOnClickListener { dialog.show() }
-        binding.downloading.setOnLongClickListener {
-            dialog.show()
-            true
-        }
+//        binding.downloading.setOnClickListener { dialog.show() }
+//        binding.downloading.setOnLongClickListener {
+//            dialog.show()
+//            true
+//        }
         binding.options.setOnClickListener {
             PopupMenu(context, binding.options).apply {
                 inflate(R.menu.offline_item)

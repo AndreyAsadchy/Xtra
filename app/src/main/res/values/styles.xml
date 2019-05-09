@@ -36,6 +36,25 @@
         <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
 
+    <style name="BaseAmoledTheme" parent="Theme.AppCompat.NoActionBar" >
+        <item name="colorAccent">@android:color/white</item>
+        <item name="primaryColor">@android:color/black</item>
+        <item name="textColor">@android:color/white</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:windowBackground">?attr/primaryColor</item>
+        <item name="android:colorBackground">?attr/primaryColor</item>
+        <item name="navBarStyle">@style/NavBarAmoled</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetAmoled</item>
+        <item name="dividerColor">@color/secondaryDark</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColorDark</item>
+        <item name="secondaryTextColor">@color/secondaryTextColorDark</item>
+        <item name="colorButtonNormal">@color/secondaryAmoled</item>
+        <item name="android:dialogTheme">@style/DialogAmoled</item>
+        <item name="alertDialogTheme">@style/DialogAmoled</item>
+        <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+    </style>
+
+    <style name="AmoledTheme" parent="BaseAmoledTheme" />
     <style name="DarkTheme" parent="BaseDarkTheme" />
     <style name="LightTheme" parent="BaseLightTheme" />
 
@@ -68,17 +87,31 @@
         <item name="itemTextColor">@color/nav_bar_light</item>
     </style>
 
-    <!-- TODO remove margin from game videos sort dialog -->
+    <style name="NavBarAmoled">
+        <item name="android:background">@android:color/black</item>
+        <item name="itemIconTint">@color/nav_bar_dark</item>
+        <item name="itemTextColor">@color/nav_bar_dark</item>
+    </style>
+
     <style name="BottomSheetDark" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="android:colorBackground">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorButtonNormal">@color/secondaryDark</item>
+        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
 
     <style name="BottomSheetLight" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="android:colorBackground">@color/primaryLight</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorButtonNormal">@color/secondaryLight</item>
+        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+    </style>
+
+    <style name="BottomSheetAmoled" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="colorButtonNormal">@color/secondaryAmoled</item>
+        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
     </style>
 
     <style name="DialogDark" parent="Theme.MaterialComponents.Dialog">
@@ -93,8 +126,14 @@
         <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
     </style>
 
+    <style name="DialogAmoled" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:background">@android:color/black</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
+    </style>
+
     <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/accent</item>
+        <item name="android:textColor">?attr/textColor</item>
     </style>
     
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">

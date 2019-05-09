@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.exact7.xtra.databinding.FragmentGamesBinding
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
@@ -35,9 +33,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val activity = requireActivity() as MainActivity
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-        recyclerView.adapter = GamesAdapter(activity).also { adapter = it }
+        recyclerView.adapter = GamesAdapter(requireActivity() as MainActivity).also { adapter = it }
     }
 
     override fun initialize() {

@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +14,9 @@ import androidx.preference.SwitchPreferenceCompat
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
+import com.github.exact7.xtra.util.applyTheme
+import com.github.exact7.xtra.util.isInLandscapeOrientation
+import com.github.exact7.xtra.util.isInPortraitOrientation
 import com.github.exact7.xtra.util.prefs
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -22,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(if (prefs().getBoolean(C.THEME, true)) R.style.DarkTheme else R.style.LightTheme)
+        applyTheme()
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
@@ -37,9 +39,9 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             val activity = requireActivity()
-            findPreference<SwitchPreferenceCompat>("theme").setOnPreferenceChangeListener { _, newValue ->
+            findPreference<ListPreference>(C.THEME).setOnPreferenceChangeListener { _, _ ->
                 activity.apply {
-                    setTheme(if (newValue == true) R.style.DarkTheme else R.style.LightTheme)
+                    applyTheme()
                     recreate()
                 }
                 true
@@ -51,14 +53,14 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
             findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
-                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT))
+                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.isInPortraitOrientation))
                 true
             }
             findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
-                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE))
+                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.isInLandscapeOrientation))
                 true
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                 findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE).isVisible = true
             }
         }

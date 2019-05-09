@@ -8,6 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.exact7.xtra.db.AppDatabase
 import com.github.exact7.xtra.db.EmotesDao
+import com.github.exact7.xtra.db.RequestsDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.util.TwitchApiHelper
@@ -81,6 +82,38 @@ class DatabaseModule {
                                     database.execSQL("DROP TABLE videos")
                                     database.execSQL("ALTER TABLE videos1 RENAME TO videos")
                                 }
+                            },
+                            object : Migration(4, 5) {
+                                override fun migrate(database: SupportSQLiteDatabase) {
+                                    database.execSQL("CREATE TABLE IF NOT EXISTS requests (offline_video_id INTEGER NOT NULL, url TEXT NOT NULL, path TEXT NOT NULL, video_id TEXT, segment_from INTEGER, segment_to INTEGER, PRIMARY KEY (offline_video_id), FOREIGN KEY('offline_video_id') REFERENCES videos('id') ON DELETE CASCADE)")
+
+                                    database.execSQL("CREATE TABLE videos1 (id INTEGER NOT NULL, url TEXT NOT NULL, source_url TEXT NOT NULL, source_start_position INTEGER, name TEXT NOT NULL, channel_name TEXT NOT NULL, channel_logo TEXT NOT NULL, thumbnail TEXT NOT NULL, game TEXT NOT NULL, duration INTEGER NOT NULL, upload_date INTEGER NOT NULL, download_date INTEGER NOT NULL, is_vod INTEGER NOT NULL, last_watch_position INTEGER NOT NULL, progress INTEGER NOT NULL, max_progress INTEGER NOT NULL, status INTEGER NOT NULL, PRIMARY KEY (id))")
+                                    val cursor = database.query("SELECT * FROM videos")
+                                    while (cursor.moveToNext()) {
+                                        val values = ContentValues().apply {
+                                            put("id", cursor.getInt(0))
+                                            put("url", cursor.getString(4))
+                                            put("source_url", cursor.getString(5))
+                                            put("source_start_position", cursor.getLong(6))
+                                            put("name", cursor.getString(7))
+                                            put("channel_name", cursor.getString(8))
+                                            put("channel_logo", cursor.getString(9))
+                                            put("thumbnail", cursor.getString(10))
+                                            put("game", cursor.getString(11))
+                                            put("duration", cursor.getLong(12))
+                                            put("upload_date", cursor.getLong(13))
+                                            put("download_date", cursor.getLong(14))
+                                            put("last_watch_position", cursor.getLong(3))
+                                            put("progress", 0)
+                                            put("max_progress", 0)
+                                            put("status", 2)
+                                            put("is_vod", cursor.getInt(1))
+                                        }
+                                        database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
+                                    }
+                                    database.execSQL("DROP TABLE videos")
+                                    database.execSQL("ALTER TABLE videos1 RENAME TO videos")
+                                }
                             }
                     )
                     .build()
@@ -88,7 +121,7 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun providesRepository(videosDao: VideosDao): OfflineRepository = OfflineRepository(videosDao)
+    fun providesRepository(videosDao: VideosDao, requestsDao: RequestsDao): OfflineRepository = OfflineRepository(videosDao, requestsDao)
 
     @Singleton
     @Provides
@@ -97,4 +130,8 @@ class DatabaseModule {
     @Singleton
     @Provides
     fun providesEmotesDao(database: AppDatabase): EmotesDao = database.emotes()
+
+    @Singleton
+    @Provides
+    fun providesRequestsDao(database: AppDatabase): RequestsDao = database.requests()
 }

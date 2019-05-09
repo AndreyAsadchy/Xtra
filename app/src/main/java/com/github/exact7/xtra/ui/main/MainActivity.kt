@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.main
 
+import android.app.PictureInPictureParams
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -55,6 +56,7 @@ import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.github.exact7.xtra.util.prefs
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
     private val isSearchOpened
         get() = fragNavController.currentFrag is SearchFragment
-    var isDarkTheme = true
+    var currentTheme = "0"
         private set
     private lateinit var prefs: SharedPreferences
 
@@ -98,17 +100,17 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onCreate(savedInstanceState)
         prefs = prefs()
         if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
-            setTheme(if (prefs.getBoolean(C.THEME, true).also { isDarkTheme = it }) R.style.DarkTheme else R.style.LightTheme)
+            currentTheme = applyTheme()
         } else {
             prefs.edit {
                 putBoolean(C.FIRST_LAUNCH, false)
                 putLong("firstLaunchDate", System.currentTimeMillis())
             }
             AlertDialog.Builder(this)
-                    .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.light)), 0) { _, which -> isDarkTheme = which == 0 }
+                    .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.amoled), getString(R.string.light)), 0) { _, which -> currentTheme = which.toString() }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        prefs.edit { putBoolean(C.THEME, isDarkTheme) }
-                        if (!isDarkTheme) {
+                        prefs.edit { putString(C.THEME, currentTheme) }
+                        if (currentTheme != "0") {
                             recreate()
                         }
                     }
@@ -173,6 +175,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         if (savedInstanceState == null) {
+//            ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
+//                override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
+//                    GoogleApiAvailability.getInstance().apply {
+//                        if (isUserResolvableError(errorCode)) {
+//                             Prompt the user to install/update/enable Google Play services.
+//                            showErrorDialogFragment(this@MainActivity, errorCode, 0)
+//                        } else {
+//                            Toast.makeText(this@MainActivity, getString(R.string.play_services_not_available), Toast.LENGTH_LONG).show()
+//                        }
+//                    }
+//                }
+//                override fun onProviderInstalled() {}
+//            })
             handleIntent(intent)
         }
         restorePlayerFragment()
@@ -271,9 +286,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && viewModel.isPlayerMaximized) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
             try {
-                enterPictureInPictureMode()
+                enterPictureInPictureMode(PictureInPictureParams.Builder().build())
             } catch (e: IllegalStateException) {
                 //device doesn't support PIP
             }
@@ -290,7 +305,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (!isInPictureInPictureMode) {
                 if (!viewModel.wasInPictureInPicture) {
                     recreate()

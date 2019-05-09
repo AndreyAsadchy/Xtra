@@ -17,6 +17,8 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.applyTheme
+import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.prefs
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_menu.*
@@ -44,16 +46,15 @@ class MenuFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val activity = requireActivity() as MainActivity
-        val darkTheme = activity.prefs().getBoolean(C.THEME, true)
-        if (activity.isDarkTheme != darkTheme) {
+        if (activity.currentTheme != activity.prefs().getString(C.THEME, "0")) {
             activity.apply {
-                setTheme(if (darkTheme) R.style.DarkTheme else R.style.LightTheme)
+                applyTheme()
                 recreate()
             }
         }
         data?.let {
             it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
-                if (value > -1 && activity.resources.configuration.orientation == 2) {
+                if (value > -1 && activity.isInLandscapeOrientation) {
                     activity.playerContainer?.findViewById<ChatView>(R.id.chatView)?.updateLayoutParams { width = value }
                 }
             }

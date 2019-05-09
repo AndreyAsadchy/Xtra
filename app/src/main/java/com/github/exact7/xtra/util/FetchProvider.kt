@@ -10,12 +10,12 @@ class FetchProvider @Inject constructor(
 
     private var instance: Fetch? = null
 
-    fun get(wifiOnly: Boolean): Fetch {
+    fun get(videoId: Int? = null, wifiOnly: Boolean = false): Fetch {
         if (instance == null || instance!!.isClosed) {
             instance = Fetch.getInstance(
                     configurationBuilder
                             .setGlobalNetworkType(if (wifiOnly) NetworkType.WIFI_ONLY else NetworkType.ALL)
-                            .setNamespace("Fetch #${System.currentTimeMillis()}")
+                            .setNamespace("Fetch #$videoId")
                             .build())
         }
         return instance!!

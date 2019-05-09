@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.model.offline.ClipRequest
+import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.util.DownloadUtils
@@ -50,11 +50,16 @@ class ClipDownloadViewModel @Inject constructor(
     fun download(url: String, path: String, quality: String) {
         GlobalScope.launch {
             val context = getApplication<Application>()
+
             val filePath = "$path${File.separator}${clip.slug}$quality"
             val startPosition =  clip.vod?.let { TwitchApiHelper.parseClipOffset(it.url) }?.toLong()
+
             val offlineVideo = DownloadUtils.prepareDownload(context, clip, url, filePath, clip.duration.toLong(), startPosition)
-            val videoId = offlineRepository.saveVideo(offlineVideo)
-            DownloadUtils.download(context, ClipRequest(videoId.toInt(), url, offlineVideo.url))
+            val videoId = offlineRepository.saveVideoAsync(offlineVideo).await().toInt()
+            val request = Request(videoId, url, offlineVideo.url)
+            offlineRepository.saveRequest(request)
+
+            DownloadUtils.download(context, request)
         }
     }
 

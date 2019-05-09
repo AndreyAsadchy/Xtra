@@ -30,7 +30,6 @@
     <string name="download">Скачать</string>
     <string name="downloading">Загрузка</string>
     <string name="downloaded">Загрузка завершена</string>
-    <string name="download_error">Ошибка при скачивании видео. Пожалуйста, повторите попытку</string>
     <string name="uploaded_date">Загружено %s</string>
     <string name="downloaded_date">Скачано %s</string>
     <string name="welcome">Добро пожаловать</string>
@@ -64,7 +63,7 @@
     <string name="light">Светлая</string>
     <string name="choose_theme">Выберите тeму</string>
     <string name="settings">Настройки</string>
-    <string name="dark_theme">Темная тема</string>
+    <string name="theme">Тема</string>
     <string name="landscape_chat_width">Ширина чата в полноэкранном режиме</string>
     <string name="percentage_of_screen">% от ширины экрана</string>
     <string name="unknown_error">Неизвестная ошибка</string>

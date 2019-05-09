@@ -23,9 +23,6 @@ interface VideosDao {
     @Delete
     fun delete(video: OfflineVideo)
 
-    @Query("SELECT * FROM videos WHERE downloaded = 0")
-    fun getUnfinishedVideos(): List<OfflineVideo>
-
     @Update
     fun update(video: OfflineVideo)
 }
