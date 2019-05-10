@@ -9,7 +9,7 @@ import dagger.android.AndroidInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, XtraModule::class, ActivityBuilderModule::class, DatabaseModule::class, ServiceBuilderModule::class, BroadcastReceiverBuilderModule::class])
+@Component(modules = [AndroidInjectionModule::class, XtraModule::class, ActivityBuilderModule::class, DatabaseModule::class, ServiceBuilderModule::class])
 interface XtraComponent {
 
     @Component.Builder

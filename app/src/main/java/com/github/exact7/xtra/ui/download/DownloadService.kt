@@ -6,10 +6,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.crashlytics.android.Crashlytics
@@ -35,6 +38,7 @@ import com.tonyodev.fetch2.Fetch
 import com.tonyodev.fetch2.Request
 import dagger.android.AndroidInjection
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,11 +55,17 @@ class DownloadService : IntentService(TAG), Injectable {
 
     companion object {
         private const val TAG = "DownloadService"
+        private const val NOTIFICATION_TAG = "NotifActionReceiver"
+
         private const val ENQUEUE_SIZE = 15
 
         const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
         const val KEY_REQUEST = "request"
         const val KEY_WIFI = "wifi"
+
+        const val ACTION_CANCEL = "com.github.exact7.xtra.ACTION_DOWNLOAD_CANCEL"
+        const val ACTION_PAUSE = "com.github.exact7.xtra.ACTION_DOWNLOAD_PAUSE"
+        const val ACTION_RESUME = "com.github.exact7.xtra.ACTION_DOWNLOAD_RESUME"
 
         val activeRequests = HashSet<Int>()
     }
@@ -71,6 +81,10 @@ class DownloadService : IntentService(TAG), Injectable {
 
     private lateinit var playlist: MediaPlaylist
 
+    private val notificationActionReceiver = NotificationActionReceiver()
+    private lateinit var pauseAction: NotificationCompat.Action
+    private lateinit var resumeAction: NotificationCompat.Action
+
     init {
         setIntentRedelivery(true)
     }
@@ -78,13 +92,20 @@ class DownloadService : IntentService(TAG), Injectable {
     override fun onCreate() {
         AndroidInjection.inject(this)
         super.onCreate()
+        pauseAction = createAction(R.string.pause, ACTION_PAUSE, 1)
+        resumeAction = createAction(R.string.resume, ACTION_RESUME, 2)
+        registerReceiver(notificationActionReceiver, IntentFilter().apply {
+            addAction(ACTION_CANCEL)
+            addAction(ACTION_PAUSE)
+            addAction(ACTION_RESUME)
+        })
     }
 
     @SuppressLint("CheckResult")
     override fun onHandleIntent(intent: Intent?) {
-        Log.d(TAG, "Starting download")
         request = intent!!.getParcelableExtra(KEY_REQUEST)
         offlineVideo = runBlocking { offlineRepository.getVideoByIdAsync(request.offlineVideoId).await() } ?: return //Download was canceled
+        Log.d(TAG, "Starting download. Id: ${offlineVideo.id}")
         fetch = fetchProvider.get(offlineVideo.id, intent.getBooleanExtra(KEY_WIFI, false))
         val countDownLatch = CountDownLatch(1)
         val channelId = getString(R.string.notification_channel_id)
@@ -100,8 +121,8 @@ class DownloadService : IntentService(TAG), Injectable {
                 putExtra("code", 0)
             }
             setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-            val cancelIntent = Intent(this@DownloadService, NotificationActionReceiver::class.java).putExtra(NotificationActionReceiver.KEY_VIDEO_ID, offlineVideo.id)
-            addAction(NotificationCompat.Action(0, getString(android.R.string.cancel), PendingIntent.getBroadcast(this@DownloadService, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)))
+            addAction(createAction(android.R.string.cancel, ACTION_CANCEL, 0))
+            addAction(pauseAction)
         }
 
         notificationManager = NotificationManagerCompat.from(this)
@@ -113,7 +134,6 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
             }
         }
-        println("INIT ${offlineVideo.progress}")
         updateProgress(offlineVideo.maxProgress, offlineVideo.progress)
         if (offlineVideo.vod) {
             fetch.addListener(object : AbstractFetchListener() {
@@ -151,6 +171,8 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
             })
             playerRepository.loadVideoPlaylist(request.videoId!!)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
                     .map { response ->
                         val playlist = response.body()!!.string()
                         URL("https://.*\\.m3u8".toRegex().find(playlist)!!.value).openStream().use {
@@ -169,6 +191,7 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
 
                 override fun onProgress(download: Download, etaInMilliSeconds: Long, downloadedBytesPerSecond: Long) {
+                    offlineVideo.progress = download.progress
                     updateProgress(100, download.progress)
                 }
 
@@ -185,6 +208,11 @@ class DownloadService : IntentService(TAG), Injectable {
         countDownLatch.await()
         activeRequests.remove(request.offlineVideoId)
         fetch.close()
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(notificationActionReceiver)
+        super.onDestroy()
     }
 
     private fun enqueueNext() {
@@ -259,7 +287,7 @@ class DownloadService : IntentService(TAG), Injectable {
         } else {
             Log.d(TAG, "Downloaded clip")
         }
-        offlineRepository.updateVideo(offlineVideo.apply { status = OfflineVideo.STATUS_DOWNLOADED})
+        offlineRepository.updateVideo(offlineVideo.apply { status = OfflineVideo.STATUS_DOWNLOADED })
         offlineRepository.deleteRequest(request)
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -282,12 +310,45 @@ class DownloadService : IntentService(TAG), Injectable {
 
     private fun updateProgress(maxProgress: Int, progress: Int) {
         notificationManager.notify(offlineVideo.id, notificationBuilder.setProgress(maxProgress, progress, false).build())
-        println("${offlineVideo.progress} $progress")
-        if (offlineVideo.progress != progress) {
-            offlineVideo.progress = progress
-            println("PROGRESS $progress")
-            offlineRepository.updateVideo(offlineVideo)
-            runBlocking { offlineRepository.getVideoByIdAsync(offlineVideo.id).await() }
+        offlineRepository.updateVideo(offlineVideo)
+    }
+
+    private fun createAction(@StringRes title: Int, action: String, requestCode: Int) = NotificationCompat.Action(0, getString(title), PendingIntent.getBroadcast(this, requestCode, Intent(action), PendingIntent.FLAG_UPDATE_CURRENT))
+
+    inner class NotificationActionReceiver : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                ACTION_CANCEL -> {
+                    Log.d(NOTIFICATION_TAG, "Canceled download. Id: ${offlineVideo.id}")
+                    GlobalScope.launch {
+                        try {
+                            activeRequests.remove(offlineVideo.id)
+                            fetch.deleteAll()
+                        } catch (e: Exception) {
+                            Crashlytics.logException(e)
+                        }
+                    }
+                }
+                ACTION_PAUSE -> {
+                    Log.d(NOTIFICATION_TAG, "Paused download. Id: ${offlineVideo.id}")
+                    notificationManager.notify(offlineVideo.id, notificationBuilder.run {
+                        mActions.removeAt(1)
+                        mActions.add(resumeAction)
+                        build()
+                    })
+                    fetch.pauseGroup(offlineVideo.id)
+                }
+                ACTION_RESUME -> {
+                    Log.d(NOTIFICATION_TAG, "Resumed download. Id: ${offlineVideo.id}")
+                    notificationManager.notify(offlineVideo.id, notificationBuilder.run {
+                        mActions.removeAt(1)
+                        mActions.add(pauseAction)
+                        build()
+                    })
+                    fetch.resumeGroup(offlineVideo.id)
+                }
+            }
         }
     }
 }

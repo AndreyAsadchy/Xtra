@@ -107,4 +107,8 @@
     <string name="viewers">%s viewers</string>
     <string name="views">%s views</string>
     <string name="play_services_not_available">Google Play Services are not available. Some functions may not work correctly</string>
+    <string name="download_pending">Pending</string>
+    <string name="downloading_progress">Downloading: %d%%</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
 </resources>

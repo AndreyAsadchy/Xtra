@@ -1,9 +1,13 @@
 package com.github.exact7.xtra.ui.view
 
+
+
+
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -18,40 +22,51 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isClick
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
-
-
 const val BOTTOM_MARGIN = 75f //before scaling
+
 const val ANIMATION_DURATION = 250L
 
 class SlidingLayout : LinearLayout {
 
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
-
     private lateinit var dragView: PlayerView
     private var secondView: View? = null
-    private var timeBar: DefaultTimeBar? = null
 
+    private var timeBar: DefaultTimeBar? = null
     private var topBound = 0
     private var bottomBound = 0
     private var minimizeThreshold = 0
-    private var bottomMargin = 0f
 
+    private var bottomMargin = 0f
     private var dragViewTop = 0
     private var dragViewLeft = 0
     private var minScaleX = 0f
+
     private var minScaleY = 0f
 
     private var downTouchLocation = FloatArray(2)
-
     private val isPortrait: Boolean
         get() = orientation == 1
     var isMaximized = true
         private set
     private var isAnimating = false
     private var shouldUpdateDragLayout = false
-    private var maximizedSecondViewVisibility: Int? = null
 
+    val isKeyboardShown: Boolean
+        get() {
+            val rect = Rect()
+            getWindowVisibleDisplayFrame(rect)
+            val screenHeight = rootView.height
+
+            // rect.bottom is the position above soft keypad or device button.
+            // if keypad is shown, the r.bottom is smaller than that before.
+            val keypadHeight = screenHeight - rect.bottom
+            return keypadHeight > screenHeight * 0.15
+        }
+
+    private var maximizedSecondViewVisibility: Int? = null
     private var listeners = mutableSetOf<Listener>()
+
     private val animatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
@@ -65,9 +80,9 @@ class SlidingLayout : LinearLayout {
             secondView?.postInvalidate()
         }
     }
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
@@ -92,10 +107,21 @@ class SlidingLayout : LinearLayout {
             }
             bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
             pivotX = width * 0.95f
-            pivotY = if (isPortrait) {
-                height * 2 - dragView.height - bottomMargin
+
+            fun calculatePivotY(): Float {
+                return if (isPortrait) {
+                    height * 2 - dragView.height - bottomMargin
+                } else {
+                    height - bottomMargin
+                }
+            }
+
+            if (!isMaximized || !isKeyboardShown) {
+                pivotY = calculatePivotY()
             } else {
-                height - bottomMargin
+                postDelayed({
+                    pivotY = calculatePivotY()
+                }, 500L)
             }
             if (!isMaximized) {
                 scaleX = minScaleX

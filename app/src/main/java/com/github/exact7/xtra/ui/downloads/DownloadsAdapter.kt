@@ -12,6 +12,8 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.databinding.FragmentDownloadsListItemBinding
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.common.DataBoundViewHolder
+import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.visible
 
 class DownloadsAdapter(
         private val clickCallback: DownloadsFragment.OnVideoSelectedListener,
@@ -42,16 +44,30 @@ class DownloadsAdapter(
                 .setPositiveButton(delete) { _, _ -> deleteCallback.invoke(item) }
                 .setNegativeButton(context.getString(android.R.string.cancel), null)
         binding.video = item
-        binding.root.setOnClickListener { clickCallback.startOfflineVideo(item) }
-        binding.root.setOnLongClickListener {
-            dialog.show()
-            true
+        binding.root.apply {
+            setOnClickListener { clickCallback.startOfflineVideo(item) }
+            setOnLongClickListener {
+                dialog.show()
+                true
+            }
         }
-//        binding.downloading.setOnClickListener { dialog.show() }
-//        binding.downloading.setOnLongClickListener {
-//            dialog.show()
-//            true
-//        }
+        if (item.status == OfflineVideo.STATUS_DOWNLOADED) {
+            binding.status.gone()
+        } else {
+            binding.status.apply {
+                text = if (item.status == OfflineVideo.STATUS_DOWNLOADING) {
+                    context.getString(R.string.downloading_progress, ((item.progress.toFloat() / item.maxProgress) * 100f).toInt())
+                } else {
+                    context.getString(R.string.download_pending)
+                }
+                visible()
+                setOnClickListener { dialog.show() }
+                setOnLongClickListener {
+                    dialog.show()
+                    true
+                }
+            }
+        }
         binding.options.setOnClickListener {
             PopupMenu(context, binding.options).apply {
                 inflate(R.menu.offline_item)

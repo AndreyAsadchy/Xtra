@@ -55,6 +55,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         private set
     protected var wasInPictureInPictureMode = false
     private var shouldRecreate = false
+    private var isKeyboardShown = false
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
@@ -94,7 +95,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             showStatusBar()
         } else {
             activity.window.decorView.setOnSystemUiVisibilityChangeListener {
-                if (slidingLayout.isMaximized) {
+                if (!isKeyboardShown && slidingLayout.isMaximized) {
                     hideStatusBar()
                 }
             }
@@ -183,6 +184,24 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
             }
         }
+        slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            if (slidingLayout.isKeyboardShown) {
+                if (!isKeyboardShown) {
+                    isKeyboardShown = true
+                    if (!isPortrait) {
+                        showStatusBar()
+                    }
+                }
+            } else {
+                if (isKeyboardShown) {
+                    isKeyboardShown = false
+                    chatView.clearFocus()
+                    if (!isPortrait && slidingLayout.isMaximized) {
+                        hideStatusBar()
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -191,6 +210,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
         if (shouldRecreate) {
             shouldRecreate = false
             requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (requireActivity().isChangingConfigurations) {
+            chatView.clearFocus()
         }
     }
 
