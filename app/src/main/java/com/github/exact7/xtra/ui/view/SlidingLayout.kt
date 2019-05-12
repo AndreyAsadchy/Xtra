@@ -163,7 +163,7 @@ class SlidingLayout : LinearLayout {
         val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
         val isClick = event.isClick(downTouchLocation)
         if (timeBar?.isPressed == true) {
-            timeBar?.dispatchTouchEvent(event)
+            dragView.dispatchTouchEvent(event)
             return true
         }
         viewDragHelper.processTouchEvent(event)

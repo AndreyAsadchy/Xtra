@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -61,6 +62,11 @@ fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean 
     } catch (e: IllegalArgumentException) {
         Crashlytics.logException(e)
     }
+}
+
+fun EditText.showKeyboard() {
+    this.requestFocus()
+    (this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
 }
 
 fun View.hideKeyboard() {

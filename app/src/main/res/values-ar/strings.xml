@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">إكسترا</string>
     <string name="nav_bar_games">الألعاب</string>
     <string name="nav_bar_popular">الأكثر شعبية</string>
     <string name="nav_bar_following">المتابعين</string>
@@ -90,7 +89,7 @@
     <string name="forward">التقديم السريع</string>
     <string name="seconds">%s ثواني</string>
     <string name="unfollow">إلغاء المتابعة %s?</string>
-    <string name="now_following">أنت الآن تتابع%s</string>
+    <string name="now_following">أنت الآن تتابع %s</string>
     <string name="unfollowed">إلغاء متابعة %s</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
@@ -102,7 +101,7 @@
     <string name="continue_playback">متابعة التشغيل خارج التطبيق(في الخلفية)</string>
     <string name="source_vod_start">البداية:</string>
     <string name="source_vod_end">النهاية:</string>
-    <string name="stream_ended">إنتهى البث المباشر </string>
+    <string name="stream_ended">إنتهى البث المباشر</string>
     <string name="webview_error">خطأ في تحميل متصفح الويب. ربما يتم تحديثه الآن. يرجى المحاولة مرة أُخرى بعد بضع دقائق</string>
     <string name="viewers">%s المشاهدين</string>
     <string name="views">%s مشاهد</string>

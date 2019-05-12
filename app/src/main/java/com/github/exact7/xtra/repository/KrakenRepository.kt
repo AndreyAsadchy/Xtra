@@ -148,9 +148,10 @@ class KrakenRepository @Inject constructor(
 
     override fun loadUserByLogin(login: String): Single<User> {
         Log.d(TAG, "Loading user by login $login")
-        return api.getUserByLogin(login)
+        return api.getUsersByLogin(login)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map { it.users.first() }
     }
 
     override fun loadUserEmotes(token: String, userId: String, compositeDisposable: CompositeDisposable) {

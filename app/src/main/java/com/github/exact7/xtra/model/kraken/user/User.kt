@@ -1,20 +1,21 @@
 package com.github.exact7.xtra.model.kraken.user
 
 import android.os.Parcelable
+import com.github.exact7.xtra.model.kraken.Channel
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class User(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
     val bio: String,
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("display_name")
-    val displayName: String,
-    val logo: String,
-    val name: String,
+    override val displayName: String,
+    override val logo: String,
+    override val name: String,
     val type: String,
     @SerializedName("updated_at")
-    val updatedAt: String) : Parcelable
+    val updatedAt: String) : Parcelable, Channel

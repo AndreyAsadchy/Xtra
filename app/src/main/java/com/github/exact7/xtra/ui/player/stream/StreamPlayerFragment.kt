@@ -13,8 +13,10 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
+import com.github.exact7.xtra.ui.view.chat.MessageClickedDialog
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.hideKeyboard
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
-class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
+class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, MessageClickedDialog.OnButtonClickListener {
 
     override lateinit var viewModel: StreamPlayerViewModel
     private lateinit var stream: Stream
@@ -82,6 +84,19 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 //            if (index >= viewModel.helper.urls.value!!.lastIndex) {
 //                TODO hide player
 //            }
+    }
+
+    override fun onReplyClicked(userName: String) {
+        chatView.reply(userName)
+    }
+
+    override fun onCopyMessageClicked(message: String) {
+        chatView.setMessage(message)
+    }
+
+    override fun onViewProfileClicked(channel: Channel) {
+        (requireActivity() as MainActivity).viewChannel(channel)
+        minimize()
     }
 
     override fun onMovedToForeground() {

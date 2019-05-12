@@ -36,9 +36,7 @@ import kotlin.collections.set
 const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
 const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
-class ChatAdapter(
-        private val emoteSize: Int,
-        private val badgeSize: Int) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     var messages: MutableList<ChatMessage>? = null
         set(value) {
@@ -54,6 +52,8 @@ class ChatAdapter(
     private val savedColors = HashMap<String, Int>()
     private val emotes = HashMap<String, Emote>()
     private var username: String? = null
+
+    private var messageClickListener: ((CharSequence) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -265,14 +265,19 @@ class ChatAdapter(
         this.username = username
     }
 
+    fun setOnClickListener(listener: (CharSequence) -> Unit) {
+        messageClickListener = listener
+    }
+
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(formattedMessage: SpannableStringBuilder) {
             (itemView as TextView).apply {
                 text = formattedMessage
                 movementMethod = LinkMovementMethod.getInstance()
+                setOnClickListener { messageClickListener?.invoke(text) }
             }
         }
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Xtra</string>
     <string name="nav_bar_games">Игры</string>
     <string name="nav_bar_popular">Популярное</string>
     <string name="nav_bar_following">Подписки</string>

@@ -22,6 +22,7 @@ import com.github.exact7.xtra.ui.videos.channel.ChannelVideosViewModel
 import com.github.exact7.xtra.ui.videos.followed.FollowedVideosViewModel
 import com.github.exact7.xtra.ui.videos.game.GameVideosViewModel
 import com.github.exact7.xtra.ui.videos.top.TopVideosViewModel
+import com.github.exact7.xtra.ui.view.chat.MessageClickedViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -126,4 +127,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChannelPagerViewModel::class)
     abstract fun bindChannelPagerViewModel(channelPagerViewModel: ChannelPagerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MessageClickedViewModel::class)
+    abstract fun bindMessageClickedViewModel(messageClickedViewModel: MessageClickedViewModel): ViewModel
 }

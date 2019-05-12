@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.view.chat
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +20,13 @@ import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
 import com.github.exact7.xtra.util.isGone
 import com.github.exact7.xtra.util.isVisible
+import com.github.exact7.xtra.util.showKeyboard
 import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.view_chat.view.*
@@ -112,7 +116,8 @@ class ChatView : LinearLayout {
             editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
         }
         send.setOnClickListener { sendMessage() }
-        initEmotesViewPager()
+
+        initPlayerFragment()
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -162,6 +167,20 @@ class ChatView : LinearLayout {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    fun reply(userName: CharSequence) {
+        val text = "@$userName "
+        editText.apply {
+            setText(text)
+            setSelection(text.length)
+            showKeyboard()
+        }
+    }
+
+    fun setMessage(text: CharSequence) {
+        editText.setText(text)
+    }
+
     private fun sendMessage(): Boolean {
         editText.hideKeyboard()
         editText.clearFocus()
@@ -178,14 +197,25 @@ class ChatView : LinearLayout {
         } == true
     }
 
-    private fun initEmotesViewPager() {
+    private fun initPlayerFragment() {
         val playerFragment = (context as MainActivity).playerFragment
         if (playerFragment == null) {
             Crashlytics.log("ChatView.initEmotesViewPager: playerFragment is null")
-            postDelayed(this::initEmotesViewPager, 500L)
+            postDelayed(this::initPlayerFragment, 500L)
             return
         } else if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
-        viewPager.adapter = object : FragmentPagerAdapter(playerFragment.childFragmentManager) {
+        val fragmentManager = playerFragment.childFragmentManager
+        if (playerFragment is StreamPlayerFragment) {
+            adapter.setOnClickListener {
+                editText.hideKeyboard()
+                MessageClickedDialog.newInstance(it).show(fragmentManager, null)
+            }
+        }
+        initEmotesViewPager(fragmentManager)
+    }
+
+    private fun initEmotesViewPager(fragmentManager: FragmentManager) {
+        viewPager.adapter = object : FragmentPagerAdapter(fragmentManager) {
 
             override fun getItem(position: Int): Fragment {
                 val list = when (position) {

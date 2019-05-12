@@ -19,6 +19,7 @@ import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
 import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 import com.github.exact7.xtra.ui.videos.game.GameVideosFragment
 import com.github.exact7.xtra.ui.videos.top.TopVideosFragment
+import com.github.exact7.xtra.ui.view.chat.MessageClickedDialog
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -81,4 +82,7 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFollowValidationFragment(): FollowValidationFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeMessageClickedDialog(): MessageClickedDialog
 }
