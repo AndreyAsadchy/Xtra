@@ -1,89 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/chatRecyclerView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        app:layout_constraintBottom_toTopOf="@+id/messageView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/chat_list_item" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/chat_list_item"/>
-
-        <Button
-            android:id="@+id/btnDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/scroll_down"
-            android:layout_alignBottom="@id/recyclerView"
-            android:visibility="gone"/>
-    </RelativeLayout>
+    <Button
+        android:id="@+id/btnDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/scroll_down"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView" />
 
     <LinearLayout
         android:id="@+id/messageView"
-        android:orientation="horizontal"
-        android:background="?attr/primaryColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:background="?attr/primaryColor"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible">
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:inputType="textCapSentences|textAutoComplete|textNoSuggestions"
-            android:imeOptions="actionSend|flagNoFullscreen" />
+            android:imeOptions="actionSend|flagNoFullscreen"
+            android:inputType="textCapSentences|textAutoComplete|textNoSuggestions" />
 
         <ImageButton
             android:id="@+id/clear"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:background="?android:selectableItemBackground"
             android:src="@drawable/baseline_backspace_black_24"
             android:tint="?attr/textColor"
-            android:background="?android:selectableItemBackground"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <ImageButton
             android:id="@+id/emotes"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_tag_faces_black_24dp"
-            android:tint="?attr/textColor"
-            android:background="?android:selectableItemBackground"/>
+            android:tint="?attr/textColor" />
 
         <ImageButton
             android:id="@+id/send"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_send_black_24dp"
             android:tint="?attr/textColor"
-            android:background="?android:selectableItemBackground"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:visibility="visible"/>
     </LinearLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:visibility="gone">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:tabGravity="fill"
             app:tabMaxWidth="0dp"
-            app:tabMode="fixed"
-            app:tabGravity="fill"/>
+            app:tabMode="fixed" />
 
     </androidx.viewpager.widget.ViewPager>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

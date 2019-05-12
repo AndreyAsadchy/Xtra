@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:title="@string/app_name">
 
         <ImageView
             android:id="@+id/search"
-            style="@style/Search"/>
+            style="@style/Search" />
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/text"
         android:layout_width="300dp"
         android:layout_height="150dp"
+        android:gravity="center_horizontal"
         android:text="@string/follow_tab_login_prompt"
         app:autoSizeMaxTextSize="36sp"
         app:autoSizeMinTextSize="18sp"
-        android:gravity="center_horizontal"
-        android:layout_centerInParent="true"
         app:autoSizeStepGranularity="2sp"
-        app:autoSizeTextType="uniform" />
+        app:autoSizeTextType="uniform"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/login"
@@ -33,6 +40,9 @@
         android:layout_height="50dp"
         android:text="@string/log_in"
         android:textSize="14sp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/text"/>
-</RelativeLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,11 +40,10 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.github.exact7.xtra.ui.view.GridRecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/fragment_search_channels_list_item"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />

@@ -13,6 +13,7 @@ object Utils {
         val typedValue = TypedValue()
         context.theme.resolveAttribute(R.attr.textColor, typedValue, true)
         DrawableCompat.setTint(drawable, typedValue.data)
+        DrawableCompat.setAutoMirrored(drawable, true)
         return drawable
     }
 }

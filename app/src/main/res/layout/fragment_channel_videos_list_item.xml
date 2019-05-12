@@ -17,86 +17,104 @@
         style="@style/Card"
         >
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/thumbnail"
+                style="@style/Thumbnail"
                 app:imageUrl="@{video.preview.large}"
-                tools:src="@tools:sample/backgrounds/scenic"
-                style="@style/Thumbnail"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/date"
-                app:date="@{video.createdAt}"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginBottom="5dp"
-                android:layout_alignEnd="@id/thumbnail"
-                android:layout_alignRight="@id/thumbnail"
+                style="@style/ThumbnailItem"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                tools:text="April 20, 2017"
-                style="@style/ThumbnailItem"/>
+                android:layout_marginBottom="5dp"
+                app:date="@{video.createdAt}"
+                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/thumbnail"
+                app:layout_constraintRight_toRightOf="@id/thumbnail"
+                tools:text="April 20, 2017" />
 
             <TextView
                 android:id="@+id/views"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginBottom="5dp"
+                style="@style/ThumbnailItem"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
-                tools:text="133769 views"
-                style="@style/ThumbnailItem"/>
+                android:layout_marginBottom="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:text="133769 views" />
 
             <TextView
                 android:id="@+id/duration"
-                app:duration="@{video.length}"
-                android:layout_marginTop="10dp"
+                style="@style/VideoDuration"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                tools:text="13:37"
-                style="@style/VideoDuration"
-                />
+                android:layout_marginTop="10dp"
+                app:duration="@{video.length}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="13:37" />
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
+                style="@style/VideoTitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{video.title}"
-                android:layout_below="@id/thumbnail"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="7dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                tools:text="@sample/videos.json/vods/title"
-                style="@style/VideoTitle"/>
+                android:text="@{video.title}"
+                android:gravity="start"
+                android:textAlignment="viewStart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail"
+                tools:text="@sample/videos.json/vods/title" />
 
             <TextView
                 android:id="@+id/gameName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{video.game}"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_below="@id/title"
-                android:layout_marginTop="1dp"
-                android:paddingBottom="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                tools:text="@sample/videos.json/vods/game"
-                />
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="10dp"
+                android:text="@{video.game}"
+                android:textColor="?attr/secondaryTextColor"
+                android:gravity="start"
+                android:textAlignment="viewStart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:text="@sample/videos.json/vods/game" />
 
             <ImageButton
                 android:id="@+id/options"
+                style="?android:attr/actionOverflowButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/thumbnail"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginTop="5dp"
-                style="?android:attr/actionOverflowButtonStyle"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail" />
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

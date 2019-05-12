@@ -12,180 +12,191 @@
     <androidx.cardview.widget.CardView
         style="@style/Card">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/thumbnail"
-                app:imageUrl="@{video.thumbnail}"
-                tools:src="@tools:sample/backgrounds/scenic"
                 style="@style/Thumbnail"
-                />
+                app:imageUrl="@{video.thumbnail}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/date"
-                android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
-                android:layout_alignBottom="@id/thumbnail"
+                style="@style/ThumbnailItem"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp"
-                tools:text="Uploaded: July 16"
-                style="@style/ThumbnailItem"
-                />
+                android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
+                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:text="Uploaded: July 16" />
 
             <TextView
                 android:id="@+id/downloadDate"
-                android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_alignEnd="@id/thumbnail"
-                android:layout_alignRight="@id/thumbnail"
-                tools:text="Downloaded: August 7"
                 style="@style/ThumbnailItem"
-                />
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
+                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/thumbnail"
+                app:layout_constraintRight_toRightOf="@id/thumbnail"
+                tools:text="Downloaded: August 7" />
 
             <TextView
                 android:id="@+id/duration"
-                app:duration="@{video.duration / 1000L}"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                tools:text="13:37"
                 style="@style/VideoDuration"
-                />
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                app:duration="@{video.duration / 1000L}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="13:37" />
 
             <ImageView
                 android:id="@+id/userImage"
-                app:imageUrl="@{video.channelLogo}"
-                app:circle="@{true}"
-                android:layout_below="@id/thumbnail"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="12dp"
-                tools:src="@tools:sample/backgrounds/scenic"
                 style="@style/UserPicture"
-                />
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
+                app:circle="@{true}"
+                app:imageUrl="@{video.channelLogo}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
+                style="@style/VideoTitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{video.name}"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="7dp"
-                android:layout_below="@id/thumbnail"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
-                android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"
-                tools:text="This is the title of the video"
-                style="@style/VideoTitle"
-                />
+                android:text="@{video.name}"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintStart_toEndOf="@id/userImage"
+                app:layout_constraintLeft_toRightOf="@id/userImage"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail"
+                tools:text="This is the title of the video" />
 
             <TextView
                 android:id="@+id/username"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{video.channelName}"
-                android:layout_below="@id/title"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
-                android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"
-                tools:text="summit1g"
-                />
+                android:text="@{video.channelName}"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintLeft_toRightOf="@id/userImage"
+                app:layout_constraintStart_toEndOf="@id/userImage"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:text="summit1g" />
 
             <TextView
                 android:id="@+id/game"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{video.game}"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_below="@id/username"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:paddingBottom="10dp"
-                tools:text="Dota 2"
-                />
+                android:text="@{video.game}"
+                android:textColor="?attr/secondaryTextColor"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintLeft_toRightOf="@id/userImage"
+                app:layout_constraintStart_toEndOf="@id/userImage"
+                app:layout_constraintTop_toBottomOf="@id/username"
+                tools:text="Dota 2" />
 
             <ImageButton
                 android:id="@+id/options"
+                style="?android:attr/actionOverflowButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/thumbnail"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginTop="5dp"
-                style="?android:attr/actionOverflowButtonStyle"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:layout_below="@id/thumbnail"
                 android:max="100"
                 android:scaleY="1.5"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+                android:layoutDirection="ltr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail" />
 
             <TextView
+                style="@style/ThumbnailItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/source_vod_start"
-                android:layout_alignTop="@id/sourceStart"
-                android:layout_toStartOf="@id/sourceStart"
-                android:layout_toLeftOf="@id/sourceStart"
-                android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
-                style="@style/ThumbnailItem"
-                />
+                android:layout_marginRight="5dp"
+                android:text="@string/source_vod_start"
+                app:layout_constraintEnd_toStartOf="@id/sourceStart"
+                app:layout_constraintRight_toLeftOf="@id/sourceStart"
+                app:layout_constraintTop_toTopOf="@id/sourceStart" />
 
             <TextView
                 android:id="@+id/sourceStart"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
-                tools:text="13:37:69"
                 style="@style/ThumbnailItem"
-                />
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="13:37:69" />
 
             <TextView
+                style="@style/ThumbnailItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/source_vod_end"
-                android:layout_alignTop="@id/sourceEnd"
-                android:layout_toStartOf="@id/sourceEnd"
-                android:layout_toLeftOf="@id/sourceEnd"
-                android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
-                style="@style/ThumbnailItem"
-                />
+                android:layout_marginRight="5dp"
+                android:text="@string/source_vod_end"
+                app:layout_constraintEnd_toStartOf="@id/sourceEnd"
+                app:layout_constraintRight_toLeftOf="@id/sourceEnd"
+                app:layout_constraintTop_toTopOf="@id/sourceEnd" />
 
             <TextView
                 android:id="@+id/sourceEnd"
-                android:layout_below="@id/sourceStart"
-                android:layout_alignEnd="@id/sourceStart"
-                android:layout_alignRight="@id/sourceStart"
-                android:layout_marginTop="5dp"
-                tools:text="69:13:37"
                 style="@style/ThumbnailItem"
-                />
+                android:layout_marginTop="5dp"
+                app:layout_constraintEnd_toEndOf="@id/sourceStart"
+                app:layout_constraintRight_toRightOf="@id/sourceStart"
+                app:layout_constraintTop_toBottomOf="@id/sourceStart"
+                tools:text="69:13:37" />
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/status"

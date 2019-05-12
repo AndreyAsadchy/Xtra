@@ -31,6 +31,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isInPortraitOrientation
+import com.github.exact7.xtra.util.isKeyboardShown
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -195,7 +196,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             } else {
                 if (isKeyboardShown) {
                     isKeyboardShown = false
-                    chatView.clearFocus()
+                    secondView?.clearFocus()
                     if (!isPortrait && slidingLayout.isMaximized) {
                         hideStatusBar()
                     }
@@ -216,7 +217,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     override fun onPause() {
         super.onPause()
         if (requireActivity().isChangingConfigurations) {
-            chatView.clearFocus()
+            secondView?.clearFocus()
         }
     }
 
@@ -291,7 +292,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     private fun showStatusBar() {
-        requireActivity().window.decorView.systemUiVisibility = 0
+        if (isAdded) {
+            requireActivity().window.decorView.systemUiVisibility = 0
+        }
     }
 
     private fun hideStatusBar() {

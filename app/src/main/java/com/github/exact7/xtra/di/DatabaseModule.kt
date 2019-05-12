@@ -46,6 +46,7 @@ class DatabaseModule {
                                         }
                                         database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
                                     }
+                                    cursor.close()
                                     database.execSQL("DROP TABLE videos")
                                     database.execSQL("ALTER TABLE videos1 RENAME TO videos")
                                 }
@@ -79,6 +80,7 @@ class DatabaseModule {
                                         }
                                         database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
                                     }
+                                    cursor.close()
                                     database.execSQL("DROP TABLE videos")
                                     database.execSQL("ALTER TABLE videos1 RENAME TO videos")
                                 }
@@ -111,6 +113,7 @@ class DatabaseModule {
                                         }
                                         database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
                                     }
+                                    cursor.close()
                                     database.execSQL("DROP TABLE videos")
                                     database.execSQL("ALTER TABLE videos1 RENAME TO videos")
                                 }

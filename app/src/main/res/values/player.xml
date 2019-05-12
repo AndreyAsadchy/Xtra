@@ -125,6 +125,7 @@
         <item name="android:layout_toRightOf">@id/exo_position</item>
         <item name="android:layout_toLeftOf">@id/exo_duration</item>
         <item name="android:layout_toStartOf">@id/exo_duration</item>
+        <item name="android:layoutDirection">ltr</item>
     </style>
 
     <style name="Player.FullscreenEnter" parent="Player.SmallImage">

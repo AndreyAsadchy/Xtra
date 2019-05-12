@@ -11,16 +11,18 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
+import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.DialogVideoDownloadBinding
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.dialog_video_download.*
 import javax.inject.Inject
 
@@ -40,21 +42,16 @@ class VideoDownloadDialog : BaseDownloadDialog() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: VideoDownloadViewModel
-    private lateinit var binding: DialogVideoDownloadBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  =
-            DialogVideoDownloadBinding.inflate(inflater, container, false).let {
-                binding = it
-                it.lifecycleOwner = viewLifecycleOwner
-                binding.root
-            }
+            inflater.inflate(R.layout.dialog_video_download, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoDownloadViewModel::class.java)
-        binding.viewModel = viewModel
         viewModel.videoInfo.observe(viewLifecycleOwner, Observer {
             if (it != null) {
+                (requireView() as ConstraintLayout).children.forEach { v -> v.visible(v.id != R.id.progressBar && v.id != R.id.storageSelectionContainer) }
                 init(it)
             } else {
                 dismiss()
@@ -75,8 +72,11 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         init(context)
         with(videoInfo) {
             spinner.adapter = ArrayAdapter(context, R.layout.spinner_quality_item, qualities.keys.toTypedArray())
-            binding.duration = DateUtils.formatElapsedTime(totalDuration / 1000L)
-            binding.currentPosition = DateUtils.formatElapsedTime(currentPosition / 1000L)
+            with(DateUtils.formatElapsedTime(totalDuration / 1000L)) {
+                duration.text = context.getString(R.string.duration, this)
+                timeTo.hint = this.let { if (it.length != 5) it else "00:$it" }
+            }
+            timeFrom.hint = DateUtils.formatElapsedTime(currentPosition / 1000L).let { if (it.length == 5) "00:$it" else it }
             timeFrom.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

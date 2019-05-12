@@ -1,13 +1,9 @@
 package com.github.exact7.xtra.ui.view
 
-
-
-
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -20,11 +16,12 @@ import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isClick
+import com.github.exact7.xtra.util.isKeyboardShown
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
-const val BOTTOM_MARGIN = 75f //before scaling
 
-const val ANIMATION_DURATION = 250L
+private const val BOTTOM_MARGIN = 75f //before scaling
+private const val ANIMATION_DURATION = 250L
 
 class SlidingLayout : LinearLayout {
 
@@ -51,18 +48,6 @@ class SlidingLayout : LinearLayout {
         private set
     private var isAnimating = false
     private var shouldUpdateDragLayout = false
-
-    val isKeyboardShown: Boolean
-        get() {
-            val rect = Rect()
-            getWindowVisibleDisplayFrame(rect)
-            val screenHeight = rootView.height
-
-            // rect.bottom is the position above soft keypad or device button.
-            // if keypad is shown, the r.bottom is smaller than that before.
-            val keypadHeight = screenHeight - rect.bottom
-            return keypadHeight > screenHeight * 0.15
-        }
 
     private var maximizedSecondViewVisibility: Int? = null
     private var listeners = mutableSetOf<Listener>()

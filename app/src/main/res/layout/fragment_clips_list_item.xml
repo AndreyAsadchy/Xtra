@@ -20,124 +20,132 @@
         style="@style/Card"
         >
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/thumbnail"
-                app:imageUrl="@{clip.thumbnails.medium}"
-                tools:src="@tools:sample/backgrounds/scenic"
                 style="@style/Thumbnail"
-                />
+                app:imageUrl="@{clip.thumbnails.medium}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/date"
-                app:date="@{clip.createdAt}"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginBottom="5dp"
-                android:layout_alignEnd="@id/thumbnail"
-                android:layout_alignRight="@id/thumbnail"
+                style="@style/ThumbnailItem"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                tools:text="April 20, 2017"
-                style="@style/ThumbnailItem"/>
+                android:layout_marginBottom="5dp"
+                app:date="@{clip.createdAt}"
+                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/thumbnail"
+                app:layout_constraintRight_toRightOf="@id/thumbnail"
+                tools:text="April 20, 2017" />
 
             <TextView
                 android:id="@+id/views"
-                android:layout_alignBottom="@id/thumbnail"
-                android:layout_marginBottom="5dp"
+                style="@style/ThumbnailItem"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
-                tools:text="133769 views"
-                style="@style/ThumbnailItem"/>
+                android:layout_marginBottom="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:text="133769 views" />
 
             <TextView
                 android:id="@+id/duration"
-                app:duration="@{(long)clip.duration}"
-                android:layout_marginTop="10dp"
+                style="@style/VideoDuration"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                tools:text="13:37"
-                style="@style/VideoDuration"
-                />
+                android:layout_marginTop="10dp"
+                app:duration="@{(long)clip.duration}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="13:37" />
 
             <ImageView
                 android:id="@+id/userImage"
-                app:imageUrl="@{clip.broadcaster.logo}"
-                app:circle="@{true}"
-                android:layout_below="@id/thumbnail"
-                android:layout_marginTop="12dp"
+                style="@style/UserPicture"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="12dp"
                 android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"
-                tools:src="@tools:sample/backgrounds/scenic"
-                style="@style/UserPicture"
-                />
+                app:circle="@{true}"
+                app:imageUrl="@{clip.broadcaster.logo}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
+                style="@style/VideoTitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{clip.title}"
-                android:layout_marginTop="7dp"
-                android:layout_below="@id/thumbnail"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
-                android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"
+                android:layout_marginTop="7dp"
+                android:text="@{clip.title}"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintLeft_toRightOf="@id/userImage"
+                app:layout_constraintStart_toEndOf="@id/userImage"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail"
                 tools:text="@sample/clips.json/clips/title"
-                style="@style/VideoTitle"
                 />
 
             <TextView
                 android:id="@+id/username"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{clip.broadcaster.displayName}"
-                android:layout_below="@id/title"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toStartOf="@+id/options"
-                android:layout_toLeftOf="@+id/options"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
                 android:onClick="@{() -> channelListener.viewChannel(clip.broadcaster)}"
-                tools:text="@sample/clips.json/clips/broadcaster/name"
-                />
+                android:text="@{clip.broadcaster.displayName}"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintLeft_toRightOf="@id/userImage"
+                app:layout_constraintStart_toEndOf="@id/userImage"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:text="@sample/clips.json/clips/broadcaster/name" />
 
             <TextView
                 android:id="@+id/gameName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{clip.game}"
-                android:textColor="?attr/secondaryTextColor"
-                android:layout_below="@id/username"
-                android:paddingBottom="10dp"
-                android:layout_toEndOf="@id/userImage"
-                android:layout_toRightOf="@id/userImage"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                tools:text="@sample/clips.json/clips/game"
-                />
+                android:paddingBottom="10dp"
+                android:text="@{clip.game}"
+                android:textColor="?attr/secondaryTextColor"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                app:layout_constraintEnd_toStartOf="@id/options"
+                app:layout_constraintRight_toLeftOf="@id/options"
+                app:layout_constraintLeft_toRightOf="@id/userImage"
+                app:layout_constraintStart_toEndOf="@id/userImage"
+                app:layout_constraintTop_toBottomOf="@id/username"
+                tools:text="@sample/clips.json/clips/game" />
 
             <ImageButton
                 android:id="@+id/options"
+                style="?android:attr/actionOverflowButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/thumbnail"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginTop="5dp"
-                style="?android:attr/actionOverflowButtonStyle"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/thumbnail" />
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

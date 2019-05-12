@@ -1,133 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
-    <data>
-        <import type="android.view.View" />
-        <variable
-            name="viewModel"
-            type="com.github.exact7.xtra.ui.download.VideoDownloadViewModel" />
-        <variable
-            name="duration"
-            type="String" />
-        <variable
-            name="currentPosition"
-            type="String" />
-    </data>
+    <!-- TODO maybe add custom name for video -->
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/selectQuality"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:text="@string/select_quality"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="@{viewModel.videoInfo == null ? View.INVISIBLE : View.VISIBLE}">
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectQuality"
+        tools:visibility="visible" />
 
-            <!-- TODO maybe add custom name for video -->
+    <TextView
+        android:id="@+id/specifyTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/specify_time"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner"
+        tools:visibility="visible"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/select_quality"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/specifyTime"
+        tools:text="Duration 69:13:37"
+        tools:visibility="visible"/>
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                />
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/from"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/timeFrom"
+        app:layout_constraintBottom_toBottomOf="@id/timeFrom"
+        tools:visibility="visible"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/specify_time"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"/>
+    <EditText
+        android:id="@+id/timeFrom"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:maxLength="8"
+        android:imeOptions="flagNoFullscreen"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/from"
+        app:layout_constraintLeft_toRightOf="@id/from"
+        app:layout_constraintTop_toBottomOf="@id/duration"
+        tools:visibility="visible"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{@string/duration(duration)}"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"/>
+    <TextView
+        android:id="@+id/to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/to"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/timeFrom"
+        app:layout_constraintLeft_toRightOf="@id/timeFrom"
+        app:layout_constraintTop_toTopOf="@id/timeTo"
+        app:layout_constraintBottom_toBottomOf="@id/timeTo"
+        tools:visibility="visible"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+    <EditText
+        android:id="@+id/timeTo"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:maxLength="8"
+        android:imeOptions="flagNoFullscreen"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/to"
+        app:layout_constraintLeft_toRightOf="@id/to"
+        app:layout_constraintTop_toBottomOf="@id/duration"
+        tools:visibility="visible"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/from"/>
+    <include
+        android:id="@+id/storageSelectionContainer"
+        layout="@layout/storage_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeFrom"
+        tools:visibility="visible"/>
 
-                <EditText
-                    android:id="@+id/timeFrom"
-                    android:hint="@{currentPosition.length == 5 ? `00:` + currentPosition : currentPosition}"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="time"
-                    android:maxLength="8"/>
+    <Button
+        android:id="@+id/cancel"
+        style="?android:buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@android:string/cancel"
+        android:layout_marginTop="5dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintRight_toLeftOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/storageSelectionContainer"
+        tools:visibility="visible"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/to"
-                    android:layout_marginLeft="7dp"
-                    android:layout_marginStart="7dp" />
+    <Button
+        android:id="@+id/download"
+        style="?android:buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/download"
+        android:layout_marginTop="5dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintLeft_toLeftOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/storageSelectionContainer"
+        tools:visibility="visible" />
 
-                <EditText
-                    android:id="@+id/timeTo"
-                    android:hint="@{duration.length != 5 ? duration : `00:` + duration}"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="time"
-                    android:maxLength="8"/>
-            </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <include
-                android:id="@+id/storageSelectionContainer"
-                layout="@layout/storage_selection"
-                android:visibility="gone"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.47"/>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <Button
-                    android:id="@+id/cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@android:string/cancel"
-                    style="?android:buttonBarButtonStyle"/>
-
-                <Button
-                    android:id="@+id/download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/download"
-                    style="?android:buttonBarButtonStyle"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:visible="@{viewModel.videoInfo == null}"/>
-
-    </RelativeLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

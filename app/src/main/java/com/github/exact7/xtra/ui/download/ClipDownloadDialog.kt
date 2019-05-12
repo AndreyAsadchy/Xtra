@@ -5,13 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.DialogClipDownloadBinding
 import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.dialog_clip_download.*
 import javax.inject.Inject
 
@@ -30,24 +32,19 @@ class ClipDownloadDialog : BaseDownloadDialog() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ClipDownloadViewModel
-    private lateinit var binding: DialogClipDownloadBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  =
-            DialogClipDownloadBinding.inflate(inflater, container, false).let {
-                binding = it
-                it.lifecycleOwner = viewLifecycleOwner
-                binding.root
-            }
+            inflater.inflate(R.layout.dialog_clip_download, container, false)
 
     @Suppress("UNCHECKED_CAST")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipDownloadViewModel::class.java)
-        binding.viewModel = viewModel
         with(requireArguments()) {
             viewModel.init(getParcelable(KEY_CLIP)!!, getSerializable(KEY_QUALITIES) as Map<String, String>?)
         }
         viewModel.qualities.observe(viewLifecycleOwner, Observer {
+            (requireView() as ConstraintLayout).children.forEach { v -> v.visible(v.id != R.id.progressBar && v.id != R.id.storageSelectionContainer) }
             init(it)
         })
     }

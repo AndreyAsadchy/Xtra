@@ -60,7 +60,7 @@
     <string name="watch_live">Watch Live</string>
     <string name="error_stream">Error when loading stream</string>
     <string name="dark">Dark</string>
-    <string name="amoled" translatable="false">AMOLED</string>
+    <string name="amoled">AMOLED</string>
     <string name="light">Light</string>
     <string name="choose_theme">Choose a theme</string>
     <string name="settings">Settings</string>
@@ -94,7 +94,7 @@
     <string name="unfollowed">Unfollowed %s</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="search">Search</string>
+    <string name="search">Search channels</string>
     <string name="chat_replay_unavailable">Chat replay is unavailable</string>
     <string name="video_subscribers_only">This video is only available to subscribers</string>
     <string name="player_error">Player error. Retrying</string>

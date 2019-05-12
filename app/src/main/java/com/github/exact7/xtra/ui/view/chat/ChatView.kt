@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
@@ -30,7 +30,7 @@ import kotlin.math.max
 
 private const val MAX_MESSAGE_COUNT = 125
 
-class ChatView : RelativeLayout {
+class ChatView : ConstraintLayout {
 
     interface MessageSenderCallback {
         fun send(message: CharSequence)
@@ -94,7 +94,7 @@ class ChatView : RelativeLayout {
                 it.toggleVisibility()
             }
         }
-        chatRecyclerView.layoutTransition = LayoutTransition()
+        recyclerView.layoutTransition = LayoutTransition()
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {

@@ -3,6 +3,7 @@ package com.github.exact7.xtra.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -65,3 +66,15 @@ fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean 
 fun View.hideKeyboard() {
     (this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(this.windowToken, 0)
 }
+
+val View.isKeyboardShown: Boolean
+    get() {
+        val rect = Rect()
+        getWindowVisibleDisplayFrame(rect)
+        val screenHeight = rootView.height
+
+        // rect.bottom is the position above soft keypad or device button.
+        // if keypad is shown, the r.bottom is smaller than that before.
+        val keypadHeight = screenHeight - rect.bottom
+        return keypadHeight > screenHeight * 0.15
+    }

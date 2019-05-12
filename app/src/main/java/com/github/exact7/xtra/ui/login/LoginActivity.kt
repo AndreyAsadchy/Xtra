@@ -51,6 +51,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 Toast.makeText(this, getString(R.string.webview_error), Toast.LENGTH_LONG).show()
                 finish()
                 startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                return
             }
         }
         try { //TODO remove after updated to 1.2.0

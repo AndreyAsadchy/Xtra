@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,30 +10,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="24dp"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:src="@drawable/logo"
-            app:layout_constraintBottom_toTopOf="@+id/welcome"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/welcome"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/welcome"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginTop="200dp"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
-            android:layout_marginTop="200dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:gravity="center_horizontal"
@@ -44,19 +48,21 @@
             app:autoSizeStepGranularity="2sp"
             app:autoSizeTextType="uniform"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/loginPrompt"
             android:layout_width="0dp"
             android:layout_height="115dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            android:layout_marginBottom="32dp"
             android:gravity="center"
             android:text="@string/login_prompt"
             app:autoSizeMaxTextSize="44sp"
@@ -65,7 +71,9 @@
             app:autoSizeTextType="uniform"
             app:layout_constraintBottom_toTopOf="@+id/skip"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/welcome"
             app:layout_constraintVertical_bias="0.0" />
 
@@ -73,17 +81,14 @@
             android:id="@+id/login"
             android:layout_width="230dp"
             android:layout_height="55dp"
-            android:layout_marginStart="71dp"
-            android:layout_marginLeft="71dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="71dp"
-            android:layout_marginRight="71dp"
-            android:layout_marginBottom="8dp"
             android:text="@string/log_in"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/skip"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginPrompt"
             app:layout_constraintVertical_bias="0.0" />
 
@@ -94,10 +99,12 @@
             android:layout_marginEnd="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginBottom="24dp"
+            android:layoutDirection="ltr"
             android:text="@string/skip"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -105,14 +112,21 @@
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
