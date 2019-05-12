@@ -3,10 +3,8 @@ package com.github.exact7.xtra
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import androidx.room.migration.Migration
-import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.exact7.xtra.db.AppDatabase
 import com.github.exact7.xtra.util.TwitchApiHelper
 import org.junit.Rule
@@ -85,6 +83,7 @@ class MigrationTest {
                 database.execSQL("CREATE TABLE IF NOT EXISTS requests (offline_video_id INTEGER NOT NULL, url TEXT NOT NULL, path TEXT NOT NULL, video_id TEXT, segment_from INTEGER, segment_to INTEGER, PRIMARY KEY (offline_video_id), FOREIGN KEY('offline_video_id') REFERENCES videos('id') ON DELETE CASCADE)")
 
                 database.execSQL("CREATE TABLE videos1 (id INTEGER NOT NULL, url TEXT NOT NULL, source_url TEXT NOT NULL, source_start_position INTEGER, name TEXT NOT NULL, channel_name TEXT NOT NULL, channel_logo TEXT NOT NULL, thumbnail TEXT NOT NULL, game TEXT NOT NULL, duration INTEGER NOT NULL, upload_date INTEGER NOT NULL, download_date INTEGER NOT NULL, is_vod INTEGER NOT NULL, last_watch_position INTEGER NOT NULL, progress INTEGER NOT NULL, max_progress INTEGER NOT NULL, status INTEGER NOT NULL, PRIMARY KEY (id))")
+
                 val cursor = database.query("SELECT * FROM videos")
                 while (cursor.moveToNext()) {
                     val values = ContentValues().apply {
@@ -106,8 +105,12 @@ class MigrationTest {
                         put("status", 2)
                         put("is_vod", cursor.getInt(1))
                     }
+                    for (i in 0 until cursor.columnCount) {
+                        println("${cursor.getColumnName(i)} ${cursor.getString(i)}")
+                    }
                     database.insert("videos1", SQLiteDatabase.CONFLICT_NONE, values)
                 }
+                println("---------")
                 database.execSQL("DROP TABLE videos")
                 database.execSQL("ALTER TABLE videos1 RENAME TO videos")
             }
@@ -139,5 +142,6 @@ class MigrationTest {
                 println("${cursor.getColumnName(i)} ${cursor.getString(i)}")
             }
         }
+        cursor.close()
     }
 }

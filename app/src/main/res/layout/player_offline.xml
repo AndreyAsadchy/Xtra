@@ -29,7 +29,6 @@
 
     </LinearLayout>
 
-
     <TextView
         style="@style/Player.Position"
         />

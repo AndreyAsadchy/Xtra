@@ -36,10 +36,6 @@
             />
 
         <ImageButton
-            style="@style/Player.Profile"
-            />
-
-        <ImageButton
             style="@style/Player.Ratio" />
 
         <ImageButton

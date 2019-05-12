@@ -31,6 +31,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="flagNoFullscreen"
                     android:inputType="textAutoComplete"
+                    android:textDirection="locale"
                     app:queryBackground="@android:color/transparent"
                     app:queryHint="@string/search"
                     app:searchIcon="@null"

@@ -26,8 +26,8 @@ android {
     defaultConfig {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 16
-        versionCode 37
-        versionName "1.2.7"
+        versionCode 39
+        versionName "1.2.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 28
         javaCompileOptions {
@@ -89,7 +89,7 @@ dependencies {
     //UI
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
     implementation 'androidx.preference:preference:1.1.0-alpha03'
 
     //Architecture components
@@ -100,7 +100,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
     androidTestImplementation "androidx.room:room-testing:$room"
-    implementation 'androidx.core:core-ktx:1.1.0-alpha05'
+    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.8'

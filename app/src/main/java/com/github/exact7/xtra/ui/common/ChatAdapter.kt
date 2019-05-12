@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.common
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -30,7 +29,6 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
-import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.displayDensity
 import java.util.Random
 import kotlin.collections.set
@@ -38,7 +36,9 @@ import kotlin.collections.set
 const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
 const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
-class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(
+        private val emoteSize: Int,
+        private val badgeSize: Int) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     var messages: MutableList<ChatMessage>? = null
         set(value) {
@@ -53,8 +53,6 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     private val userColors = HashMap<String, Int>()
     private val savedColors = HashMap<String, Int>()
     private val emotes = HashMap<String, Emote>()
-    private val emoteSize = context.convertDpToPixels(26f)
-    private val badgeSize = context.convertDpToPixels(18f)
     private var username: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -196,9 +194,10 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
     override fun getItemCount(): Int = messages?.size ?: 0
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
+        val context = holder.itemView.context
         images.forEach { (url, start, end, isEmote, isPng, width) ->
             if (isPng) {
-                GlideApp.with(holder.itemView.context)
+                GlideApp.with(context)
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(object : CustomTarget<Drawable>() {
@@ -217,7 +216,7 @@ class ChatAdapter(private val context: Context) : RecyclerView.Adapter<ChatAdapt
                             }
                         })
             } else {
-                GlideApp.with(holder.itemView.context)
+                GlideApp.with(context)
                         .asGif()
                         .load(url)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import android.widget.RadioButton
@@ -42,8 +41,9 @@ class RadioButtonDialogFragment : ExpandingBottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = requireContext()
-        val radioGroup = RadioGroup(context).apply { layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT) }
-        val checkedId = requireArguments().getInt(CHECKED)
+        val arguments = requireArguments()
+        val radioGroup = RadioGroup(context).apply { layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT) }
+        val checkedId = arguments.getInt(CHECKED)
         val clickListener = View.OnClickListener { v ->
             val clickedId = v.id
             if (clickedId != checkedId) {
@@ -51,15 +51,15 @@ class RadioButtonDialogFragment : ExpandingBottomSheetDialogFragment() {
             }
             dismiss()
         }
-        val tags = requireArguments().getIntArray(TAGS)
-        requireArguments().getCharSequenceArrayList(LABELS)?.forEachIndexed { index, label ->
+        val tags = arguments.getIntArray(TAGS)
+        arguments.getCharSequenceArrayList(LABELS)?.forEachIndexed { index, label ->
             val button = AppCompatRadioButton(context).apply {
                 id = index
                 text = label
                 tag = tags?.getOrNull(index)
                 setOnClickListener(clickListener)
             }
-            radioGroup.addView(button, MATCH_PARENT, WRAP_CONTENT)
+            radioGroup.addView(button, WRAP_CONTENT, WRAP_CONTENT)
         }
         radioGroup.check(checkedId)
         return radioGroup

@@ -29,9 +29,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
 
     abstract fun initialize()
     open fun onNetworkRestored() {
-        if (viewModel is PagedListViewModel<*>) {
-            (viewModel as PagedListViewModel<*>).retry()
-        }
+        (viewModel as? PagedListViewModel<*>)?.retry()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

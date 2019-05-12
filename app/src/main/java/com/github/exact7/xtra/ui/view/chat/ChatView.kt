@@ -1,11 +1,10 @@
 package com.github.exact7.xtra.ui.view.chat
 
-import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
@@ -19,6 +18,7 @@ import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
 import com.github.exact7.xtra.util.isGone
@@ -30,15 +30,14 @@ import kotlin.math.max
 
 private const val MAX_MESSAGE_COUNT = 125
 
-class ChatView : ConstraintLayout {
+class ChatView : LinearLayout {
 
     interface MessageSenderCallback {
         fun send(message: CharSequence)
     }
 
-    private val adapter = ChatAdapter(context)
+    private val adapter = ChatAdapter(context.convertDpToPixels(26f), context.convertDpToPixels(18f))
 
-    private val layoutManager = LinearLayoutManager(context)
     private var isChatTouched = false
 
     //    private var recentEmotes: List<Emote>? = null
@@ -76,25 +75,25 @@ class ChatView : ConstraintLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        layoutTransition = LayoutTransition()
-        recyclerView.adapter = adapter
-        recyclerView.itemAnimator = null
-        layoutManager.stackFromEnd = true
-        recyclerView.layoutManager = layoutManager
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                isChatTouched = newState == RecyclerView.SCROLL_STATE_DRAGGING
-                btnDown.visible(shouldShowButton())
-            }
-        })
+        recyclerView.apply {
+            adapter = this@ChatView.adapter
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(context).apply { stackFromEnd = true }
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    isChatTouched = newState == RecyclerView.SCROLL_STATE_DRAGGING
+                    this@ChatView.btnDown.visible(shouldShowButton())
+                }
+            })
+        }
+
         btnDown.setOnClickListener {
             post {
                 recyclerView.scrollToPosition(getLastItemPosition())
                 it.toggleVisibility()
             }
         }
-        recyclerView.layoutTransition = LayoutTransition()
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {

@@ -148,11 +148,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 isEnabled = false
                 setColorFilter(Color.GRAY)
             }
-            view.findViewById<ImageButton>(R.id.profile).setOnClickListener {
-                activity.viewChannel(channel)
-                slidingLayout.minimize()
+            view.findViewById<TextView>(R.id.channel).apply {
+                text = channel.displayName
+                setOnClickListener {
+                    activity.viewChannel(channel)
+                    slidingLayout.minimize()
+                }
             }
-            view.findViewById<TextView>(R.id.channel).text = channel.displayName
         } else {
             if (isPortrait) {
                 secondView = view.findViewById(R.id.dummyView)
