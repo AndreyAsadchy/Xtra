@@ -13,7 +13,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.crashlytics.android.Crashlytics
-import com.github.exact7.xtra.GlideApp
 import java.util.Calendar
 
 fun View.visible() {
@@ -66,7 +65,7 @@ fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean 
 
 fun EditText.showKeyboard() {
     this.requestFocus()
-    (this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    (this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY)
 }
 
 fun View.hideKeyboard() {

@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
@@ -47,6 +47,9 @@ class ChatView : LinearLayout {
     //    private var recentEmotes: List<Emote>? = null
     private var twitchEmotes: MutableList<Emote> = ArrayList()
     private var otherEmotes: MutableSet<Emote> = HashSet()
+    private var emotesAddedCount = 0
+
+    private var fragmentManager: FragmentManager? = null
 
     private var messageCallback: MessageSenderCallback? = null
     var messagingEnabled = false
@@ -117,7 +120,7 @@ class ChatView : LinearLayout {
         }
         send.setOnClickListener { sendMessage() }
 
-        initPlayerFragment()
+        initFragmentManager()
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -146,7 +149,19 @@ class ChatView : LinearLayout {
                 }
                 else -> twitchEmotes.addAll(list)
             }
-            viewPager.adapter?.notifyDataSetChanged()
+        }
+        if (++emotesAddedCount == 3) { //TODO check if stream player fragment
+            fun initEmotes() {
+                fragmentManager.let {
+                    if (it != null) {
+                        initEmotesViewPager(it)
+                    } else {
+                        Crashlytics.log("ChatView.addEmotes: fragmentManager is null")
+                        postDelayed(::initEmotes, 1500L)
+                    }
+                }
+            }
+            initEmotes()
         }
     }
 
@@ -197,25 +212,24 @@ class ChatView : LinearLayout {
         } == true
     }
 
-    private fun initPlayerFragment() {
+    private fun initFragmentManager() {
         val playerFragment = (context as MainActivity).playerFragment
         if (playerFragment == null) {
-            Crashlytics.log("ChatView.initEmotesViewPager: playerFragment is null")
-            postDelayed(this::initPlayerFragment, 500L)
+            Crashlytics.log("ChatView.initFragmentManager: playerFragment is null")
+            postDelayed(this::initFragmentManager, 500L)
             return
         } else if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
-        val fragmentManager = playerFragment.childFragmentManager
+        fragmentManager = playerFragment.childFragmentManager
         if (playerFragment is StreamPlayerFragment) {
-            adapter.setOnClickListener {
+            adapter.setOnClickListener { original, formatted ->
                 editText.hideKeyboard()
-                MessageClickedDialog.newInstance(it).show(fragmentManager, null)
+                MessageClickedDialog.newInstance(original, formatted).show(fragmentManager!!, null)
             }
         }
-        initEmotesViewPager(fragmentManager)
     }
 
     private fun initEmotesViewPager(fragmentManager: FragmentManager) {
-        viewPager.adapter = object : FragmentPagerAdapter(fragmentManager) {
+        viewPager.adapter = object : FragmentStatePagerAdapter(fragmentManager) {
 
             override fun getItem(position: Int): Fragment {
                 val list = when (position) {

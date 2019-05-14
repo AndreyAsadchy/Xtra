@@ -17,12 +17,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crashlytics.android.Crashlytics
-import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
@@ -53,7 +51,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
     private val emotes = HashMap<String, Emote>()
     private var username: String? = null
 
-    private var messageClickListener: ((CharSequence) -> Unit)? = null
+    private var messageClickListener: ((CharSequence, CharSequence) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chat_list_item, parent, false))
@@ -108,6 +106,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
         val userNameLength = userName.length
         builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
+        val originalMessage = "$userName: ${chatMessage.message}"
         try {
             chatMessage.emotes?.let {
                 val copy = it.map { e -> e.copy() }
@@ -184,22 +183,21 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     if (i != split.lastIndex) 2 else 1
                 }
             }
-            loadImages(holder, images, builder)
+            loadImages(holder, images, originalMessage, builder)
         } catch (e: Exception) {
             Crashlytics.logException(e)
         }
-        holder.bind(builder)
+        holder.bind(originalMessage, builder)
     }
 
     override fun getItemCount(): Int = messages?.size ?: 0
 
-    private fun loadImages(holder: ViewHolder, images: List<Image>, builder: SpannableStringBuilder) {
+    private fun loadImages(holder: ViewHolder, images: List<Image>, originalMessage: CharSequence, builder: SpannableStringBuilder) {
         val context = holder.itemView.context
         images.forEach { (url, start, end, isEmote, isPng, width) ->
             if (isPng) {
                 GlideApp.with(context)
                         .load(url)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
@@ -209,7 +207,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                                 } catch (e: IndexOutOfBoundsException) {
 
                                 }
-                                holder.bind(builder)
+                                holder.bind(originalMessage, builder)
                             }
 
                             override fun onLoadCleared(placeholder: Drawable?) {
@@ -219,7 +217,6 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                 GlideApp.with(context)
                         .asGif()
                         .load(url)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(object : CustomTarget<GifDrawable>() {
                             override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
                                 val textView = holder.itemView as TextView
@@ -247,7 +244,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                                 } catch (e: IndexOutOfBoundsException) {
 
                                 }
-                                holder.bind(builder)
+                                holder.bind(originalMessage, builder)
                             }
 
                             override fun onLoadCleared(placeholder: Drawable?) {
@@ -265,7 +262,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
         this.username = username
     }
 
-    fun setOnClickListener(listener: (CharSequence) -> Unit) {
+    fun setOnClickListener(listener: (CharSequence, CharSequence) -> Unit) {
         messageClickListener = listener
     }
 
@@ -273,11 +270,11 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(formattedMessage: SpannableStringBuilder) {
+        fun bind(originalMessage: CharSequence, formattedMessage: SpannableStringBuilder) {
             (itemView as TextView).apply {
                 text = formattedMessage
                 movementMethod = LinkMovementMethod.getInstance()
-                setOnClickListener { messageClickListener?.invoke(text) }
+                setOnClickListener { messageClickListener?.invoke(originalMessage, formattedMessage) }
             }
         }
     }

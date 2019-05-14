@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,13 +26,15 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
     }
 
     companion object {
-        private const val KEY_MESSAGE = "message"
+        private const val KEY_ORIGINAL = "original"
+        private const val KEY_FORMATTED = "formatted"
 
-        fun newInstance(message: CharSequence) = MessageClickedDialog().apply { arguments = bundleOf(KEY_MESSAGE to message) }
+        fun newInstance(originalMessage: CharSequence, formattedMessage: CharSequence) = MessageClickedDialog().apply {
+            arguments = bundleOf(KEY_ORIGINAL to originalMessage, KEY_FORMATTED to formattedMessage)
+        }
     }
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(MessageClickedViewModel::class.java) }
 
     private lateinit var listener: OnButtonClickListener
 
@@ -46,8 +49,8 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val msg = requireArguments().getCharSequence(KEY_MESSAGE)!!
-        message.text = msg
+        message.text = requireArguments().getCharSequence(KEY_FORMATTED)!!
+        val msg = requireArguments().getCharSequence(KEY_ORIGINAL)!!
         reply.setOnClickListener {
             listener.onReplyClicked(extractUserName(msg))
             dismiss()
@@ -56,12 +59,16 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
             listener.onCopyMessageClicked(msg.substring(msg.indexOf(':') + 1))
             dismiss()
         }
+        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MessageClickedViewModel::class.java)
         viewProfile.setOnClickListener {
             viewModel.loadUser(extractUserName(msg)).observe(viewLifecycleOwner, Observer {
                 listener.onViewProfileClicked(it)
                 dismiss()
             })
         }
+        viewModel.errors.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, getString(R.string.error_loading_user), Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun extractUserName(text: CharSequence): String {

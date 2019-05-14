@@ -85,7 +85,7 @@ class LiveChatThread(
             write("JOIN $hashChannelName", writerIn, writerOut)
             writerIn.flush()
             writerOut?.flush()
-            Log.d(TAG, "Successfully connected to channelName - $hashChannelName")
+            Log.d(TAG, "Successfully connected to - $hashChannelName")
         } catch (e: IOException) {
             Log.e(TAG, "Error connecting to Twitch IRC", e)
             throw e

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Xtra</string>
     <string name="nav_bar_games">Games</string>
@@ -40,7 +41,7 @@
     <string name="from">From:</string>
     <string name="to">To:</string>
     <string name="duration">Duration: %s</string>
-    <string name="invalid_time">Invalid time</string>
+    <string name="invalid_time">Invalid time. Use ":" or "." to set the time</string>
     <string name="from_is_greater">Time From must be less than To</string>
     <string name="to_is_lesser">Time To must be greater than From</string>
     <string name="to_is_longer">To can\'t be greater than video length</string>
@@ -60,7 +61,7 @@
     <string name="watch_live">Watch Live</string>
     <string name="error_stream">Error when loading stream</string>
     <string name="dark">Dark</string>
-    <string name="amoled">AMOLED</string>
+    <string name="amoled">Black</string>
     <string name="light">Light</string>
     <string name="choose_theme">Choose a theme</string>
     <string name="settings">Settings</string>
@@ -111,4 +112,8 @@
     <string name="downloading_progress">Downloading: %d%%</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
+    <string name="error_loading_user">Error loading user profile</string>
+    <string name="reply">Reply</string>
+    <string name="copy_message">Copy message</string>
+    <string name="view_profile">View profile</string>
 </resources>

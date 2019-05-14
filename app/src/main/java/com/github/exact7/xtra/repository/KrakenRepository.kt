@@ -159,7 +159,36 @@ class KrakenRepository @Inject constructor(
         api.getUserEmotes("OAuth $token", userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribeBy(onSuccess = { emotesDao.insertAll(it.emotes) })
+                .subscribeBy(onSuccess = { //TODO change as in-memory database
+                    val emotes = it.emotes.toMutableList()
+                    var modified = 0
+                    for (i in 0 until emotes.size) {
+                        val emote = emotes[i]
+                        if (emote.id in 1..14) {
+                            val value = when (emote.id) {
+                                1 -> ":)"
+                                2 -> ":("
+                                3 -> ":D"
+                                4 -> ">("
+                                5 -> ":|"
+                                6 -> "o_O"
+                                7 -> "B)"
+                                8 -> ":O"
+                                9 -> "<3"
+                                10 -> ":/"
+                                11 -> ";)"
+                                12 -> ":P"
+                                13 -> ";P"
+                                else -> "R)"
+                            }
+                            emotes[i] = emotes[i].copy(name = value)
+                            if (++modified == 14) {
+                                break
+                            }
+                        }
+                    }
+                    emotesDao.deleteAllAndInsert(emotes)
+                })
                 .addTo(compositeDisposable)
     }
 

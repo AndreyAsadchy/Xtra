@@ -56,7 +56,7 @@ interface KrakenApi {
     fun getUserById(@Path("id") id: Int): Single<User>
 
     @GET("users")
-    fun getUsersByLogin(@Query("login") login: String): Single<UsersResponse>
+    fun getUsersByLogin(@Query("login") logins: String): Single<UsersResponse>
 
     @GET("users/{id}/emotes")
     fun getUserEmotes(@Header("Authorization") token: String, @Path("id") userId: String): Single<UserEmotesResponse>

@@ -40,7 +40,7 @@
     <string name="from">من:</string>
     <string name="to">إلى:</string>
     <string name="duration">المدة: %s</string>
-    <string name="invalid_time">وقت غير صالح</string>
+    <string name="invalid_time">الوقت غير صالح. إستخدم ":" أو "." لضبط الوقت</string>
     <string name="from_is_greater">الوقت (من) يجب أن يكون أقل من (إلى) </string>
     <string name="to_is_lesser">الوقت (إلى) يجب أن يكون أكبر من (من)</string>
     <string name="to_is_longer">(إلى) لا يمكن أن يكون أكبر من مدة الفيديو</string>
@@ -79,7 +79,7 @@
     <string name="download_size_warning">يمكن أن يصل حجم الفيديو الطويل إلى 10 غيغابايت. هل تريد التنزيل عبر الـواي فـاي؟</string>
     <string name="internal_storage"> التخزين الداخلي</string>
     <string name="save_to">حفظ إلى</string>
-    <string name="thank_you">شكراً جزيلاً! </string>
+    <string name="thank_you">شكراً جزيلاً!</string>
     <string name="rate_app_message">إذا كنت تستمتع باستخدام إكسترا، يرجى أخذ بعض الوقت لتقييمه. لن يستغرق الأمر أكثر من دقيقة. شكراً لدعمك!</string>
     <string name="rate">قَيم</string>
     <string name="remind_me_later">ذكرني لاحقاً</string>
@@ -88,9 +88,9 @@
     <string name="rewind">الترجيع</string>
     <string name="forward">التقديم السريع</string>
     <string name="seconds">%s ثواني</string>
-    <string name="unfollow">إلغاء المتابعة %s?</string>
+    <string name="unfollow">إلغاء متابعة %s?</string>
     <string name="now_following">أنت الآن تتابع %s</string>
-    <string name="unfollowed">إلغاء متابعة %s</string>
+    <string name="unfollowed">تم إلغاء المتابعة%s</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
     <string name="search">ابحث عن القنوات</string>
@@ -103,11 +103,15 @@
     <string name="source_vod_end">النهاية:</string>
     <string name="stream_ended">إنتهى البث المباشر</string>
     <string name="webview_error">خطأ في تحميل متصفح الويب. ربما يتم تحديثه الآن. يرجى المحاولة مرة أُخرى بعد بضع دقائق</string>
-    <string name="viewers">%s المشاهدين</string>
-    <string name="views">%s مشاهد</string>
+    <string name="viewers">المُشاهدين %s</string>
+    <string name="views">مُشاهد %s</string>
     <string name="play_services_not_available">خدمات متجر غوغل غير متوفرة. قد لا تعمل بعض الوظائف بشكل صحيح</string>
     <string name="download_pending">قيد الإنتظار</string>
     <string name="downloading_progress">جارِ التنزيل: %d%%</string>
     <string name="pause">إيقاف مؤقت</string>
     <string name="resume">إستئناف</string>
+    <string name="error_loading_user">خطأ في تحميل صفحة المستخدم الشخصية</string>
+    <string name="reply">الرد</string>
+    <string name="copy_message">نسخ الرسالة</string>
+    <string name="view_profile">عَرض الصفحة الشخصية</string>
 </resources>

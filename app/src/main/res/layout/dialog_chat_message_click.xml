@@ -3,10 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp">
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/message"
+        android:paddingStart="3dp"
+        android:paddingLeft="3dp"
+        android:paddingEnd="3dp"
+        android:paddingRight="3dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -15,18 +19,18 @@
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reply"/>
+        android:text="@string/reply"/>
 
     <Button
         android:id="@+id/copyMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Copy message"/>
+        android:text="@string/copy_message"/>
 
     <Button
         android:id="@+id/viewProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View profile"/>
+        android:text="@string/view_profile"/>
 
 </LinearLayout>

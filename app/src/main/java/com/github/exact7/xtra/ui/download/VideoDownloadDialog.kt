@@ -168,7 +168,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
     private fun parseTime(textView: TextView): Long? {
         with(textView) {
             val value = if (text.isEmpty()) hint else text
-            val time = value.split(":")
+            val time = value.split(Regex("[:.]"))
             try {
                 if (time.size != 3) throw IllegalArgumentException()
                 val hours = time[0].toLong()

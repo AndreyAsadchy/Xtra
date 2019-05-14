@@ -14,6 +14,7 @@ import androidx.core.content.edit
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -64,6 +65,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     private var playerViewWidth = 0
     private var playerViewHeight = 0
+    private var chatViewWidth = 0
 
     private var systemUiFlags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -135,7 +137,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             chatView = view.findViewById(R.id.chatView)
             secondView = chatView
             if (!isPortrait) {
-                chatView.updateLayoutParams { width = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0) }
+                chatViewWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
+                chatView.updateLayoutParams { width = chatViewWidth }
                 hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
                     setOnClickListener { hideChat() }
                 }
@@ -192,6 +195,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 if (!isKeyboardShown) {
                     isKeyboardShown = true
                     if (!isPortrait) {
+                        if (this is StreamPlayerFragment) {
+                            try {
+                                chatView.updateLayoutParams { width = slidingLayout.width / 2 }
+                            } catch (e: UninitializedPropertyAccessException) { //TODO Just in case, remove if not needed
+                                Crashlytics.logException(e)
+                            }
+                        }
                         showStatusBar()
                     }
                 }
@@ -199,8 +209,17 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 if (isKeyboardShown) {
                     isKeyboardShown = false
                     secondView?.clearFocus()
-                    if (!isPortrait && slidingLayout.isMaximized) {
-                        hideStatusBar()
+                    if (!isPortrait) {
+                        if (this is StreamPlayerFragment) {
+                            try {
+                                chatView.updateLayoutParams { width = chatViewWidth }
+                            } catch (e: UninitializedPropertyAccessException) {
+                                Crashlytics.logException(e)
+                            }
+                        }
+                        if (slidingLayout.isMaximized) {
+                            hideStatusBar()
+                        }
                     }
                 }
             }
