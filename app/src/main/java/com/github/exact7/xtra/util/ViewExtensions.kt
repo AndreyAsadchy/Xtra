@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.crashlytics.android.Crashlytics
+import com.github.exact7.xtra.GlideApp
 import java.util.Calendar
 
 fun View.visible() {
