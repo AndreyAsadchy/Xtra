@@ -19,7 +19,6 @@ import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -58,7 +57,7 @@ class VideoPlayerViewModel @Inject constructor(
     fun setVideo(video: Video) {
         if (_video.value != video) {
             _video.value = video
-            playerRepository.loadVideoPlaylist(video.id)
+            call(playerRepository.loadVideoPlaylist(video.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onSuccess = {
@@ -69,8 +68,7 @@ class VideoPlayerViewModel @Inject constructor(
                             val context = getApplication<Application>()
                             Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
                         }
-                    })
-                    .addTo(compositeDisposable)
+                    }))
             chatReplayManager = ChatReplayManager(repository, video.id, 0.0, player, this::onMessage, this::clearMessages)
             initChat(playerRepository, video.channel.id, video.channel.name)
         }

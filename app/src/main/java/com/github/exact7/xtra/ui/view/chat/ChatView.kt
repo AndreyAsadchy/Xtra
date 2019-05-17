@@ -373,16 +373,16 @@ class ChatView : LinearLayout {
     )
 
     private fun initFfz() = listOf(
-            FfzEmote("ZrehplaR", "https:////cdn.frankerfacez.com/4556987ef91323110080b223f96d7400.png", 33f),
-            FfzEmote("YooHoo", "https:////cdn.frankerfacez.com/4c3f7ea69ff255ff4ee0adebbe62751c.png", 28f),
-            FfzEmote("YellowFever", "https:////cdn.frankerfacez.com/53ebdc39a0603f7a3372ad016bb8597e.png", 23f),
-            FfzEmote("ManChicken", "https:////cdn.frankerfacez.com/08c6aa877f0d946d45f30454d9fb1300.png", 30f),
-            FfzEmote("BeanieHipster", "https:////cdn.frankerfacez.com/9c727af513b96dfb0dcbc86daa2239d8.png", 28f),
-            FfzEmote("CatBag", "https:////cdn.frankerfacez.com/585e6fdea0c5d3e20678284f43af8749.PNG", 32f),
-            FfzEmote("ZreknarF", "https:////cdn.frankerfacez.com/1719f1cd21489ef579f6e8bbc861c22f.PNG", 40f),
-            FfzEmote("LilZ", "https:////cdn.frankerfacez.com/a6623002a430bcd27edc866441c1582f.PNG", 32f),
-            FfzEmote("ZliL", "https:////cdn.frankerfacez.com/0aa63d7f0ac0a6d3622b009b5af28944.PNG", 32f),
-            FfzEmote("LaterSooner", "https:////cdn.frankerfacez.com/1fcefc6216cd36fc9ce2a2f7385d854c.PNG", 25f),
-            FfzEmote("BORT", "https:////cdn.frankerfacez.com/aa4c8a9d459c866e9f9e03aac614c47a.png", 19f)
+            FfzEmote("ZrehplaR", "https:////cdn.frankerfacez.com/4556987ef91323110080b223f96d7400.png"),
+            FfzEmote("YooHoo", "https:////cdn.frankerfacez.com/4c3f7ea69ff255ff4ee0adebbe62751c.png"),
+            FfzEmote("YellowFever", "https:////cdn.frankerfacez.com/53ebdc39a0603f7a3372ad016bb8597e.png"),
+            FfzEmote("ManChicken", "https:////cdn.frankerfacez.com/08c6aa877f0d946d45f30454d9fb1300.png"),
+            FfzEmote("BeanieHipster", "https:////cdn.frankerfacez.com/9c727af513b96dfb0dcbc86daa2239d8.png"),
+            FfzEmote("CatBag", "https:////cdn.frankerfacez.com/585e6fdea0c5d3e20678284f43af8749.PNG"),
+            FfzEmote("ZreknarF", "https:////cdn.frankerfacez.com/1719f1cd21489ef579f6e8bbc861c22f.PNG"),
+            FfzEmote("LilZ", "https:////cdn.frankerfacez.com/a6623002a430bcd27edc866441c1582f.PNG"),
+            FfzEmote("ZliL", "https:////cdn.frankerfacez.com/0aa63d7f0ac0a6d3622b009b5af28944.PNG"),
+            FfzEmote("LaterSooner", "https:////cdn.frankerfacez.com/1fcefc6216cd36fc9ce2a2f7385d854c.PNG"),
+            FfzEmote("BORT", "https:////cdn.frankerfacez.com/aa4c8a9d459c866e9f9e03aac614c47a.png")
     )
 }

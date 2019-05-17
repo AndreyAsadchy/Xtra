@@ -16,7 +16,7 @@ class FfzRoomDeserializer : JsonDeserializer<FfzRoomResponse> {
             for (i in 0 until emotesArray.size()) {
                 val emote = emotesArray.get(i).asJsonObject
                 val urls = emote.getAsJsonObject("urls")
-                emotes.add(FfzEmote(emote.get("name").asString, "https:" + (urls.get("2")?.asString ?: urls.get("1").asString), emote.get("width").asFloat))
+                emotes.add(FfzEmote(emote.get("name").asString, "https:" + (urls.get("2")?.asString ?: urls.get("1").asString)))
             }
         }
         return FfzRoomResponse(emotes)

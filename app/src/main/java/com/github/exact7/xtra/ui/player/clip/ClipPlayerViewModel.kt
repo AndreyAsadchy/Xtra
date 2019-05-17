@@ -20,7 +20,6 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ExtractorMediaSource
-import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
 private const val TAG = "ClipPlayerViewModel"
@@ -72,7 +71,7 @@ class ClipPlayerViewModel @Inject constructor(
     fun setClip(clip: Clip) {
         if (_clip.value != clip) {
             _clip.value = clip
-            playerRepository.loadClipQualities(clip.slug)
+            call(playerRepository.loadClipQualities(clip.slug)
                     .subscribe({
                         helper.urls = it
                         play(it.values.first())
@@ -80,8 +79,7 @@ class ClipPlayerViewModel @Inject constructor(
                         helper.loaded.value = true
                     }, {
 
-                    })
-                    .addTo(compositeDisposable)
+                    }))
             clip.vod?.let {
                 initChat(playerRepository, clip.broadcaster.id, clip.broadcaster.name)
                 chatReplayManager = ChatReplayManager(repository, "v${it.id}", TwitchApiHelper.parseClipOffset(it.url), player, this::onMessage, this::clearMessages)

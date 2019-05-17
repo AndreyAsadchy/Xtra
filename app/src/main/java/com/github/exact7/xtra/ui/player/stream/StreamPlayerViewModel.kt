@@ -14,9 +14,13 @@ import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.nullIfEmpty
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import java.util.Timer
 import javax.inject.Inject
+import kotlin.concurrent.fixedRateTimer
 
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
@@ -38,21 +42,32 @@ class StreamPlayerViewModel @Inject constructor(
             return s.channel.id to s.channel.displayName
         }
 
+    private var seekTimer: Timer? = null
+    private var timeSpentBuffering = 0L
+    private var bufferedAt = 0L
+
     fun startStream(stream: Stream, user: User) {
         if (_stream.value != stream) {
             _stream.value = stream
             this.user = user
             val channel = stream.channel
             initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
-            playerRepository.loadStreamPlaylist(channel.name)
+            call(playerRepository.loadStreamPlaylist(channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(it)
                         play()
+                        seekTimer = fixedRateTimer(period = 10000L, action = {
+                            runBlocking(Dispatchers.Main) {
+                                if (timeSpentBuffering > 5000L && player.playWhenReady) {
+                                    player.seekToDefaultPosition()
+                                    timeSpentBuffering = 0L
+                                }
+                            }
+                        })
                     }, {
                         val context = getApplication<Application>()
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
-                    })
-                    .addTo(compositeDisposable)
+                    }))
         }
     }
 
@@ -88,6 +103,14 @@ class StreamPlayerViewModel @Inject constructor(
 
     override fun onCleared() {
         stopChat()
+        seekTimer?.cancel()
         super.onCleared()
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        when (playbackState) {
+            Player.STATE_BUFFERING -> bufferedAt = System.currentTimeMillis()
+            Player.STATE_READY -> timeSpentBuffering += System.currentTimeMillis() - bufferedAt
+        }
     }
 }

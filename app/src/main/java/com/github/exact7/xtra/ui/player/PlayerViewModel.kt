@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.player
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
@@ -13,6 +12,7 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.isNetworkAvailable
@@ -29,20 +29,21 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
-abstract class PlayerViewModel(context: Application) : AndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener {
+@ExperimentalCoroutinesApi
+abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, OnChatMessageReceivedListener, CoroutineScope by MainScope() {
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
     protected val trackSelector = DefaultTrackSelector()
-    protected val compositeDisposable = CompositeDisposable()
     val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector).apply { addListener(this@PlayerViewModel) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
@@ -61,6 +62,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
     private val _newMessage: MutableLiveData<ChatMessage> by lazy { MutableLiveData<ChatMessage>() }
     val newMessage: LiveData<ChatMessage>
         get() = _newMessage
+
 
     override fun onMessage(message: ChatMessage) {
         message.badges?.find { it.id == "subscriber" }?.let {
@@ -83,7 +85,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
 
     protected fun initChat(playerRepository: PlayerRepository, channelId: String?, channelName: String, streamChatCallback: (() -> Unit)? = null) {
         channelId?.let { id ->
-            playerRepository.loadSubscriberBadges(id)
+            call(playerRepository.loadSubscriberBadges(id)
                     .subscribeBy(onSuccess = {
                         it.badges
                         subscriberBadges = it
@@ -91,15 +93,12 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
                     }, onError = {
                         //no subscriber badges
                         streamChatCallback?.invoke()
-                    })
-                    .addTo(compositeDisposable)
+                    }))
         }
-        playerRepository.loadBttvEmotes(channelName)
-                .subscribeBy(onSuccess = { _bttv.value = it.body()?.emotes })
-                .addTo(compositeDisposable)
-        playerRepository.loadFfzEmotes(channelName)
-                .subscribeBy(onSuccess = { _ffz.value = it.body()?.emotes })
-                .addTo(compositeDisposable)
+        call(playerRepository.loadBttvEmotes(channelName)
+                .subscribeBy(onSuccess = { _bttv.value = it.body()?.emotes }))
+        call(playerRepository.loadFfzEmotes(channelName)
+                .subscribeBy(onSuccess = { _ffz.value = it.body()?.emotes }))
     }
 
     open fun onResume() {
@@ -112,7 +111,7 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
 
     override fun onCleared() {
         player.release()
-        compositeDisposable.clear()
+        cancel()
         super.onCleared()
     }
 
@@ -152,33 +151,33 @@ abstract class PlayerViewModel(context: Application) : AndroidViewModel(context)
                             this@PlayerViewModel is StreamPlayerViewModel &&
                             error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404 }
                 } catch (e: IllegalStateException) {
+                    Crashlytics.log(Log.ERROR, "PlayerViewModel", "onPlayerError: Stream end check error. Type: ${error.type}")
                     Crashlytics.logException(e)
-                    Crashlytics.log("PlayerViewModel.onPlayerError: Stream end check error. Type: ${error.type}")
                     return
                 }
                 if (isStreamEnded) {
                     Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
-                    GlobalScope.launch {
-                        delay(1500L)
-                        runBlocking(Dispatchers.Main) {
-                            try {
-                                if (this@PlayerViewModel is StreamPlayerViewModel) {
-                                    play()
-                                } else {
-                                    onResume()
-                                }
-                            } catch (e: Exception) {
-                                Crashlytics.logException(e)
-                                Crashlytics.log("PlayerViewModel.onPlayerError: Retry error. ${e.message}")
+                    launch {
+                        withContext(Dispatchers.Default) {
+                            delay(1500L)
+                        }
+                        try {
+                            if (this@PlayerViewModel is StreamPlayerViewModel) {
+                                play()
+                            } else {
+                                onResume()
                             }
+                        } catch (e: Exception) {
+                            Crashlytics.log(Log.ERROR, "PlayerViewModel", "onPlayerError: Retry error. ${e.message}")
+                            Crashlytics.logException(e)
                         }
                     }
                 }
             } catch (e: Exception) {
+                Crashlytics.log(Log.ERROR, "PlayerViewModel", "onPlayerError ${e.message}")
                 Crashlytics.logException(e)
-                Crashlytics.log("PlayerViewModel.onPlayerError: ${e.message}")
             }
         }
     }

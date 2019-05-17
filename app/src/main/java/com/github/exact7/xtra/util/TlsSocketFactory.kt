@@ -17,11 +17,11 @@ import javax.net.ssl.SSLSocketFactory
  * get only from API 20.
  * @link https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
  */
-class Tls12SocketFactory(private val delegate: SSLSocketFactory) : SSLSocketFactory() {
+class TlsSocketFactory(private val delegate: SSLSocketFactory) : SSLSocketFactory() {
 
-    private fun Socket.patchForTls12(): Socket {
+    private fun Socket.patch(): Socket {
         return (this as? SSLSocket)?.apply {
-            enabledProtocols += TlsVersion.TLS_1_2.javaName()
+            enabledProtocols += arrayOf(TlsVersion.TLS_1_1.javaName(), TlsVersion.TLS_1_2.javaName())
         } ?: this
     }
 
@@ -35,26 +35,26 @@ class Tls12SocketFactory(private val delegate: SSLSocketFactory) : SSLSocketFact
 
     @Throws(IOException::class)
     override fun createSocket(s: Socket, host: String, port: Int, autoClose: Boolean): Socket? {
-        return delegate.createSocket(s, host, port, autoClose).patchForTls12()
+        return delegate.createSocket(s, host, port, autoClose).patch()
     }
 
     @Throws(IOException::class, UnknownHostException::class)
     override fun createSocket(host: String, port: Int): Socket? {
-        return delegate.createSocket(host, port).patchForTls12()
+        return delegate.createSocket(host, port).patch()
     }
 
     @Throws(IOException::class, UnknownHostException::class)
     override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket? {
-        return delegate.createSocket(host, port, localHost, localPort).patchForTls12()
+        return delegate.createSocket(host, port, localHost, localPort).patch()
     }
 
     @Throws(IOException::class)
     override fun createSocket(host: InetAddress, port: Int): Socket? {
-        return delegate.createSocket(host, port).patchForTls12()
+        return delegate.createSocket(host, port).patch()
     }
 
     @Throws(IOException::class)
     override fun createSocket(address: InetAddress, port: Int, localAddress: InetAddress, localPort: Int): Socket? {
-        return delegate.createSocket(address, port, localAddress, localPort).patchForTls12()
+        return delegate.createSocket(address, port, localAddress, localPort).patch()
     }
 }

@@ -61,6 +61,8 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.security.ProviderInstaller
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -175,19 +177,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         if (savedInstanceState == null) {
-//            ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
-//                override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
-//                    GoogleApiAvailability.getInstance().apply {
-//                        if (isUserResolvableError(errorCode)) {
+            ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
+                override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
+                    GoogleApiAvailability.getInstance().apply {
+                        if (isUserResolvableError(errorCode)) {
 //                             Prompt the user to install/update/enable Google Play services.
-//                            showErrorDialogFragment(this@MainActivity, errorCode, 0)
-//                        } else {
-//                            Toast.makeText(this@MainActivity, getString(R.string.play_services_not_available), Toast.LENGTH_LONG).show()
-//                        }
-//                    }
-//                }
-//                override fun onProviderInstalled() {}
-//            })
+                            showErrorDialogFragment(this@MainActivity, errorCode, 0)
+                        } else {
+                            Toast.makeText(this@MainActivity, getString(R.string.play_services_not_available), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+                override fun onProviderInstalled() {}
+            })
             handleIntent(intent)
         }
         restorePlayerFragment()

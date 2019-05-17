@@ -28,7 +28,6 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
-import com.github.exact7.xtra.util.displayDensity
 import java.util.Random
 import kotlin.collections.set
 
@@ -168,19 +167,16 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
                     val url: String
                     val isPng: Boolean
-                    val width: Float?
                     if (emote is BttvEmote) {
                         url = "$BTTV_URL${emote.id}/2x"
                         isPng = emote.isPng
-                        width = null
                     } else { //FFZ
                         (emote as FfzEmote).also {
                             url = it.url
                             isPng = true
-                            width = it.width
                         }
                     }
-                    images.add(Image(url, builderIndex, builderIndex + 1, true, isPng, width))
+                    images.add(Image(url, builderIndex, builderIndex + 1, true, isPng))
                     if (i != split.lastIndex) 2 else 1
                 }
             }
@@ -195,14 +191,34 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, originalMessage: CharSequence, builder: SpannableStringBuilder) {
         val context = holder.itemView.context
-        images.forEach { (url, start, end, isEmote, isPng, width) ->
+        images.forEach { (url, start, end, isEmote, isPng) ->
             if (isPng) {
                 GlideApp.with(context)
                         .load(url)
                         .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val size = if (isEmote) emoteSize else badgeSize
-                                resource.setBounds(0, 0, if (width == null) size else (context.displayDensity * width * 0.9f).toInt(), size)
+                                val intrinsicWidth = resource.intrinsicWidth.toFloat()
+                                val intrinsicHeight = resource.intrinsicHeight.toFloat()
+                                val widthRatio = intrinsicWidth / intrinsicHeight
+                                val width: Int
+                                val height: Int //TODO remove exact5 in livechatthread
+                                when {
+                                    widthRatio == 1f -> {
+                                        width = size
+                                        height = size
+                                    }
+                                    widthRatio > 1 -> {
+                                        width = (size * widthRatio).toInt() //TODO smaller size if increased
+                                        height = size
+
+                                    }
+                                    else -> {
+                                        width = size
+                                        height = (size * (intrinsicHeight / intrinsicWidth)).toInt()
+                                    }
+                                }
+                                resource.setBounds(0, 0, width, height)
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: IndexOutOfBoundsException) {
