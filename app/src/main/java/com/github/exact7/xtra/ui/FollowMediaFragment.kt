@@ -1,15 +1,16 @@
-package com.github.exact7.xtra.ui.pagers
+package com.github.exact7.xtra.ui
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.ui.clips.common.ClipsFragment
-import com.github.exact7.xtra.ui.streams.common.StreamsFragment
-import com.github.exact7.xtra.ui.videos.top.TopVideosFragment
+import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
+import com.github.exact7.xtra.ui.common.MediaFragment
+import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
+import com.github.exact7.xtra.ui.videos.followed.FollowedVideosFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 
-class TopFragment : MediaFragment() {
+class FollowMediaFragment : MediaFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -18,9 +19,9 @@ class TopFragment : MediaFragment() {
 
     override fun onSpinnerItemSelected(position: Int): Fragment {
         return when (position) {
-            0 -> StreamsFragment()
-            1 -> TopVideosFragment()
-            else -> ClipsFragment()
+            0 -> FollowedStreamsFragment()
+            1 -> FollowedVideosFragment()
+            else -> FollowedClipsFragment()
         }
     }
 }

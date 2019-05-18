@@ -40,7 +40,7 @@
     <string name="from">От:</string>
     <string name="to">До:</string>
     <string name="duration">Длительность: %s</string>
-    <string name="invalid_time">Некорректное время. Используйте ":" или "." для указания времени</string>
+    <string name="invalid_time">Некорректное время</string>
     <string name="from_is_greater">Время От должно быть меньше чем До</string>
     <string name="to_is_lesser">Время До должно быть больше чем От</string>
     <string name="to_is_longer">Время До должно быть меньше длины видео</string>
@@ -114,4 +114,5 @@
     <string name="reply">Ответить</string>
     <string name="copy_message">Скопировать сообщение</string>
     <string name="view_profile">Открыть профиль</string>
+    <string name="chat">Чат</string>
 </resources>

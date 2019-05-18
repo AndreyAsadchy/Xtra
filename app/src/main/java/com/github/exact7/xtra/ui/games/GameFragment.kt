@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.pagers
+package com.github.exact7.xtra.ui.games
 
 import android.os.Bundle
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
+import com.github.exact7.xtra.ui.common.MediaFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.streams.common.StreamsFragment
 import com.github.exact7.xtra.ui.videos.game.GameVideosFragment

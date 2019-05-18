@@ -40,7 +40,7 @@ class ChatView : LinearLayout {
         fun send(message: CharSequence)
     }
 
-    private val adapter = ChatAdapter(context.convertDpToPixels(26f), context.convertDpToPixels(18f))
+    private val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f))
 
     private var isChatTouched = false
 

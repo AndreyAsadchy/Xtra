@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.pagers
+package com.github.exact7.xtra.ui.channel
 
 import android.content.Context
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
+import com.github.exact7.xtra.ui.common.pagers.ItemAwareFragmentPagerAdapter
 import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
 
 class ChannelPagerAdapter(
@@ -16,7 +17,8 @@ class ChannelPagerAdapter(
     override fun getPageTitle(position: Int): CharSequence? {
         val id = when (position) {
             0 -> R.string.videos
-            else -> R.string.clips
+            1 -> R.string.clips
+            else -> R.string.chat
         }
         return context.getString(id)
     }

@@ -76,13 +76,14 @@
         app:layout_constraintBottom_toBottomOf="@id/timeFrom"
         tools:visibility="visible"/>
 
-    <EditText
+    <com.github.exact7.xtra.ui.view.StrictEditText
         android:id="@+id/timeFrom"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:inputType="time"
+        android:inputType="number"
+        android:digits="0123456789:"
         android:maxLength="8"
-        android:imeOptions="flagNoFullscreen"
+        android:imeOptions="flagNoFullscreen|actionNext"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
@@ -106,13 +107,14 @@
         app:layout_constraintBottom_toBottomOf="@id/timeTo"
         tools:visibility="visible"/>
 
-    <EditText
+    <com.github.exact7.xtra.ui.view.StrictEditText
         android:id="@+id/timeTo"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:inputType="time"
+        android:inputType="number"
+        android:digits="0123456789:"
         android:maxLength="8"
-        android:imeOptions="flagNoFullscreen"
+        android:imeOptions="flagNoFullscreen|actionDone"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"

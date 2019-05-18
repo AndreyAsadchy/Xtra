@@ -1,13 +1,13 @@
 package com.github.exact7.xtra.di
 
 import com.github.exact7.xtra.ui.FollowValidationFragment
+import com.github.exact7.xtra.ui.channel.ChannelPagerFragment
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
-import com.github.exact7.xtra.ui.pagers.ChannelPagerFragment
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment

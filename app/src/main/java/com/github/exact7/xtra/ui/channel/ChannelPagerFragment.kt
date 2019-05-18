@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.pagers
+package com.github.exact7.xtra.ui.channel
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +14,7 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
+import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C

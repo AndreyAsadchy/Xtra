@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.pagers
+package com.github.exact7.xtra.ui.common.pagers
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager

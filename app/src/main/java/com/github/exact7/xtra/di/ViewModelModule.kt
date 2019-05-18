@@ -2,6 +2,7 @@ package com.github.exact7.xtra.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.github.exact7.xtra.ui.channel.ChannelPagerViewModel
 import com.github.exact7.xtra.ui.clips.common.ClipsViewModel
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsViewModel
 import com.github.exact7.xtra.ui.common.GenericViewModelFactory
@@ -10,7 +11,6 @@ import com.github.exact7.xtra.ui.download.VideoDownloadViewModel
 import com.github.exact7.xtra.ui.downloads.DownloadsViewModel
 import com.github.exact7.xtra.ui.games.GamesViewModel
 import com.github.exact7.xtra.ui.main.MainViewModel
-import com.github.exact7.xtra.ui.pagers.ChannelPagerViewModel
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel

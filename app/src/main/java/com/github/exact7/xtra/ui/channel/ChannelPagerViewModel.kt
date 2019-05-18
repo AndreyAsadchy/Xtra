@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.pagers
+package com.github.exact7.xtra.ui.channel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

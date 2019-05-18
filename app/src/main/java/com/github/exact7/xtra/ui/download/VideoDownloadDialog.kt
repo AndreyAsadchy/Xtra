@@ -8,6 +8,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.children
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -77,24 +79,14 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                 timeTo.hint = this.let { if (it.length != 5) it else "00:$it" }
             }
             timeFrom.hint = DateUtils.formatElapsedTime(currentPosition / 1000L).let { if (it.length == 5) "00:$it" else it }
-            timeFrom.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    timeFrom.error = null
-                }
-            })
-            timeTo.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    timeTo.error = null
-                }
-            })
+            timeFrom.doOnTextChanged { text, _, _, _ -> if (text?.length == 8) timeTo.requestFocus() }
+            addTextChangeListener(timeFrom)
+            addTextChangeListener(timeTo)
             cancel.setOnClickListener { dismiss() }
-            download.setOnClickListener {
-                val from = parseTime(timeFrom) ?: return@setOnClickListener
-                val to = parseTime(timeTo) ?: return@setOnClickListener
+
+            fun download() {
+                val from = parseTime(timeFrom) ?: return
+                val to = parseTime(timeTo) ?: return
                 when {
                     to > totalDuration -> {
                         timeTo.requestFocus()
@@ -129,7 +121,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                         val preference = prefs.getString(C.DOWNLOAD_NETWORK_PREFERENCE, "3")
                         var wifiOnly = preference == "2"
 
-                        fun download() {
+                        fun startDownload() {
                             val quality = spinner.selectedItem.toString()
                             val url = videoInfo.qualities.getValue(quality).substringBeforeLast('/') + "/"
                             viewModel.download(url, downloadPath, quality, fromIndex, toIndex, wifiOnly)
@@ -137,16 +129,16 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                         }
 
                         if (preference != "3") {
-                            download()
+                            startDownload()
                         } else {
                             wifiOnly = true
                             AlertDialog.Builder(context)
                                     .setMultiChoiceItems(arrayOf(getString(R.string.wifi_only)), BooleanArray(1) { true }) { _, _, isChecked -> wifiOnly = isChecked }
                                     .setPositiveButton(getString(R.string.always)) { _, _ ->
                                         prefs.edit { putString(C.DOWNLOAD_NETWORK_PREFERENCE, if (wifiOnly) "2" else "1") }
-                                        download()
+                                        startDownload()
                                     }
-                                    .setNegativeButton(getString(R.string.just_once)) { _, _ -> download() }
+                                    .setNegativeButton(getString(R.string.just_once)) { _, _ -> startDownload() }
                                     .setNeutralButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
                                     .setCustomTitle(LayoutInflater.from(context).inflate(R.layout.view_download_warning, null))
                                     .show()
@@ -162,13 +154,22 @@ class VideoDownloadDialog : BaseDownloadDialog() {
                     }
                 }
             }
+            timeTo.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    download()
+                    true
+                } else {
+                    false
+                }
+            }
+            download.setOnClickListener { download() }
         }
     }
 
     private fun parseTime(textView: TextView): Long? {
         with(textView) {
             val value = if (text.isEmpty()) hint else text
-            val time = value.split(Regex("[:.]"))
+            val time = value.split(':')
             try {
                 if (time.size != 3) throw IllegalArgumentException()
                 val hours = time[0].toLong()
@@ -181,5 +182,26 @@ class VideoDownloadDialog : BaseDownloadDialog() {
             }
         }
         return null
+    }
+
+    private fun addTextChangeListener(textView: TextView) {
+        textView.addTextChangedListener(object : TextWatcher {
+            private var lengthBeforeEdit = 0
+
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                textView.error = null
+                val length = s.length
+                if (length == 2 || length == 5) {
+                    if (lengthBeforeEdit < length) {
+                        textView.append(":")
+                    } else {
+                        textView.editableText.delete(length - 1, length)
+                    }
+                }
+                lengthBeforeEdit = length
+            }
+        })
     }
 }

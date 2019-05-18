@@ -41,7 +41,7 @@
     <string name="from">From:</string>
     <string name="to">To:</string>
     <string name="duration">Duration: %s</string>
-    <string name="invalid_time">Invalid time. Use ":" or "." to set the time</string>
+    <string name="invalid_time">Invalid time</string>
     <string name="from_is_greater">Time From must be less than To</string>
     <string name="to_is_lesser">Time To must be greater than From</string>
     <string name="to_is_longer">To can\'t be greater than video length</string>
@@ -116,4 +116,5 @@
     <string name="reply">Reply</string>
     <string name="copy_message">Copy message</string>
     <string name="view_profile">View profile</string>
+    <string name="chat">Chat</string>
 </resources>

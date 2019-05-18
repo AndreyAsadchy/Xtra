@@ -30,6 +30,7 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
 import java.util.Random
 import kotlin.collections.set
+import kotlin.math.min
 
 const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
 const val BTTV_URL = "https://cdn.betterttv.net/emote/"
@@ -50,6 +51,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
     private val savedColors = HashMap<String, Int>()
     private val emotes = HashMap<String, Emote>()
     private var username: String? = null
+    private val scaledEmoteSize = (emoteSize * 0.78f).toInt()
 
     private var messageClickListener: ((CharSequence, CharSequence) -> Unit)? = null
 
@@ -197,26 +199,15 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                         .load(url)
                         .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                                val size = if (isEmote) emoteSize else badgeSize
-                                val intrinsicWidth = resource.intrinsicWidth.toFloat()
-                                val intrinsicHeight = resource.intrinsicHeight.toFloat()
-                                val widthRatio = intrinsicWidth / intrinsicHeight
                                 val width: Int
-                                val height: Int //TODO remove exact5 in livechatthread
-                                when {
-                                    widthRatio == 1f -> {
-                                        width = size
-                                        height = size
-                                    }
-                                    widthRatio > 1 -> {
-                                        width = (size * widthRatio).toInt() //TODO smaller size if increased
-                                        height = size
-
-                                    }
-                                    else -> {
-                                        width = size
-                                        height = (size * (intrinsicHeight / intrinsicWidth)).toInt()
-                                    }
+                                val height: Int
+                                if (isEmote) {
+                                    val size = calculateEmoteSize(resource)
+                                    width = size.first
+                                    height = size.second
+                                } else {
+                                    width = badgeSize
+                                    height = badgeSize
                                 }
                                 resource.setBounds(0, 0, width, height)
                                 try {
@@ -251,7 +242,8 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                                     }
                                 }
                                 resource.apply {
-                                    setBounds(0, 0, emoteSize, emoteSize)
+                                    val size = calculateEmoteSize(this)
+                                    setBounds(0, 0, size.first, size.second)
                                     setLoopCount(GifDrawable.LOOP_FOREVER)
                                     this.callback = callback
                                     start()
@@ -284,6 +276,33 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
     }
 
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]
+
+    private fun calculateEmoteSize(resource: Drawable): Pair<Int, Int> {
+        val intrinsicWidth = resource.intrinsicWidth.toFloat()
+        val intrinsicHeight = resource.intrinsicHeight.toFloat()
+        val widthRatio = intrinsicWidth / intrinsicHeight
+        val width: Int
+        val height: Int
+        when {
+            widthRatio == 1f -> {
+                width = emoteSize
+                height = emoteSize
+            }
+            widthRatio in 0.8f..1.2f -> {
+                width = (emoteSize * widthRatio).toInt()
+                height = emoteSize
+            }
+            widthRatio > 1.2f -> {
+                width = (scaledEmoteSize * widthRatio).toInt()
+                height = scaledEmoteSize
+            }
+            else -> {
+                width = scaledEmoteSize
+                height = (scaledEmoteSize * min(intrinsicHeight / intrinsicWidth, 1.5f)).toInt()
+            }
+        }
+        return width to height
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

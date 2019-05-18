@@ -114,4 +114,5 @@
     <string name="reply">الرد</string>
     <string name="copy_message">نسخ الرسالة</string>
     <string name="view_profile">عَرض الصفحة الشخصية</string>
+    <string name="chat">الدردشة</string>
 </resources>

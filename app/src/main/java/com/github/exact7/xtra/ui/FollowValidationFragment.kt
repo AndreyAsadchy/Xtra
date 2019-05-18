@@ -17,7 +17,6 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
-import com.github.exact7.xtra.ui.pagers.FollowMediaFragment
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.fragment_follow.*
 import kotlinx.android.synthetic.main.view_follow_not_logged.view.*
