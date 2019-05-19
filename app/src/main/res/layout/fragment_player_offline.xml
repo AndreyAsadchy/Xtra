@@ -11,7 +11,7 @@
         app:controller_layout_id="@layout/player_offline"
         style="@style/Player.Portrait"/>
 
-    <View
+    <FrameLayout
         android:id="@+id/dummyView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

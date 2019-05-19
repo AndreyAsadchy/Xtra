@@ -26,7 +26,6 @@ class StreamPlayerViewModel @Inject constructor(
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
         get() = _stream
-    val emotes by lazy { playerRepository.loadEmotes() }
     override val channelInfo: Pair<String, String>
         get() {
             val s = stream.value!!

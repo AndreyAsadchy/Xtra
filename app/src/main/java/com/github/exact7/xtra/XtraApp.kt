@@ -86,7 +86,11 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
     override fun serviceInjector(): AndroidInjector<Service> = dispatchingServiceInjector
     override fun broadcastReceiverInjector(): AndroidInjector<BroadcastReceiver> = dispatchingBroadcastReceiverInjector
 
-    fun setLifecycleListener(listener: LifecycleListener?) {
-        appLifecycleObserver.setLifecycleListener(listener)
+    fun addLifecycleListener(listener: LifecycleListener) {
+        appLifecycleObserver.addListener(listener)
+    }
+
+    fun removeLifecycleListener(listener: LifecycleListener) {
+        appLifecycleObserver.removeListener(listener)
     }
 }

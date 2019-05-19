@@ -100,7 +100,7 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        chatReplayManager?.stop()
+//        chatReplayManager?.stop()
         super.onCleared()
     }
 }

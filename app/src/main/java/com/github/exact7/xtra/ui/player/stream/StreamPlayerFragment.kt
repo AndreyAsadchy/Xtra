@@ -8,22 +8,19 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.stream.Stream
+import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
-import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
-import com.github.exact7.xtra.ui.view.chat.MessageClickedDialog
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
-import com.github.exact7.xtra.util.hideKeyboard
-import kotlinx.android.synthetic.main.fragment_player_stream.*
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
-class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, MessageClickedDialog.OnButtonClickListener {
+class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
+    private lateinit var chatFragment: ChatFragment
     override lateinit var viewModel: StreamPlayerViewModel
     private lateinit var stream: Stream
     override val channel: Channel
@@ -40,33 +37,35 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 
     override fun initialize() {
         viewModel = createViewModel(StreamPlayerViewModel::class.java)
+        chatFragment = childFragmentManager.findFragmentById(R.id.chatFragmentContainer).let {
+            if (it == null) {
+                val fragment = ChatFragment.newInstance(channel.id, channel.name)
+                childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, fragment).commit()
+                fragment
+            } else {
+                it as ChatFragment
+            }
+        }
         getMainViewModel().user.observe(viewLifecycleOwner, Observer {
             viewModel.startStream(stream)
             initializeViewModel(viewModel)
-            if (it is LoggedIn) {
-                chatView.messagingEnabled = true
-                viewModel.emotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))
-            }
         })
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
         })
-//        initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
-
-//        viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
         resume.setOnClickListener { viewModel.player.seekToDefaultPosition() }
     }
 
-    fun hideEmotesMenu() = chatView.hideEmotesMenu()
+    fun hideEmotesMenu() = chatFragment.hideEmotesMenu()
 
     override fun onMinimize() {
         super.onMinimize()
-        chatView.hideKeyboard()
+        chatFragment.hideKeyboard()
     }
 
 //    override fun play(obj: Parcelable) {
@@ -84,19 +83,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 //            if (index >= viewModel.helper.urls.value!!.lastIndex) {
 //                TODO hide player
 //            }
-    }
-
-    override fun onReplyClicked(userName: String) {
-        chatView.reply(userName)
-    }
-
-    override fun onCopyMessageClicked(message: String) {
-        chatView.setMessage(message)
-    }
-
-    override fun onViewProfileClicked(channel: Channel) {
-        (requireActivity() as MainActivity).viewChannel(channel)
-        minimize()
     }
 
     override fun onMovedToForeground() {

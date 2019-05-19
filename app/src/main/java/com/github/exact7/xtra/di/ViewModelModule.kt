@@ -3,6 +3,7 @@ package com.github.exact7.xtra.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.exact7.xtra.ui.channel.ChannelPagerViewModel
+import com.github.exact7.xtra.ui.chat.ChatViewModel
 import com.github.exact7.xtra.ui.clips.common.ClipsViewModel
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsViewModel
 import com.github.exact7.xtra.ui.common.GenericViewModelFactory
@@ -132,4 +133,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MessageClickedViewModel::class)
     abstract fun bindMessageClickedViewModel(messageClickedViewModel: MessageClickedViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChatViewModel::class)
+    abstract fun bindChatViewModel(chatViewModel: ChatViewModel): ViewModel
 }

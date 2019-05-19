@@ -6,19 +6,23 @@ import androidx.lifecycle.OnLifecycleEvent
 
 class AppLifecycleObserver : LifecycleObserver {
 
-    private var listener: LifecycleListener? = null //TODO if needed more make addListener
+    private val listeners = arrayListOf<LifecycleListener>()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onMoveToForeground() {
-        listener?.onMovedToForeground()
+        listeners.forEach { it.onMovedToForeground() }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onMoveToBackground() {
-        listener?.onMovedToBackground()
+        listeners.forEach { it.onMovedToBackground() }
     }
 
-    fun setLifecycleListener(listener: LifecycleListener?) {
-        this.listener = listener
+    fun addListener(listener: LifecycleListener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: LifecycleListener) {
+        listeners.remove(listener)
     }
 }

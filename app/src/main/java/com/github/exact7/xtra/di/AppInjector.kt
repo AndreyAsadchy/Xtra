@@ -31,13 +31,13 @@ object AppInjector {
                                 AndroidSupportInjection.inject(f)
                             }
                             if (f is LifecycleListener) {
-                                xtraApp.setLifecycleListener(f)
+                                xtraApp.addLifecycleListener(f)
                             }
                         }
 
                         override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
                             if (f is LifecycleListener) {
-                                xtraApp.setLifecycleListener(null)
+                                xtraApp.removeLifecycleListener(f)
                             }
                         }
                     }, true)

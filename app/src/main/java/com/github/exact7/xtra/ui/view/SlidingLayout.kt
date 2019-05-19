@@ -50,7 +50,7 @@ class SlidingLayout : LinearLayout {
     private var shouldUpdateDragLayout = false
 
     private var maximizedSecondViewVisibility: Int? = null
-    private var listeners = mutableSetOf<Listener>()
+    private var listeners = arrayListOf<Listener>()
 
     private val animatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
@@ -65,9 +65,9 @@ class SlidingLayout : LinearLayout {
             secondView?.postInvalidate()
         }
     }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {

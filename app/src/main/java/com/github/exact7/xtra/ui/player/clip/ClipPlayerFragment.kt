@@ -46,7 +46,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         if (!enableChat) {
             chatReplayUnavailable.visible()
         }
-        initializeViewModel(viewModel, enableChat)
+        initializeViewModel(viewModel)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         val download = requireView().findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(this, Observer {

@@ -3,16 +3,13 @@ package com.github.exact7.xtra.ui.player
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.repository.TwitchService
-import com.google.android.exoplayer2.Player
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
 import java.util.Timer
 import javax.inject.Inject
@@ -23,7 +20,7 @@ class ChatReplayManager @Inject constructor(
         private val repository: TwitchService,
         private val videoId: String,
         private val startTime: Double,
-        private val player: Player,
+        private val currentPosition: () -> Double,
         private val addMessage: (ChatMessage) -> Unit,
         private val clearMessages: () -> Unit) {
 
@@ -112,6 +109,4 @@ class ChatReplayManager @Inject constructor(
         disposable?.dispose()
         job?.cancel()
     }
-
-    private fun currentPosition() = runBlocking(Dispatchers.Main) { player.currentPosition / 1000.0 }
 }

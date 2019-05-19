@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.edit
@@ -25,7 +26,6 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
-import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.gone
@@ -45,8 +45,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: PlayerView
-    private lateinit var chatView: ChatView
-    private var secondView: View? = null
+    private lateinit var chatLayout: FrameLayout
+    private var secondView: ViewGroup? = null
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
 
@@ -61,9 +61,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private lateinit var userPrefs: SharedPreferences
     abstract val channel: Channel
 
-    private var playerViewWidth = 0
-    private var playerViewHeight = 0
-    private var chatViewWidth = 0
+    private var playerWidth = 0
+    private var playerHeight = 0
+    private var chatWidth = 0
 
     private var systemUiFlags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -128,15 +128,15 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
         }
         playerView.post {
-            playerViewWidth = playerView.width
-            playerViewHeight = playerView.height
+            playerWidth = playerView.width
+            playerHeight = playerView.height
         }
         if (this !is OfflinePlayerFragment) {
-            chatView = view.findViewById(R.id.chatView)
-            secondView = chatView
+            chatLayout = view.findViewById(R.id.chatFragmentContainer)
+            secondView = chatLayout
             if (!isPortrait) {
-                chatViewWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
-                chatView.updateLayoutParams { width = chatViewWidth }
+                chatWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
+                chatLayout.updateLayoutParams { width = chatWidth }
                 hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
                     setOnClickListener { hideChat() }
                 }
@@ -195,7 +195,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     if (!isPortrait) {
                         if (this is StreamPlayerFragment) {
                             try {
-                                chatView.updateLayoutParams { width = slidingLayout.width / 2 }
+                                chatLayout.updateLayoutParams { width = slidingLayout.width / 2 }
                             } catch (e: UninitializedPropertyAccessException) { //TODO Just in case, remove if not needed
                                 Crashlytics.logException(e)
                             }
@@ -210,7 +210,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     if (!isPortrait) {
                         if (this is StreamPlayerFragment) {
                             try {
-                                chatView.updateLayoutParams { width = chatViewWidth }
+                                chatLayout.updateLayoutParams { width = chatWidth }
                             } catch (e: UninitializedPropertyAccessException) {
                                 Crashlytics.logException(e)
                             }
@@ -272,34 +272,23 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             playerView.apply {
                 useController = true
                 updateLayoutParams {
-                    width = playerViewWidth
-                    height = playerViewHeight
+                    width = playerWidth
+                    height = playerHeight
                 }
             }
         }
     }
 
-    protected fun initializeViewModel(viewModel: PlayerViewModel, enableChat: Boolean = true) {
+    protected fun initializeViewModel(viewModel: PlayerViewModel) {
         playerView.player = viewModel.player
         if (this !is OfflinePlayerFragment) {
-            val mainViewModel = getMainViewModel()
-            mainViewModel.user.observe(viewLifecycleOwner, Observer {
+            getMainViewModel().user.observe(viewLifecycleOwner, Observer {
                 if (it is LoggedIn) {
-                    if (enableChat) {
-                        chatView.setUsername(it.name)
-                    }
                     if (viewModel is FollowViewModel) {
                         initializeFollow(this, viewModel, requireView().findViewById(R.id.follow), it)
                     }
                 }
             })
-        }
-        if (enableChat) {
-            viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
-            viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyMessageAdded() })
-            val emotesObserver = Observer(chatView::addEmotes)
-            viewModel.bttv.observe(viewLifecycleOwner, emotesObserver)
-            viewModel.ffz.observe(viewLifecycleOwner, emotesObserver)
         }
     }
 
@@ -349,14 +338,14 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private fun hideChat() {
         hideChat.gone()
         showChat.visible()
-        chatView.gone()
+        chatLayout.gone()
         userPrefs.edit { putBoolean(CHAT_OPENED, false) }
     }
 
     private fun showChat() {
         hideChat.visible()
         showChat.gone()
-        chatView.visible()
+        chatLayout.visible()
         userPrefs.edit { putBoolean(CHAT_OPENED, true) }
     }
 }

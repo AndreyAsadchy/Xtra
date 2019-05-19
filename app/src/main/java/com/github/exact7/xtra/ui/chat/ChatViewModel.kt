@@ -15,7 +15,6 @@ import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
-import com.google.android.exoplayer2.Player
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
@@ -23,6 +22,7 @@ class ChatViewModel @Inject constructor(
         private val repository: TwitchService,
         private val playerRepository: PlayerRepository): BaseViewModel(), OnChatMessageReceivedListener {
 
+    val emotes by lazy { playerRepository.loadEmotes() }
     private val _bttv = MutableLiveData<List<BttvEmote>>()
     val bttv: LiveData<List<BttvEmote>>
         get() = _bttv
@@ -58,16 +58,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun startReplay(channelId: String?, channelName: String, videoId: String, startTime: Double, player: Player) {
+    fun startReplay(channelId: String?, channelName: String, videoId: String, startTime: Double, getCurrentPosition: () -> Double) {
         if (chatReplayManager == null) {
             isLive = false
             init(channelId, channelName)
-            chatReplayManager = ChatReplayManager(repository, videoId, startTime, player, this::onMessage, this::clearMessages)
+            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this::onMessage, this::clearMessages)
         }
-    }
-
-    fun clearMessages() {
-        _chatMessages.postValue(ArrayList())
     }
 
     override fun onMessage(message: ChatMessage) {
@@ -111,6 +107,10 @@ class ChatViewModel @Inject constructor(
                 .subscribeBy(onSuccess = { _bttv.value = it.body()?.emotes }))
         call(playerRepository.loadFfzEmotes(channelName)
                 .subscribeBy(onSuccess = { _ffz.value = it.body()?.emotes }))
+    }
+
+    private fun clearMessages() {
+        _chatMessages.postValue(ArrayList())
     }
 
     override fun onCleared() {
