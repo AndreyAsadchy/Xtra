@@ -69,15 +69,17 @@ class LiveChatThread(
     private fun connect() {
         Log.d(TAG, "Connecting to Twitch IRC")
         try {
-            socketIn = Socket("irc.twitch.tv", 6667)
-            readerIn = BufferedReader(InputStreamReader(socketIn!!.getInputStream()))
-            writerIn = BufferedWriter(OutputStreamWriter(socketIn!!.getOutputStream()))
-            if (userName != null) {
-                socketOut = Socket("irc.twitch.tv", 6667)
-                readerOut = BufferedReader(InputStreamReader(socketOut!!.getInputStream()))
-                writerOut = BufferedWriter(OutputStreamWriter(socketOut!!.getOutputStream()))
-                write("PASS oauth:" + userToken!!, writerOut)
-                write("NICK $userName", writerOut)
+            socketIn = Socket("irc.twitch.tv", 6667).also {
+                readerIn = BufferedReader(InputStreamReader(it.getInputStream()))
+                writerIn = BufferedWriter(OutputStreamWriter(it.getOutputStream()))
+            }
+            userName?.let {
+                socketOut = Socket("irc.twitch.tv", 6667).also {
+                    readerOut = BufferedReader(InputStreamReader(it.getInputStream()))
+                    writerOut = BufferedWriter(OutputStreamWriter(it.getOutputStream()))
+                    write("PASS oauth:$userToken", writerOut)
+                    write("NICK $it", writerOut)
+                }
             }
             write("NICK justinfan${Random().nextInt(((9999 - 1000) + 1)) + 1000}", writerIn) //random number between 1000 and 9999
             write("CAP REQ :twitch.tv/tags", writerIn, writerOut)
@@ -95,9 +97,13 @@ class LiveChatThread(
     fun disconnect() {
         try {
             socketIn?.close()
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while disconnecting socketIn", e)
+        }
+        try {
             socketOut?.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Error while disconnecting", e)
+            Log.e(TAG, "Error while disconnecting socketOut", e)
         }
     }
 

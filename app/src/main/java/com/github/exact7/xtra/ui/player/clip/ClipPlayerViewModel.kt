@@ -13,11 +13,9 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
-import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import javax.inject.Inject
@@ -48,7 +46,6 @@ class ClipPlayerViewModel @Inject constructor(
             return c.broadcaster.id to c.broadcaster.displayName
         }
     override lateinit var follow: FollowLiveData
-    private var chatReplayManager: ChatReplayManager? = null
 
     override fun changeQuality(index: Int) {
         playbackProgress = player.currentPosition
@@ -82,7 +79,6 @@ class ClipPlayerViewModel @Inject constructor(
                     }))
             clip.vod?.let {
                 initChat(playerRepository, clip.broadcaster.id, clip.broadcaster.name)
-                chatReplayManager = ChatReplayManager(repository, "v${it.id}", TwitchApiHelper.parseClipOffset(it.url), player, this::onMessage, this::clearMessages)
             }
         }
     }

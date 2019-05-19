@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.videos.channel
 
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.video.Sort
@@ -16,7 +15,7 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
     override lateinit var viewModel: ChannelVideosViewModel
 
     override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelVideosViewModel::class.java)
+        viewModel = createViewModel(ChannelVideosViewModel::class.java)
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {

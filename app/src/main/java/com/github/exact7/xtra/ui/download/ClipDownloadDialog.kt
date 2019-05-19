@@ -10,7 +10,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.util.visible
@@ -39,7 +38,7 @@ class ClipDownloadDialog : BaseDownloadDialog() {
     @Suppress("UNCHECKED_CAST")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipDownloadViewModel::class.java)
+        viewModel = createViewModel(ClipDownloadViewModel::class.java)
         with(requireArguments()) {
             viewModel.init(getParcelable(KEY_CLIP)!!, getSerializable(KEY_QUALITIES) as Map<String, String>?)
         }

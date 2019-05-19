@@ -40,7 +40,7 @@ class FollowValidationFragment : Fragment(), Injectable, Scrollable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity()
-        val viewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
+        val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.user.observe(viewLifecycleOwner, Observer {
             isLoggedIn = it is LoggedIn

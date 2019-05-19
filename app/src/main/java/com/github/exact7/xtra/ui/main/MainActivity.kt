@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
@@ -144,7 +143,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                         .show()
             }
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel = createViewModel(MainViewModel::class.java)
         val user = User.get(this)
         viewModel.setUser(user)
         initNavigation()

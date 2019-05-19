@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.databinding.FragmentGamesBinding
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
@@ -37,7 +36,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     }
 
     override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(GamesViewModel::class.java)
+        viewModel = createViewModel(GamesViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

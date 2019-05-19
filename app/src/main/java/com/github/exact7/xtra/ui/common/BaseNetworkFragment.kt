@@ -47,8 +47,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
             if (!isInitialized && (created || (lastState && userVisibleHint))) {
                 init()
             }
-            val viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
-            viewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
+            getMainViewModel().isNetworkAvailable.observe(viewLifecycleOwner, Observer {
                 val isOnline = it.peekContent()
                 if (isOnline && !lastState) {
                     shouldRestore = if (userVisibleHint) {
@@ -99,6 +98,14 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
             outState.putBoolean(RESTORE_KEY, shouldRestore)
             outState.putBoolean(CREATED_KEY, created)
         }
+    }
+
+    protected fun <T : ViewModel> createViewModel(clazz: Class<T>): T {
+        return ViewModelProviders.of(this, viewModelFactory).get(clazz)
+    }
+
+    protected fun getMainViewModel(): MainViewModel {
+        return ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
     }
 
     private fun init() {

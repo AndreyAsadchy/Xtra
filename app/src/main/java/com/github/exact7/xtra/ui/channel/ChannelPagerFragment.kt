@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -16,7 +15,6 @@ import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.isInLandscapeOrientation
@@ -60,9 +58,9 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
     }
 
     override fun initialize() {
-        val activity = requireActivity() as MainActivity
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ChannelPagerViewModel::class.java)
+        viewModel = createViewModel(ChannelPagerViewModel::class.java)
         viewModel.loadStream(channel)
+        val activity = requireActivity() as MainActivity
         viewModel.stream.observe(viewLifecycleOwner, Observer {
             watchLive.visible(it.stream != null)
             it.stream?.let { s ->
@@ -71,7 +69,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
                 watchLive.setOnClickListener { activity.startStream(s) }
             }
         })
-        ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
+        getMainViewModel().user.observe(viewLifecycleOwner, Observer {
             if (it is LoggedIn) {
                 initializeFollow(this, viewModel, follow, it)
             }

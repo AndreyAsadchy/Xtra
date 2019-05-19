@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.player
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.repository.TwitchService
-import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +23,7 @@ class ChatReplayManager @Inject constructor(
         private val repository: TwitchService,
         private val videoId: String,
         private val startTime: Double,
-        private val player: ExoPlayer,
+        private val player: Player,
         private val addMessage: (ChatMessage) -> Unit,
         private val clearMessages: () -> Unit) {
 

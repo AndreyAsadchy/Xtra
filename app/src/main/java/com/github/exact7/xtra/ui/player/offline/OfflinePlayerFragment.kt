@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -29,7 +28,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(OfflinePlayerViewModel::class.java)
+        viewModel = createViewModel(OfflinePlayerViewModel::class.java)
         playerView.player = viewModel.player
         viewModel.setVideo(requireArguments().getParcelable("video")!!)
     }

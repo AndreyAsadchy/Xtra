@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.exact7.xtra.databinding.FragmentSearchBinding
@@ -43,7 +42,7 @@ class SearchFragment : BaseNetworkFragment(), Injectable {
     }
 
     override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java)
+        viewModel = createViewModel(SearchViewModel::class.java)
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(if (viewModel.query.isNotEmpty()) it else null)

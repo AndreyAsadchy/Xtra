@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.core.content.edit
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
@@ -23,7 +22,6 @@ import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
@@ -282,10 +280,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     protected fun initializeViewModel(viewModel: PlayerViewModel, enableChat: Boolean = true) {
-        val activity = requireActivity() as MainActivity
         playerView.player = viewModel.player
         if (this !is OfflinePlayerFragment) {
-            val mainViewModel = ViewModelProviders.of(activity, viewModelFactory).get(MainViewModel::class.java)
+            val mainViewModel = getMainViewModel()
             mainViewModel.user.observe(viewLifecycleOwner, Observer {
                 if (it is LoggedIn) {
                     if (enableChat) {

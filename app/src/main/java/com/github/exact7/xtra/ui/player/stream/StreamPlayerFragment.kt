@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.view.chat.MessageClickedDialog
 import com.github.exact7.xtra.util.C
@@ -41,9 +39,9 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     }
 
     override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(StreamPlayerViewModel::class.java)
-        ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java).user.observe(viewLifecycleOwner, Observer {
-            viewModel.startStream(stream, it)
+        viewModel = createViewModel(StreamPlayerViewModel::class.java)
+        getMainViewModel().user.observe(viewLifecycleOwner, Observer {
+            viewModel.startStream(stream)
             initializeViewModel(viewModel)
             if (it is LoggedIn) {
                 chatView.messagingEnabled = true
@@ -55,6 +53,8 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
         })
+//        initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
+
         viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)

@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.videos.top
 
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Period
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
@@ -14,7 +13,7 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
     override lateinit var viewModel: TopVideosViewModel
 
     override fun initialize() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopVideosViewModel::class.java)
+        viewModel = createViewModel(TopVideosViewModel::class.java)
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {
