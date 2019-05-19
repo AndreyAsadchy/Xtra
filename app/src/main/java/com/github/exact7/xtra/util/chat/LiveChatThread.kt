@@ -52,7 +52,7 @@ class LiveChatThread(
                 }
 
                 if (userName != null) {
-                    val lineSender = readerOut?.readLine() ?: break
+                    val lineSender = readerOut!!.readLine() ?: break
                     if (lineSender.startsWith("PING")) {
                         handlePing(writerOut!!)
                     }

@@ -19,6 +19,7 @@ import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
@@ -49,7 +50,7 @@ class VideoDownloadDialog : BaseDownloadDialog() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = createViewModel(VideoDownloadViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(VideoDownloadViewModel::class.java)
         viewModel.videoInfo.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 (requireView() as ConstraintLayout).children.forEach { v -> v.visible(v.id != R.id.progressBar && v.id != R.id.storageSelectionContainer) }

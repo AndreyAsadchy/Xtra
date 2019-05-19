@@ -55,7 +55,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         })
 //        initChat(playerRepository, channel.id, channel.name, streamChatCallback = this::startChat)
 
-        viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
+//        viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }

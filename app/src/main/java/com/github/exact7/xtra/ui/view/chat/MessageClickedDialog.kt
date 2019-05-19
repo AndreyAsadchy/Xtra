@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.Channel
@@ -58,7 +59,7 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
             listener.onCopyMessageClicked(msg.substring(msg.indexOf(':') + 1))
             dismiss()
         }
-        val viewModel = createViewModel(MessageClickedViewModel::class.java)
+        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MessageClickedViewModel::class.java)
         viewProfile.setOnClickListener {
             viewModel.loadUser(extractUserName(msg)).observe(viewLifecycleOwner, Observer {
                 listener.onViewProfileClicked(it)
