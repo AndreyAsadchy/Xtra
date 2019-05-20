@@ -88,7 +88,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun init(channelId: String?, channelName: String) {
-        channelId?.let { id ->
+        channelId?.let { id -> //TODO why channel id can be null?
             call(playerRepository.loadSubscriberBadges(id)
                     .subscribeBy(onSuccess = {
                         it.badges

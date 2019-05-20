@@ -17,6 +17,8 @@ import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.ui.view.chat.MessageClickedDialog
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.hideKeyboard
+import com.github.exact7.xtra.util.visible
+import kotlinx.android.synthetic.main.view_chat.view.*
 
 class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDialog.OnButtonClickListener {
 
@@ -31,7 +33,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             arguments = bundleOf(KEY_IS_LIVE to true, KEY_CHANNEL_ID to channelId, KEY_CHANNEL_NAME to channelName)
         }
 
-        fun newInstance(channelId: String?, channelName: String, videoId: String, startTime: Double) = ChatFragment().apply {
+        fun newInstance(channelId: String?, channelName: String, videoId: String?, startTime: Double?) = ChatFragment().apply {
             arguments = bundleOf(KEY_IS_LIVE to false, KEY_CHANNEL_ID to channelId, KEY_CHANNEL_NAME to channelName, KEY_VIDEO_ID to videoId, KEY_START_TIME to startTime)
         }
     }
@@ -53,18 +55,19 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             viewModel.startLive(user, channelId, channelName)
             viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
             if (user is LoggedIn) {
-                chatView.messagingEnabled
+                chatView.messagingEnabled = true
                 chatView.setUsername(user.name)
                 viewModel.emotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))
             }
             true
         } else {
-            val getCurrentPosition = (parentFragment as ChatReplayPlayerFragment)::getCurrentPosition
             args.getString(KEY_VIDEO_ID).let {
                 if (it != null) {
+                    val getCurrentPosition = (parentFragment as ChatReplayPlayerFragment)::getCurrentPosition
                     viewModel.startReplay(channelId, channelName, it, args.getDouble(KEY_START_TIME), getCurrentPosition)
                     true
                 } else {
+                    chatView.chatReplayUnavailable.visible()
                     false
                 }
             }

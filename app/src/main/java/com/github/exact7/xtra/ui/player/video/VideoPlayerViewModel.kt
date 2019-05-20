@@ -10,7 +10,6 @@ import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
-import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -21,6 +20,9 @@ import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -52,7 +54,6 @@ class VideoPlayerViewModel @Inject constructor(
             val v = video.value!!
             return v.channel.id to v.channel.displayName
         }
-    private lateinit var chatReplayManager: ChatReplayManager
 
     fun setVideo(video: Video) {
         if (_video.value != video) {
@@ -69,8 +70,6 @@ class VideoPlayerViewModel @Inject constructor(
                             Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
                         }
                     }))
-//            chatReplayManager = ChatReplayManager(repository, video.id, 0.0, player, this::onMessage, this::clearMessages)
-            initChat(playerRepository, video.channel.id, video.channel.name)
         }
     }
 
@@ -84,7 +83,10 @@ class VideoPlayerViewModel @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        player.seekTo(playbackProgress)
+        launch(Dispatchers.Main) {
+            delay(1000L)
+            player.seekTo(playbackProgress)
+        }
     }
 
     override fun onPause() {
@@ -101,10 +103,5 @@ class VideoPlayerViewModel @Inject constructor(
 
     override fun onPlayerError(error: ExoPlaybackException) {
         playbackProgress = player.currentPosition
-    }
-
-    override fun onCleared() {
-        chatReplayManager.stop()
-        super.onCleared()
     }
 }

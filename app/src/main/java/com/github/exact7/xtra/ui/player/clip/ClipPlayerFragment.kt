@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.ui.chat.ChatFragment
+import com.github.exact7.xtra.ui.chat.ChatReplayPlayerFragment
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
@@ -17,10 +19,11 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
-import com.github.exact7.xtra.util.visible
-import kotlinx.android.synthetic.main.fragment_player_clip.*
+import com.github.exact7.xtra.util.TwitchApiHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
-class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
+class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog, ChatReplayPlayerFragment {
 //    override fun play(obj: Parcelable) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
@@ -40,12 +43,17 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     }
 
     override fun initialize() {
+        if (childFragmentManager.findFragmentById(R.id.chatFragmentContainer) == null) {
+            var videoId: String? = null
+            var startTime: Double? = null
+            clip.vod?.let {
+                videoId = "v${it.id}"
+                startTime = TwitchApiHelper.parseClipOffset(it.url)
+            }
+            childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel.id, channel.name, videoId, startTime)).commit()
+        }
         viewModel = createViewModel(ClipPlayerViewModel::class.java)
         viewModel.setClip(clip)
-        val enableChat = clip.vod != null
-        if (!enableChat) {
-            chatReplayUnavailable.visible()
-        }
         initializeViewModel(viewModel)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         val download = requireView().findViewById<ImageButton>(R.id.download)
@@ -85,5 +93,9 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         if (this::viewModel.isInitialized) {
             viewModel.onResume()
         }
+    }
+
+    override fun getCurrentPosition(): Double {
+        return runBlocking(Dispatchers.Main) { viewModel.player.currentPosition / 1000.0 }
     }
 }

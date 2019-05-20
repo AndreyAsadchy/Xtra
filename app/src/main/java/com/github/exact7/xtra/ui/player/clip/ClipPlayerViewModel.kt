@@ -18,6 +18,9 @@ import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ExtractorMediaSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "ClipPlayerViewModel"
@@ -57,7 +60,10 @@ class ClipPlayerViewModel @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        player.seekTo(playbackProgress)
+        launch(Dispatchers.Main) {
+            delay(1000L)
+            player.seekTo(playbackProgress)
+        }
     }
 
     override fun onPause() {
@@ -71,15 +77,12 @@ class ClipPlayerViewModel @Inject constructor(
             call(playerRepository.loadClipQualities(clip.slug)
                     .subscribe({
                         helper.urls = it
-                        play(it.values.first())
+                        play(it.values.first()) //TODO save selected quality
                         helper.selectedQualityIndex = 0
                         helper.loaded.value = true
                     }, {
 
                     }))
-            clip.vod?.let {
-                initChat(playerRepository, clip.broadcaster.id, clip.broadcaster.name)
-            }
         }
     }
 
@@ -97,10 +100,5 @@ class ClipPlayerViewModel @Inject constructor(
 
     override fun onPlayerError(error: ExoPlaybackException) {
         playbackProgress = player.currentPosition
-    }
-
-    override fun onCleared() {
-//        chatReplayManager?.stop()
-        super.onCleared()
     }
 }

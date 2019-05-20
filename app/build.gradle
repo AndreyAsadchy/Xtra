@@ -75,6 +75,9 @@ android {
     lintOptions {
         disable 'ContentDescription'
     }
+    kotlinOptions {
+        freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+    }
 }
 
 dependencies {

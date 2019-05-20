@@ -24,8 +24,8 @@ import java.util.LinkedHashMap
 import java.util.LinkedList
 import java.util.regex.Pattern
 
-const val VIDEO_RENDERER = 0
-const val AUDIO_RENDERER = 1
+private const val VIDEO_RENDERER = 0
+private const val AUDIO_RENDERER = 1
 private const val TAG = "HlsPlayerViewModel"
 
 abstract class HlsPlayerViewModel(
@@ -54,7 +54,7 @@ abstract class HlsPlayerViewModel(
             updateQuality()
             qualities[index]
         }
-        changePlayerMode(PlayerMode.NORMAL)
+        changePlayerMode(NORMAL)
         prefs.edit { putString(TAG, quality) }
     }
 

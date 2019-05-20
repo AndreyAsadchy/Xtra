@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.ui.chat.ChatFragment
+import com.github.exact7.xtra.ui.chat.ChatReplayPlayerFragment
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
@@ -17,8 +19,10 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
-class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
+class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog, ChatReplayPlayerFragment {
 //    override fun play(obj: Parcelable) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
@@ -38,6 +42,9 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun initialize() {
+        if (childFragmentManager.findFragmentById(R.id.chatFragmentContainer) == null) {
+            childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel.id, channel.name, video.id, 0.0)).commit()
+        }
         viewModel = createViewModel(VideoPlayerViewModel::class.java)
         viewModel.setVideo(video)
         initializeViewModel(viewModel)
@@ -81,5 +88,9 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         if (this::viewModel.isInitialized) {
             viewModel.onResume()
         }
+    }
+
+    override fun getCurrentPosition(): Double {
+        return runBlocking(Dispatchers.Main) { viewModel.player.currentPosition / 1000.0 }
     }
 }

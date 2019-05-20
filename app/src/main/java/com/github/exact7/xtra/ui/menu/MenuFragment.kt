@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,7 +16,6 @@ import com.github.exact7.xtra.ui.SettingsActivity
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
-import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.isInLandscapeOrientation
@@ -55,7 +55,7 @@ class MenuFragment : Fragment() {
         data?.let {
             it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
                 if (value > -1 && activity.isInLandscapeOrientation) {
-                    activity.playerContainer?.findViewById<ChatView>(R.id.chatView)?.updateLayoutParams { width = value }
+                    activity.playerContainer?.findViewById<FrameLayout>(R.id.chatFragmentContainer)?.updateLayoutParams { width = value }
                 }
             }
             if (it.getBooleanExtra("shouldRecreate", false)) {

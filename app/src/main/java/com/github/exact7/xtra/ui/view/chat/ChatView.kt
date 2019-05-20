@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -34,7 +34,7 @@ import kotlin.math.max
 
 private const val MAX_MESSAGE_COUNT = 125
 
-class ChatView : LinearLayout {
+class ChatView : ConstraintLayout {
 
     interface MessageSenderCallback {
         fun send(message: CharSequence)

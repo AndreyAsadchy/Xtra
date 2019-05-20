@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.common.pagers.ItemAwareFragmentPagerAdapter
 import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
@@ -26,7 +27,8 @@ class ChannelPagerAdapter(
     override fun getItem(position: Int): Fragment {
         val fragment: Fragment = when (position) {
             0 -> ChannelVideosFragment()
-            else -> ClipsFragment()
+            1 -> ClipsFragment()
+            else -> ChatFragment()
         }
         return fragment.apply { arguments = args }
     }

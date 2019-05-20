@@ -11,8 +11,8 @@
         app:controller_layout_id="@layout/player_video"
         style="@style/Player.Portrait"/>
 
-    <com.github.exact7.xtra.ui.view.chat.ChatView
-        android:id="@+id/chatView"
+    <FrameLayout
+        android:id="@+id/chatFragmentContainer"
         style="@style/ChatViewPortrait"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

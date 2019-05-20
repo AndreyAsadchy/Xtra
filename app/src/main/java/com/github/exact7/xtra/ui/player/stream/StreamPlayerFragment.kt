@@ -36,7 +36,6 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     }
 
     override fun initialize() {
-        viewModel = createViewModel(StreamPlayerViewModel::class.java)
         chatFragment = childFragmentManager.findFragmentById(R.id.chatFragmentContainer).let {
             if (it == null) {
                 val fragment = ChatFragment.newInstance(channel.id, channel.name)
@@ -46,6 +45,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
                 it as ChatFragment
             }
         }
+        viewModel = createViewModel(StreamPlayerViewModel::class.java)
         getMainViewModel().user.observe(viewLifecycleOwner, Observer {
             viewModel.startStream(stream)
             initializeViewModel(viewModel)
