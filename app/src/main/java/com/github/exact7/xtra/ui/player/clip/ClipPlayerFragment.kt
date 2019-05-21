@@ -50,7 +50,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
                 videoId = "v${it.id}"
                 startTime = TwitchApiHelper.parseClipOffset(it.url)
             }
-            childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel.id, channel.name, videoId, startTime)).commit()
+            childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, videoId, startTime)).commit()
         }
         viewModel = createViewModel(ClipPlayerViewModel::class.java)
         viewModel.setClip(clip)

@@ -38,7 +38,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
     override fun initialize() {
         chatFragment = childFragmentManager.findFragmentById(R.id.chatFragmentContainer).let {
             if (it == null) {
-                val fragment = ChatFragment.newInstance(channel.id, channel.name)
+                val fragment = ChatFragment.newInstance(channel)
                 childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, fragment).commit()
                 fragment
             } else {

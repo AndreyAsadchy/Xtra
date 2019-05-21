@@ -9,6 +9,7 @@ import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.common.pagers.ItemAwareFragmentPagerAdapter
 import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
+import com.github.exact7.xtra.util.C
 
 class ChannelPagerAdapter(
         private val context: Context,
@@ -28,10 +29,10 @@ class ChannelPagerAdapter(
         val fragment: Fragment = when (position) {
             0 -> ChannelVideosFragment()
             1 -> ClipsFragment()
-            else -> ChatFragment()
+            else -> return ChatFragment.newInstance(args.getParcelable(C.CHANNEL)!!)
         }
         return fragment.apply { arguments = args }
     }
 
-    override fun getCount(): Int = 2
+    override fun getCount(): Int = 3
 }

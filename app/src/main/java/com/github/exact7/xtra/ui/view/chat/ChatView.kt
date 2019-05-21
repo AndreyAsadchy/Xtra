@@ -12,15 +12,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
-import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
+import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
@@ -44,19 +42,14 @@ class ChatView : ConstraintLayout {
 
     private var isChatTouched = false
 
-    //    private var recentEmotes: List<Emote>? = null
     private var twitchEmotes: MutableList<Emote> = ArrayList()
     private var otherEmotes: MutableSet<Emote> = HashSet()
     private var emotesAddedCount = 0
 
-    private var fragmentManager: FragmentManager? = null
+    private lateinit var fragmentManager: FragmentManager
+    private var messagingEnabled = false
 
     private var messageCallback: MessageSenderCallback? = null
-    var messagingEnabled = false
-        set(value) {
-            messageView.visible(value)
-            field = value
-        }
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -119,8 +112,6 @@ class ChatView : ConstraintLayout {
             editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
         }
         send.setOnClickListener { sendMessage() }
-
-        initFragmentManager()
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -150,18 +141,17 @@ class ChatView : ConstraintLayout {
                 else -> twitchEmotes.addAll(list)
             }
         }
-        if (++emotesAddedCount == 3) { //TODO check if stream player fragment
-            fun initEmotes() {
-                fragmentManager.let {
-                    if (it != null) {
-                        initEmotesViewPager(it)
-                    } else {
-                        Crashlytics.log("ChatView.addEmotes: fragmentManager is null")
-                        postDelayed(::initEmotes, 1500L)
-                    }
-                }
+        if (++emotesAddedCount == 3 && messagingEnabled) {
+            initEmotesViewPager()
+        }
+    }
+
+    fun setRecentEmotes(list: List<Emote>) {
+        if (list.isNotEmpty()) {
+            recentEmotes.apply {
+                adapter = EmotesAdapter(list) { appendEmote(it) }
+                visible()
             }
-            initEmotes()
         }
     }
 
@@ -174,12 +164,16 @@ class ChatView : ConstraintLayout {
     }
 
     fun hideEmotesMenu(): Boolean {
-        return if (viewPager.isVisible()) {
-            viewPager.gone()
+        return if (emotesMenu.isVisible()) {
+            emotesMenu.gone()
             true
         } else {
             false
         }
+    }
+
+    fun appendEmote(emote: Emote) {
+        editText.text.append(emote.name).append(' ')
     }
 
     @SuppressLint("SetTextI18n")
@@ -194,6 +188,16 @@ class ChatView : ConstraintLayout {
 
     fun setMessage(text: CharSequence) {
         editText.setText(text)
+    }
+
+    fun enableMessaging(fragmentManager: FragmentManager) {
+        this.fragmentManager = fragmentManager
+        messagingEnabled = true
+        adapter.setOnClickListener { original, formatted ->
+            editText.hideKeyboard()
+            MessageClickedDialog.newInstance(original, formatted).show(fragmentManager, null)
+        }
+        messageView.visible(true)
     }
 
     private fun sendMessage(): Boolean {
@@ -212,23 +216,7 @@ class ChatView : ConstraintLayout {
         } == true
     }
 
-    private fun initFragmentManager() {
-        val playerFragment = (context as MainActivity).playerFragment
-        if (playerFragment == null) {
-            Crashlytics.log("ChatView.initFragmentManager: playerFragment is null")
-            postDelayed(this::initFragmentManager, 500L)
-            return
-        } else if (!playerFragment.isAdded) return //needed because we re-attach fragment after closing PIP
-        fragmentManager = playerFragment.childFragmentManager
-        if (playerFragment is StreamPlayerFragment) {
-            adapter.setOnClickListener { original, formatted ->
-                editText.hideKeyboard()
-                MessageClickedDialog.newInstance(original, formatted).show(fragmentManager!!, null)
-            }
-        }
-    }
-
-    private fun initEmotesViewPager(fragmentManager: FragmentManager) {
+    private fun initEmotesViewPager() {
         viewPager.adapter = object : FragmentStatePagerAdapter(fragmentManager) {
 
             override fun getItem(position: Int): Fragment {
@@ -250,7 +238,7 @@ class ChatView : ConstraintLayout {
         }
         emotes.setOnClickListener {
             //TODO add animation
-            viewPager.toggleVisibility()
+            emotesMenu.toggleVisibility()
         }
     }
 

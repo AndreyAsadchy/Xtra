@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
+import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -24,17 +25,16 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
 
     companion object {
         private const val KEY_IS_LIVE = "isLive"
-        private const val KEY_CHANNEL_ID = "channelId"
-        private const val KEY_CHANNEL_NAME = "channelName"
+        private const val KEY_CHANNEL = "channel"
         private const val KEY_VIDEO_ID = "videoId"
         private const val KEY_START_TIME = "startTime"
 
-        fun newInstance(channelId: String?, channelName: String) = ChatFragment().apply {
-            arguments = bundleOf(KEY_IS_LIVE to true, KEY_CHANNEL_ID to channelId, KEY_CHANNEL_NAME to channelName)
+        fun newInstance(channel: Channel) = ChatFragment().apply {
+            arguments = bundleOf(KEY_IS_LIVE to true, KEY_CHANNEL to channel)
         }
 
-        fun newInstance(channelId: String?, channelName: String, videoId: String?, startTime: Double?) = ChatFragment().apply {
-            arguments = bundleOf(KEY_IS_LIVE to false, KEY_CHANNEL_ID to channelId, KEY_CHANNEL_NAME to channelName, KEY_VIDEO_ID to videoId, KEY_START_TIME to startTime)
+        fun newInstance(channel: Channel, videoId: String?, startTime: Double?) = ChatFragment().apply {
+            arguments = bundleOf(KEY_IS_LIVE to false, KEY_CHANNEL to channel, KEY_VIDEO_ID to videoId, KEY_START_TIME to startTime)
         }
     }
 
@@ -48,23 +48,23 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
     override fun initialize() {
         viewModel = createViewModel(ChatViewModel::class.java)
         val args = requireArguments()
-        val channelId = args.getString(KEY_CHANNEL_ID)
-        val channelName = args.getString(KEY_CHANNEL_NAME)!!
+        val channel = args.getParcelable<Channel>(KEY_CHANNEL)!!
         val enableChat = if (args.getBoolean(KEY_IS_LIVE)) {
             val user = User.get(requireContext())
-            viewModel.startLive(user, channelId, channelName)
-            viewModel.chat.observe(viewLifecycleOwner, Observer(chatView::setCallback))
+            viewModel.startLive(user, channel.id, channel.name)
+            chatView.setCallback(viewModel)
             if (user is LoggedIn) {
-                chatView.messagingEnabled = true
+                chatView.enableMessaging(childFragmentManager)
                 chatView.setUsername(user.name)
                 viewModel.emotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))
+                viewModel.recentEmotes.observe(viewLifecycleOwner, Observer(chatView::setRecentEmotes))
             }
             true
         } else {
             args.getString(KEY_VIDEO_ID).let {
                 if (it != null) {
                     val getCurrentPosition = (parentFragment as ChatReplayPlayerFragment)::getCurrentPosition
-                    viewModel.startReplay(channelId, channelName, it, args.getDouble(KEY_START_TIME), getCurrentPosition)
+                    viewModel.startReplay(channel.id, channel.name, it, args.getDouble(KEY_START_TIME), getCurrentPosition)
                     true
                 } else {
                     chatView.chatReplayUnavailable.visible()
@@ -86,6 +86,10 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
     }
 
     fun hideEmotesMenu() = chatView.hideEmotesMenu()
+
+    fun appendEmote(emote: Emote) {
+        chatView.appendEmote(emote)
+    }
 
     override fun onReplyClicked(userName: String) {
         chatView.reply(userName)

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -17,10 +18,12 @@ import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
+import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_channel.*
+import kotlinx.android.synthetic.main.fragment_media_pager.*
 
 
 class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
@@ -55,6 +58,18 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
             setNavigationOnClickListener { activity.popFragment() }
         }
         search.setOnClickListener { activity.openSearch() }
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageSelected(position: Int) {
+                if (position != 2) {
+                    appBar.visible()
+                } else {
+                    appBar.setExpanded(false, true)
+                    appBar.postDelayed({ appBar.gone() }, 300L)
+                }
+            }
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        })
     }
 
     override fun initialize() {

@@ -7,14 +7,18 @@ import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
+import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzRoomResponse
+import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.util.Random
@@ -28,7 +32,8 @@ class PlayerRepository @Inject constructor(
         private val api: ApiService,
         private val usher: UsherApi,
         private val misc: MiscApi,
-        private val emotes: EmotesDao) {
+        private val emotes: EmotesDao,
+        private val recentEmotes: RecentEmotesDao) {
 
     fun loadStreamPlaylist(channelName: String): Single<Uri> {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
@@ -93,4 +98,18 @@ class PlayerRepository @Inject constructor(
     }
 
     fun loadEmotes() = emotes.getAll()
+
+    fun loadRecentEmotes() = recentEmotes.getAll()
+
+    fun insertRecentEmotes(emotes: Collection<RecentEmote>) {
+        GlobalScope.launch {
+            val listSize = emotes.size
+            val list = if (listSize <= RecentEmote.MAX_SIZE) {
+                emotes
+            } else {
+                emotes.toList().subList(listSize - RecentEmote.MAX_SIZE, listSize)
+            }
+            recentEmotes.ensureMaxSizeAndInsert(list)
+        }
+    }
 }

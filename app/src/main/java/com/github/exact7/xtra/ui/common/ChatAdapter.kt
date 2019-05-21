@@ -28,12 +28,10 @@ import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
+import com.github.exact7.xtra.util.chat.EmotesUrlHelper
 import java.util.Random
 import kotlin.collections.set
 import kotlin.math.min
-
-const val EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
-const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
 class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
@@ -126,7 +124,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     }
                     e.end -= length
                 }
-                copy.forEach { (id, begin, end) -> images.add(Image("$EMOTES_URL$id/2.0", index + begin, index + end + 1, true)) }
+                copy.forEach { (id, begin, end) -> images.add(Image(EmotesUrlHelper.getTwitchUrl(id), index + begin, index + end + 1, true)) }
             }
             val split = builder.split(" ")
             var builderIndex = 0
@@ -170,7 +168,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     val url: String
                     val isPng: Boolean
                     if (emote is BttvEmote) {
-                        url = "$BTTV_URL${emote.id}/2x"
+                        url = EmotesUrlHelper.getBttvUrl(emote.id)
                         isPng = emote.isPng
                     } else { //FFZ
                         (emote as FfzEmote).also {

@@ -8,6 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.exact7.xtra.db.AppDatabase
 import com.github.exact7.xtra.db.EmotesDao
+import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.db.RequestsDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.repository.OfflineRepository
@@ -19,6 +20,26 @@ import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
+
+    @Singleton
+    @Provides
+    fun providesRepository(videosDao: VideosDao, requestsDao: RequestsDao): OfflineRepository = OfflineRepository(videosDao, requestsDao)
+
+    @Singleton
+    @Provides
+    fun providesVideosDao(database: AppDatabase): VideosDao = database.videos()
+
+    @Singleton
+    @Provides
+    fun providesEmotesDao(database: AppDatabase): EmotesDao = database.emotes()
+
+    @Singleton
+    @Provides
+    fun providesRequestsDao(database: AppDatabase): RequestsDao = database.requests()
+
+    @Singleton
+    @Provides
+    fun providesRecentEmotesDao(database: AppDatabase): RecentEmotesDao = database.recentEmotes()
 
     @Singleton
     @Provides
@@ -117,24 +138,12 @@ class DatabaseModule {
                                     database.execSQL("DROP TABLE videos")
                                     database.execSQL("ALTER TABLE videos1 RENAME TO videos")
                                 }
+                            },
+                            object : Migration(5, 6) {
+                                override fun migrate(database: SupportSQLiteDatabase) {
+                                    database.execSQL("CREATE TABLE IF NOT EXISTS recent_emotes (name TEXT NOT NULL, url TEXT NOT NULL, used_at INTEGER NOT NULL, PRIMARY KEY (name))")
+                                }
                             }
                     )
                     .build()
-
-
-    @Singleton
-    @Provides
-    fun providesRepository(videosDao: VideosDao, requestsDao: RequestsDao): OfflineRepository = OfflineRepository(videosDao, requestsDao)
-
-    @Singleton
-    @Provides
-    fun providesVideosDao(database: AppDatabase): VideosDao = database.videos()
-
-    @Singleton
-    @Provides
-    fun providesEmotesDao(database: AppDatabase): EmotesDao = database.emotes()
-
-    @Singleton
-    @Provides
-    fun providesRequestsDao(database: AppDatabase): RequestsDao = database.requests()
 }
