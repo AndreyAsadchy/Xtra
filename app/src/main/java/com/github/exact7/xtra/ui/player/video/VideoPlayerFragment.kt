@@ -41,10 +41,14 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         return inflater.inflate(R.layout.fragment_player_video, container, false)
     }
 
-    override fun initialize() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (childFragmentManager.findFragmentById(R.id.chatFragmentContainer) == null) {
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, video.id, 0.0)).commit()
         }
+    }
+
+    override fun initialize() {
         viewModel = createViewModel(VideoPlayerViewModel::class.java)
         viewModel.setVideo(video)
         initializeViewModel(viewModel)

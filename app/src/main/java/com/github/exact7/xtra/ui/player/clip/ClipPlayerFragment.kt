@@ -42,7 +42,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         return inflater.inflate(R.layout.fragment_player_clip, container, false)
     }
 
-    override fun initialize() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (childFragmentManager.findFragmentById(R.id.chatFragmentContainer) == null) {
             var videoId: String? = null
             var startTime: Double? = null
@@ -52,6 +53,9 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             }
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, videoId, startTime)).commit()
         }
+    }
+
+    override fun initialize() {
         viewModel = createViewModel(ClipPlayerViewModel::class.java)
         viewModel.setClip(clip)
         initializeViewModel(viewModel)

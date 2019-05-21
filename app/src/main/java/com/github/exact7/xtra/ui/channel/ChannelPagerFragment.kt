@@ -13,6 +13,7 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.Utils
+import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -48,8 +49,12 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
         setAdapter(ChannelPagerAdapter(activity, childFragmentManager, requireArguments()))
-        if (activity.isInLandscapeOrientation) {
-            appBar.setExpanded(false, false)
+        if (currentFragment !is ChatFragment) {
+            if (activity.isInLandscapeOrientation) {
+                appBar.setExpanded(false, false)
+            }
+        } else {
+            appBar.gone()
         }
         collapsingToolbar.title = channel.displayName
         logo.loadImage(channel.logo, circle = true)
@@ -64,7 +69,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
                     appBar.visible()
                 } else {
                     appBar.setExpanded(false, true)
-                    appBar.postDelayed({ appBar.gone() }, 300L)
+                    appBar.postDelayed({ appBar.gone() }, 600L)
                 }
             }
             override fun onPageScrollStateChanged(state: Int) {}

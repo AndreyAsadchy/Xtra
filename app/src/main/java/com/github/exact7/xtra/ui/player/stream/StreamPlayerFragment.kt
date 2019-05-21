@@ -15,7 +15,6 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
-import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -35,7 +34,8 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         return inflater.inflate(R.layout.fragment_player_stream, container, false)
     }
 
-    override fun initialize() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         chatFragment = childFragmentManager.findFragmentById(R.id.chatFragmentContainer).let {
             if (it == null) {
                 val fragment = ChatFragment.newInstance(channel)
@@ -45,12 +45,16 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
                 it as ChatFragment
             }
         }
+    }
+
+    override fun initialize() {
         viewModel = createViewModel(StreamPlayerViewModel::class.java)
         getMainViewModel().user.observe(viewLifecycleOwner, Observer {
             viewModel.startStream(stream)
             initializeViewModel(viewModel)
         })
-        val settings = requireView().findViewById<ImageButton>(R.id.settings)
+        val view = requireView()
+        val settings = view.findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(this, Observer {
             settings.isEnabled = true
             settings.setColorFilter(Color.WHITE) //TODO
@@ -58,7 +62,8 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
-        resume.setOnClickListener { viewModel.player.seekToDefaultPosition() }
+        view.findViewById<ImageButton>(R.id.exo_play).setOnClickListener { viewModel.onResume() }
+        view.findViewById<ImageButton>(R.id.exo_pause).setOnClickListener { viewModel.onPause() }
     }
 
     fun hideEmotesMenu() = chatFragment.hideEmotesMenu()

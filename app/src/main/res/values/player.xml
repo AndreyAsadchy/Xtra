@@ -139,16 +139,7 @@
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginEnd">10dp</item>
     </style>
-    
-    <style name="Player.Resume" parent="Player.LargeImage">
-        <item name="android:src">@drawable/baseline_fast_forward_black_48</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginEnd">15dp</item>
-        <item name="android:layout_marginRight">15dp</item>
-    </style>
-    
+
     <style name="Player.Rewind" parent="Player.LargeImage">
         <item name="android:id">@id/exo_rew</item>
         <item name="android:layout_centerVertical">true</item>

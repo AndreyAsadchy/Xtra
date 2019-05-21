@@ -37,7 +37,10 @@ class ChatViewModel @Inject constructor(
     private val _ffz = MutableLiveData<List<FfzEmote>>()
     val ffz: LiveData<List<FfzEmote>>
         get() = _ffz
-    private val allEmotesMap: MutableMap<String, Emote> by lazy { hashMapOf<String, Emote>() }
+    private val allEmotesMap: MutableMap<String, Emote> by lazy {
+        val map = HashMap<String, Emote>()
+        ChatFragment.defaultBttvAndFfzEmotes().associateByTo(map) { it.name }
+    }
     private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
     private val _chatMessages: MutableLiveData<MutableList<ChatMessage>> by lazy {
@@ -89,7 +92,7 @@ class ChatViewModel @Inject constructor(
         chat.send(message)
         val usedEmotes = hashSetOf<RecentEmote>()
         val currentTime = System.currentTimeMillis()
-        message.split(' ').forEach { word -> //TODO it only inserts from one tab
+        message.split(' ').forEach { word ->
             allEmotesMap[word]?.let { usedEmotes.add(RecentEmote(word, EmotesUrlHelper.resolveUrl(it), currentTime)) }
         }
         if (usedEmotes.isNotEmpty()) {
@@ -127,14 +130,18 @@ class ChatViewModel @Inject constructor(
         call(playerRepository.loadBttvEmotes(channelName)
                 .subscribeBy(onSuccess = { response ->
                     _bttv.value = response.body()?.let {
-                        putEmotes(it.emotes)
+                        if (isLive && user is LoggedIn) {
+                            putEmotes(it.emotes)
+                        }
                         it.emotes
                     }
                 }))
         call(playerRepository.loadFfzEmotes(channelName)
                 .subscribeBy(onSuccess = { response ->
                     _ffz.value = response.body()?.let {
-                        putEmotes(it.emotes)
+                        if (isLive && user is LoggedIn) {
+                            putEmotes(it.emotes)
+                        }
                         it.emotes
                     }
                 }))
@@ -157,5 +164,4 @@ class ChatViewModel @Inject constructor(
     private fun <T : Emote> putEmotes(list: List<T>) {
         allEmotesMap.putAll(list.associateBy { it.name })
     }
-
 }

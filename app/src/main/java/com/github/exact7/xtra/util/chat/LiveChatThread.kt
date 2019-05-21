@@ -26,7 +26,7 @@ class LiveChatThread(
     private var readerOut: BufferedReader? = null
     private lateinit var writerIn: BufferedWriter
     private var writerOut: BufferedWriter? = null
-    private val hashChannelName: String = "#exact5"
+    private val hashChannelName: String = "#$channelName"
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
 
     override fun run() {

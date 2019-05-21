@@ -5,6 +5,6 @@ import androidx.lifecycle.MutableLiveData
 class PlayerHelper {
 
     var urls: Map<String, String>? = null
-    var selectedQualityIndex = 0
+    var selectedQualityIndex = -1
     val loaded = MutableLiveData<Boolean>()
 }

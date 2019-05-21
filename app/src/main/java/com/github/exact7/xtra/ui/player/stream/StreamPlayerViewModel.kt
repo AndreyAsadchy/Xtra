@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -47,8 +48,12 @@ class StreamPlayerViewModel @Inject constructor(
                         seekTimer = fixedRateTimer(period = 10000L, action = {
                             runBlocking(Dispatchers.Main) {
                                 if (timeSpentBuffering > 5000L && player.playWhenReady) {
-                                    player.seekToDefaultPosition()
-                                    timeSpentBuffering = 0L
+                                    try {
+                                        player.seekToDefaultPosition(player.currentTimeline.getLastWindowIndex(false))
+                                        timeSpentBuffering = 0L
+                                    } catch (e: Exception) {
+                                        Crashlytics.logException(e)
+                                    }
                                 }
                             }
                         })

@@ -18,18 +18,12 @@ interface RecentEmotesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(emotes: Collection<RecentEmote>)
 
-    @Query("DELETE FROM recent_emotes WHERE name IN (SELECT name FROM recent_emotes LIMIT :count)")
-    fun delete(count: Int)
-
-    @Query("SELECT COUNT(*) FROM recent_emotes")
-    fun getSize(): Int
+    @Query("DELETE FROM recent_emotes WHERE name NOT IN (SELECT name FROM recent_emotes ORDER BY used_at DESC LIMIT ${RecentEmote.MAX_SIZE})")
+    fun deleteOld()
 
     @Transaction
     fun ensureMaxSizeAndInsert(emotes: Collection<RecentEmote>) {
-        val deleteCount = getSize() + emotes.size - RecentEmote.MAX_SIZE
-        if (deleteCount > 0) {
-            delete(deleteCount)
-        }
         insertAll(emotes)
+        deleteOld()
     }
 }

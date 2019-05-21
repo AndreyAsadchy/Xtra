@@ -19,6 +19,6 @@ data class RecentEmote(
     override fun hashCode(): Int = super.hashCode()
 
     companion object {
-        const val MAX_SIZE = 30
+        const val MAX_SIZE = 35
     }
 }

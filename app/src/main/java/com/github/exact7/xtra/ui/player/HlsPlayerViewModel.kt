@@ -84,23 +84,20 @@ abstract class HlsPlayerViewModel(
         trackSelector.setParameters(trackSelector.buildUponParameters().setRendererDisabled(VIDEO_RENDERER, videoDisabled).setRendererDisabled(AUDIO_RENDERER, audioDisabled))
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateQuality()
-    }
-
-    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) { //TODO fix incorrect quality after resuming
-        if (helper.loaded.value != true && trackSelector.currentMappedTrackInfo != null) {
-            helper.loaded.value = true
-            val index =  prefs.getString(TAG, "Auto").let { quality: String ->
-                if (quality == "Auto") {
-                    0
-                } else {
-                    qualities.indexOf(quality).let { if (it != -1) it else 0 }
+    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+        if (trackSelector.currentMappedTrackInfo != null) {
+            if (helper.loaded.value != true) {
+                helper.loaded.value = true
+                val index =  prefs.getString(TAG, "Auto").let { quality: String ->
+                    if (quality == "Auto") {
+                        0
+                    } else {
+                        qualities.indexOf(quality).let { if (it != -1) it else 0 }
+                    }
                 }
+                helper.selectedQualityIndex = index
             }
-            helper.selectedQualityIndex = index
-            if (index != 0) {
+            if (helper.selectedQualityIndex != 0) {
                 updateQuality()
             }
         }

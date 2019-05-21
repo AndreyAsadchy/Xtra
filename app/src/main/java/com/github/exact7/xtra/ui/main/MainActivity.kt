@@ -37,6 +37,7 @@ import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.FollowValidationFragment
 import com.github.exact7.xtra.ui.TopFragment
 import com.github.exact7.xtra.ui.channel.ChannelPagerFragment
+import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.common.OnChannelSelectedListener
 import com.github.exact7.xtra.ui.common.Scrollable
@@ -253,7 +254,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     }
                 }
             } else {
-                fragNavController.popFragment()
+                val currentFrag = fragNavController.currentFrag
+                if (currentFrag !is ChannelPagerFragment || (currentFrag.currentFragment.let { it is ChatFragment && !it.hideEmotesMenu() })) {
+                    fragNavController.popFragment()
+                }
             }
         } else {
             playerFragment?.let {
