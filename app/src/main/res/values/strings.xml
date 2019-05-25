@@ -117,4 +117,5 @@
     <string name="copy_message">Copy message</string>
     <string name="view_profile">View profile</string>
     <string name="chat">Chat</string>
+    <string name="recent_emotes">Recent</string>
 </resources>

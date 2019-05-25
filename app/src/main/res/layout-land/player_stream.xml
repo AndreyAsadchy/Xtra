@@ -18,6 +18,10 @@
     <TextView
         style="@style/Player.Channel"/>
 
+    <ImageButton
+        android:id="@+id/resume"
+        style="@style/Player.Resume"/>
+
     <LinearLayout
         style="@style/Player.TopRightPanel">
 

@@ -195,7 +195,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                     if (!isPortrait) {
                         if (this is StreamPlayerFragment) {
                             try {
-                                chatLayout.updateLayoutParams { width = slidingLayout.width / 2 }
+                                chatLayout.updateLayoutParams { width = (slidingLayout.width / 1.8f).toInt() }
                             } catch (e: UninitializedPropertyAccessException) { //TODO Just in case, remove if not needed
                                 Crashlytics.logException(e)
                             }

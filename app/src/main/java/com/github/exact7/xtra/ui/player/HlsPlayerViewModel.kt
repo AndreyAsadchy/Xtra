@@ -116,7 +116,7 @@ abstract class HlsPlayerViewModel(
                     val matcher = pattern.matcher(tag)
                     if (matcher.find()) {
                         val quality = matcher.group(1)
-                        val url = it.variants[trackIndex++].url
+                        val url = it.variants[trackIndex++].url.toString()
                         urls[if (!quality.startsWith("audio", true)) quality else audioOnly] = url
                     }
                 }

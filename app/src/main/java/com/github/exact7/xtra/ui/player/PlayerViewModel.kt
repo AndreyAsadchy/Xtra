@@ -8,6 +8,8 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.PlaybackParameters
@@ -33,9 +35,17 @@ import kotlinx.coroutines.withContext
 @UseExperimental(ExperimentalCoroutinesApi::class)
 abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, CoroutineScope by MainScope() {
 
+    protected val tag: String = javaClass.simpleName
+
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
     protected val trackSelector = DefaultTrackSelector()
-    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector).apply { addListener(this@PlayerViewModel) }
+    protected open val loadControl = DefaultLoadControl()
+    val player: SimpleExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(
+            context,
+            DefaultRenderersFactory(context),
+            trackSelector,
+            loadControl).apply { addListener(this@PlayerViewModel) }
+    }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
     protected fun play() {
@@ -86,7 +96,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        Log.e("PlayerViewModel", "Player error", error)
+        Log.e(tag, "Player error", error)
         val context = getApplication<Application>()
         if (context.isNetworkAvailable) {
             try {
@@ -95,7 +105,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                             this@PlayerViewModel is StreamPlayerViewModel &&
                             error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404 }
                 } catch (e: IllegalStateException) {
-                    Crashlytics.log(Log.ERROR, "PlayerViewModel", "onPlayerError: Stream end check error. Type: ${error.type}")
+                    Crashlytics.log(Log.ERROR, tag, "onPlayerError: Stream end check error. Type: ${error.type}")
                     Crashlytics.logException(e)
                     return
                 }
@@ -114,13 +124,13 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                                 onResume()
                             }
                         } catch (e: Exception) {
-                            Crashlytics.log(Log.ERROR, "PlayerViewModel", "onPlayerError: Retry error. ${e.message}")
+                            Crashlytics.log(Log.ERROR, tag, "onPlayerError: Retry error. ${e.message}")
                             Crashlytics.logException(e)
                         }
                     }
                 }
             } catch (e: Exception) {
-                Crashlytics.log(Log.ERROR, "PlayerViewModel", "onPlayerError ${e.message}")
+                Crashlytics.log(Log.ERROR, tag, "onPlayerError ${e.message}")
                 Crashlytics.logException(e)
             }
         }

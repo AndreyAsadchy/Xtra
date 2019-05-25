@@ -23,6 +23,7 @@ import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.visible
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_channel.*
 import kotlinx.android.synthetic.main.fragment_media_pager.*
 
@@ -64,12 +65,15 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
         }
         search.setOnClickListener { activity.openSearch() }
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            private val layoutParams = collapsingToolbar.layoutParams as AppBarLayout.LayoutParams
+            private val originalScrollFlags = layoutParams.scrollFlags
+
             override fun onPageSelected(position: Int) {
-                if (position != 2) {
-                    appBar.visible()
+                layoutParams.scrollFlags = if (position != 2) {
+                    originalScrollFlags
                 } else {
                     appBar.setExpanded(false, true)
-                    appBar.postDelayed({ appBar.gone() }, 600L)
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 }
             }
             override fun onPageScrollStateChanged(state: Int) {}

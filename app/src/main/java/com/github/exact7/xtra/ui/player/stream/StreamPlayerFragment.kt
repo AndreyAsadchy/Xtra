@@ -15,6 +15,7 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
+import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
@@ -62,8 +63,10 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)
         }
-        view.findViewById<ImageButton>(R.id.exo_play).setOnClickListener { viewModel.onResume() }
-        view.findViewById<ImageButton>(R.id.exo_pause).setOnClickListener { viewModel.onPause() }
+        resume.setOnClickListener {
+            viewModel.onPause()
+            viewModel.onResume()
+        }
     }
 
     fun hideEmotesMenu() = chatFragment.hideEmotesMenu()

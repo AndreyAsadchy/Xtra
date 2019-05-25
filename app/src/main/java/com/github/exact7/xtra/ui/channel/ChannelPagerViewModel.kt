@@ -28,7 +28,7 @@ class ChannelPagerViewModel @Inject constructor(
     override val channelInfo: Pair<String, String>
         get() {
             val c = _channel.value!!
-            return c.id to c.name
+            return c.id to c.displayName
         }
 
     override lateinit var follow: FollowLiveData

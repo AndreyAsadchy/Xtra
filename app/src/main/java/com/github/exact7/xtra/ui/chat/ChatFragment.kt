@@ -60,8 +60,9 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             if (user is LoggedIn) {
                 chatView.enableMessaging(childFragmentManager)
                 chatView.setUsername(user.name)
-                viewModel.emotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))
-                viewModel.recentEmotes.observe(viewLifecycleOwner, Observer(chatView::setRecentEmotes))
+                val emotesObserver = Observer(chatView::addEmotes)
+                viewModel.emotes.observe(viewLifecycleOwner, emotesObserver)
+                viewModel.recentEmotes.observe(viewLifecycleOwner, emotesObserver)
             }
             true
         } else {

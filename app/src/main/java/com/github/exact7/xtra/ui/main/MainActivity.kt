@@ -255,7 +255,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             } else {
                 val currentFrag = fragNavController.currentFrag
-                if (currentFrag !is ChannelPagerFragment || (currentFrag.currentFragment.let { it is ChatFragment && !it.hideEmotesMenu() })) {
+                if (currentFrag !is ChannelPagerFragment || (currentFrag.currentFragment.let { it !is ChatFragment || !it.hideEmotesMenu() })) {
                     fragNavController.popFragment()
                 }
             }

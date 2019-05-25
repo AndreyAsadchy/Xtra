@@ -17,9 +17,9 @@ import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
+import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.common.ChatAdapter
-import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
@@ -30,6 +30,7 @@ import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.view_chat.view.*
 import kotlin.math.max
+import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 private const val MAX_MESSAGE_COUNT = 125
 
@@ -43,7 +44,8 @@ class ChatView : ConstraintLayout {
 
     private var isChatTouched = false
 
-    private var twitchEmotes: MutableList<Emote> = ArrayList()
+    private var recentEmotes = listOf<Emote>()
+    private lateinit var twitchEmotes: List<Emote>
     private var otherEmotes: MutableSet<Emote> = HashSet()
     private var emotesAddedCount = 0
 
@@ -112,6 +114,10 @@ class ChatView : ConstraintLayout {
             val text = editText.text.toString().trimEnd()
             editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
         }
+        clear.setOnLongClickListener {
+            editText.text.clear()
+            true
+        }
         send.setOnClickListener { sendMessage() }
     }
 
@@ -133,26 +139,20 @@ class ChatView : ConstraintLayout {
     }
 
     fun addEmotes(list: List<Emote>?) {
-        if (list?.isNotEmpty() == true) {
-            when (list.first()) {
+        list?.let {
+            when (it.firstOrNull()) {
                 is BttvEmote, is FfzEmote -> {
-                    otherEmotes.addAll(list)
-                    adapter.addEmotes(list)
+                    otherEmotes.addAll(it)
+                    adapter.addEmotes(it)
                 }
-                else -> twitchEmotes.addAll(list)
+                is TwitchEmote -> twitchEmotes = it
+                is RecentEmote -> recentEmotes = it
             }
         }
-        if (++emotesAddedCount == 3 && messagingEnabled) {
+        if (++emotesAddedCount == 4 && messagingEnabled) {
             initEmotesViewPager()
-        }
-    }
-
-    fun setRecentEmotes(list: List<Emote>) {
-        if (list.isNotEmpty()) {
-            recentEmotes.apply {
-                adapter = EmotesAdapter(list) { appendEmote(it) }
-                visible()
-            }
+        } else if (emotesAddedCount > 4) {
+            viewPager.adapter?.notifyDataSetChanged()
         }
     }
 
@@ -222,24 +222,43 @@ class ChatView : ConstraintLayout {
 
             override fun getItem(position: Int): Fragment {
                 val list = when (position) {
-                    0 -> twitchEmotes
-                    else -> otherEmotes
+                    0 -> recentEmotes
+                    1 -> twitchEmotes.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+                    else -> otherEmotes.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
                 }
-                return EmotesFragment.newInstance(list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }))
+                return EmotesFragment.newInstance(list)
             }
 
-            override fun getCount(): Int = 2
+            override fun getCount(): Int = 3
 
             override fun getPageTitle(position: Int): CharSequence? {
                 return when (position) {
-                    0 -> "Twitch"
+                    0 -> context.getString(R.string.recent_emotes)
+                    1 -> "Twitch"
                     else -> "BTTV/FFZ"
                 }
             }
+
+            override fun getItemPosition(`object`: Any): Int {
+                (`object` as EmotesFragment).run {
+                    if (type == 0) {
+                        updateEmotes(recentEmotes)
+                    }
+                }
+                return super.getItemPosition(`object`)
+            }
         }
+        viewPager.offscreenPageLimit = 2
         emotes.setOnClickListener {
             //TODO add animation
-            emotesMenu.toggleVisibility()
+            if (emotesMenu.isGone()) {
+                if (recentEmotes.isEmpty() && viewPager.currentItem == 0) {
+                    viewPager.setCurrentItem(1, false)
+                }
+                emotesMenu.visible()
+            } else {
+                emotesMenu.gone()
+            }
         }
     }
 

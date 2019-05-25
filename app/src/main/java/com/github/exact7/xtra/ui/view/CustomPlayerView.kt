@@ -1,6 +1,6 @@
 package com.github.exact7.xtra.ui.view
 
-import android.animation.LayoutTransition
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -15,24 +15,10 @@ class CustomPlayerView : PlayerView {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        layoutTransition = LayoutTransition()
-    }
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         if (ev.isClick(downTouchLocation)) {
             performClick()
-        }
-        return true
-    }
-
-    override fun performClick(): Boolean {
-        super.performClick()
-        if (isControllerVisible) {
-            hideController()
-        } else {
-            showController()
         }
         return true
     }
