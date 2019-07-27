@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.search
+package com.github.exact7.xtra.ui.search.channels
 
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R

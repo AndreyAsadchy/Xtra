@@ -15,7 +15,7 @@ class ChannelVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.On
     override lateinit var viewModel: ChannelVideosViewModel
 
     override fun initialize() {
-        viewModel = createViewModel(ChannelVideosViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {

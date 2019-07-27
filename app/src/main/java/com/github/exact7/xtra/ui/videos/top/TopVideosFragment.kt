@@ -13,7 +13,7 @@ class TopVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSort
     override lateinit var viewModel: TopVideosViewModel
 
     override fun initialize() {
-        viewModel = createViewModel(TopVideosViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {

@@ -81,36 +81,20 @@
                 tools:visibility="visible"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/emotesMenu"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_height="300dp"
             android:visibility="gone">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recentEmotes"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="300dp">
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabMaxWidth="0dp"
-                    app:tabMode="fixed"
-                    app:tabGravity="fill"/>
-            </androidx.viewpager.widget.ViewPager>
-
-        </LinearLayout>
+                app:tabMaxWidth="0dp"
+                app:tabMode="fixed"
+                app:tabGravity="fill"/>
+        </androidx.viewpager.widget.ViewPager>
 
     </LinearLayout>
 

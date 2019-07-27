@@ -36,7 +36,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
     }
 
     override fun initialize() {
-        viewModel = createViewModel(GamesViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

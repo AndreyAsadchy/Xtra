@@ -11,7 +11,7 @@ class FollowedClipsFragment : BaseClipsFragment() {
     override lateinit var viewModel: FollowedClipsViewModel
 
     override fun initialize() {
-        viewModel = createViewModel(FollowedClipsViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nav_bar_games">Игры</string>
-    <string name="nav_bar_popular">Популярное</string>
-    <string name="nav_bar_following">Подписки</string>
-    <string name="nav_bar_downloads">Загрузки</string>
-    <string name="nav_bar_menu">Меню</string>
+    <string name="games">Игры</string>
+    <string name="popular">Популярное</string>
+    <string name="following">Подписки</string>
+    <string name="downloads">Загрузки</string>
+    <string name="menu">Меню</string>
     <string name="retry">Повторить попытку</string>
     <string name="connection_error">Ошибка подключения. Пожалуйста, попробуйте еще раз</string>
     <string name="sort">Сортировать</string>
@@ -51,7 +51,7 @@
     <string name="connection_restored">Соединение восстановлено</string>
     <string name="follow_tab_login_prompt">Здесь будут отображаться Ваши подписки</string>
     <string name="downloads_empty">Здесь будут отображаться скачанные видео</string>
-    <string name="notification_downloads_channel">Загрузки</string>
+    <string name="notification_downloads_channel_title">Загрузки</string>
     <string name="storage_permission_message">Для скачивания видео необходимо разрешение на доступ к памяти.</string>
     <string name="storage_permission_title">Приложению необходимо разрешение</string>
     <string name="permission_denied">Необходимые разрешения не были предоставлены</string>
@@ -93,7 +93,7 @@
     <string name="unfollowed">Вы отписались от %s</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
-    <string name="search">Поиск каналов</string>
+    <string name="search">Поиск</string>
     <string name="chat_replay_unavailable">Повтор чата недоступен</string>
     <string name="video_subscribers_only">Видео доступно только для подписчиков</string>
     <string name="player_error">Ошибка воспроизведения. Переподключение</string>
@@ -116,4 +116,6 @@
     <string name="view_profile">Открыть профиль</string>
     <string name="chat">Чат</string>
     <string name="recent_emotes">Недавние</string>
+    <string name="notification_playback_channel_title">Воспроизведение</string>
+    <string name="channels">Пользователи</string>
 </resources>

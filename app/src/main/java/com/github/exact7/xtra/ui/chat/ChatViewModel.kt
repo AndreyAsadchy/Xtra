@@ -21,6 +21,7 @@ import com.github.exact7.xtra.util.chat.EmotesUrlHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
@@ -114,7 +115,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun init(channelId: String, channelName: String) {
-        call(playerRepository.loadSubscriberBadges(channelId)
+        playerRepository.loadSubscriberBadges(channelId)
                 .subscribeBy(onSuccess = {
                     it.badges
                     subscriberBadges = it
@@ -126,8 +127,9 @@ class ChatViewModel @Inject constructor(
                     if (isLive) {
                         start()
                     }
-                }))
-        call(playerRepository.loadBttvEmotes(channelName)
+                })
+                .addTo(compositeDisposable)
+        playerRepository.loadBttvEmotes(channelName)
                 .subscribeBy(onSuccess = { response ->
                     _bttv.value = response.body()?.let {
                         if (isLive && user is LoggedIn) {
@@ -135,8 +137,9 @@ class ChatViewModel @Inject constructor(
                         }
                         it.emotes
                     }
-                }))
-        call(playerRepository.loadFfzEmotes(channelName)
+                })
+                .addTo(compositeDisposable)
+        playerRepository.loadFfzEmotes(channelName)
                 .subscribeBy(onSuccess = { response ->
                     _ffz.value = response.body()?.let {
                         if (isLive && user is LoggedIn) {
@@ -144,7 +147,8 @@ class ChatViewModel @Inject constructor(
                         }
                         it.emotes
                     }
-                }))
+                })
+                .addTo(compositeDisposable)
     }
 
     private fun clearMessages() {

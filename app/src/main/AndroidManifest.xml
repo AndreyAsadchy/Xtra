@@ -38,6 +38,7 @@
             android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait" />
         <service android:name=".ui.download.DownloadService" />
+        <service android:name=".ui.player.AudioPlayerService" />
 
         <meta-data android:name="android.max_aspect" android:value="ratio_float" />
         <meta-data android:name="io.fabric.ApiKey" android:value="c369e4413442968597c972a9b9116e4b458b163a" />

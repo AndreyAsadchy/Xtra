@@ -165,8 +165,8 @@ class ChatView : ConstraintLayout {
     }
 
     fun hideEmotesMenu(): Boolean {
-        return if (emotesMenu.isVisible()) {
-            emotesMenu.gone()
+        return if (viewPager.isVisible()) {
+            viewPager.gone()
             true
         } else {
             false
@@ -251,13 +251,15 @@ class ChatView : ConstraintLayout {
         viewPager.offscreenPageLimit = 2
         emotes.setOnClickListener {
             //TODO add animation
-            if (emotesMenu.isGone()) {
-                if (recentEmotes.isEmpty() && viewPager.currentItem == 0) {
-                    viewPager.setCurrentItem(1, false)
+            with(viewPager) {
+                if (isGone()) {
+                    if (recentEmotes.isEmpty() && currentItem == 0) {
+                        setCurrentItem(1, false)
+                    }
+                    visible()
+                } else {
+                    gone()
                 }
-                emotesMenu.visible()
-            } else {
-                emotesMenu.gone()
             }
         }
     }

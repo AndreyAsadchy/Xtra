@@ -58,6 +58,8 @@ class DownloadService : IntentService(TAG), Injectable {
         private const val NOTIFICATION_TAG = "NotifActionReceiver"
 
         private const val ENQUEUE_SIZE = 15
+        private const val REQUEST_CODE_DOWNLOAD = 0
+        private const val REQUEST_CODE_PLAY = 1
 
         const val GROUP_KEY = "com.github.exact7.xtra.DOWNLOADS"
         const val KEY_REQUEST = "request"
@@ -108,9 +110,8 @@ class DownloadService : IntentService(TAG), Injectable {
         Log.d(TAG, "Starting download. Id: ${offlineVideo.id}")
         fetch = fetchProvider.get(offlineVideo.id, intent.getBooleanExtra(KEY_WIFI, false))
         val countDownLatch = CountDownLatch(1)
-        val channelId = getString(R.string.notification_channel_id)
+        val channelId = getString(R.string.notification_downloads_channel_id)
         notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
-            priority = NotificationCompat.PRIORITY_LOW
             setSmallIcon(android.R.drawable.stat_sys_download)
             setGroup(GROUP_KEY)
             setContentTitle(getString(R.string.downloading))
@@ -118,9 +119,9 @@ class DownloadService : IntentService(TAG), Injectable {
             setContentText(offlineVideo.name)
             val clickIntent = Intent(this@DownloadService, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                putExtra("code", 0)
+                putExtra(MainActivity.KEY_CODE, MainActivity.INTENT_OPEN_DOWNLOADS_TAB)
             }
-            setContentIntent(PendingIntent.getActivity(this@DownloadService, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+            setContentIntent(PendingIntent.getActivity(this@DownloadService, REQUEST_CODE_DOWNLOAD, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT))
             addAction(createAction(android.R.string.cancel, ACTION_CANCEL, 0))
             addAction(pauseAction)
         }
@@ -129,7 +130,7 @@ class DownloadService : IntentService(TAG), Injectable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (manager.getNotificationChannel(channelId) == null) {
-                NotificationChannel(channelId, getString(R.string.notification_downloads_channel), NotificationManager.IMPORTANCE_LOW).apply {
+                NotificationChannel(channelId, getString(R.string.notification_downloads_channel_title), NotificationManager.IMPORTANCE_DEFAULT).apply {
                     manager.createNotificationChannel(this)
                 }
             }
@@ -271,6 +272,8 @@ class DownloadService : IntentService(TAG), Injectable {
                         onDownloadCompleted()
                     }
                     return
+                } catch (e: IndexOutOfBoundsException) {
+
                 }
                 val mediaPlaylist = MediaPlaylist.Builder()
                         .withTargetDuration(playlist.targetDuration)
@@ -291,17 +294,16 @@ class DownloadService : IntentService(TAG), Injectable {
         offlineRepository.deleteRequest(request)
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra("video", offlineVideo)
-            putExtra("code", 1)
+            putExtra(MainActivity.KEY_VIDEO, offlineVideo)
+            putExtra(MainActivity.KEY_CODE, MainActivity.INTENT_OPEN_DOWNLOADED_VIDEO)
         }
         notificationBuilder.apply {
-            priority = NotificationCompat.PRIORITY_DEFAULT
             setAutoCancel(true)
             setContentTitle(getString(R.string.downloaded))
             setProgress(0, 0, false)
             setOngoing(false)
             setSmallIcon(android.R.drawable.stat_sys_download_done)
-            setContentIntent(PendingIntent.getActivity(this@DownloadService, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT))
+            setContentIntent(PendingIntent.getActivity(this@DownloadService, REQUEST_CODE_PLAY, intent, PendingIntent.FLAG_UPDATE_CURRENT))
             mActions.clear()
         }
         notificationManager.notify(offlineVideo.id, notificationBuilder.build())

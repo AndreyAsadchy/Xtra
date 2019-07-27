@@ -28,6 +28,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     private var created = false
 
     abstract fun initialize()
+
     open fun onNetworkRestored() {
         (viewModel as? PagedListViewModel<*>)?.retry()
     }
@@ -100,8 +101,8 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         }
     }
 
-    protected fun <T : ViewModel> createViewModel(clazz: Class<T>): T {
-        return ViewModelProviders.of(this, viewModelFactory).get(clazz)
+    protected inline fun <reified T : ViewModel> createViewModel(): T {
+        return ViewModelProviders.of(this, viewModelFactory).get(T::class.java)
     }
 
     protected fun getMainViewModel(): MainViewModel {

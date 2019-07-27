@@ -14,7 +14,7 @@ class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {
     override lateinit var viewModel: GameVideosViewModel
 
     override fun initialize() {
-        viewModel = createViewModel(GameVideosViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {

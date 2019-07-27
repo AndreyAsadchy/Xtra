@@ -78,6 +78,15 @@ const val INDEX_MENU = FragNavController.TAB5
 
 class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DownloadsFragment.OnVideoSelectedListener, Injectable, SlidingLayout.Listener {
 
+    companion object {
+        const val KEY_CODE = "code"
+        const val KEY_VIDEO = C.VIDEO
+
+        const val INTENT_OPEN_DOWNLOADS_TAB = 0
+        const val INTENT_OPEN_DOWNLOADED_VIDEO = 1
+        const val INTENT_OPEN_PLAYER = 2
+    }
+
     @Inject
     lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -162,7 +171,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         var flag = savedInstanceState == null && !isNetworkAvailable
         viewModel.isNetworkAvailable.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { online ->
+            it.getContentIfNotHandled()?.let { online -> //TODO maybe SingleLiveEvent is better?
                 if (online) {
                     viewModel.validate(this)
                 }
@@ -207,8 +216,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+//        val nMgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//        nMgr.cancelAll()
         unregisterReceiver(networkReceiver)
+        super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -276,7 +287,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             0 -> {
-                if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) {
+                if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) { //TODO can move this to fragment?
                     val fragment = fragNavController.currentFrag
                     if (fragment is HasDownloadDialog) {
                         fragment.showDownloadDialog()
@@ -292,7 +303,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && playerFragment!!.shouldEnterPictureInPicture && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
             try {
                 enterPictureInPictureMode(PictureInPictureParams.Builder().build())
             } catch (e: IllegalStateException) {
@@ -329,9 +340,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     private fun handleIntent(intent: Intent?) {
         intent?.let {
-            when (it.getIntExtra("code", -1)) {
-                0 -> navBar.selectedItemId = R.id.fragment_downloads
-                1 -> startOfflineVideo(it.getParcelableExtra(C.VIDEO))
+            when (it.getIntExtra(KEY_CODE, -1)) {
+                INTENT_OPEN_DOWNLOADS_TAB -> navBar.selectedItemId = R.id.fragment_downloads
+                INTENT_OPEN_DOWNLOADED_VIDEO -> startOfflineVideo(it.getParcelableExtra(KEY_VIDEO))
+                INTENT_OPEN_PLAYER -> playerFragment!!.maximize()
             }
         }
     }

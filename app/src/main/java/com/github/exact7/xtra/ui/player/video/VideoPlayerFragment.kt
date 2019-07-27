@@ -16,6 +16,7 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
+import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
@@ -32,6 +33,9 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     override val channel: Channel
         get() = video.channel
 
+    override val shouldEnterPictureInPicture: Boolean
+        get() = viewModel.playerMode.value == PlayerMode.NORMAL
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         video = requireArguments().getParcelable(C.VIDEO)!!
@@ -46,10 +50,10 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         if (childFragmentManager.findFragmentById(R.id.chatFragmentContainer) == null) {
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, video.id, 0.0)).commit()
         }
+        viewModel = createViewModel()
     }
 
     override fun initialize() {
-        viewModel = createViewModel(VideoPlayerViewModel::class.java)
         viewModel.setVideo(video)
         initializeViewModel(viewModel)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
@@ -77,21 +81,19 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+        if (!wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+        if (!wasInPictureInPictureMode) {
             viewModel.onPause()
         }
     }
 
     override fun onNetworkRestored() {
-        if (this::viewModel.isInitialized) {
-            viewModel.onResume()
-        }
+        viewModel.onResume()
     }
 
     override fun getCurrentPosition(): Double {

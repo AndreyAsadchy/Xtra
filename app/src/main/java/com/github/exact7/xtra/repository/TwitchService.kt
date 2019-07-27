@@ -35,4 +35,5 @@ interface TwitchService {
     fun loadUserFollows(userId: String, channelId: String): Single<Boolean>
     fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
     fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
+    fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<com.github.exact7.xtra.model.kraken.game.search.Game>>
 }

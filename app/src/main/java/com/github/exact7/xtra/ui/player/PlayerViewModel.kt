@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.player
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
@@ -8,7 +9,6 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
-import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -39,12 +39,10 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
     protected val trackSelector = DefaultTrackSelector()
-    protected open val loadControl = DefaultLoadControl()
     val player: SimpleExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(
             context,
             DefaultRenderersFactory(context),
-            trackSelector,
-            loadControl).apply { addListener(this@PlayerViewModel) }
+            trackSelector).apply { addListener(this@PlayerViewModel) }
     }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
@@ -61,6 +59,35 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     open fun onPause() {
         player.stop()
+    }
+
+    protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, usePlayPause: Boolean) {
+        player.stop()
+        val context = getApplication<Application>()
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = AudioPlayerService.ACTION_START
+            putExtra(AudioPlayerService.KEY_PLAYLIST_URL, playlistUrl)
+            putExtra(AudioPlayerService.KEY_CHANNEL_NAME, channelName)
+            putExtra(AudioPlayerService.KEY_TITLE, title)
+            putExtra(AudioPlayerService.KEY_USE_PLAY_PAUSE, usePlayPause)
+        }
+        context.startService(intent)
+    }
+
+    protected fun stopBackgroundAudio() {
+        val context = getApplication<Application>()
+        context.stopService(Intent(context, AudioPlayerService::class.java))
+        play()
+    }
+
+    protected fun showBackgroundAudio() {
+        val context = getApplication<Application>()
+        context.startService(Intent(context, AudioPlayerService::class.java).setAction(AudioPlayerService.ACTION_SHOW))
+    }
+
+    protected fun hideBackgroundAudio() {
+        val context = getApplication<Application>()
+        context.startService(Intent(context, AudioPlayerService::class.java).setAction(AudioPlayerService.ACTION_HIDE))
     }
 
     override fun onCleared() {

@@ -50,7 +50,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
     }
 
     override fun initialize() {
-        viewModel = createViewModel(ChatViewModel::class.java)
+        viewModel = createViewModel()
         val args = requireArguments()
         val channel = args.getParcelable<Channel>(KEY_CHANNEL)!!
         val enableChat = if (args.getBoolean(KEY_IS_LIVE)) {

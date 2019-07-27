@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Xtra</string>
-    <string name="nav_bar_games">Games</string>
-    <string name="nav_bar_popular">Popular</string>
-    <string name="nav_bar_following">Following</string>
-    <string name="nav_bar_downloads">Downloads</string>
-    <string name="nav_bar_menu">Menu</string>
+    <string name="games">Games</string>
+    <string name="popular">Popular</string>
+    <string name="following">Following</string>
+    <string name="downloads">Downloads</string>
+    <string name="menu">Menu</string>
     <string name="retry">Retry</string>
     <string name="connection_error">Error connecting to the server. Please try again</string>
     <string name="sort">Sort</string>
@@ -52,8 +52,8 @@
     <string name="connection_restored">Back online</string>
     <string name="follow_tab_login_prompt">Your followed channels will be shown here</string>
     <string name="downloads_empty">Your downloaded videos will be shown here</string>
-    <string name="notification_downloads_channel">Downloads</string>
-    <string name="notification_channel_id" translatable="false">xtra_download_channel</string>
+    <string name="notification_downloads_channel_title">Downloads</string>
+    <string name="notification_downloads_channel_id" translatable="false">xtra_download_channel</string>
     <string name="storage_permission_title">The app needs storage permission</string>
     <string name="storage_permission_message">Storage permission is required to download videos.</string>
     <string name="permission_denied">Required permissions were denied</string>
@@ -95,7 +95,7 @@
     <string name="unfollowed">Unfollowed %s</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="search">Search channels</string>
+    <string name="search">Search</string>
     <string name="chat_replay_unavailable">Chat replay is unavailable</string>
     <string name="video_subscribers_only">This video is only available to subscribers</string>
     <string name="player_error">Player error. Retrying</string>
@@ -118,4 +118,7 @@
     <string name="view_profile">View profile</string>
     <string name="chat">Chat</string>
     <string name="recent_emotes">Recent</string>
+    <string name="notification_playback_channel_title">Playback</string>
+    <string name="notification_playback_channel_id" translatable="false">xtra_playback_channel</string>
+    <string name="channels">Channels</string>
 </resources>

@@ -82,7 +82,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
     }
 
     override fun initialize() {
-        viewModel = createViewModel(ChannelPagerViewModel::class.java)
+        viewModel = createViewModel()
         viewModel.loadStream(channel)
         val activity = requireActivity() as MainActivity
         viewModel.stream.observe(viewLifecycleOwner, Observer {

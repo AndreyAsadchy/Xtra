@@ -5,6 +5,7 @@ import com.github.exact7.xtra.model.kraken.channel.ChannelsSearchResponse
 import com.github.exact7.xtra.model.kraken.clip.ClipsResponse
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.GamesResponse
+import com.github.exact7.xtra.model.kraken.game.search.GamesSearchResponse
 import com.github.exact7.xtra.model.kraken.stream.StreamType
 import com.github.exact7.xtra.model.kraken.stream.StreamsResponse
 import com.github.exact7.xtra.model.kraken.user.User
@@ -27,6 +28,9 @@ interface KrakenApi {
 
     @GET("games/top")
     fun getTopGames(@Query("limit") limit: Int, @Query("offset") offset: Int): Single<GamesResponse>
+
+    @GET("search/games")
+    fun getGames(@Query("query") query: String): Single<GamesSearchResponse>
 
     @GET("streams/")
     fun getStream(@Query("channel") channelId: String): Single<StreamsResponse>

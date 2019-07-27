@@ -8,7 +8,7 @@ class FollowedStreamsFragment : BaseStreamsFragment() {
     override lateinit var viewModel: FollowedStreamsViewModel
 
     override fun initialize() {
-        viewModel = createViewModel(FollowedStreamsViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
@@ -17,7 +16,8 @@ import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
 import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -30,39 +30,36 @@ class ClipPlayerViewModel @Inject constructor(
         private val playerRepository: PlayerRepository,
         private val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
 
-    private val _clip = MutableLiveData<Clip>()
-    val clip: LiveData<Clip>
-        get() = _clip
-    private val factory: ExtractorMediaSource.Factory = ExtractorMediaSource.Factory(dataSourceFactory)
-    private var playbackProgress: Long = 0
+    private lateinit var clip: Clip
+    private val factory: ProgressiveMediaSource.Factory = ProgressiveMediaSource.Factory(dataSourceFactory)
+    private var playbackProgress = 0L
     private val prefs = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     private val helper = PlayerHelper()
     val qualities: Map<String, String>
-        get() = helper.urls!!
+        get() = helper.urls
     val loaded: LiveData<Boolean>
         get() = helper.loaded
     val selectedQualityIndex: Int
-        get() = helper.selectedQualityIndex
+        get() = helper.qualityIndex
     override val channelInfo: Pair<String, String>
-        get() {
-            val c = clip.value!!
-            return c.broadcaster.id to c.broadcaster.displayName
-        }
+        get() = clip.broadcaster.id to clip.broadcaster.displayName
     override lateinit var follow: FollowLiveData
 
     override fun changeQuality(index: Int) {
         playbackProgress = player.currentPosition
-        val quality = helper.urls!!.values.elementAt(index)
+        val quality = helper.urls.values.elementAt(index)
         play(quality)
-        prefs.edit { putString(TAG, quality) }
-        helper.selectedQualityIndex = index
+        prefs.edit { putString(TAG, helper.urls.keys.elementAt(index)) }
+        helper.qualityIndex = index
     }
 
     override fun onResume() {
         super.onResume()
-        launch(Dispatchers.Main) {
+        launch {
             delay(1000L)
-            player.seekTo(playbackProgress)
+            launch(Dispatchers.Main) {
+                player.seekTo(playbackProgress)
+            }
         }
     }
 
@@ -72,17 +69,19 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     fun setClip(clip: Clip) {
-        if (_clip.value != clip) {
-            _clip.value = clip
-            call(playerRepository.loadClipQualities(clip.slug)
+        if (!this::clip.isInitialized) {
+            this.clip = clip
+            playerRepository.loadClipQualities(clip.slug)
                     .subscribe({
                         helper.urls = it
-                        play(it.values.first()) //TODO save selected quality
-                        helper.selectedQualityIndex = 0
+                        val quality = prefs.getString(TAG, it.keys.first())!!
+                        play((it[quality] ?: it.values.first()))
+                        helper.qualityIndex = it.keys.indexOf(quality)
                         helper.loaded.value = true
                     }, {
 
-                    }))
+                    })
+                    .addTo(compositeDisposable)
         }
     }
 
@@ -99,6 +98,7 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
+        super.onPlayerError(error)
         playbackProgress = player.currentPosition
     }
 }

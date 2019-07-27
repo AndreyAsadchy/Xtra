@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nav_bar_games">الألعاب</string>
-    <string name="nav_bar_popular">الأكثر شعبية</string>
-    <string name="nav_bar_following">المُتابَعين</string>
-    <string name="nav_bar_downloads">التنزيلات</string>
-    <string name="nav_bar_menu">القائمة</string>
+    <string name="games">الألعاب</string>
+    <string name="popular">الأكثر شعبية</string>
+    <string name="following">المُتابَعين</string>
+    <string name="downloads">التنزيلات</string>
+    <string name="menu">القائمة</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="connection_error">خطأ في الاتصال بالخادم. الرجاء إعادة المحاولة</string>
     <string name="sort">فرز حسب</string>
@@ -51,7 +51,7 @@
     <string name="connection_restored">تم  إستعادة الإتصال</string>
     <string name="follow_tab_login_prompt">سيتم عرض القنوات التي تُتابعها هنا</string>
     <string name="downloads_empty">سيتم عرض الفيديوهات التي تم تنزيلها هنا</string>
-    <string name="notification_downloads_channel">التنزيلات</string>
+    <string name="notification_downloads_channel_title">التنزيلات</string>
     <string name="storage_permission_title">يحتاج التطبيق إلى إذن التخزين</string>
     <string name="storage_permission_message">مطلوب إذن التخزين لتنزيل الفيديوهات.</string>
     <string name="permission_denied">تم رفض الأذونات المطلوبة</string>
@@ -93,7 +93,7 @@
     <string name="unfollowed">تم إلغاء مُتابعة%s</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
-    <string name="search">ابحث عن القنوات</string>
+    <string name="search">بحث</string>
     <string name="chat_replay_unavailable">إعادة تشغيل الدردشة غير متاحة</string>
     <string name="video_subscribers_only">هذا الفيديو متاح فقط للمشتركين</string>
     <string name="player_error">خطأ في المشغل.  إعادة المحاولة</string>
@@ -116,4 +116,6 @@
     <string name="view_profile">عَرض الصفحة الشخصية</string>
     <string name="chat">الدردشة</string>
     <string name="recent_emotes">الأخيرة</string>
+    <string name="notification_playback_channel_title">تشغيل</string>
+    <string name="channels">قنوات</string>
 </resources>

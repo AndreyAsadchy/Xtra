@@ -18,6 +18,9 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override val channel: Channel
         get() = null!!
 
+    override val shouldEnterPictureInPicture: Boolean
+        get() = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableNetworkCheck = false
         super.onCreate(savedInstanceState)
@@ -28,7 +31,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        viewModel = createViewModel(OfflinePlayerViewModel::class.java)
+        viewModel = createViewModel()
         playerView.player = viewModel.player
         viewModel.setVideo(requireArguments().getParcelable("video")!!)
     }
@@ -38,13 +41,13 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+        if (!wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+        if (!wasInPictureInPictureMode) {
             viewModel.onPause()
         }
     }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.repository.TwitchService
@@ -11,7 +12,6 @@ import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
-import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.C
@@ -25,7 +25,6 @@ import java.util.LinkedList
 import java.util.regex.Pattern
 
 private const val VIDEO_RENDERER = 0
-private const val AUDIO_RENDERER = 1
 private const val TAG = "HlsPlayerViewModel"
 
 abstract class HlsPlayerViewModel(
@@ -37,74 +36,61 @@ abstract class HlsPlayerViewModel(
     val loaded: LiveData<Boolean>
         get() = helper.loaded
     val selectedQualityIndex: Int
-        get() = helper.selectedQualityIndex
+        get() = helper.qualityIndex
     lateinit var qualities: List<String>
         private set
     override lateinit var follow: FollowLiveData
 
+    protected val _playerMode = MutableLiveData<PlayerMode>()
+    val playerMode: LiveData<PlayerMode>
+        get() = _playerMode
+
     override fun changeQuality(index: Int) {
-        helper.selectedQualityIndex = index
+        helper.qualityIndex = index
     }
 
-    protected fun updateQuality(index: Int) {
+    protected fun setVideoQuality(index: Int) {
         val quality = if (index == 0) {
             trackSelector.setParameters(trackSelector.buildUponParameters().clearSelectionOverrides())
             "Auto"
         } else {
-            updateQuality()
+            updateVideoQuality()
             qualities[index]
         }
-        changePlayerMode(NORMAL)
         prefs.edit { putString(TAG, quality) }
-    }
-
-    private fun updateQuality() {
-        val parametersBuilder = trackSelector.buildUponParameters()
-                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.selectedQualityIndex - 1))
-        trackSelector.setParameters(parametersBuilder)
-    }
-
-    protected fun changePlayerMode(playerMode: PlayerMode) {
-        val videoDisabled: Boolean
-        val audioDisabled: Boolean
-        when (playerMode) {
-            NORMAL -> {
-                videoDisabled = false
-                audioDisabled = false
-            }
-            AUDIO_ONLY -> {
-                videoDisabled = true
-                audioDisabled = false
-            }
-            DISABLED -> {
-                videoDisabled = true
-                audioDisabled = true
-            }
+        if (playerMode.value == AUDIO_ONLY) {
+            stopBackgroundAudio()
         }
-        trackSelector.setParameters(trackSelector.buildUponParameters().setRendererDisabled(VIDEO_RENDERER, videoDisabled).setRendererDisabled(AUDIO_RENDERER, audioDisabled))
+        _playerMode.value = NORMAL
+    }
+    
+    private fun updateVideoQuality() {
+        val parametersBuilder = trackSelector.buildUponParameters()
+                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.qualityIndex - 1))
+        trackSelector.setParameters(parametersBuilder)
     }
 
     override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
         if (trackSelector.currentMappedTrackInfo != null) {
             if (helper.loaded.value != true) {
                 helper.loaded.value = true
-                val index =  prefs.getString(TAG, "Auto").let { quality: String ->
+                val index = prefs.getString(TAG, "Auto").let { quality: String ->
                     if (quality == "Auto") {
                         0
                     } else {
                         qualities.indexOf(quality).let { if (it != -1) it else 0 }
                     }
                 }
-                helper.selectedQualityIndex = index
+                helper.qualityIndex = index
             }
-            if (helper.selectedQualityIndex != 0) {
-                updateQuality()
+            if (helper.qualityIndex != 0) {
+                updateVideoQuality()
             }
         }
     }
 
     override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
-        if (helper.urls == null && manifest is HlsManifest) {
+        if (helper.urls.isEmpty() && manifest is HlsManifest) {
             manifest.masterPlaylist.let {
                 val context = getApplication<Application>()
                 val tags = it.tags
@@ -134,8 +120,24 @@ abstract class HlsPlayerViewModel(
     }
 
     override fun setUser(user: LoggedIn) {
-        if (!this::follow.isInitialized) {
+        if (!this::follow.isInitialized) { //TODO REFACTOR
             follow = FollowLiveData(repository, user, channelInfo.first)
+        }
+    }
+
+    override fun onResume() {
+        if (playerMode.value == NORMAL) {
+            super.onResume()
+        } else if (playerMode.value == AUDIO_ONLY) {
+            hideBackgroundAudio()
+        }
+    }
+
+    override fun onPause() {
+        if (playerMode.value == NORMAL) {
+            super.onPause()
+        } else if (playerMode.value == AUDIO_ONLY) {
+            showBackgroundAudio()
         }
     }
 }

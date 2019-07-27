@@ -241,4 +241,12 @@ class KrakenRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.code() == 204 }
     }
+
+    override fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<com.github.exact7.xtra.model.kraken.game.search.Game>> {
+        Log.d(TAG, "Loading games containing: $query")
+        return api.getGames(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { it.games }
+    }
 }

@@ -33,6 +33,9 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
     override val channel: Channel
         get() = clip.broadcaster
 
+    override val shouldEnterPictureInPicture: Boolean
+        get() = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clip = requireArguments().getParcelable(C.CLIP)!!
@@ -53,10 +56,10 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             }
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, videoId, startTime)).commit()
         }
+        viewModel = createViewModel()
     }
 
     override fun initialize() {
-        viewModel = createViewModel(ClipPlayerViewModel::class.java)
         viewModel.setClip(clip)
         initializeViewModel(viewModel)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
@@ -77,26 +80,24 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
 
     override fun showDownloadDialog() {
         if (DownloadUtils.hasStoragePermission(requireActivity())) {
-            ClipDownloadDialog.newInstance(viewModel.clip.value!!, viewModel.qualities).show(childFragmentManager, null)
+            ClipDownloadDialog.newInstance(clip, viewModel.qualities).show(childFragmentManager, null)
         }
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+        if (!wasInPictureInPictureMode) {
             viewModel.onResume()
         }
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized && !wasInPictureInPictureMode) {
+        if (!wasInPictureInPictureMode) {
             viewModel.onPause()
         }
     }
 
     override fun onNetworkRestored() {
-        if (this::viewModel.isInitialized) {
-            viewModel.onResume()
-        }
+        viewModel.onResume()
     }
 
     override fun getCurrentPosition(): Double {

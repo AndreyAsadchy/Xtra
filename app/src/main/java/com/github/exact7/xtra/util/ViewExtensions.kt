@@ -14,7 +14,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
-import java.util.Calendar
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -52,8 +51,11 @@ fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean 
                 .diskCacheStrategy(diskCacheStrategy)
                 .transition(DrawableTransitionOptions.withCrossFade())
         if (changes) {
-            val calendar = Calendar.getInstance()
-            request.signature(ObjectKey(Math.floor(calendar.get(Calendar.MINUTE) / 10.0 * 2.0) / 2.0 + calendar.get(Calendar.HOUR) + calendar.get(Calendar.DAY_OF_MONTH)))
+            //update every 5 minutes
+            val minutes = System.currentTimeMillis() / 60000L
+            val lastMinute = minutes % 10
+            val key = if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5)
+            request.signature(ObjectKey(key))
         }
         if (circle) {
             request.circleCrop()

@@ -53,9 +53,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private var isPortrait: Boolean = false
     protected var isInPictureInPictureMode = false
         private set
-    protected var wasInPictureInPictureMode = false
+    protected var wasInPictureInPictureMode = false //TODO refactor to PlayerViewModel?
     private var shouldRecreate = false
     private var isKeyboardShown = false
+    abstract val shouldEnterPictureInPicture: Boolean
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
@@ -297,6 +298,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     fun minimize() {
         slidingLayout.minimize()
     }
+
+    fun maximize() {
+        slidingLayout.maximize()
+    }
+
 
     private fun showStatusBar() {
         if (isAdded) {

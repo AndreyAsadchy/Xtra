@@ -2,17 +2,15 @@ package com.github.exact7.xtra.ui.player.stream
 
 import android.app.Application
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
-import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
 class StreamPlayerViewModel @Inject constructor(
@@ -20,24 +18,14 @@ class StreamPlayerViewModel @Inject constructor(
         private val playerRepository: PlayerRepository,
         repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
-    private val _stream = MutableLiveData<Stream>()
-    val stream: LiveData<Stream>
-        get() = _stream
+    private lateinit var stream: Stream
     override val channelInfo: Pair<String, String>
-        get() {
-            val s = stream.value!!
-            return s.channel.id to s.channel.displayName
-        }
-
-    override val loadControl: DefaultLoadControl = DefaultLoadControl.Builder()
-            .setBufferDurationsMs(DefaultLoadControl.DEFAULT_MIN_BUFFER_MS, DefaultLoadControl.DEFAULT_MAX_BUFFER_MS, 1500, 3000)
-            .createDefaultLoadControl()
+        get() = stream.channel.id to stream.channel.displayName
 
     fun startStream(stream: Stream) {
-        if (_stream.value != stream) {
-            _stream.value = stream
-            val channel = stream.channel
-            call(playerRepository.loadStreamPlaylist(channel.name)
+        if (!this::stream.isInitialized) {
+            this.stream = stream
+            playerRepository.loadStreamPlaylist(stream.channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory)
                                 .setAllowChunklessPreparation(true)
@@ -47,16 +35,26 @@ class StreamPlayerViewModel @Inject constructor(
                     }, {
                         val context = getApplication<Application>()
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
-                    }))
+                    })
+                    .addTo(compositeDisposable)
         }
     }
 
     override fun changeQuality(index: Int) {
         super.changeQuality(index)
         when {
-            index < qualities.size - 2 -> updateQuality(index)
-            index < qualities.size - 1 -> changePlayerMode(PlayerMode.AUDIO_ONLY)
-            else -> changePlayerMode(PlayerMode.DISABLED)
+            index < qualities.size - 2 -> setVideoQuality(index)
+            index < qualities.size - 1 -> {
+                startBackgroundAudio(helper.urls.getValue("Audio only"), stream.channel.status, stream.channel.displayName, false)
+                _playerMode.value = PlayerMode.AUDIO_ONLY
+            }
+            else -> {
+                player.stop()
+                if (_playerMode.value == PlayerMode.AUDIO_ONLY) {
+                    stopBackgroundAudio()
+                }
+                _playerMode.value = PlayerMode.DISABLED
+            }
         }
     }
 }

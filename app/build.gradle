@@ -84,15 +84,15 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     testImplementation 'junit:junit:4.13-beta-1'
-    androidTestImplementation 'androidx.test:core:1.1.0'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
     //UI
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation 'com.google.android.material:material:1.1.0-alpha08'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.preference:preference:1.1.0-alpha03'
 
     //Architecture components
@@ -103,10 +103,10 @@ dependencies {
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
     androidTestImplementation "androidx.room:room-testing:$room"
-    implementation 'androidx.core:core-ktx:1.2.0-alpha01'
+    implementation 'androidx.core:core-ktx:1.2.0-alpha02'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.google.firebase:firebase-core:17.0.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }

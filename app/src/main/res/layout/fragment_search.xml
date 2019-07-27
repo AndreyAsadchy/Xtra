@@ -1,60 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
 
-    <data>
-        <import type="com.github.exact7.xtra.repository.LoadingState" />
-        <variable
-            name="viewModel"
-            type="com.github.exact7.xtra.ui.search.SearchViewModel" />
-    </data>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/primaryColor">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="flagNoFullscreen"
+                android:inputType="textAutoComplete"
+                android:textDirection="locale"
+                app:queryBackground="@android:color/transparent"
+                app:queryHint="@string/search"
+                app:searchIcon="@null"
+                app:iconifiedByDefault="false"
+                />
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:colorBackground">
+        layout="@layout/fragment_media_pager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/primaryColor">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="flagNoFullscreen"
-                    android:inputType="textAutoComplete"
-                    android:textDirection="locale"
-                    app:queryBackground="@android:color/transparent"
-                    app:queryHint="@string/search"
-                    app:searchIcon="@null"
-                    app:iconifiedByDefault="false"
-                    />
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <com.github.exact7.xtra.ui.view.GridRecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/fragment_search_channels_list_item"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:visible="@{viewModel.loadingState == LoadingState.LOADING}"
-            android:layout_gravity="center"/>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-</layout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -17,7 +17,7 @@ class ClipsFragment : BaseClipsFragment() {
         get() = arguments?.getParcelable<Channel?>(C.CHANNEL) != null
 
     override fun initialize() {
-        viewModel = createViewModel(ClipsViewModel::class.java)
+        viewModel = createViewModel()
         binding.viewModel = viewModel
         binding.sortText = viewModel.sortText
         viewModel.list.observe(this, Observer {

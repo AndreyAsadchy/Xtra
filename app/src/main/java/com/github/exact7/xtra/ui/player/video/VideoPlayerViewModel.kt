@@ -3,8 +3,6 @@ package com.github.exact7.xtra.ui.player.video
 import android.app.Application
 import android.net.Uri
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.kraken.video.Video
@@ -18,6 +16,7 @@ import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
@@ -31,10 +30,8 @@ class VideoPlayerViewModel @Inject constructor(
         private val playerRepository: PlayerRepository,
         repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
-    private val _video = MutableLiveData<Video>()
-    val video: LiveData<Video>
-        get() = _video
-    private var playbackProgress: Long = 0
+    private lateinit var video: Video
+    private var playbackPosition: Long = 0
     private lateinit var playlist: HlsMediaPlaylist
     val videoInfo: VideoDownloadInfo
         get() {
@@ -47,18 +44,16 @@ class VideoPlayerViewModel @Inject constructor(
                 relativeTimes.add(segment.relativeStartTimeUs / 1000L)
                 durations.add(segment.durationUs / 1000L)
             }
-            return VideoDownloadInfo(_video.value!!, helper.urls!!, relativeTimes, durations, playlist.durationUs / 1000L, playlist.targetDurationUs / 1000L, player.currentPosition)
-        }
-    override val channelInfo: Pair<String, String>
-        get()  {
-            val v = video.value!!
-            return v.channel.id to v.channel.displayName
+            return VideoDownloadInfo(video, helper.urls, relativeTimes, durations, playlist.durationUs / 1000L, playlist.targetDurationUs / 1000L, player.currentPosition)
         }
 
+    override val channelInfo: Pair<String, String>
+        get() = video.channel.id to video.channel.displayName
+
     fun setVideo(video: Video) {
-        if (_video.value != video) {
-            _video.value = video
-            call(playerRepository.loadVideoPlaylist(video.id)
+        if (!this::video.isInitialized) {
+            this.video = video
+            playerRepository.loadVideoPlaylist(video.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onSuccess = {
@@ -69,29 +64,35 @@ class VideoPlayerViewModel @Inject constructor(
                             val context = getApplication<Application>()
                             Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
                         }
-                    }))
+                    })
+                    .addTo(compositeDisposable)
         }
     }
 
     override fun changeQuality(index: Int) {
         super.changeQuality(index)
         when {
-            index < qualities.lastIndex -> updateQuality(index)
-            else -> changePlayerMode(PlayerMode.AUDIO_ONLY)
+            index < qualities.lastIndex -> setVideoQuality(index)
+            else -> {
+                startBackgroundAudio(helper.urls.getValue("Audio only"), video.channel.status, video.channel.displayName, true)
+                _playerMode.value = PlayerMode.AUDIO_ONLY
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        launch(Dispatchers.Main) {
+        launch {
             delay(1000L)
-            player.seekTo(playbackProgress)
+            launch(Dispatchers.Main) {
+                player.seekTo(player.currentPosition.takeIf { it > 0 } ?: playbackPosition)
+            }
         }
     }
 
     override fun onPause() {
         super.onPause()
-        playbackProgress = player.currentPosition
+        playbackPosition = player.currentPosition
     }
 
     override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
@@ -102,6 +103,7 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        playbackProgress = player.currentPosition
+        super.onPlayerError(error)
+        playbackPosition = player.currentPosition
     }
 }
