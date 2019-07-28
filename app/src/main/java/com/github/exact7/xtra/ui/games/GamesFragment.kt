@@ -19,7 +19,7 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
         fun openGame(game: Game)
     }
 
-    override lateinit var viewModel: GamesViewModel
+    private lateinit var viewModel: GamesViewModel
     private lateinit var adapter: GamesAdapter
     private lateinit var binding: FragmentGamesBinding
 
@@ -46,5 +46,9 @@ class GamesFragment : BaseNetworkFragment(), Scrollable {
 
     override fun scrollToTop() {
         recyclerView?.scrollToPosition(0)
+    }
+
+    override fun onNetworkRestored() {
+        viewModel.retry()
     }
 }

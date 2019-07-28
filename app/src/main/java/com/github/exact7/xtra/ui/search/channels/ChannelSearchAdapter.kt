@@ -7,7 +7,7 @@ import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
 import com.github.exact7.xtra.ui.common.OnChannelSelectedListener
 
-class ChannelsSearchAdapter(
+class ChannelSearchAdapter(
         private val listener: OnChannelSelectedListener) : DataBoundPagedListAdapter<Channel, FragmentSearchChannelsListItemBinding>(
         object : DiffUtil.ItemCallback<Channel>() {
             override fun areItemsTheSame(oldItem: Channel, newItem: Channel): Boolean =

@@ -6,5 +6,5 @@ data class GamesResponse(
     @SerializedName("_total")
     val total: Int,
     @SerializedName("top")
-    val games: List<Game>)
+    val games: List<GameWrapper>)
 

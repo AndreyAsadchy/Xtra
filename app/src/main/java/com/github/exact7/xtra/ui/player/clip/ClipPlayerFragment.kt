@@ -28,7 +28,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    override lateinit var viewModel: ClipPlayerViewModel
+    private lateinit var viewModel: ClipPlayerViewModel
     private lateinit var clip: Clip
     override val channel: Channel
         get() = clip.broadcaster

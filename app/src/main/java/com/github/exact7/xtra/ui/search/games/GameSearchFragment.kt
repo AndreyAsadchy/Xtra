@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.search.channels
+package com.github.exact7.xtra.ui.search.games
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,10 +15,10 @@ import com.github.exact7.xtra.ui.search.Searchable
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.simple_recycler_view_layout.*
 
-class ChannelSearchFragment : BaseNetworkFragment(), Searchable {
+class GameSearchFragment : BaseNetworkFragment(), Searchable {
 
-    private lateinit var viewModel: ChannelSearchViewModel
-    private lateinit var adapter: ChannelSearchAdapter
+    private lateinit var viewModel: GameSearchViewModel
+    private lateinit var adapter: GameSearchAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.simple_recycler_view_layout, container, false)
@@ -28,7 +28,7 @@ class ChannelSearchFragment : BaseNetworkFragment(), Searchable {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
         recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-        recyclerView.adapter = ChannelSearchAdapter(activity).also { adapter = it }
+        recyclerView.adapter = GameSearchAdapter(activity).also { adapter = it }
     }
 
     override fun initialize() {

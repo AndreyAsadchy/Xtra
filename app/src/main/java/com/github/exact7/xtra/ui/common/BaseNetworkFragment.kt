@@ -19,8 +19,8 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         const val CREATED_KEY = "created"
     }
 
-    protected abstract val viewModel: ViewModel
-    @Inject protected lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    protected lateinit var viewModelFactory: ViewModelProvider.Factory
     protected var enableNetworkCheck = true
     private var lastState = false
     private var shouldRestore = false
@@ -28,15 +28,13 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
     private var created = false
 
     abstract fun initialize()
-
-    open fun onNetworkRestored() {
-        (viewModel as? PagedListViewModel<*>)?.retry()
-    }
+    abstract fun onNetworkRestored()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (enableNetworkCheck) {
-            lastState = savedInstanceState?.getBoolean(LAST_KEY) ?: requireContext().isNetworkAvailable
+            lastState = savedInstanceState?.getBoolean(LAST_KEY)
+                    ?: requireContext().isNetworkAvailable
             shouldRestore = savedInstanceState?.getBoolean(RESTORE_KEY) ?: false
             created = savedInstanceState?.getBoolean(CREATED_KEY) ?: false
         }

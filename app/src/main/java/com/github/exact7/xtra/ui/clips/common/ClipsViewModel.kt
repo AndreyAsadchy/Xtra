@@ -23,7 +23,7 @@ class ClipsViewModel @Inject constructor(
         get() = _sortText
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Clip>> = Transformations.map(filter) {
-        repository.loadClips(it.channelName, it.game?.info?.name, it.languages, it.period, it.trending, compositeDisposable)
+        repository.loadClips(it.channelName, it.game?.name, it.languages, it.period, it.trending, compositeDisposable)
     }
     var selectedIndex = 2
         private set

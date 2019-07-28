@@ -15,6 +15,7 @@ import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
 import com.github.exact7.xtra.ui.search.SearchFragment
 import com.github.exact7.xtra.ui.search.channels.ChannelSearchFragment
+import com.github.exact7.xtra.ui.search.games.GameSearchFragment
 import com.github.exact7.xtra.ui.streams.common.StreamsFragment
 import com.github.exact7.xtra.ui.streams.followed.FollowedStreamsFragment
 import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
@@ -81,6 +82,9 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeChannelSearchFragment(): ChannelSearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeGameSearchFragment(): GameSearchFragment
 
     @ContributesAndroidInjector
     abstract fun contributeChannelPagerFragment(): ChannelPagerFragment

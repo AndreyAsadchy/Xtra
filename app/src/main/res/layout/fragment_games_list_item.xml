@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="game" type="com.github.exact7.xtra.model.kraken.game.Game"/>
+        <variable name="game" type="com.github.exact7.xtra.model.kraken.game.GameWrapper"/>
         <variable
             name="listener"
             type="com.github.exact7.xtra.ui.games.GamesFragment.OnGameSelectedListener"/>
     </data>
 
     <androidx.cardview.widget.CardView
-        android:onClick="@{() -> listener.openGame(game)}"
+        android:onClick="@{() -> listener.openGame(game.game)}"
         style="@style/Card"
         >
 
@@ -24,7 +24,7 @@
                 android:id="@+id/gameImage"
                 android:layout_width="50dp"
                 android:layout_height="60dp"
-                app:imageUrl="@{game.info.box.medium}"
+                app:imageUrl="@{game.game.box.medium}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +37,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="@{game.info.name}"
+                android:text="@{game.game.name}"
                 android:textSize="16sp"
                 android:gravity="start"
                 android:textAlignment="viewStart"

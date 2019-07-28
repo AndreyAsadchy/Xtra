@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentStreamsBinding
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
@@ -18,6 +19,7 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
         fun startStream(stream: Stream)
     }
 
+    protected abstract val viewModel: PagedListViewModel<Stream>
     protected lateinit var adapter: StreamsAdapter
         private set
     protected lateinit var binding: FragmentStreamsBinding
@@ -33,5 +35,9 @@ abstract class BaseStreamsFragment : BaseNetworkFragment(), Scrollable {
 
     override fun scrollToTop() {
         recyclerView?.scrollToPosition(0)
+    }
+
+    override fun onNetworkRestored() {
+        viewModel.retry()
     }
 }

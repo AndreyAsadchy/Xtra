@@ -37,7 +37,7 @@ class OfflinePlayerViewModel @Inject constructor(
     }
 
     override fun onPause() {
-        startBackgroundAudio(video.url, video.channelName, video.name, true)
+        startBackgroundAudio(video.url, video.channelName, video.name, video.channelLogo, true)
     }
 
     override fun onCleared() {

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.pagers.ItemAwareFragmentPagerAdapter
 import com.github.exact7.xtra.ui.search.channels.ChannelSearchFragment
+import com.github.exact7.xtra.ui.search.games.GameSearchFragment
 
 class SearchPagerAdapter(
         private val context: Context,
@@ -22,7 +23,7 @@ class SearchPagerAdapter(
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> ChannelSearchFragment()
-            else -> ChannelSearchFragment()
+            else -> GameSearchFragment()
         }
     }
 

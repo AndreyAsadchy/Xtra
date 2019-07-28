@@ -8,6 +8,7 @@ import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.game.Game
+import com.github.exact7.xtra.model.kraken.game.GameWrapper
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
 import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
@@ -43,7 +44,7 @@ class KrakenRepository @Inject constructor(
         private val networkExecutor: Executor,
         private val emotesDao: EmotesDao) : TwitchService {
 
-    override fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game> {
+    override fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<GameWrapper> {
         val factory = GamesDataSource.Factory(api, networkExecutor, compositeDisposable)
         val config = PagedList.Config.Builder()
                 .setPageSize(30)
@@ -242,7 +243,7 @@ class KrakenRepository @Inject constructor(
                 .map { it.code() == 204 }
     }
 
-    override fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<com.github.exact7.xtra.model.kraken.game.search.Game>> {
+    override fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<Game>> {
         Log.d(TAG, "Loading games containing: $query")
         return api.getGames(query)
                 .subscribeOn(Schedulers.io())

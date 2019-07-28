@@ -5,6 +5,7 @@ import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.Game
+import com.github.exact7.xtra.model.kraken.game.GameWrapper
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
 import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
@@ -17,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 interface TwitchService {
 
-    fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<Game>
+    fun loadTopGames(compositeDisposable: CompositeDisposable): Listing<GameWrapper>
     fun loadStream(channelId: String): Single<StreamWrapper>
     fun loadStreams(game: String?, languages: String?, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
     fun loadFollowedStreams(userToken: String, streamType: StreamType, compositeDisposable: CompositeDisposable): Listing<Stream>
@@ -35,5 +36,5 @@ interface TwitchService {
     fun loadUserFollows(userId: String, channelId: String): Single<Boolean>
     fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
     fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean>
-    fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<com.github.exact7.xtra.model.kraken.game.search.Game>>
+    fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<Game>>
 }

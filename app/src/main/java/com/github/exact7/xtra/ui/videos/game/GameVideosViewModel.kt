@@ -25,7 +25,7 @@ class GameVideosViewModel @Inject constructor(
         get() = _sortText
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Video>> = Transformations.map(filter) {
-        repository.loadVideos(it.game.info.name, it.period, it.broadcastType, it.language, it.sort, compositeDisposable)
+        repository.loadVideos(it.game.name, it.period, it.broadcastType, it.language, it.sort, compositeDisposable)
     }
     val sort: Sort
         get() = filter.value!!.sort

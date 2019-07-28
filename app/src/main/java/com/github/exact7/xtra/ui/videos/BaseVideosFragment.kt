@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.github.exact7.xtra.databinding.FragmentVideosBinding
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
@@ -22,6 +23,7 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
         fun startVideo(video: Video)
     }
 
+    protected abstract val viewModel: PagedListViewModel<Video>
     protected lateinit var adapter: TempBaseAdapter<Video, *>
         private set
     protected lateinit var binding: FragmentVideosBinding
@@ -48,5 +50,9 @@ abstract class BaseVideosFragment : BaseNetworkFragment(), Scrollable, HasDownlo
 
     override fun showDownloadDialog() {
         VideoDownloadDialog.newInstance(video = adapter.lastSelectedItem!!).show(childFragmentManager, null)
+    }
+
+    override fun onNetworkRestored() {
+        viewModel.retry()
     }
 }

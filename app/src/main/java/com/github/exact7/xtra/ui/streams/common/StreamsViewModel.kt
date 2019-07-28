@@ -16,7 +16,7 @@ class StreamsViewModel @Inject constructor(
 
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Stream>> = Transformations.map(filter) {
-        repository.loadStreams(it?.game?.info?.name, it.languages, it.streamType, compositeDisposable)
+        repository.loadStreams(it?.game?.name, it.languages, it.streamType, compositeDisposable)
     }
 
     fun loadStreams(game: Game? = null, languages: String? = null) {

@@ -42,7 +42,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
         }
     }
 
-    override lateinit var viewModel: ChatViewModel
+    private lateinit var viewModel: ChatViewModel
     private lateinit var chatView: ChatView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

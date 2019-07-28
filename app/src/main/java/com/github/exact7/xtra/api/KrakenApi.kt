@@ -5,7 +5,7 @@ import com.github.exact7.xtra.model.kraken.channel.ChannelsSearchResponse
 import com.github.exact7.xtra.model.kraken.clip.ClipsResponse
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.GamesResponse
-import com.github.exact7.xtra.model.kraken.game.search.GamesSearchResponse
+import com.github.exact7.xtra.model.kraken.game.GamesSearchResponse
 import com.github.exact7.xtra.model.kraken.stream.StreamType
 import com.github.exact7.xtra.model.kraken.stream.StreamsResponse
 import com.github.exact7.xtra.model.kraken.user.User

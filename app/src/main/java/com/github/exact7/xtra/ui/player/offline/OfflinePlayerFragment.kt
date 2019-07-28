@@ -14,7 +14,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    override lateinit var viewModel: OfflinePlayerViewModel
+    private lateinit var viewModel: OfflinePlayerViewModel
     override val channel: Channel
         get() = null!!
 

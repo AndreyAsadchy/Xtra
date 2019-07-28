@@ -9,6 +9,7 @@ import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.clips.common.ChannelClipsAdapter
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
@@ -24,6 +25,7 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
         fun startClip(clip: Clip)
     }
 
+    protected abstract val viewModel: PagedListViewModel<Clip>
     protected lateinit var adapter: TempBaseAdapter<Clip, *>
         private set
     protected lateinit var binding: FragmentClipsBinding
@@ -51,5 +53,9 @@ abstract class BaseClipsFragment : BaseNetworkFragment(), Scrollable, RadioButto
 
     override fun showDownloadDialog() {
         ClipDownloadDialog.newInstance(adapter.lastSelectedItem!!).show(childFragmentManager, null)
+    }
+
+    override fun onNetworkRestored() {
+        viewModel.retry()
     }
 }

@@ -28,7 +28,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    override lateinit var viewModel: VideoPlayerViewModel
+    private lateinit var viewModel: VideoPlayerViewModel
     private lateinit var video: Video
     override val channel: Channel
         get() = video.channel

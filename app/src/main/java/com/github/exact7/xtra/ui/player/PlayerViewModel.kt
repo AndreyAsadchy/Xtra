@@ -61,7 +61,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         player.stop()
     }
 
-    protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, usePlayPause: Boolean) {
+    protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, imageUrl: String, usePlayPause: Boolean) {
         player.stop()
         val context = getApplication<Application>()
         val intent = Intent(context, AudioPlayerService::class.java).apply {
@@ -69,6 +69,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
             putExtra(AudioPlayerService.KEY_PLAYLIST_URL, playlistUrl)
             putExtra(AudioPlayerService.KEY_CHANNEL_NAME, channelName)
             putExtra(AudioPlayerService.KEY_TITLE, title)
+            putExtra(AudioPlayerService.KEY_IMAGE_URL, imageUrl)
             putExtra(AudioPlayerService.KEY_USE_PLAY_PAUSE, usePlayPause)
         }
         context.startService(intent)

@@ -343,7 +343,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             when (it.getIntExtra(KEY_CODE, -1)) {
                 INTENT_OPEN_DOWNLOADS_TAB -> navBar.selectedItemId = R.id.fragment_downloads
                 INTENT_OPEN_DOWNLOADED_VIDEO -> startOfflineVideo(it.getParcelableExtra(KEY_VIDEO))
-                INTENT_OPEN_PLAYER -> playerFragment!!.maximize()
+                INTENT_OPEN_PLAYER -> playerFragment!!.maximize() //TODO if was closed need to reopen
             }
         }
     }

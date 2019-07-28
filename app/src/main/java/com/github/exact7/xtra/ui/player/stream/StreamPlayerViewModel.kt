@@ -45,7 +45,7 @@ class StreamPlayerViewModel @Inject constructor(
         when {
             index < qualities.size - 2 -> setVideoQuality(index)
             index < qualities.size - 1 -> {
-                startBackgroundAudio(helper.urls.getValue("Audio only"), stream.channel.status, stream.channel.displayName, false)
+                startBackgroundAudio(helper.urls.getValue("Audio only"), stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
                 _playerMode.value = PlayerMode.AUDIO_ONLY
             }
             else -> {

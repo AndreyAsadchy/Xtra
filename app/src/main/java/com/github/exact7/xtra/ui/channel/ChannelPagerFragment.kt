@@ -9,7 +9,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.Utils
@@ -28,13 +27,13 @@ import kotlinx.android.synthetic.main.fragment_channel.*
 import kotlinx.android.synthetic.main.fragment_media_pager.*
 
 
-class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
+class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
 
     companion object {
         fun newInstance(channel: Channel) = ChannelPagerFragment().apply { arguments = bundleOf(C.CHANNEL to channel) }
     }
 
-    override lateinit var viewModel: ChannelPagerViewModel
+    private lateinit var viewModel: ChannelPagerViewModel
     private lateinit var channel: Channel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +75,7 @@ class ChannelPagerFragment : MediaPagerFragment(), Injectable, FollowFragment {
                     AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 }
             }
+
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
         })

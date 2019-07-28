@@ -25,7 +25,7 @@ class GameFragment : MediaFragment() {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
         toolbar.apply {
-            title = requireArguments().getParcelable<Game>(C.GAME)!!.info.name
+            title = requireArguments().getParcelable<Game>(C.GAME)!!.name
             navigationIcon = Utils.getNavigationIcon(activity)
             setNavigationOnClickListener { activity.popFragment() }
         }

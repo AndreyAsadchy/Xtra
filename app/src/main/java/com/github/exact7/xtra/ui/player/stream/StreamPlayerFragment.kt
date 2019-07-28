@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.player_stream.*
 class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
     private lateinit var chatFragment: ChatFragment
-    override lateinit var viewModel: StreamPlayerViewModel
+    private lateinit var viewModel: StreamPlayerViewModel
     private lateinit var stream: Stream
     override val channel: Channel
         get() = stream.channel

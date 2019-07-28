@@ -2,7 +2,6 @@ package com.github.exact7.xtra.ui.videos.game
 
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.video.Period
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
@@ -20,7 +19,7 @@ class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.setGame(arguments?.getParcelable(C.GAME) as Game)
+        viewModel.setGame(requireArguments().getParcelable(C.GAME)!!)
         sortBar.setOnClickListener { GameVideosSortDialog.newInstance(viewModel.sort, viewModel.period).show(childFragmentManager, null) }
     }
 
