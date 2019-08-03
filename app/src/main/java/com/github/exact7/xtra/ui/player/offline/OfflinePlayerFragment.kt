@@ -31,7 +31,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        viewModel = createViewModel()
+        viewModel = getViewModel()
         playerView.player = viewModel.player
         viewModel.setVideo(requireArguments().getParcelable("video")!!)
     }

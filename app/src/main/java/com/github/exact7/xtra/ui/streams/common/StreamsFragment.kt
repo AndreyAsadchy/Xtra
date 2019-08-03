@@ -1,19 +1,14 @@
 package com.github.exact7.xtra.ui.streams.common
 
-import androidx.lifecycle.Observer
 import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.util.C
 
-class StreamsFragment : BaseStreamsFragment() {
-
-    override lateinit var viewModel: StreamsViewModel
+class StreamsFragment : BaseStreamsFragment<StreamsViewModel>() {
 
     override fun initialize() {
-        viewModel = createViewModel()
-        binding.viewModel = viewModel
-        viewModel.list.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
+        super.initialize()
         viewModel.loadStreams(arguments?.getParcelable(C.GAME))
     }
+
+    override fun createViewModel(): StreamsViewModel = getViewModel()
 }

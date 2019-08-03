@@ -287,7 +287,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             0 -> {
-                if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) { //TODO can move this to fragment?
+                if (grantResults.isNotEmpty() && grantResults.indexOf(PackageManager.PERMISSION_DENIED) == -1) {
                     val fragment = fragNavController.currentFrag
                     if (fragment is HasDownloadDialog) {
                         fragment.showDownloadDialog()

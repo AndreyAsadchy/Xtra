@@ -56,7 +56,7 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
             }
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, videoId, startTime)).commit()
         }
-        viewModel = createViewModel()
+        viewModel = getViewModel()
     }
 
     override fun initialize() {

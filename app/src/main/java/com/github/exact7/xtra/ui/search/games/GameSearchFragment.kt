@@ -32,7 +32,7 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
     }
 
     override fun initialize() {
-        viewModel = createViewModel()
+        viewModel = getViewModel()
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })

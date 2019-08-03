@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.downloads
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.github.exact7.xtra.databinding.FragmentDownloadsBinding
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
 
@@ -26,20 +28,29 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var binding: FragmentDownloadsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentDownloadsBinding.inflate(inflater, container, false).apply { lifecycleOwner = viewLifecycleOwner }
-        return binding.root
+        return inflater.inflate(R.layout.fragment_downloads, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(DownloadsViewModel::class.java)
-        binding.viewModel = viewModel
         val activity = requireActivity() as MainActivity
-        val adapter = DownloadsAdapter(activity, viewModel::delete)
-        viewModel.list.observe(this, Observer(adapter::submitList))
+        val adapter = DownloadsAdapter(activity) {
+            val delete = getString(R.string.delete)
+            AlertDialog.Builder(activity)
+                    .setTitle(delete)
+                    .setMessage(getString(R.string.are_you_sure))
+                    .setPositiveButton(delete) { _, _ -> viewModel.delete(it) }
+                    .setNegativeButton(getString(android.R.string.cancel), null)
+        }
+        recyclerView.adapter = adapter
+        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        viewModel.list.observe(this, Observer {
+            adapter.submitList(it)
+            text.visible(it.isEmpty())
+        })
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
@@ -48,8 +59,6 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
             }
         })
         search.setOnClickListener { activity.openSearch() }
-        recyclerView.adapter = adapter
-        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     override fun scrollToTop() {

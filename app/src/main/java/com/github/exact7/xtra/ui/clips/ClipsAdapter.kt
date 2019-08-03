@@ -1,18 +1,21 @@
 package com.github.exact7.xtra.ui.clips
 
+import android.text.format.DateUtils
+import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.FragmentClipsListItemBinding
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.ui.download.ClipDownloadDialog
-import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.videos.TempBaseAdapter
-import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
+import com.github.exact7.xtra.ui.common.OnChannelSelectedListener
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.loadImage
+import kotlinx.android.synthetic.main.fragment_clips_list_item.view.*
 
 class ClipsAdapter(
-        private val mainActivity: MainActivity) : TempBaseAdapter<Clip, FragmentClipsListItemBinding>(
+        private val clickListener: BaseClipsFragment.OnClipSelectedListener,
+        private val channelClickListener: OnChannelSelectedListener,
+        private val showDownloadDialog: (Clip) -> Unit) : BasePagedListAdapter<Clip>(
         object : DiffUtil.ItemCallback<Clip>() {
             override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
                     oldItem.slug == newItem.slug
@@ -23,40 +26,36 @@ class ClipsAdapter(
 
         }) {
 
-//    lateinit var lastSelectedItem: Clip
-//        private set
+    override val layoutId: Int = R.layout.fragment_clips_list_item
 
-    override val itemId: Int = R.layout.fragment_clips_list_item
-
-    override fun bind(binding: FragmentClipsListItemBinding, item: Clip?) {
-        binding.clip = item
-        binding.clipListener = mainActivity
-        binding.channelListener = mainActivity
-        val showDialog = {
-            lastSelectedItem = item!!
-            if (DownloadUtils.hasStoragePermission(mainActivity)) {
-                ClipDownloadDialog.newInstance(item).show(mainActivity.supportFragmentManager, null)
-            }
-        }
-        binding.options.setOnClickListener {
-            PopupMenu(mainActivity, binding.options).apply {
-                inflate(R.menu.media_item)
-                setOnMenuItemClickListener {
-                    showDialog.invoke()
-                    return@setOnMenuItemClickListener true
-                }
-                show()
-            }
-        }
-        binding.root.setOnLongClickListener {
-            showDialog.invoke()
-            true
-        }
-        item?.views?.let {
-            binding.views.text = if (it > 1000) {
-                binding.views.resources.getString(R.string.views, TwitchApiHelper.formatCount(it))
+    override fun bind(item: Clip, view: View) {
+        val channelListener: (View) -> Unit = { channelClickListener.viewChannel(item.broadcaster) }
+        with(view) {
+            setOnClickListener { clickListener.startClip(item) }
+            setOnLongClickListener { showDownloadDialog(item); true }
+            thumbnail.loadImage(item.thumbnails.medium)
+            date.text = TwitchApiHelper.formatTime(context, TwitchApiHelper.parseIso8601Date(item.createdAt))
+            views.text = if (item.views > 1000) {
+                resources.getString(R.string.views, TwitchApiHelper.formatCount(item.views))
             } else {
-                binding.views.resources.getQuantityString(R.plurals.views, it, it)
+                resources.getQuantityString(R.plurals.views, item.views, item.views)
+            }
+            duration.text = DateUtils.formatElapsedTime(item.duration.toLong())
+            userImage.loadImage(item.broadcaster.logo, circle = true)
+            userImage.setOnClickListener(channelListener)
+            title.text = item.title
+            username.setOnClickListener(channelListener)
+            username.text = item.broadcaster.displayName
+            gameName.text = item.game
+            options.setOnClickListener {
+                PopupMenu(context, options).apply {
+                    inflate(R.menu.media_item)
+                    setOnMenuItemClickListener {
+                        showDownloadDialog(item)
+                        return@setOnMenuItemClickListener true
+                    }
+                    show()
+                }
             }
         }
     }

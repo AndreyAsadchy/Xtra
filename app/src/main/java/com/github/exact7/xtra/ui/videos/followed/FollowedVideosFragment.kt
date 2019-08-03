@@ -7,17 +7,16 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_videos.*
+import kotlinx.android.synthetic.main.sort_bar.*
 
-class FollowedVideosFragment : BaseVideosFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
+class FollowedVideosFragment : BaseVideosFragment<FollowedVideosViewModel>(), RadioButtonDialogFragment.OnSortOptionChanged {
 
-    override lateinit var viewModel: FollowedVideosViewModel
+    override fun createViewModel(): FollowedVideosViewModel = getViewModel()
 
     override fun initialize() {
-        viewModel = createViewModel()
-        binding.viewModel = viewModel
-        binding.sortText = viewModel.sortText
-        viewModel.list.observe(this, Observer {
-            adapter.submitList(it)
+        super.initialize()
+        viewModel.sortText.observe(viewLifecycleOwner, Observer {
+            sortText.text = it
         })
         getMainViewModel().user.observe(viewLifecycleOwner, Observer {
             viewModel.setUser(it)

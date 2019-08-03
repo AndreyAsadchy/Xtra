@@ -22,4 +22,5 @@ object C {
     const val ASPECT_RATIO_PORTRAIT = "aspectRatioPortrait"
     const val ASPECT_RATIO_LANDSCAPE = "aspectRatioLandscape"
     const val DOWNLOAD_NETWORK_PREFERENCE = "downloadNetworkPreference"
+    const val KEY_LAST_SELECTED_ITEM = "lastSelectedItem"
 }

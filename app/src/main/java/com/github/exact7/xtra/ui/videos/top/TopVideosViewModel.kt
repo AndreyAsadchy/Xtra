@@ -38,7 +38,6 @@ class TopVideosViewModel @Inject constructor(
     fun filter(period: Period, index: Int, text: CharSequence) {
         filter.value?.copy(period = period).let {
             if (filter.value != it) {
-                _loadedInitial.value = null
                 filter.value = it
                 selectedIndex = index
                 _sortText.value = text

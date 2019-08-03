@@ -1,31 +1,44 @@
 package com.github.exact7.xtra.ui.clips.common
 
 import androidx.lifecycle.Observer
+import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
+import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
+import com.github.exact7.xtra.ui.clips.ClipsAdapter
+import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_clips.*
+import kotlinx.android.synthetic.main.sort_bar.*
 
-class ClipsFragment : BaseClipsFragment() {
+class ClipsFragment : BaseClipsFragment<ClipsViewModel>() {
 
-    override lateinit var viewModel: ClipsViewModel
-    val isChannel: Boolean
-        get() = arguments?.getParcelable<Channel?>(C.CHANNEL) != null
+    override fun createViewModel(): ClipsViewModel = getViewModel()
+
+    override fun createAdapter(): PagedListAdapter<Clip, *> {
+        val activity = requireActivity() as MainActivity
+        val showDialog: (Clip) -> Unit = {
+            lastSelectedItem = it
+            showDownloadDialog()
+        }
+        return if (arguments?.getParcelable<Channel?>(C.CHANNEL) != null) {
+            ChannelClipsAdapter(activity, showDialog)
+        } else {
+            ClipsAdapter(activity, activity, showDialog)
+        }
+    }
 
     override fun initialize() {
-        viewModel = createViewModel()
-        binding.viewModel = viewModel
-        binding.sortText = viewModel.sortText
-        viewModel.list.observe(this, Observer {
-            adapter.submitList(it)
+        super.initialize()
+        viewModel.sortText.observe(viewLifecycleOwner, Observer {
+            sortText.text = it
         })
         viewModel.loadClips(arguments?.getParcelable<Channel?>(C.CHANNEL)?.name, arguments?.getParcelable<Game?>(C.GAME))
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
-
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

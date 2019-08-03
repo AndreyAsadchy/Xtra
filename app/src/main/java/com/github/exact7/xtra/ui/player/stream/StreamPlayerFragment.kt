@@ -53,7 +53,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
                 it as ChatFragment
             }
         }
-        viewModel = createViewModel()
+        viewModel = getViewModel()
     }
 
     override fun initialize() {

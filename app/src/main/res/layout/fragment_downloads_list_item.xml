@@ -1,216 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card">
 
-    <data>
-        <import type="com.github.exact7.xtra.util.TwitchApiHelper"/>
-        <import type="android.text.format.DateUtils" />
-        <variable name="video" type="com.github.exact7.xtra.model.offline.OfflineVideo"/>
-    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        style="@style/Card">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/thumbnail"
-                style="@style/Thumbnail"
-                app:imageUrl="@{video.thumbnail}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/backgrounds/scenic" />
-
-            <TextView
-                android:id="@+id/date"
-                style="@style/ThumbnailItem"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="@{@string/uploaded_date(TwitchApiHelper.formatTime(context, video.uploadDate))}"
-                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                tools:text="Uploaded: July 16" />
-
-            <TextView
-                android:id="@+id/downloadDate"
-                style="@style/ThumbnailItem"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="@{@string/downloaded_date(TwitchApiHelper.formatTime(context, video.downloadDate))}"
-                app:layout_constraintBottom_toBottomOf="@id/thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/thumbnail"
-                app:layout_constraintRight_toRightOf="@id/thumbnail"
-                tools:text="Downloaded: August 7" />
-
-            <TextView
-                android:id="@+id/duration"
-                style="@style/VideoDuration"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                app:duration="@{video.duration / 1000L}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="13:37" />
-
-            <ImageView
-                android:id="@+id/userImage"
-                style="@style/UserPicture"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="12dp"
-                app:circle="@{true}"
-                app:imageUrl="@{video.channelLogo}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/thumbnail"
-                tools:src="@tools:sample/backgrounds/scenic" />
-
-            <TextView
-                android:id="@+id/title"
-                style="@style/VideoTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:text="@{video.name}"
-                android:textAlignment="viewStart"
-                android:gravity="start"
-                app:layout_constraintEnd_toStartOf="@id/options"
-                app:layout_constraintRight_toLeftOf="@id/options"
-                app:layout_constraintStart_toEndOf="@id/userImage"
-                app:layout_constraintLeft_toRightOf="@id/userImage"
-                app:layout_constraintTop_toBottomOf="@id/thumbnail"
-                tools:text="This is the title of the video" />
-
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:text="@{video.channelName}"
-                android:textAlignment="viewStart"
-                android:gravity="start"
-                app:layout_constraintEnd_toStartOf="@id/options"
-                app:layout_constraintRight_toLeftOf="@id/options"
-                app:layout_constraintLeft_toRightOf="@id/userImage"
-                app:layout_constraintStart_toEndOf="@id/userImage"
-                app:layout_constraintTop_toBottomOf="@id/title"
-                tools:text="summit1g" />
-
-            <TextView
-                android:id="@+id/game"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:paddingBottom="10dp"
-                android:text="@{video.game}"
-                android:textColor="?attr/secondaryTextColor"
-                android:textAlignment="viewStart"
-                android:gravity="start"
-                app:layout_constraintEnd_toStartOf="@id/options"
-                app:layout_constraintRight_toLeftOf="@id/options"
-                app:layout_constraintLeft_toRightOf="@id/userImage"
-                app:layout_constraintStart_toEndOf="@id/userImage"
-                app:layout_constraintTop_toBottomOf="@id/username"
-                tools:text="Dota 2" />
-
-            <ImageButton
-                android:id="@+id/options"
-                style="?android:attr/actionOverflowButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/thumbnail" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:max="100"
-                android:scaleY="1.5"
-                android:layoutDirection="ltr"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/thumbnail" />
-
-            <TextView
-                style="@style/ThumbnailItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:text="@string/source_vod_start"
-                app:layout_constraintEnd_toStartOf="@id/sourceStart"
-                app:layout_constraintRight_toLeftOf="@id/sourceStart"
-                app:layout_constraintTop_toTopOf="@id/sourceStart" />
-
-            <TextView
-                android:id="@+id/sourceStart"
-                style="@style/ThumbnailItem"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="13:37:69" />
-
-            <TextView
-                style="@style/ThumbnailItem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:text="@string/source_vod_end"
-                app:layout_constraintEnd_toStartOf="@id/sourceEnd"
-                app:layout_constraintRight_toLeftOf="@id/sourceEnd"
-                app:layout_constraintTop_toTopOf="@id/sourceEnd" />
-
-            <TextView
-                android:id="@+id/sourceEnd"
-                style="@style/ThumbnailItem"
-                android:layout_marginTop="5dp"
-                app:layout_constraintEnd_toEndOf="@id/sourceStart"
-                app:layout_constraintRight_toRightOf="@id/sourceStart"
-                app:layout_constraintTop_toBottomOf="@id/sourceStart"
-                tools:text="69:13:37" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/thumbnail"
+            style="@style/Thumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <TextView
-            android:id="@+id/status"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"
-            android:textAllCaps="true"
-            android:visibility="gone"
-            android:layout_gravity="center"
-            android:background="#80000000"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true" />
+            android:id="@+id/date"
+            style="@style/ThumbnailItem"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="Uploaded: July 16" />
 
-    </androidx.cardview.widget.CardView>
-</layout>
+        <TextView
+            android:id="@+id/downloadDate"
+            style="@style/ThumbnailItem"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/thumbnail"
+            app:layout_constraintRight_toRightOf="@id/thumbnail"
+            tools:text="Downloaded: August 7" />
+
+        <TextView
+            android:id="@+id/duration"
+            style="@style/VideoDuration"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="13:37" />
+
+        <ImageView
+            android:id="@+id/userImage"
+            style="@style/UserPicture"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/thumbnail"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/VideoTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:textAlignment="viewStart"
+            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@id/options"
+            app:layout_constraintRight_toLeftOf="@id/options"
+            app:layout_constraintStart_toEndOf="@id/userImage"
+            app:layout_constraintLeft_toRightOf="@id/userImage"
+            app:layout_constraintTop_toBottomOf="@id/thumbnail"
+            tools:text="This is the title of the video" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:textAlignment="viewStart"
+            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@id/options"
+            app:layout_constraintRight_toLeftOf="@id/options"
+            app:layout_constraintLeft_toRightOf="@id/userImage"
+            app:layout_constraintStart_toEndOf="@id/userImage"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="summit1g" />
+
+        <TextView
+            android:id="@+id/game"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingBottom="10dp"
+            android:textColor="?attr/secondaryTextColor"
+            android:textAlignment="viewStart"
+            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@id/options"
+            app:layout_constraintRight_toLeftOf="@id/options"
+            app:layout_constraintLeft_toRightOf="@id/userImage"
+            app:layout_constraintStart_toEndOf="@id/userImage"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            tools:text="Dota 2" />
+
+        <ImageButton
+            android:id="@+id/options"
+            style="?android:attr/actionOverflowButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/thumbnail" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:max="100"
+            android:scaleY="1.5"
+            android:layoutDirection="ltr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/thumbnail" />
+
+        <TextView
+            style="@style/ThumbnailItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/source_vod_start"
+            app:layout_constraintEnd_toStartOf="@id/sourceStart"
+            app:layout_constraintRight_toLeftOf="@id/sourceStart"
+            app:layout_constraintTop_toTopOf="@id/sourceStart" />
+
+        <TextView
+            android:id="@+id/sourceStart"
+            style="@style/ThumbnailItem"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="13:37:69" />
+
+        <TextView
+            style="@style/ThumbnailItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/source_vod_end"
+            app:layout_constraintEnd_toStartOf="@id/sourceEnd"
+            app:layout_constraintRight_toLeftOf="@id/sourceEnd"
+            app:layout_constraintTop_toTopOf="@id/sourceEnd" />
+
+        <TextView
+            android:id="@+id/sourceEnd"
+            style="@style/ThumbnailItem"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="@id/sourceStart"
+            app:layout_constraintRight_toRightOf="@id/sourceStart"
+            app:layout_constraintTop_toBottomOf="@id/sourceStart"
+            tools:text="69:13:37" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textAllCaps="true"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:background="#80000000"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true" />
+
+</androidx.cardview.widget.CardView>

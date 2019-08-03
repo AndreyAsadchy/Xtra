@@ -7,17 +7,16 @@ import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.fragment_videos.*
+import kotlinx.android.synthetic.main.sort_bar.*
 
-class GameVideosFragment : BaseVideosFragment(), GameVideosSortDialog.OnFilter {
+class GameVideosFragment : BaseVideosFragment<GameVideosViewModel>(), GameVideosSortDialog.OnFilter {
 
-    override lateinit var viewModel: GameVideosViewModel
+    override fun createViewModel(): GameVideosViewModel = getViewModel()
 
     override fun initialize() {
-        viewModel = createViewModel()
-        binding.viewModel = viewModel
-        binding.sortText = viewModel.sortText
-        viewModel.list.observe(this, Observer {
-            adapter.submitList(it)
+        super.initialize()
+        viewModel.sortText.observe(viewLifecycleOwner, Observer {
+            sortText.text = it
         })
         viewModel.setGame(requireArguments().getParcelable(C.GAME)!!)
         sortBar.setOnClickListener { GameVideosSortDialog.newInstance(viewModel.sort, viewModel.period).show(childFragmentManager, null) }

@@ -40,7 +40,6 @@ class ChannelVideosViewModel @Inject constructor(
     }
 
     fun setSort(sort: Sort, index: Int, text: CharSequence) {
-        _loadedInitial.value = null
         filter.value = filter.value?.copy(sort = sort)
         selectedIndex = index
         _sortText.value = text

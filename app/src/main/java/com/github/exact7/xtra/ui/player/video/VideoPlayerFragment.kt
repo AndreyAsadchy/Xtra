@@ -50,7 +50,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         if (childFragmentManager.findFragmentById(R.id.chatFragmentContainer) == null) {
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, video.id, 0.0)).commit()
         }
-        viewModel = createViewModel()
+        viewModel = getViewModel()
     }
 
     override fun initialize() {

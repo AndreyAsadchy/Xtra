@@ -38,7 +38,6 @@ class FollowedClipsViewModel @Inject constructor(
     }
 
     fun setTrending(trending: Boolean, index: Int, text: CharSequence) {
-        _loadedInitial.value = null
         filter.value = filter.value?.copy(trending = trending)
         _sortText.value = text
         selectedIndex = index

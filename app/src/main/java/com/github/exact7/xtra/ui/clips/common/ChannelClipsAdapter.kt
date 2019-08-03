@@ -1,18 +1,20 @@
 package com.github.exact7.xtra.ui.clips.common
 
+import android.text.format.DateUtils
+import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.FragmentChannelClipsListItemBinding
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.ui.download.ClipDownloadDialog
-import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.videos.TempBaseAdapter
-import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.ui.clips.BaseClipsFragment
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.loadImage
+import kotlinx.android.synthetic.main.fragment_channel_clips_list_item.view.*
 
 class ChannelClipsAdapter(
-        private val mainActivity: MainActivity) : TempBaseAdapter<Clip, FragmentChannelClipsListItemBinding>(
+        private val clickListener: BaseClipsFragment.OnClipSelectedListener,
+        private val showDownloadDialog: (Clip) -> Unit) : BasePagedListAdapter<Clip>(
         object : DiffUtil.ItemCallback<Clip>() {
             override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
                     oldItem.slug == newItem.slug
@@ -23,39 +25,28 @@ class ChannelClipsAdapter(
 
         }) {
 
-//    lateinit var lastSelectedItem: Clip
-//        private set
+    override val layoutId: Int = R.layout.fragment_channel_clips_list_item
 
-    override val itemId: Int = R.layout.fragment_channel_clips_list_item
-
-    override fun bind(binding: FragmentChannelClipsListItemBinding, item: Clip?) {
-        binding.clip = item
-        binding.clipListener = mainActivity
-        val showDialog = {
-            lastSelectedItem = item!!
-            if (DownloadUtils.hasStoragePermission(mainActivity)) {
-                ClipDownloadDialog.newInstance(item).show(mainActivity.supportFragmentManager, null)
-            }
-        }
-        binding.options.setOnClickListener {
-            PopupMenu(mainActivity, binding.options).apply {
-                inflate(R.menu.media_item)
-                setOnMenuItemClickListener {
-                    showDialog.invoke()
-                    return@setOnMenuItemClickListener true
-                }
-                show()
-            }
-        }
-        binding.root.setOnLongClickListener {
-            showDialog.invoke()
-            true
-        }
-        item?.views?.let {
-            binding.views.text = if (it > 1000) {
-                binding.views.resources.getString(R.string.views, TwitchApiHelper.formatCount(it))
+    override fun bind(item: Clip, view: View) {
+        with(view) {
+            setOnClickListener { clickListener.startClip(item) }
+            setOnLongClickListener { showDownloadDialog(item); true }
+            thumbnail.loadImage(item.thumbnails.medium)
+            date.text = TwitchApiHelper.formatTime(context, TwitchApiHelper.parseIso8601Date(item.createdAt))
+            views.text = if (item.views > 1000) {
+                resources.getString(R.string.views, TwitchApiHelper.formatCount(item.views))
             } else {
-                binding.views.resources.getQuantityString(R.plurals.views, it, it)
+                resources.getQuantityString(R.plurals.views, item.views, item.views)
+            }
+            duration.text = DateUtils.formatElapsedTime(item.duration.toLong())
+            title.text = item.title
+            gameName.text = item.game
+            options.setOnClickListener {
+                PopupMenu(context, it).apply {
+                    inflate(R.menu.media_item)
+                    setOnMenuItemClickListener { showDownloadDialog(item); true }
+                    show()
+                }
             }
         }
     }

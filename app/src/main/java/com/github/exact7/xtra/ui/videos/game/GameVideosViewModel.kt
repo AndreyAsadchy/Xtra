@@ -43,7 +43,6 @@ class GameVideosViewModel @Inject constructor(
     }
 
     fun filter(sort: Sort, period: Period, text: CharSequence) {
-        _loadedInitial.value = null
         filter.value = filter.value?.copy(sort = sort, period = period)
         _sortText.value = text
     }

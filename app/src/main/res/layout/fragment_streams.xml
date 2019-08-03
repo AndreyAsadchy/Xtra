@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-        <variable name="viewModel" type="com.github.exact7.xtra.ui.common.PagedListViewModel" />
-    </data>
+    <include
+        layout="@layout/common_recycler_view_layout"/>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <include
-            layout="@layout/common_recycler_view_layout"
-            app:viewModel="@{viewModel}" />
-
-    </LinearLayout>
-
-</layout>
+</LinearLayout>

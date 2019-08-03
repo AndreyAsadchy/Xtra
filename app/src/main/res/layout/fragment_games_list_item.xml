@@ -1,69 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card" >
 
-    <data>
-        <variable name="game" type="com.github.exact7.xtra.model.kraken.game.GameWrapper"/>
-        <variable
-            name="listener"
-            type="com.github.exact7.xtra.ui.games.GamesFragment.OnGameSelectedListener"/>
-    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
 
-    <androidx.cardview.widget.CardView
-        android:onClick="@{() -> listener.openGame(game.game)}"
-        style="@style/Card"
-        >
+        <ImageView
+            android:id="@+id/gameImage"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/gameName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:textSize="16sp"
+            android:gravity="start"
+            android:textAlignment="viewStart"
+            app:layout_constraintLeft_toRightOf="@id/gameImage"
+            app:layout_constraintStart_toEndOf="@id/gameImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@sample/games.json/top/game/name" />
 
-            <ImageView
-                android:id="@+id/gameImage"
-                android:layout_width="50dp"
-                android:layout_height="60dp"
-                app:imageUrl="@{game.game.box.medium}"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/backgrounds/scenic" />
+        <TextView
+            android:id="@+id/viewers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="?attr/secondaryTextColor"
+            android:gravity="start"
+            android:textAlignment="viewStart"
+            app:layout_constraintLeft_toRightOf="@id/gameImage"
+            app:layout_constraintStart_toEndOf="@id/gameImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gameName"
+            tools:text="123456 viewers" />
 
-            <TextView
-                android:id="@+id/gameName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="@{game.game.name}"
-                android:textSize="16sp"
-                android:gravity="start"
-                android:textAlignment="viewStart"
-                app:layout_constraintLeft_toRightOf="@id/gameImage"
-                app:layout_constraintStart_toEndOf="@id/gameImage"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@sample/games.json/top/game/name" />
-
-            <TextView
-                android:id="@+id/viewers"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:textColor="?attr/secondaryTextColor"
-                android:gravity="start"
-                android:textAlignment="viewStart"
-                app:layout_constraintLeft_toRightOf="@id/gameImage"
-                app:layout_constraintStart_toEndOf="@id/gameImage"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gameName"
-                tools:text="123456 viewers" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-</layout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

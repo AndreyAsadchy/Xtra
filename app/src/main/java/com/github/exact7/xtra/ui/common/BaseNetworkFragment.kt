@@ -99,7 +99,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         }
     }
 
-    protected inline fun <reified T : ViewModel> createViewModel(): T {
+    protected inline fun <reified T : ViewModel> getViewModel(): T {
         return ViewModelProviders.of(this, viewModelFactory).get(T::class.java)
     }
 
