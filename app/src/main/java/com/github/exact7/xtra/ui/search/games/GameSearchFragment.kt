@@ -5,20 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.repository.LoadingState
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.search.Searchable
+import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
+import kotlinx.android.synthetic.main.fragment_search.*
 
 class GameSearchFragment : BaseNetworkFragment(), Searchable {
 
     private lateinit var viewModel: GameSearchViewModel
     private lateinit var adapter: GameSearchAdapter
+
+    private var isInitialized = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.common_recycler_view_layout, container, false)
@@ -27,7 +29,6 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
         recyclerView.adapter = GameSearchAdapter(activity).also { adapter = it }
         swipeRefresh.isEnabled = false
     }
@@ -36,21 +37,31 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
         viewModel = getViewModel()
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
+            nothing_here.visible(it.isEmpty())
         })
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
-            progressBar.visible(it == LoadingState.LOADING)
+            val isLoading = it == LoadingState.LOADING
+            progressBar.visible(isLoading)
+            if (isLoading) {
+                nothing_here.gone()
+            }
         })
+        isInitialized = true
+        search(requireParentFragment().search.query.toString())
     }
 
     override fun search(query: String) {
-        if (query.isNotEmpty()) {
-            viewModel.setQuery(query)
-        } else {
-            adapter.submitList(null)
+        if (isInitialized) {
+            if (query.isNotEmpty()) {
+                viewModel.setQuery(query)
+            } else {
+                adapter.submitList(null)
+                nothing_here.gone()
+            }
         }
     }
 
     override fun onNetworkRestored() {
-
+        viewModel.retry()
     }
 }

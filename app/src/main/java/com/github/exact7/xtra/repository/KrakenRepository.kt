@@ -248,6 +248,6 @@ class KrakenRepository @Inject constructor(
         return api.getGames(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { it.games }
+                .map { it.games ?: emptyList() }
     }
 }

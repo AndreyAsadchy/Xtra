@@ -10,8 +10,16 @@ abstract class ItemAwareFragmentPagerAdapter internal constructor(fm: FragmentMa
     internal var currentFragment: Fragment? = null
         private set
 
+    private var listener: ((Fragment) -> Unit)? = null
+
     override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
         super.setPrimaryItem(container, position, `object`)
-        currentFragment = `object` as Fragment
+        val fragment = `object` as Fragment
+        currentFragment = fragment
+        listener?.invoke(fragment)
+    }
+
+    fun setOnItemChangedListener(listener: ((Fragment) -> Unit)?) {
+        this.listener = listener
     }
 }

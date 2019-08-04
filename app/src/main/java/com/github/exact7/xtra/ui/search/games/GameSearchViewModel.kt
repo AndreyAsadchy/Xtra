@@ -18,8 +18,10 @@ class GameSearchViewModel @Inject constructor(
         repository.loadGames(it, compositeDisposable)
                 .doOnSubscribe { _loadingState.value = LoadingState.LOADING }
                 .doOnEvent { _, _ -> _loadingState.value = LoadingState.LOADED }
+                .doOnError { shouldRetry = true }
                 .toLiveData()
     }
+    private var shouldRetry = false
 
     private val _loadingState = MutableLiveData<LoadingState>()
     val loadingState: LiveData<LoadingState>
@@ -28,6 +30,13 @@ class GameSearchViewModel @Inject constructor(
     fun setQuery(query: String) {
         if (this.query.value != query) {
             this.query.value = query
+        }
+    }
+
+    fun retry() {
+        if (shouldRetry) {
+            shouldRetry = false
+            query.value = query.value
         }
     }
 }

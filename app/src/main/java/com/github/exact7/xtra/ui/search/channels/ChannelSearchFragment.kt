@@ -10,6 +10,7 @@ import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.search.Searchable
+import com.github.exact7.xtra.util.gone
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
 class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel>(), Searchable {
@@ -34,6 +35,7 @@ class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel>
             viewModel.setQuery(query)
         } else {
             adapter.submitList(null)
+            nothing_here.gone()
         }
     }
 }
