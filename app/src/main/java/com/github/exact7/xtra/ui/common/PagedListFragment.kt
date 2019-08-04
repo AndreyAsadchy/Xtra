@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.common
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.repository.LoadingState
@@ -14,21 +13,25 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFragment() {
 
     protected lateinit var viewModel: VM
-    protected lateinit var adapter: PagedListAdapter<T, *>
+    protected lateinit var adapter: BasePagedListAdapter<T>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = createViewModel()
-        recyclerView.adapter = createAdapter().also {
-            adapter = it
-            it.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        adapter = createAdapter().apply {
+            registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    if (positionStart < (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()) {
-                        recyclerView.scrollToPosition(0)
+                    if (isResumed) {
+                        recyclerView.post {
+                            if (positionStart < (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()) {
+                                recyclerView.scrollToPosition(0)
+                            }
+                        }
                     }
                 }
             })
         }
+        recyclerView.adapter = adapter
     }
 
     override fun initialize() {
@@ -47,11 +50,7 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFra
                 swipeRefresh.isRefreshing = isLoading && !isListEmpty
             }
         })
-        viewModel.pagingState.observe(viewLifecycleOwner, Observer {
-            if (adapter is BasePagedListAdapter) {
-                (adapter as BasePagedListAdapter).setPagingState(it)
-            }
-        })
+        viewModel.pagingState.observe(viewLifecycleOwner, Observer(adapter::setPagingState))
         if (swipeRefresh.isEnabled) {
             swipeRefresh.setOnRefreshListener { viewModel.refresh() }
         }
@@ -61,6 +60,6 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFra
         viewModel.retry()
     }
 
-    protected abstract fun createAdapter(): PagedListAdapter<T, *>
+    protected abstract fun createAdapter(): BasePagedListAdapter<T>
     protected abstract fun createViewModel(): VM
 }

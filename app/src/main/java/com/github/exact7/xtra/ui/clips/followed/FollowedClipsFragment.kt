@@ -1,11 +1,11 @@
 package com.github.exact7.xtra.ui.clips.followed
 
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.clips.ClipsAdapter
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.FragmentUtils
 import kotlinx.android.synthetic.main.fragment_clips.*
@@ -15,7 +15,7 @@ class FollowedClipsFragment : BaseClipsFragment<FollowedClipsViewModel>() {
 
     override fun createViewModel(): FollowedClipsViewModel = getViewModel()
 
-    override fun createAdapter(): PagedListAdapter<Clip, *> {
+    override fun createAdapter(): BasePagedListAdapter<Clip> {
         val activity = requireActivity() as MainActivity
         return ClipsAdapter(activity, activity) {
             lastSelectedItem = it

@@ -48,9 +48,6 @@ class MainViewModel @Inject constructor(
 
     var isPlayerOpened = false
         private set
-    private val _checkedValidity = MutableLiveData<Boolean>().apply { value = TwitchApiHelper.validated }
-    val checkedValidity: LiveData<Boolean>
-        get() = _checkedValidity
 
     var wasInPictureInPicture = false
     var orientationBeforePictureInPicture = 0
@@ -69,17 +66,7 @@ class MainViewModel @Inject constructor(
 
     fun setUser(user: User) {
         if (_user.value != user) {
-            _user.value = user.let {
-                if (it is NotValidated) {
-                    if (checkedValidity.value != true) {
-                        it
-                    } else {
-                        LoggedIn(it)
-                    }
-                } else {
-                    it
-                }
-            }
+            _user.value = user
         }
     }
 
@@ -111,7 +98,6 @@ class MainViewModel @Inject constructor(
     fun validate(activity: Activity) {
         val user = user.value
         if (TwitchApiHelper.validated) {
-            _checkedValidity.value = true
             if (user is LoggedIn) {
                 repository.loadUserEmotes(user.token, user.id, compositeDisposable)
             }
@@ -121,12 +107,10 @@ class MainViewModel @Inject constructor(
             TwitchApiHelper.validated = true
             authRepository.validate(user.token)
                     .subscribe({
-                        _checkedValidity.value = true
-                        _user.value = LoggedIn(user)
+                        setUser(LoggedIn(user))
                         repository.loadUserEmotes(user.token, user.id, compositeDisposable)
                     }, {
                         if (it is HttpException && it.code() == 401) {
-                            _checkedValidity.value = true
                             with(activity) {
                                 User.set(activity, null)
                                 Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()

@@ -34,8 +34,6 @@ import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.offline.OfflineVideo
-import com.github.exact7.xtra.ui.FollowValidationFragment
-import com.github.exact7.xtra.ui.TopFragment
 import com.github.exact7.xtra.ui.channel.ChannelPagerFragment
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
@@ -44,6 +42,7 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.downloads.DownloadsFragment
+import com.github.exact7.xtra.ui.follow.FollowValidationFragment
 import com.github.exact7.xtra.ui.games.GameFragment
 import com.github.exact7.xtra.ui.games.GamesFragment
 import com.github.exact7.xtra.ui.menu.MenuFragment
@@ -54,6 +53,7 @@ import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.player.video.VideoPlayerFragment
 import com.github.exact7.xtra.ui.search.SearchFragment
 import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
+import com.github.exact7.xtra.ui.top.TopFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C

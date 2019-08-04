@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ui.SettingsActivity"/>
+            android:name=".ui.settings.SettingsActivity"/>
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">

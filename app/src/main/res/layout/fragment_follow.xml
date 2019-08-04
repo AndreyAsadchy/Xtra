@@ -1,41 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <import type="com.github.exact7.xtra.model.LoggedIn" />
-        <import type="com.github.exact7.xtra.model.NotValidated" />
-        <import type="com.github.exact7.xtra.model.NotLoggedIn" />
-        <variable
-            name="viewModel"
-            type="com.github.exact7.xtra.ui.main.MainViewModel" />
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <FrameLayout
-            android:id="@+id/container"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notLoggedInLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:visible="@{viewModel.user instanceof LoggedIn}"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/app_name">
 
-        <include
-            android:id="@+id/notLoggedInLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            layout="@layout/view_follow_not_logged"
-            app:visible="@{viewModel.user instanceof NotLoggedIn || (viewModel.user instanceof NotValidated &amp;&amp; safeUnbox(viewModel.checkedValidity))}"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            <ImageView
+                android:id="@+id/search"
+                style="@style/Search" />
+        </androidx.appcompat.widget.Toolbar>
 
-        <ProgressBar
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal|bottom"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:text="@string/follow_tab_login_prompt"
+            app:autoSizeMaxTextSize="36sp"
+            app:autoSizeMinTextSize="18sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintWidth_max="300dp"
+            app:layout_constraintHeight_max="150dp"
+            app:layout_constraintTop_toTopOf="@id/toolbar"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/log_in"
+            android:textSize="14sp"
+            app:layout_constraintWidth_max="200dp"
+            app:layout_constraintHeight_max="60dp"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:visible="@{viewModel.user instanceof NotValidated &amp;&amp; !safeUnbox(viewModel.checkedValidity)}"/>
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-</layout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

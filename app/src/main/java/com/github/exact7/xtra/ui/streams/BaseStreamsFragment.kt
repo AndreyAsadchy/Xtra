@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.stream.Stream
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.Scrollable
@@ -23,7 +23,7 @@ abstract class BaseStreamsFragment<VM : PagedListViewModel<Stream>> : PagedListF
         return inflater.inflate(R.layout.fragment_streams, container, false)
     }
 
-    override fun createAdapter(): PagedListAdapter<Stream, *> {
+    override fun createAdapter(): BasePagedListAdapter<Stream> {
         val activity = requireActivity() as MainActivity
         return StreamsAdapter(activity, activity)
     }

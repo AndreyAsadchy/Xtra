@@ -69,7 +69,9 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         })
         var playerHeight = 0
         playerView.postDelayed({
-            playerHeight = playerView.height
+            playerView?.let {
+                playerHeight = it.height
+            }
         }, 1000L)
         viewModel.playerMode.observe(viewLifecycleOwner, Observer {
             if (it == PlayerMode.NORMAL) {

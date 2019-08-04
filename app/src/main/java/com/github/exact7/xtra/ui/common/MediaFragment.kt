@@ -8,13 +8,13 @@ import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.main.MainActivity
-import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.fragment_media.*
 
 
 abstract class MediaFragment : Fragment(), Scrollable {
 
     private var previousItem = -1
+    private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +29,13 @@ abstract class MediaFragment : Fragment(), Scrollable {
         super.onViewCreated(view, savedInstanceState)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position != previousItem && isResumed) {
-                    childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, onSpinnerItemSelected(position)).commit()
+                currentFragment = if (position != previousItem && isResumed) {
+                    val newFragment = onSpinnerItemSelected(position)
+                    childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, newFragment).commit()
                     previousItem = position
+                    newFragment
+                } else {
+                    childFragmentManager.findFragmentById(R.id.fragmentContainer)
                 }
             }
 
@@ -48,6 +52,7 @@ abstract class MediaFragment : Fragment(), Scrollable {
     abstract fun onSpinnerItemSelected(position: Int): Fragment
 
     override fun scrollToTop() {
-        recyclerView?.scrollToPosition(0)
+        appBar?.setExpanded(true, true)
+        (currentFragment as? Scrollable)?.scrollToTop()
     }
 }

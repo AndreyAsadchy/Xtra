@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.clips.common
 
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -9,6 +8,7 @@ import com.github.exact7.xtra.model.kraken.clip.Period
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.clips.ClipsAdapter
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
@@ -19,7 +19,7 @@ class ClipsFragment : BaseClipsFragment<ClipsViewModel>() {
 
     override fun createViewModel(): ClipsViewModel = getViewModel()
 
-    override fun createAdapter(): PagedListAdapter<Clip, *> {
+    override fun createAdapter(): BasePagedListAdapter<Clip> {
         val activity = requireActivity() as MainActivity
         val showDialog: (Clip) -> Unit = {
             lastSelectedItem = it

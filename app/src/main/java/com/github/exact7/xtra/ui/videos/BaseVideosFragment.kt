@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.Scrollable
@@ -33,7 +33,7 @@ abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFra
         return inflater.inflate(R.layout.fragment_videos, container, false)
     }
 
-    override fun createAdapter(): PagedListAdapter<Video, *> {
+    override fun createAdapter(): BasePagedListAdapter<Video> {
         val activity = requireActivity() as MainActivity
         return VideosAdapter(activity, activity) {
             lastSelectedItem = it

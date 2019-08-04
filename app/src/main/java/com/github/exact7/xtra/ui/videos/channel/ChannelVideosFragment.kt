@@ -1,11 +1,11 @@
 package com.github.exact7.xtra.ui.videos.channel
 
 import androidx.lifecycle.Observer
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
@@ -18,7 +18,7 @@ class ChannelVideosFragment : BaseVideosFragment<ChannelVideosViewModel>(), Radi
 
     override fun createViewModel(): ChannelVideosViewModel = getViewModel()
 
-    override fun createAdapter(): PagedListAdapter<Video, *> {
+    override fun createAdapter(): BasePagedListAdapter<Video> {
         return ChannelVideosAdapter(requireActivity() as MainActivity) {
             lastSelectedItem = it
             showDownloadDialog()

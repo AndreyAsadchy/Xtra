@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.search.Searchable
@@ -25,7 +25,7 @@ class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel>
 
     override fun createViewModel(): ChannelSearchViewModel = getViewModel()
 
-    override fun createAdapter(): PagedListAdapter<Channel, *> {
+    override fun createAdapter(): BasePagedListAdapter<Channel> {
         return ChannelSearchAdapter(requireActivity() as MainActivity)
     }
 

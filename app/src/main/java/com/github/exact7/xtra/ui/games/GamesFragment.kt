@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.game.GameWrapper
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -29,13 +29,14 @@ class GamesFragment : PagedListFragment<GameWrapper, GamesViewModel>(), Scrollab
         search.setOnClickListener { (requireActivity() as MainActivity).openSearch() }
     }
 
-    override fun createAdapter(): PagedListAdapter<GameWrapper, *> {
+    override fun createAdapter(): BasePagedListAdapter<GameWrapper> {
         return GamesAdapter(requireActivity() as MainActivity)
     }
 
     override fun createViewModel(): GamesViewModel = getViewModel()
 
     override fun scrollToTop() {
+        appBar?.setExpanded(true, true)
         recyclerView?.scrollToPosition(0)
     }
 }

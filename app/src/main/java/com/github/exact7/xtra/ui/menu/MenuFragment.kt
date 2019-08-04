@@ -12,10 +12,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.NotLoggedIn
-import com.github.exact7.xtra.ui.SettingsActivity
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.main.MainViewModel
+import com.github.exact7.xtra.ui.settings.SettingsActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.isInLandscapeOrientation
