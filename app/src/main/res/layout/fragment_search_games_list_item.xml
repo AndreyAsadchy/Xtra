@@ -9,8 +9,8 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="55dp"
             android:scaleType="centerCrop"
             android:layout_margin="10dp"
             tools:src="@tools:sample/backgrounds/scenic"

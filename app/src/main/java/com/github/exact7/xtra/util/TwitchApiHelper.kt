@@ -2,6 +2,7 @@ package com.github.exact7.xtra.util
 
 import android.content.Context
 import android.text.format.DateUtils
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.MessageListenerImpl
@@ -26,7 +27,7 @@ object TwitchApiHelper {
         return url.replace("{width}", width.toString()).replace("{height}", height.toString())
     }
 
-    @JvmStatic fun parseIso8601Date(date: String): Long {
+    fun parseIso8601Date(date: String): Long {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
             return dateFormat.parse(date).time
@@ -36,7 +37,11 @@ object TwitchApiHelper {
         return 0L
     }
 
-    @JvmStatic fun formatTime(context: Context, date: Long): String {
+    fun formatTime(context: Context, iso8601date: String): String {
+        return formatTime(context, parseIso8601Date(iso8601date))
+    }
+
+    fun formatTime(context: Context, date: Long): String {
         val year = Calendar.getInstance().let {
             it.timeInMillis = date
             it.get(Calendar.YEAR)
@@ -64,17 +69,22 @@ object TwitchApiHelper {
         return offset
     }
 
-    fun formatCount(count: Int): String {
-        val divider: Int
-        val suffix = if (count.toString().length < 7) {
-            divider = 1000
-            "K"
+    fun formatCount(context: Context, count: Int, viewers: Boolean = false): String {
+        return if (count > 1000) {
+            val divider: Int
+            val suffix = if (count.toString().length < 7) {
+                divider = 1000
+                "K"
+            } else {
+                divider = 1_000_000
+                "M"
+            }
+            val truncated = count / (divider / 10)
+            val hasDecimal = truncated / 10.0 != (truncated / 10).toDouble()
+            val formatted = if (hasDecimal) "${truncated / 10.0}$suffix" else "${truncated / 10}$suffix"
+            context.getString(if (viewers) R.string.viewers else R.string.views, formatted)
         } else {
-            divider = 1_000_000
-            "M"
+            context.resources.getQuantityString(if (viewers) R.plurals.viewers else R.plurals.views, count, count)
         }
-        val truncated = count / (divider / 10)
-        val hasDecimal = truncated / 10.0 != (truncated / 10).toDouble()
-        return if (hasDecimal) "${truncated / 10.0}$suffix" else "${truncated / 10}$suffix"
     }
 }

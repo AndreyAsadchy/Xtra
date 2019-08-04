@@ -26,11 +26,7 @@ class GamesAdapter(
             setOnClickListener { listener.openGame(item.game) }
             gameImage.loadImage(item.game.box.medium)
             gameName.text = item.game.name
-            viewers.text = if (item.viewers > 1000) {
-                resources.getString(R.string.viewers, TwitchApiHelper.formatCount(item.viewers))
-            } else {
-                resources.getQuantityString(R.plurals.viewers, item.viewers, item.viewers)
-            }
+            viewers.text = TwitchApiHelper.formatCount(context, item.viewers, true)
         }
     }
 }

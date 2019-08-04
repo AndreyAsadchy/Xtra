@@ -4,41 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.paging.PagedListAdapter
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.repository.LoadingState
-import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.model.kraken.channel.Channel
+import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.search.Searchable
-import com.github.exact7.xtra.util.visible
-import kotlinx.android.synthetic.main.simple_recycler_view_layout.*
+import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-class ChannelSearchFragment : BaseNetworkFragment(), Searchable {
-
-    private lateinit var viewModel: ChannelSearchViewModel
-    private lateinit var adapter: ChannelSearchAdapter
+class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel>(), Searchable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.simple_recycler_view_layout, container, false)
+        return inflater.inflate(R.layout.common_recycler_view_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val activity = requireActivity() as MainActivity
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-        recyclerView.adapter = ChannelSearchAdapter(activity).also { adapter = it }
+        swipeRefresh.isEnabled = false
     }
 
-    override fun initialize() {
-        viewModel = getViewModel()
-        viewModel.list.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
-        viewModel.loadingState.observe(viewLifecycleOwner, Observer {
-            progressBar.visible(it == LoadingState.LOADING)
-        })
+    override fun createViewModel(): ChannelSearchViewModel = getViewModel()
+
+    override fun createAdapter(): PagedListAdapter<Channel, *> {
+        return ChannelSearchAdapter(requireActivity() as MainActivity)
     }
 
     override fun search(query: String) {
@@ -47,9 +35,5 @@ class ChannelSearchFragment : BaseNetworkFragment(), Searchable {
         } else {
             adapter.submitList(null)
         }
-    }
-
-    override fun onNetworkRestored() {
-
     }
 }

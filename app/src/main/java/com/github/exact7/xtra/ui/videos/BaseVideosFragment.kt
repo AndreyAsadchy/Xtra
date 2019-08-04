@@ -11,9 +11,9 @@ import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
+import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.videos.channel.ChannelVideosAdapter
-import com.github.exact7.xtra.ui.videos.channel.ChannelVideosFragment
+import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
 abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFragment<Video, VM>(), Scrollable, HasDownloadDialog {
@@ -22,16 +22,22 @@ abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFra
         fun startVideo(video: Video)
     }
 
+    var lastSelectedItem: Video? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lastSelectedItem = savedInstanceState?.getParcelable(C.KEY_LAST_SELECTED_ITEM)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_videos, container, false)
     }
 
     override fun createAdapter(): PagedListAdapter<Video, *> {
         val activity = requireActivity() as MainActivity
-        return if (this !is ChannelVideosFragment) {
-            VideosAdapter(activity)
-        } else {
-            ChannelVideosAdapter(activity)
+        return VideosAdapter(activity, activity) {
+            lastSelectedItem = it
+            showDownloadDialog()
         }
     }
 
@@ -40,6 +46,8 @@ abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFra
     }
 
     override fun showDownloadDialog() {
-//        VideoDownloadDialog.newInstance(video = adapter.lastSelectedItem!!).show(childFragmentManager, null)
+        lastSelectedItem?.let {
+            VideoDownloadDialog.newInstance(video = it).show(childFragmentManager, null)
+        }
     }
 }

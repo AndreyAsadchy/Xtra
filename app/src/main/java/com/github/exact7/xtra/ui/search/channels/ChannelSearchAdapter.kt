@@ -1,14 +1,16 @@
 package com.github.exact7.xtra.ui.search.channels
 
+import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.FragmentSearchChannelsListItemBinding
 import com.github.exact7.xtra.model.kraken.channel.Channel
-import com.github.exact7.xtra.ui.common.DataBoundPagedListAdapter
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.OnChannelSelectedListener
+import com.github.exact7.xtra.util.loadImage
+import kotlinx.android.synthetic.main.fragment_search_channels_list_item.view.*
 
 class ChannelSearchAdapter(
-        private val listener: OnChannelSelectedListener) : DataBoundPagedListAdapter<Channel, FragmentSearchChannelsListItemBinding>(
+        private val listener: OnChannelSelectedListener) : BasePagedListAdapter<Channel>(
         object : DiffUtil.ItemCallback<Channel>() {
             override fun areItemsTheSame(oldItem: Channel, newItem: Channel): Boolean =
                     oldItem.id == newItem.id
@@ -16,11 +18,13 @@ class ChannelSearchAdapter(
             override fun areContentsTheSame(oldItem: Channel, newItem: Channel): Boolean = true
         }) {
 
-    override val itemId: Int
-        get() =  R.layout.fragment_search_channels_list_item
+    override val layoutId: Int = R.layout.fragment_search_channels_list_item
 
-    override fun bind(binding: FragmentSearchChannelsListItemBinding, item: Channel?) {
-        binding.channel = item
-        binding.listener = listener
+    override fun bind(item: Channel, view: View) {
+        with(view) {
+            setOnClickListener { listener.viewChannel(item) }
+            logo.loadImage(item.logo)
+            name.text = item.displayName
+        }
     }
 }

@@ -34,18 +34,18 @@ class ClipsAdapter(
             setOnClickListener { clickListener.startClip(item) }
             setOnLongClickListener { showDownloadDialog(item); true }
             thumbnail.loadImage(item.thumbnails.medium)
-            date.text = TwitchApiHelper.formatTime(context, TwitchApiHelper.parseIso8601Date(item.createdAt))
-            views.text = if (item.views > 1000) {
-                resources.getString(R.string.views, TwitchApiHelper.formatCount(item.views))
-            } else {
-                resources.getQuantityString(R.plurals.views, item.views, item.views)
-            }
+            date.text = TwitchApiHelper.formatTime(context, item.createdAt)
+            views.text = TwitchApiHelper.formatCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.duration.toLong())
-            userImage.loadImage(item.broadcaster.logo, circle = true)
-            userImage.setOnClickListener(channelListener)
+            userImage.apply {
+                loadImage(item.broadcaster.logo, circle = true)
+                setOnClickListener(channelListener)
+            }
             title.text = item.title
-            username.setOnClickListener(channelListener)
-            username.text = item.broadcaster.displayName
+            username.apply {
+                setOnClickListener(channelListener)
+                text = item.broadcaster.displayName
+            }
             gameName.text = item.game
             options.setOnClickListener {
                 PopupMenu(context, options).apply {

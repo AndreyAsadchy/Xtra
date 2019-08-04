@@ -24,7 +24,8 @@ abstract class BaseStreamsFragment<VM : PagedListViewModel<Stream>> : PagedListF
     }
 
     override fun createAdapter(): PagedListAdapter<Stream, *> {
-        return StreamsAdapter(requireActivity() as MainActivity)
+        val activity = requireActivity() as MainActivity
+        return StreamsAdapter(activity, activity)
     }
 
     override fun scrollToTop() {

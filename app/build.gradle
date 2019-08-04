@@ -69,9 +69,6 @@ android {
         }
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
-    dataBinding {
-        enabled true
-    }
     lintOptions {
         disable 'ContentDescription'
     }
@@ -151,18 +148,6 @@ repositories {
 
 androidExtensions {
     experimental = true
-}
-
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xmaxerrs" << "500"
-    }
-}
-
-kapt {
-    javacOptions {
-        option("-Xmaxerrs", 500)
-    }
 }
 
 apply plugin: 'com.google.gms.google-services'

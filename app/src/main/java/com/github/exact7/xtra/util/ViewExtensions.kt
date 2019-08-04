@@ -3,12 +3,14 @@ package com.github.exact7.xtra.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.graphics.drawable.DrawableCompat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -86,3 +88,22 @@ val View.isKeyboardShown: Boolean
         val keypadHeight = screenHeight - rect.bottom
         return keypadHeight > screenHeight * 0.15
     }
+
+fun ImageView.setTint(color: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        drawable.setTint(color)
+    } else {
+        val wrap = DrawableCompat.wrap(drawable)
+        DrawableCompat.setTint(wrap, color)
+    }
+}
+
+fun ImageView.enable() {
+    isEnabled = true
+    setColorFilter(Color.WHITE)
+}
+
+fun ImageView.disable() {
+    isEnabled = false
+    setColorFilter(Color.GRAY)
+}

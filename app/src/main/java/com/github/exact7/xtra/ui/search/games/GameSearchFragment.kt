@@ -13,7 +13,7 @@ import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.search.Searchable
 import com.github.exact7.xtra.util.visible
-import kotlinx.android.synthetic.main.simple_recycler_view_layout.*
+import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
 class GameSearchFragment : BaseNetworkFragment(), Searchable {
 
@@ -21,7 +21,7 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
     private lateinit var adapter: GameSearchAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.simple_recycler_view_layout, container, false)
+        return inflater.inflate(R.layout.common_recycler_view_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,6 +29,7 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
         val activity = requireActivity() as MainActivity
         recyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
         recyclerView.adapter = GameSearchAdapter(activity).also { adapter = it }
+        swipeRefresh.isEnabled = false
     }
 
     override fun initialize() {

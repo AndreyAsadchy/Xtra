@@ -26,7 +26,7 @@ class GameSearchAdapter(private val listener: GamesFragment.OnGameSelectedListen
     override fun bind(item: Game, view: View) {
         with(view) {
             setOnClickListener { listener.openGame(item) }
-            logo.loadImage(item.logo.medium)
+            logo.loadImage(item.box.medium)
             name.text = item.name
         }
     }

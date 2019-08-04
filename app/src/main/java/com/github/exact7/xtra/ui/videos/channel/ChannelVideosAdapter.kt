@@ -1,18 +1,20 @@
 package com.github.exact7.xtra.ui.videos.channel
 
+import android.text.format.DateUtils
+import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.databinding.FragmentChannelVideosListItemBinding
 import com.github.exact7.xtra.model.kraken.video.Video
-import com.github.exact7.xtra.ui.download.VideoDownloadDialog
-import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.videos.TempBaseAdapter
-import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
+import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.loadImage
+import kotlinx.android.synthetic.main.fragment_videos_list_item.view.*
 
 class ChannelVideosAdapter(
-        private val mainActivity: MainActivity) : TempBaseAdapter<Video, FragmentChannelVideosListItemBinding>(
+        private val clickListener: BaseVideosFragment.OnVideoSelectedListener,
+        private val showDownloadDialog: (Video) -> Unit) : BasePagedListAdapter<Video>(
         object : DiffUtil.ItemCallback<Video>() {
             override fun areItemsTheSame(oldItem: Video, newItem: Video): Boolean =
                     oldItem.id == newItem.id
@@ -23,40 +25,24 @@ class ChannelVideosAdapter(
                             oldItem.title == newItem.title
         }) {
 
-    //    lateinit var lastSelectedItem: Clip
-//        private set
+    override val layoutId: Int = R.layout.fragment_channel_videos_list_item
 
-    override val itemId: Int = R.layout.fragment_channel_videos_list_item
-
-    override fun bind(binding: FragmentChannelVideosListItemBinding, item: Video?) {
-        binding.video = item
-        binding.videoListener = mainActivity
-        val activity = binding.root.context as MainActivity
-        val showDialog = {
-            lastSelectedItem = item!!
-            if (DownloadUtils.hasStoragePermission(activity)) {
-                VideoDownloadDialog.newInstance(video = item).show(activity.supportFragmentManager, null)
-            }
-        }
-        binding.options.setOnClickListener {
-            PopupMenu(activity, binding.options).apply {
-                inflate(R.menu.media_item)
-                setOnMenuItemClickListener {
-                    showDialog.invoke()
-                    return@setOnMenuItemClickListener true
+    override fun bind(item: Video, view: View) {
+        with(view) {
+            setOnClickListener { clickListener.startVideo(item) }
+            setOnLongClickListener { showDownloadDialog(item); true }
+            thumbnail.loadImage(item.preview.large)
+            date.text = TwitchApiHelper.formatTime(context, item.createdAt)
+            views.text = TwitchApiHelper.formatCount(context, item.views)
+            duration.text = DateUtils.formatElapsedTime(item.length.toLong())
+            title.text = item.title
+            gameName.text = item.game
+            options.setOnClickListener {
+                PopupMenu(context, it).apply {
+                    inflate(R.menu.media_item)
+                    setOnMenuItemClickListener { showDownloadDialog(item); true }
+                    show()
                 }
-                show()
-            }
-        }
-        binding.root.setOnLongClickListener {
-            showDialog.invoke()
-            true
-        }
-        item?.views?.let {
-            binding.views.text = if (it > 1000) {
-                binding.views.resources.getString(R.string.views, TwitchApiHelper.formatCount(it))
-            } else {
-                binding.views.resources.getQuantityString(R.plurals.views, it, it)
             }
         }
     }
