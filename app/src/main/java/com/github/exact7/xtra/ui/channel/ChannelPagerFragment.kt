@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
@@ -21,7 +22,6 @@ import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.loadImage
-import com.github.exact7.xtra.util.visible
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_channel.*
 import kotlinx.android.synthetic.main.fragment_media_pager.*
@@ -86,7 +86,7 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
         viewModel.loadStream(channel)
         val activity = requireActivity() as MainActivity
         viewModel.stream.observe(viewLifecycleOwner, Observer {
-            watchLive.visible(it.stream != null)
+            watchLive.isVisible = it.stream != null
             it.stream?.let { s ->
                 toolbarContainer.updateLayoutParams { height = ViewGroup.LayoutParams.WRAP_CONTENT }
                 collapsingToolbar.expandedTitleMarginBottom = activity.convertDpToPixels(50.5f)

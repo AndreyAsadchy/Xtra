@@ -2,12 +2,12 @@ package com.github.exact7.xtra.ui.common
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.repository.LoadingState
 import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
 abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFragment() {
@@ -37,7 +37,7 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFra
     override fun initialize() {
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
-            nothing_here.visible(it.isEmpty())
+            nothing_here.isVisible = it.isEmpty()
         })
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             val isLoading = it == LoadingState.LOADING
@@ -45,7 +45,7 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFra
             if (isLoading) {
                 nothing_here.gone()
             }
-            progressBar.visible(isLoading && isListEmpty)
+            progressBar.isVisible = isLoading && isListEmpty
             if (swipeRefresh.isEnabled) {
                 swipeRefresh.isRefreshing = isLoading && !isListEmpty
             }

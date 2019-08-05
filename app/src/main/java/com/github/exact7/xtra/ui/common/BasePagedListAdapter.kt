@@ -3,11 +3,11 @@ package com.github.exact7.xtra.ui.common
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.repository.LoadingState
-import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.paging_item.*
 
 abstract class BasePagedListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapter<T, DefaultViewHolder>(diffCallback) {
@@ -25,7 +25,7 @@ abstract class BasePagedListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
         if (getItemViewType(position) == layoutId) {
             bind(getItem(position)!!, holder.containerView)
         } else {
-            holder.progressBar.visible(pagingState == LoadingState.LOADING)
+            holder.progressBar.isVisible = pagingState == LoadingState.LOADING
         }
     }
 

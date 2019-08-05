@@ -10,7 +10,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -33,13 +36,7 @@ fun View.visible(value: Boolean) {
     visibility = if (value) View.VISIBLE else View.GONE
 }
 
-fun View.isVisible() = visibility == View.VISIBLE
-
-fun View.isInvisible() = visibility == View.INVISIBLE
-
-fun View.isGone() = visibility == View.GONE
-
-fun View.toggleVisibility() = if (isVisible()) gone() else visible()
+fun View.toggleVisibility() = if (isVisible) gone() else visible()
 
 @SuppressLint("CheckResult")
 fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean = false, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.AUTOMATIC) {
@@ -89,7 +86,8 @@ val View.isKeyboardShown: Boolean
         return keypadHeight > screenHeight * 0.15
     }
 
-fun ImageView.setTint(color: Int) {
+fun ImageView.setTint(@ColorRes tint: Int) {
+    val color = ContextCompat.getColor(context, tint)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         drawable.setTint(color)
     } else {

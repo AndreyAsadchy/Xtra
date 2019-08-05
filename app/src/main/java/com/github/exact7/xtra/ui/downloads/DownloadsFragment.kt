@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +17,6 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_downloads.*
 import javax.inject.Inject
 
@@ -49,7 +49,7 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         viewModel.list.observe(this, Observer {
             adapter.submitList(it)
-            text.visible(it.isEmpty())
+            text.isVisible = it.isEmpty()
         })
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {

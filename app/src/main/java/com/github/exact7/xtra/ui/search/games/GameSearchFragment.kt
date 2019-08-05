@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.repository.LoadingState
@@ -11,7 +12,6 @@ import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.search.Searchable
 import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.fragment_search.*
 
@@ -37,11 +37,11 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
         viewModel = getViewModel()
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
-            nothing_here.visible(it.isEmpty())
+            nothing_here.isVisible = it.isEmpty()
         })
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             val isLoading = it == LoadingState.LOADING
-            progressBar.visible(isLoading)
+            progressBar.isVisible = isLoading
             if (isLoading) {
                 nothing_here.gone()
             }

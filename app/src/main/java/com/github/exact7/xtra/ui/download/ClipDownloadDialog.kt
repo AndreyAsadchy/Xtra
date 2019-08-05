@@ -8,12 +8,12 @@ import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.dialog_clip_download.*
 import javax.inject.Inject
 
@@ -44,7 +44,7 @@ class ClipDownloadDialog : BaseDownloadDialog() {
             viewModel.init(getParcelable(KEY_CLIP)!!, getSerializable(KEY_QUALITIES) as Map<String, String>?)
         }
         viewModel.qualities.observe(viewLifecycleOwner, Observer {
-            (requireView() as ConstraintLayout).children.forEach { v -> v.visible(v.id != R.id.progressBar && v.id != R.id.storageSelectionContainer) }
+            (requireView() as ConstraintLayout).children.forEach { v -> v.isVisible = v.id != R.id.progressBar && v.id != R.id.storageSelectionContainer }
             init(it)
         })
     }

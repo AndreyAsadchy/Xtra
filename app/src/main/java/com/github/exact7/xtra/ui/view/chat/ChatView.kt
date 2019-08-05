@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -23,8 +25,6 @@ import com.github.exact7.xtra.ui.common.ChatAdapter
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
-import com.github.exact7.xtra.util.isGone
-import com.github.exact7.xtra.util.isVisible
 import com.github.exact7.xtra.util.showKeyboard
 import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
@@ -86,7 +86,7 @@ class ChatView : ConstraintLayout {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     isChatTouched = newState == RecyclerView.SCROLL_STATE_DRAGGING
-                    this@ChatView.btnDown.visible(shouldShowButton())
+                    this@ChatView.btnDown.isVisible = shouldShowButton()
                 }
             })
         }
@@ -107,8 +107,8 @@ class ChatView : ConstraintLayout {
         }
         editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
             val notBlank = text?.isNotBlank() == true
-            send.visible(notBlank)
-            clear.visible(notBlank)
+            send.isVisible = notBlank
+            clear.isVisible = notBlank
         })
         clear.setOnClickListener {
             val text = editText.text.toString().trimEnd()
@@ -132,7 +132,7 @@ class ChatView : ConstraintLayout {
                 it.removeAt(0)
                 adapter.notifyItemRemoved(0)
             }
-            if (!isChatTouched && btnDown.isGone()) {
+            if (!isChatTouched && btnDown.isGone) {
                 recyclerView.scrollToPosition(getLastItemPosition())
             }
         }
@@ -165,7 +165,7 @@ class ChatView : ConstraintLayout {
     }
 
     fun hideEmotesMenu(): Boolean {
-        return if (viewPager.isVisible()) {
+        return if (viewPager.isVisible) {
             viewPager.gone()
             true
         } else {
@@ -198,7 +198,7 @@ class ChatView : ConstraintLayout {
             editText.hideKeyboard()
             MessageClickedDialog.newInstance(original, formatted).show(fragmentManager, null)
         }
-        messageView.visible(true)
+        messageView.visible()
     }
 
     private fun sendMessage(): Boolean {
