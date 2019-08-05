@@ -252,7 +252,7 @@ class ChatView : ConstraintLayout {
         emotes.setOnClickListener {
             //TODO add animation
             with(viewPager) {
-                if (isGone()) {
+                if (isGone) {
                     if (recentEmotes.isEmpty() && currentItem == 0) {
                         setCurrentItem(1, false)
                     }

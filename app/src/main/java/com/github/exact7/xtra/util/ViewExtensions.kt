@@ -32,10 +32,6 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-fun View.visible(value: Boolean) {
-    visibility = if (value) View.VISIBLE else View.GONE
-}
-
 fun View.toggleVisibility() = if (isVisible) gone() else visible()
 
 @SuppressLint("CheckResult")
