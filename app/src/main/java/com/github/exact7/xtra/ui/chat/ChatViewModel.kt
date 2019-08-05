@@ -85,7 +85,7 @@ class ChatViewModel @Inject constructor(
         message.badges?.find { it.id == "subscriber" }?.let {
             message.subscriberBadge = subscriberBadges?.getBadge(it.version.toInt())
         }
-        _chatMessages.value?.add(message)
+        _chatMessages.value!!.add(message)
         _newMessage.postValue(message)
     }
 

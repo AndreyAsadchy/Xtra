@@ -13,13 +13,11 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.Utils
-import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
-import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.loadImage
 import com.google.android.material.appbar.AppBarLayout
@@ -49,12 +47,8 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
         setAdapter(ChannelPagerAdapter(activity, childFragmentManager, requireArguments()))
-        if (currentFragment !is ChatFragment) {
-            if (activity.isInLandscapeOrientation) {
-                appBar.setExpanded(false, false)
-            }
-        } else {
-            appBar.gone()
+        if (activity.isInLandscapeOrientation) {
+            appBar.setExpanded(false, false)
         }
         collapsingToolbar.title = channel.displayName
         logo.loadImage(channel.logo, circle = true)
@@ -71,7 +65,7 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
                 layoutParams.scrollFlags = if (position != 2) {
                     originalScrollFlags
                 } else {
-                    appBar.setExpanded(false, true)
+                    appBar.setExpanded(false, isResumed)
                     AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
                 }
             }

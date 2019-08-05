@@ -55,7 +55,10 @@ class SlidingLayout : LinearLayout {
     private val animatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {}
         override fun onAnimationCancel(animation: Animator?) {}
-        override fun onAnimationStart(animation: Animator?) { isAnimating = true }
+        override fun onAnimationStart(animation: Animator?) {
+            isAnimating = true
+        }
+
         override fun onAnimationEnd(animation: Animator?) {
             isAnimating = false
             shouldUpdateDragLayout = false
@@ -156,29 +159,34 @@ class SlidingLayout : LinearLayout {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (isAnimating) return true
-        val x = event.x.toInt()
-        val y = event.y.toInt()
-        val isDragViewHit = isViewHit(dragView, x, y)
-        val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
-        val isClick = event.isClick(downTouchLocation)
-        if (timeBar?.isPressed == true) {
-            dragView.dispatchTouchEvent(event)
-            return true
-        }
-        viewDragHelper.processTouchEvent(event)
-        if (isDragViewHit) {
-            if (isMaximized) {
+        try {
+            if (isAnimating) return true
+            val x = event.x.toInt()
+            val y = event.y.toInt()
+            val isDragViewHit = isViewHit(dragView, x, y)
+            val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
+            val isClick = event.isClick(downTouchLocation)
+            if (timeBar?.isPressed == true) {
                 dragView.dispatchTouchEvent(event)
-            } else if (isClick) {
-                maximize()
                 return true
             }
+            viewDragHelper.processTouchEvent(event)
+            if (isDragViewHit) {
+                if (isMaximized) {
+                    dragView.dispatchTouchEvent(event)
+                } else if (isClick) {
+                    maximize()
+                    return true
+                }
+            }
+            if (isClick) {
+                performClick()
+            }
+            return isDragViewHit || isSecondViewHit
+        } catch (e: IllegalStateException) {
+
         }
-        if (isClick) {
-            performClick()
-        }
-        return isDragViewHit || isSecondViewHit
+        return false
     }
 
     override fun performClick(): Boolean {

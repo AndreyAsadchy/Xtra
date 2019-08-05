@@ -22,7 +22,6 @@ import com.github.exact7.xtra.ui.download.DownloadService
 import com.github.exact7.xtra.ui.download.DownloadService.Companion.KEY_REQUEST
 import com.github.exact7.xtra.ui.download.DownloadService.Companion.KEY_WIFI
 import java.io.File
-import java.util.Calendar
 
 object DownloadUtils {
 
@@ -47,7 +46,7 @@ object DownloadUtils {
         return with(downloadable) {
             val thumbnail = glide.downloadOnly().load(thumbnail).submit().get().absolutePath
             val logo = glide.downloadOnly().load(channelLogo).submit().get().absolutePath
-            OfflineVideo(offlinePath, url, startPosition, title, channelName, logo, thumbnail, game, duration, TwitchApiHelper.parseIso8601Date(uploadDate), Calendar.getInstance().time.time, 0L, 0, if (segmentTo != null && segmentFrom != null) segmentTo - segmentFrom + 1 else 100)
+            OfflineVideo(offlinePath, url, startPosition, title, channelName, logo, thumbnail, game, duration, TwitchApiHelper.parseIso8601Date(uploadDate), System.currentTimeMillis(), 0L, 0, if (segmentTo != null && segmentFrom != null) segmentTo - segmentFrom + 1 else 100)
         }
     }
 

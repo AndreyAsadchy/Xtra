@@ -32,7 +32,8 @@ import kotlinx.android.synthetic.main.view_chat.view.*
 import kotlin.math.max
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
-private const val MAX_MESSAGE_COUNT = 125
+private const val MAX_ADAPTER_COUNT = 125
+private const val MAX_LIST_COUNT = MAX_ADAPTER_COUNT + 1
 
 class ChatView : ConstraintLayout {
 
@@ -93,7 +94,7 @@ class ChatView : ConstraintLayout {
 
         btnDown.setOnClickListener {
             post {
-                recyclerView.scrollToPosition(getLastItemPosition())
+                recyclerView.scrollToPosition(adapter.itemCount - 1)
                 it.toggleVisibility()
             }
         }
@@ -126,14 +127,19 @@ class ChatView : ConstraintLayout {
     }
 
     fun notifyMessageAdded() {
-        adapter.messages?.let {
-            adapter.notifyItemInserted(getLastItemPosition())
-            if (getLastItemPosition() > MAX_MESSAGE_COUNT) {
-                it.removeAt(0)
-                adapter.notifyItemRemoved(0)
+        adapter.messages?.apply {
+            adapter.notifyItemInserted(lastIndex)
+            if (size >= MAX_LIST_COUNT) {
+                val removeCount = size - MAX_ADAPTER_COUNT
+                adapter.messages?.apply {
+                    repeat(removeCount) {
+                        removeAt(0)
+                    }
+                }
+                adapter.notifyItemRangeRemoved(0, removeCount)
             }
             if (!isChatTouched && btnDown.isGone) {
-                recyclerView.scrollToPosition(getLastItemPosition())
+                recyclerView.scrollToPosition(lastIndex)
             }
         }
     }
@@ -263,8 +269,6 @@ class ChatView : ConstraintLayout {
             }
         }
     }
-
-    private fun getLastItemPosition(): Int = adapter.itemCount - 1
 
     private fun shouldShowButton(): Boolean {
         val offset = recyclerView.computeVerticalScrollOffset()
