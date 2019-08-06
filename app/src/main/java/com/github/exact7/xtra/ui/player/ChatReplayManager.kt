@@ -1,8 +1,8 @@
 package com.github.exact7.xtra.ui.player
 
-import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.GlobalScope
@@ -21,11 +21,11 @@ class ChatReplayManager @Inject constructor(
         private val videoId: String,
         private val startTime: Double,
         private val currentPosition: () -> Double,
-        private val addMessage: (ChatMessage) -> Unit,
+        private val messageListener: OnChatMessageReceivedListener,
         private val clearMessages: () -> Unit) {
 
-    private var job: Job? = null
     private val timer: Timer
+    private var job: Job? = null
     private var disposable: Disposable? = null
     private var cursor: String? = null
     private val list = LinkedList<VideoChatMessage>()
@@ -41,6 +41,11 @@ class ChatReplayManager @Inject constructor(
             }
             lastCheckedPosition = position
         })
+    }
+
+    fun stop() {
+        cancel()
+        timer.cancel()
     }
 
     private fun load(offset: Double) {
@@ -69,7 +74,7 @@ class ChatReplayManager @Inject constructor(
                                     delay(max((messageOffset - position) * 1000.0, 0.0).toLong())
                                 }
                                 if (position - messageOffset < 20.0) {
-                                    addMessage(message)
+                                    messageListener.onMessage(message)
                                     if (list.size == 15) {
                                         loadNext()
                                     }
@@ -98,11 +103,6 @@ class ChatReplayManager @Inject constructor(
                         cursor = it.next
                     })
         }
-    }
-
-    fun stop() {
-        cancel()
-        timer.cancel()
     }
 
     private fun cancel() {

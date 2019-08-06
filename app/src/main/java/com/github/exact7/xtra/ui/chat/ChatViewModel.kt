@@ -16,6 +16,7 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.BaseViewModel
 import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.view.chat.ChatView
+import com.github.exact7.xtra.ui.view.chat.MAX_LIST_COUNT
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.EmotesUrlHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
@@ -38,14 +39,9 @@ class ChatViewModel @Inject constructor(
     private val _ffz = MutableLiveData<List<FfzEmote>>()
     val ffz: LiveData<List<FfzEmote>>
         get() = _ffz
-    private val allEmotesMap: MutableMap<String, Emote> by lazy {
-        val map = HashMap<String, Emote>()
-        ChatFragment.defaultBttvAndFfzEmotes().associateByTo(map) { it.name }
-    }
-    private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
     private val _chatMessages: MutableLiveData<MutableList<ChatMessage>> by lazy {
-        MutableLiveData<MutableList<ChatMessage>>().apply { value = ArrayList() }
+        MutableLiveData<MutableList<ChatMessage>>().apply { value = ArrayList(MAX_LIST_COUNT) }
     }
     val chatMessages: LiveData<MutableList<ChatMessage>>
         get() = _chatMessages
@@ -54,31 +50,30 @@ class ChatViewModel @Inject constructor(
         get() = _newMessage
 
     private var subscriberBadges: SubscriberBadgesResponse? = null
-    private var chatReplayManager: ChatReplayManager? = null
 
-    private var isLive = true
-    private lateinit var user: User
-    private lateinit var channelName: String
-
-    private lateinit var chat: LiveChatThread
+    private lateinit var chat: ChatController
 
     fun startLive(user: User, channelId: String, channelName: String) {
-        if (!this::channelName.isInitialized) {
-            this.user = user
-            this.channelName = channelName
+        if (!this::chat.isInitialized) {
+            chat = LiveChatController(user, channelName)
             init(channelId, channelName)
-            if (user is LoggedIn) {
-                localEmotesObserver = Observer<List<TwitchEmote>> { putEmotes(it) }.also(emotes::observeForever)
-            }
+
         }
     }
 
     fun startReplay(channelId: String, channelName: String, videoId: String, startTime: Double, getCurrentPosition: () -> Double) {
-        if (chatReplayManager == null) {
-            isLive = false
+        if (!this::chat.isInitialized) {
+            chat = VideoChatController(videoId, startTime, getCurrentPosition)
             init(channelId, channelName)
-            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this::onMessage, this::clearMessages)
         }
+    }
+
+    fun start() {
+        chat.start()
+    }
+
+    fun stop() {
+        chat.pause()
     }
 
     override fun onMessage(message: ChatMessage) {
@@ -91,27 +86,11 @@ class ChatViewModel @Inject constructor(
 
     override fun send(message: CharSequence) {
         chat.send(message)
-        val usedEmotes = hashSetOf<RecentEmote>()
-        val currentTime = System.currentTimeMillis()
-        message.split(' ').forEach { word ->
-            allEmotesMap[word]?.let { usedEmotes.add(RecentEmote(word, EmotesUrlHelper.resolveUrl(it), currentTime)) }
-        }
-        if (usedEmotes.isNotEmpty()) {
-            playerRepository.insertRecentEmotes(usedEmotes)
-        }
     }
 
-    fun start() {
-        if (isLive) {
-            stop()
-            chat = TwitchApiHelper.startChat(channelName, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this)
-        }
-    }
-
-    fun stop() {
-        if (this::chat.isInitialized) {
-            chat.disconnect()
-        }
+    override fun onCleared() {
+        chat.stop()
+        super.onCleared()
     }
 
     private fun init(channelId: String, channelName: String) {
@@ -119,22 +98,16 @@ class ChatViewModel @Inject constructor(
                 .subscribeBy(onSuccess = {
                     it.badges
                     subscriberBadges = it
-                    if (isLive) {
-                        start()
-                    }
+                    chat.start()
                 }, onError = {
                     //no subscriber badges
-                    if (isLive) {
-                        start()
-                    }
+                    chat.start()
                 })
                 .addTo(compositeDisposable)
         playerRepository.loadBttvEmotes(channelName)
                 .subscribeBy(onSuccess = { response ->
                     _bttv.value = response.body()?.let {
-                        if (isLive && user is LoggedIn) {
-                            putEmotes(it.emotes)
-                        }
+                        (chat as? LiveChatController)?.addEmotes(it.emotes)
                         it.emotes
                     }
                 })
@@ -142,30 +115,87 @@ class ChatViewModel @Inject constructor(
         playerRepository.loadFfzEmotes(channelName)
                 .subscribeBy(onSuccess = { response ->
                     _ffz.value = response.body()?.let {
-                        if (isLive && user is LoggedIn) {
-                            putEmotes(it.emotes)
-                        }
+                        (chat as? LiveChatController)?.addEmotes(it.emotes)
                         it.emotes
                     }
                 })
                 .addTo(compositeDisposable)
     }
 
-    private fun clearMessages() {
-        _chatMessages.postValue(ArrayList())
-    }
+    private inner class VideoChatController(
+            private val videoId: String,
+            private val startTime: Double,
+            private val getCurrentPosition: () -> Double) : ChatController {
 
-    override fun onCleared() {
-        if (isLive) {
-            stop()
-            localEmotesObserver?.let(emotes::removeObserver)
-        } else {
-            chatReplayManager?.stop()
+        private lateinit var chatReplayManager: ChatReplayManager
+
+        override fun send(message: CharSequence) {
+
         }
-        super.onCleared()
+
+        override fun start() {
+            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this@ChatViewModel, { _chatMessages.postValue(ArrayList()) })
+        }
+
+        override fun pause() {
+
+        }
+
+        override fun stop() {
+            chatReplayManager.stop()
+        }
     }
 
-    private fun <T : Emote> putEmotes(list: List<T>) {
-        allEmotesMap.putAll(list.associateBy { it.name })
+    private inner class LiveChatController(
+            private val user: User,
+            private val channelName: String) : ChatController {
+
+        private lateinit var chat: LiveChatThread
+        private val allEmotesMap: MutableMap<String, Emote> = ChatFragment.defaultBttvAndFfzEmotes().associateByTo(HashMap()) { it.name }
+        private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
+
+        init {
+            if (user is LoggedIn) {
+                localEmotesObserver = Observer<List<TwitchEmote>> { addEmotes(it) }.also(emotes::observeForever)
+            }
+        }
+
+        override fun send(message: CharSequence) {
+            chat.send(message)
+            val usedEmotes = hashSetOf<RecentEmote>()
+            val currentTime = System.currentTimeMillis()
+            message.split(' ').forEach { word ->
+                allEmotesMap[word]?.let { usedEmotes.add(RecentEmote(word, EmotesUrlHelper.resolveUrl(it), currentTime)) }
+            }
+            if (usedEmotes.isNotEmpty()) {
+                playerRepository.insertRecentEmotes(usedEmotes)
+            }
+        }
+
+        override fun start() {
+            chat = TwitchApiHelper.startChat(channelName, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this@ChatViewModel)
+        }
+
+        override fun pause() {
+            chat.disconnect()
+        }
+
+        override fun stop() {
+            pause()
+            localEmotesObserver?.let(emotes::removeObserver)
+        }
+
+        fun addEmotes(list: List<Emote>) {
+            if (user is LoggedIn) {
+                allEmotesMap.putAll(list.associateBy { it.name })
+            }
+        }
+    }
+
+    private interface ChatController {
+        fun send(message: CharSequence)
+        fun start()
+        fun pause()
+        fun stop()
     }
 }

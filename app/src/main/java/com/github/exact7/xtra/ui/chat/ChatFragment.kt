@@ -53,12 +53,13 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
         viewModel = getViewModel()
         val args = requireArguments()
         val channel = args.getParcelable<Channel>(KEY_CHANNEL)!!
-        val enableChat = if (args.getBoolean(KEY_IS_LIVE)) {
-            val user = User.get(requireContext())
+        val user = User.get(requireContext())
+        val userIsLoggedIn = user is LoggedIn
+        val isLive = args.getBoolean(KEY_IS_LIVE)
+        val enableChat = if (isLive) {
             viewModel.startLive(user, channel.id, channel.name)
             chatView.setCallback(viewModel)
-            if (user is LoggedIn) {
-                chatView.enableMessaging(childFragmentManager)
+            if (userIsLoggedIn) {
                 chatView.setUsername(user.name)
                 val emotesObserver = Observer(chatView::addEmotes)
                 viewModel.emotes.observe(viewLifecycleOwner, emotesObserver)
@@ -78,6 +79,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             }
         }
         if (enableChat) {
+            chatView.enableChatInteraction(isLive && userIsLoggedIn, childFragmentManager)
             viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
             viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyMessageAdded() })
             val emotesObserver = Observer(chatView::addEmotes)

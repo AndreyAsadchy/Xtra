@@ -135,9 +135,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (prefs.getBoolean("showRateAppDialog", true) && savedInstanceState == null) {
             val launchCount = prefs.getInt("launchCount", 0) + 1
             val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
-            if (System.currentTimeMillis() < dateOfFirstLaunch + 259200000L || launchCount < 5) {
+            if (System.currentTimeMillis() < dateOfFirstLaunch + 345600000L || launchCount < 5) {
                 prefs.edit { putInt("launchCount", launchCount) }
-            } else { //3 days passed and launched at least 5 times
+            } else { //4 days passed and launched at least 5 times
                 AlertDialog.Builder(this)
                         .setTitle(getString(R.string.thank_you))
                         .setMessage(getString(R.string.rate_app_message))

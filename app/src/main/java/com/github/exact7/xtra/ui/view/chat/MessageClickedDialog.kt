@@ -14,6 +14,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.ExpandingBottomSheetDialogFragment
+import com.github.exact7.xtra.util.gone
 import kotlinx.android.synthetic.main.dialog_chat_message_click.*
 import javax.inject.Inject
 
@@ -26,11 +27,12 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
     }
 
     companion object {
+        private const val KEY_MESSAGING = "messaging"
         private const val KEY_ORIGINAL = "original"
         private const val KEY_FORMATTED = "formatted"
 
-        fun newInstance(originalMessage: CharSequence, formattedMessage: CharSequence) = MessageClickedDialog().apply {
-            arguments = bundleOf(KEY_ORIGINAL to originalMessage, KEY_FORMATTED to formattedMessage)
+        fun newInstance(messagingEnabled: Boolean, originalMessage: CharSequence, formattedMessage: CharSequence) = MessageClickedDialog().apply {
+            arguments = bundleOf(KEY_MESSAGING to messagingEnabled, KEY_ORIGINAL to originalMessage, KEY_FORMATTED to formattedMessage)
         }
     }
 
@@ -49,15 +51,21 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        message.text = requireArguments().getCharSequence(KEY_FORMATTED)!!
-        val msg = requireArguments().getCharSequence(KEY_ORIGINAL)!!
-        reply.setOnClickListener {
-            listener.onReplyClicked(extractUserName(msg))
-            dismiss()
-        }
-        copyMessage.setOnClickListener {
-            listener.onCopyMessageClicked(msg.substring(msg.indexOf(':') + 1))
-            dismiss()
+        val args = requireArguments()
+        message.text = args.getCharSequence(KEY_FORMATTED)!!
+        val msg = args.getCharSequence(KEY_ORIGINAL)!!
+        if (args.getBoolean(KEY_MESSAGING)) {
+            reply.setOnClickListener {
+                listener.onReplyClicked(extractUserName(msg))
+                dismiss()
+            }
+            copyMessage.setOnClickListener {
+                listener.onCopyMessageClicked(msg.substring(msg.indexOf(':') + 1))
+                dismiss()
+            }
+        } else {
+            reply.gone()
+            copyMessage.gone()
         }
         val viewModel = ViewModelProviders.of(this, viewModelFactory).get(MessageClickedViewModel::class.java)
         viewProfile.setOnClickListener {

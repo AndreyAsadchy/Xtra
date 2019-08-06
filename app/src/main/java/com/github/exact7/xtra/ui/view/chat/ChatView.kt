@@ -32,8 +32,8 @@ import kotlinx.android.synthetic.main.view_chat.view.*
 import kotlin.math.max
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
-private const val MAX_ADAPTER_COUNT = 125
-private const val MAX_LIST_COUNT = MAX_ADAPTER_COUNT + 1
+const val MAX_ADAPTER_COUNT = 125
+const val MAX_LIST_COUNT = MAX_ADAPTER_COUNT + 1
 
 class ChatView : ConstraintLayout {
 
@@ -197,14 +197,16 @@ class ChatView : ConstraintLayout {
         editText.setText(text)
     }
 
-    fun enableMessaging(fragmentManager: FragmentManager) {
+    fun enableChatInteraction(enableMessaging: Boolean, fragmentManager: FragmentManager) {
         this.fragmentManager = fragmentManager
-        messagingEnabled = true
         adapter.setOnClickListener { original, formatted ->
             editText.hideKeyboard()
-            MessageClickedDialog.newInstance(original, formatted).show(fragmentManager, null)
+            MessageClickedDialog.newInstance(enableMessaging, original, formatted).show(fragmentManager, null)
         }
-        messageView.visible()
+        if (enableMessaging) {
+            messagingEnabled = true
+            messageView.visible()
+        }
     }
 
     private fun sendMessage(): Boolean {

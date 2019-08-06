@@ -58,7 +58,7 @@ data class VideoChatMessage(
             val id: String,
             val name: String,
             val type: String,
-            val bio: String,
+            val bio: String?,
             @SerializedName("created_at")
             val createdAt: String,
             @SerializedName("updated_at")

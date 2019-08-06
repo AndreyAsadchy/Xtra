@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 data class User(
     @SerializedName("_id")
     override val id: String,
-    val bio: String,
+    val bio: String?,
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("display_name")
