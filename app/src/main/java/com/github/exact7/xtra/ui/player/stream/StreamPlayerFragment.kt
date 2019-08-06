@@ -31,7 +31,8 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         get() = stream.channel
 
     override val shouldEnterPictureInPicture: Boolean
-        get() = viewModel.playerMode.value == PlayerMode.NORMAL
+        get() = true
+//        get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

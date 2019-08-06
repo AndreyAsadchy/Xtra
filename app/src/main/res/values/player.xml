@@ -11,6 +11,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="resize_mode">fixed_height</item>
+        <item name="surface_type">texture_view</item>
     </style>
 
     <style name="Player.Landscape" parent="Player">
@@ -18,6 +19,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="resize_mode">fit</item>
+        <item name="surface_type">texture_view</item>
     </style>
 
     <style name="Player.Image">
