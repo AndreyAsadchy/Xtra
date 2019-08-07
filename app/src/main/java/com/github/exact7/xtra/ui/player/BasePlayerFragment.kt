@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.player
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -28,6 +27,7 @@ import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
+import com.github.exact7.xtra.util.disable
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isInPortraitOrientation
 import com.github.exact7.xtra.util.isKeyboardShown
@@ -50,7 +50,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
 
-    private var isPortrait: Boolean = false
+    protected var isPortrait: Boolean = false
+        private set
     protected var isInPictureInPictureMode = false
         private set
     protected var wasInPictureInPictureMode = false //TODO refactor to PlayerViewModel?
@@ -146,10 +147,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
                 setPreferredChatVisibility()
             }
-            view.findViewById<ImageButton>(R.id.settings).apply {
-                isEnabled = false
-                setColorFilter(Color.GRAY)
-            }
+            view.findViewById<ImageButton>(R.id.settings).disable()
             view.findViewById<TextView>(R.id.channel).apply {
                 text = channel.displayName
                 setOnClickListener {
@@ -183,10 +181,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             view.findViewById<ImageButton>(com.google.android.exoplayer2.ui.R.id.exo_rew).setImageResource(rewindImage)
             view.findViewById<ImageButton>(com.google.android.exoplayer2.ui.R.id.exo_ffwd).setImageResource(forwardImage)
             if (this !is OfflinePlayerFragment) {
-                view.findViewById<ImageButton>(R.id.download).apply {
-                    isEnabled = false
-                    setColorFilter(Color.GRAY)
-                }
+                view.findViewById<ImageButton>(R.id.download).disable()
             }
         }
         slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {

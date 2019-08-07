@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.player.clip
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +19,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.enable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -65,10 +65,8 @@ class ClipPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSor
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         val download = requireView().findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(this, Observer {
-            settings.isEnabled = true
-            download.isEnabled = true
-            settings.setColorFilter(Color.WHITE)
-            download.setColorFilter(Color.WHITE)
+            settings.enable()
+            download.enable()
         })
         settings.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities.keys, viewModel.selectedQualityIndex) }
         download.setOnClickListener { showDownloadDialog() }

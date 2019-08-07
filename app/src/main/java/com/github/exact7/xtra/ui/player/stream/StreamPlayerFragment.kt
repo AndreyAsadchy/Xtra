@@ -1,12 +1,10 @@
 package com.github.exact7.xtra.ui.player.stream
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -17,8 +15,7 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
-import com.github.exact7.xtra.util.convertDpToPixels
-import kotlinx.android.synthetic.main.fragment_player_stream.*
+import com.github.exact7.xtra.util.enable
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
@@ -31,8 +28,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         get() = stream.channel
 
     override val shouldEnterPictureInPicture: Boolean
-        get() = true
-//        get() = viewModel.playerMode.value == PlayerMode.NORMAL
+        get() = viewModel.playerMode == PlayerMode.NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,27 +58,9 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
             viewModel.startStream(stream)
             initializeViewModel(viewModel)
         })
-        val view = requireView()
-        val settings = view.findViewById<ImageButton>(R.id.settings)
+        val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
-            settings.isEnabled = true
-            settings.setColorFilter(Color.WHITE) //TODO
-        })
-        var playerHeight = 0
-        playerView.postDelayed({
-            playerView?.let {
-                playerHeight = it.height
-            }
-        }, 1000L)
-        viewModel.playerMode.observe(viewLifecycleOwner, Observer {
-            if (it == PlayerMode.NORMAL) {
-                playerView.updateLayoutParams { height = playerHeight }
-                playerView.isClickable = true
-            } else {
-                playerView.updateLayoutParams { height = requireContext().convertDpToPixels(50f) }
-                playerView.isClickable = false
-                playerView.controllerShowTimeoutMs
-            }
+            settings.enable()
         })
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)

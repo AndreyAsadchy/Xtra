@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.ui.player.video
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +19,7 @@ import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
+import com.github.exact7.xtra.util.enable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -34,7 +34,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         get() = video.channel
 
     override val shouldEnterPictureInPicture: Boolean
-        get() = viewModel.playerMode.value == PlayerMode.NORMAL
+        get() = viewModel.playerMode == PlayerMode.NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,10 +59,8 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         val download = requireView().findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
-            settings.isEnabled = true
-            download.isEnabled = true
-            settings.setColorFilter(Color.WHITE)
-            download.setColorFilter(Color.WHITE)
+            settings.enable()
+            download.enable()
         })
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.selectedQualityIndex)

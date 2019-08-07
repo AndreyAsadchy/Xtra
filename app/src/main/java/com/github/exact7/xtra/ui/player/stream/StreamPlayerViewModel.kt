@@ -7,7 +7,8 @@ import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
-import com.github.exact7.xtra.ui.player.PlayerMode
+import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
+import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import io.reactivex.rxkotlin.addTo
@@ -46,14 +47,14 @@ class StreamPlayerViewModel @Inject constructor(
             index < qualities.size - 2 -> setVideoQuality(index)
             index < qualities.size - 1 -> {
                 startBackgroundAudio(helper.urls.getValue("Audio only"), stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
-                _playerMode.value = PlayerMode.AUDIO_ONLY
+                playerMode = AUDIO_ONLY
             }
             else -> {
                 player.stop()
-                if (_playerMode.value == PlayerMode.AUDIO_ONLY) {
+                if (playerMode == AUDIO_ONLY) {
                     stopBackgroundAudio()
                 }
-                _playerMode.value = PlayerMode.DISABLED
+                playerMode = DISABLED
             }
         }
     }

@@ -46,6 +46,8 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
+    protected var isResumed = true
+
     protected fun play() {
         if (this::mediaSource.isInitialized) { //TODO
             player.prepare(mediaSource)

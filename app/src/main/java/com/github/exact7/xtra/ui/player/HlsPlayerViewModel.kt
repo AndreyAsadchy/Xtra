@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.repository.TwitchService
@@ -41,9 +40,8 @@ abstract class HlsPlayerViewModel(
         private set
     override lateinit var follow: FollowLiveData
 
-    protected val _playerMode = MutableLiveData<PlayerMode>()
-    val playerMode: LiveData<PlayerMode>
-        get() = _playerMode
+    var playerMode = NORMAL
+        protected set
 
     override fun changeQuality(index: Int) {
         helper.qualityIndex = index
@@ -58,12 +56,12 @@ abstract class HlsPlayerViewModel(
             qualities[index]
         }
         prefs.edit { putString(TAG, quality) }
-        if (playerMode.value == AUDIO_ONLY) {
+        if (playerMode == AUDIO_ONLY) {
             stopBackgroundAudio()
         }
-        _playerMode.value = NORMAL
+        playerMode = NORMAL
     }
-    
+
     private fun updateVideoQuality() {
         val parametersBuilder = trackSelector.buildUponParameters()
                 .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.qualityIndex - 1))
@@ -126,18 +124,27 @@ abstract class HlsPlayerViewModel(
     }
 
     override fun onResume() {
-        if (playerMode.value == NORMAL) {
+        isResumed = true
+        if (playerMode == NORMAL) {
             super.onResume()
-        } else if (playerMode.value == AUDIO_ONLY) {
+        } else if (playerMode == AUDIO_ONLY) {
             hideBackgroundAudio()
         }
     }
 
     override fun onPause() {
-        if (playerMode.value == NORMAL) {
+        isResumed = false
+        if (playerMode == NORMAL) {
             super.onPause()
-        } else if (playerMode.value == AUDIO_ONLY) {
+        } else if (playerMode == AUDIO_ONLY) {
             showBackgroundAudio()
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (playerMode == AUDIO_ONLY && isResumed) {
+            stopBackgroundAudio()
         }
     }
 }
