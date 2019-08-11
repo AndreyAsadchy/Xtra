@@ -9,6 +9,8 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
+import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
+import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import io.reactivex.rxkotlin.addTo
@@ -33,6 +35,7 @@ class StreamPlayerViewModel @Inject constructor(
                                 .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
                                 .createMediaSource(it)
                         play()
+
                     }, {
                         val context = getApplication<Application>()
                         Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
@@ -46,16 +49,25 @@ class StreamPlayerViewModel @Inject constructor(
         when {
             index < qualities.size - 2 -> setVideoQuality(index)
             index < qualities.size - 1 -> {
-                startBackgroundAudio(helper.urls.getValue("Audio only"), stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
-                playerMode = AUDIO_ONLY
+                startBackgroundAudio((player.currentManifest as HlsManifest).masterPlaylist.baseUri, stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
+                _playerMode.value = AUDIO_ONLY
             }
             else -> {
                 player.stop()
-                if (playerMode == AUDIO_ONLY) {
+                if (playerMode.value == AUDIO_ONLY) {
                     stopBackgroundAudio()
                 }
-                playerMode = DISABLED
+                _playerMode.value = DISABLED
             }
+        }
+    }
+
+    fun restartPlayer() {
+        if (playerMode.value == NORMAL) {
+            player.stop()
+            play()
+        } else if (playerMode.value == AUDIO_ONLY) {
+            binder?.restartPlayer()
         }
     }
 }

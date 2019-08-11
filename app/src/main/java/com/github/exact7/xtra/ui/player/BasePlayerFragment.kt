@@ -34,6 +34,7 @@ import com.github.exact7.xtra.util.isKeyboardShown
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 
 
@@ -129,6 +130,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             playerView.resizeMode = resizeMode
             prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
         }
+        view.findViewById<ImageButton>(R.id.settings).disable()
         playerView.post {
             playerWidth = playerView.width
             playerHeight = playerView.height
@@ -147,7 +149,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
                 setPreferredChatVisibility()
             }
-            view.findViewById<ImageButton>(R.id.settings).disable()
             view.findViewById<TextView>(R.id.channel).apply {
                 text = channel.displayName
                 setOnClickListener {
@@ -276,7 +277,19 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
     }
 
     protected fun initializeViewModel(viewModel: PlayerViewModel) {
-        playerView.player = viewModel.player
+        viewModel.currentPlayer.observe(viewLifecycleOwner, Observer {
+            playerView.player = it
+        })
+        viewModel.playerMode.observe(viewLifecycleOwner, Observer {
+            if (it == PlayerMode.NORMAL) {
+                playerView.controllerHideOnTouch = true
+                playerView.controllerShowTimeoutMs = PlayerControlView.DEFAULT_SHOW_TIMEOUT_MS
+            } else {
+                playerView.controllerHideOnTouch = false
+                playerView.controllerShowTimeoutMs = -1
+                playerView.showController()
+            }
+        })
         if (this !is OfflinePlayerFragment) {
             getMainViewModel().user.observe(viewLifecycleOwner, Observer {
                 if (it is LoggedIn) {
@@ -320,6 +333,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
 
     override fun onMaximize() {
         playerView.useController = true
+        if (!playerView.controllerHideOnTouch) { //TODO
+            playerView.showController()
+        }
         if (!isPortrait) {
             hideStatusBar()
         }

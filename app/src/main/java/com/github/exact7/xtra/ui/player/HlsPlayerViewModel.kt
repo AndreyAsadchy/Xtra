@@ -34,17 +34,12 @@ abstract class HlsPlayerViewModel(
     protected val helper = PlayerHelper()
     val loaded: LiveData<Boolean>
         get() = helper.loaded
-    val selectedQualityIndex: Int
-        get() = helper.qualityIndex
     lateinit var qualities: List<String>
         private set
     override lateinit var follow: FollowLiveData
 
-    var playerMode = NORMAL
-        protected set
-
     override fun changeQuality(index: Int) {
-        helper.qualityIndex = index
+        qualityIndex = index
     }
 
     protected fun setVideoQuality(index: Int) {
@@ -56,15 +51,19 @@ abstract class HlsPlayerViewModel(
             qualities[index]
         }
         prefs.edit { putString(TAG, quality) }
-        if (playerMode == AUDIO_ONLY) {
-            stopBackgroundAudio()
+        if (_playerMode.value != NORMAL) {
+            if (playerMode.value == AUDIO_ONLY) {
+                stopBackgroundAudio()
+                _currentPlayer.value = player
+                play()
+            }
+            _playerMode.value = NORMAL
         }
-        playerMode = NORMAL
     }
 
     private fun updateVideoQuality() {
         val parametersBuilder = trackSelector.buildUponParameters()
-                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, helper.qualityIndex - 1))
+                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, qualityIndex - 1))
         trackSelector.setParameters(parametersBuilder)
     }
 
@@ -79,9 +78,9 @@ abstract class HlsPlayerViewModel(
                         qualities.indexOf(quality).let { if (it != -1) it else 0 }
                     }
                 }
-                helper.qualityIndex = index
+                qualityIndex = index
             }
-            if (helper.qualityIndex != 0) {
+            if (qualityIndex != 0) {
                 updateVideoQuality()
             }
         }
@@ -101,7 +100,7 @@ abstract class HlsPlayerViewModel(
                     if (matcher.find()) {
                         val quality = matcher.group(1)
                         val url = it.variants[trackIndex++].url.toString()
-                        urls[if (!quality.startsWith("audio", true)) quality else audioOnly] = url
+                        urls[if (!quality.startsWith("audio", true)) quality else audioOnly.also { println("PUT $url") }] = url
                     }
                 }
                 helper.urls = urls.apply {
@@ -125,25 +124,25 @@ abstract class HlsPlayerViewModel(
 
     override fun onResume() {
         isResumed = true
-        if (playerMode == NORMAL) {
+        if (playerMode.value == NORMAL) {
             super.onResume()
-        } else if (playerMode == AUDIO_ONLY) {
+        } else if (playerMode.value == AUDIO_ONLY) {
             hideBackgroundAudio()
         }
     }
 
     override fun onPause() {
         isResumed = false
-        if (playerMode == NORMAL) {
+        if (playerMode.value == NORMAL) {
             super.onPause()
-        } else if (playerMode == AUDIO_ONLY) {
+        } else if (playerMode.value == AUDIO_ONLY) {
             showBackgroundAudio()
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        if (playerMode == AUDIO_ONLY && isResumed) {
+        if (playerMode.value == AUDIO_ONLY && isResumed) {
             stopBackgroundAudio()
         }
     }

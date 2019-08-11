@@ -1,9 +1,15 @@
 package com.github.exact7.xtra.ui.player
 
 import android.app.Application
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
+import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
@@ -11,15 +17,12 @@ import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
@@ -39,12 +42,32 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
     protected val trackSelector = DefaultTrackSelector()
-    val player: SimpleExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(
+    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
             context,
             DefaultRenderersFactory(context),
             trackSelector).apply { addListener(this@PlayerViewModel) }
-    }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
+
+    protected val _currentPlayer = MutableLiveData<ExoPlayer>().apply { value = player }
+    val currentPlayer: LiveData<ExoPlayer>
+        get() = _currentPlayer
+    protected val _playerMode = MutableLiveData<PlayerMode>().apply { value = PlayerMode.NORMAL }
+    val playerMode: LiveData<PlayerMode>
+        get() = _playerMode
+    var qualityIndex = 0
+        protected set
+
+    protected var binder: AudioPlayerService.AudioBinder? = null
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceDisconnected(name: ComponentName) {
+        }
+
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            binder = service as AudioPlayerService.AudioBinder
+            _currentPlayer.value = service.player
+        }
+    }
 
     protected var isResumed = true
 
@@ -67,30 +90,26 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         player.stop()
         val context = getApplication<Application>()
         val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_START
             putExtra(AudioPlayerService.KEY_PLAYLIST_URL, playlistUrl)
             putExtra(AudioPlayerService.KEY_CHANNEL_NAME, channelName)
             putExtra(AudioPlayerService.KEY_TITLE, title)
             putExtra(AudioPlayerService.KEY_IMAGE_URL, imageUrl)
             putExtra(AudioPlayerService.KEY_USE_PLAY_PAUSE, usePlayPause)
         }
-        context.startService(intent)
+        context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     protected fun stopBackgroundAudio() {
         val context = getApplication<Application>()
-        context.stopService(Intent(context, AudioPlayerService::class.java))
-        play()
+        context.unbindService(connection)
     }
 
     protected fun showBackgroundAudio() {
-        val context = getApplication<Application>()
-        context.startService(Intent(context, AudioPlayerService::class.java).setAction(AudioPlayerService.ACTION_SHOW))
+        binder?.showNotification()
     }
 
     protected fun hideBackgroundAudio() {
-        val context = getApplication<Application>()
-        context.startService(Intent(context, AudioPlayerService::class.java).setAction(AudioPlayerService.ACTION_HIDE))
+        binder?.hideNotification()
     }
 
     override fun onCleared() {
@@ -100,30 +119,6 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     }
 
     //Player.EventListener
-
-    override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
-
-    }
-
-    override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
-
-    }
-
-    override fun onLoadingChanged(isLoading: Boolean) {
-
-    }
-
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-
-    }
-
-    override fun onRepeatModeChanged(repeatMode: Int) {
-
-    }
-
-    override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-
-    }
 
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.e(tag, "Player error", error)
@@ -164,17 +159,5 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                 Crashlytics.logException(e)
             }
         }
-    }
-
-    override fun onPositionDiscontinuity(reason: Int) {
-
-    }
-
-    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
-
-    }
-
-    override fun onSeekProcessed() {
-
     }
 }

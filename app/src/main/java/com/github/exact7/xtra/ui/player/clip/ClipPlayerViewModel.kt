@@ -39,8 +39,6 @@ class ClipPlayerViewModel @Inject constructor(
         get() = helper.urls
     val loaded: LiveData<Boolean>
         get() = helper.loaded
-    val selectedQualityIndex: Int
-        get() = helper.qualityIndex
     override val channelInfo: Pair<String, String>
         get() = clip.broadcaster.id to clip.broadcaster.displayName
     override lateinit var follow: FollowLiveData
@@ -50,7 +48,7 @@ class ClipPlayerViewModel @Inject constructor(
         val quality = helper.urls.values.elementAt(index)
         play(quality)
         prefs.edit { putString(TAG, helper.urls.keys.elementAt(index)) }
-        helper.qualityIndex = index
+        qualityIndex = index
     }
 
     override fun onResume() {
@@ -76,7 +74,7 @@ class ClipPlayerViewModel @Inject constructor(
                         helper.urls = it
                         val quality = prefs.getString(TAG, it.keys.first())!!
                         play((it[quality] ?: it.values.first()))
-                        helper.qualityIndex = it.keys.indexOf(quality)
+                        qualityIndex = it.keys.indexOf(quality)
                         helper.loaded.value = true
                     }, {
 

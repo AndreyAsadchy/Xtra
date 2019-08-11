@@ -54,7 +54,7 @@ class StreamsAdapter(
                 setOnClickListener(channelListener)
                 text = item.channel.displayName
             }
-            title.text = item.channel.status
+            title.text = item.channel.status.trim()
             gameName.text = item.game
         }
     }

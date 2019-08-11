@@ -46,7 +46,7 @@ class PlayerRepository @Inject constructor(
                 .flatMap {
                     options["nauth"] = it.token
                     options["nauthsig"] = it.sig
-                    options["fast_bread"] = "true"
+//                    options["fast_bread"] = "true"
                     usher.getStreamPlaylist(channelName, options)
                 }
                 .map { Uri.parse(it.raw().request().url().toString()) }

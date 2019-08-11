@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -18,81 +19,133 @@ import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
 
 class AudioPlayerService : Service() {
 
-    private var player: ExoPlayer? = null
-    private var playerNotificationManager: PlayerNotificationManager? = null
+    private lateinit var player: ExoPlayer
+    private lateinit var mediaSource: MediaSource
+    private lateinit var playerNotificationManager: PlayerNotificationManager
+    private val trackSelector = DefaultTrackSelector()
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_START -> {
-                val channelId = getString(R.string.notification_playback_channel_id)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    if (manager.getNotificationChannel(channelId) == null) {
-                        val channel = NotificationChannel(channelId, getString(R.string.notification_playback_channel_title), NotificationManager.IMPORTANCE_LOW)
-                        channel.setSound(null, null)
-                        manager.createNotificationChannel(channel)
-                    }
-                }
-                val mediaSource = HlsMediaSource.Factory(DefaultDataSourceFactory(this, Util.getUserAgent(this, getString(R.string.app_name)))).createMediaSource(intent.getStringExtra(KEY_PLAYLIST_URL).toUri())
-                player = ExoPlayerFactory.newSimpleInstance(this).apply {
-                    prepare(mediaSource)
-                    playWhenReady = true
-                }
-                playerNotificationManager = CustomPlayerNotificationManager(
-                        this,
-                        channelId,
-                        System.currentTimeMillis().toInt(),
-                        DescriptionAdapter(intent.getStringExtra(KEY_TITLE), intent.getStringExtra(KEY_CHANNEL_NAME), intent.getStringExtra(KEY_IMAGE_URL)),
-                        object : PlayerNotificationManager.NotificationListener {
-                            override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
-                                startForeground(notificationId, notification)
-                            }
+    private var shouldInitialize = true
 
-                            override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-                                if (dismissedByUser) {
-                                    stopSelf()
-                                } else {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        stopForeground(STOP_FOREGROUND_REMOVE)
-                                    } else {
-                                        stopForeground(true)
-                                    }
-                                }
-                            }
-                        }
-                ).apply {
-                    setUseNavigationActions(false)
-                    setUsePlayPauseActions(intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false))
-                    setUseStopAction(true)
-                    setFastForwardIncrementMs(0)
-                    setRewindIncrementMs(0)
-                    setSmallIcon(R.drawable.baseline_audiotrack_black_24)
-                }
-            }
-            ACTION_SHOW -> playerNotificationManager?.setPlayer(player)
-            ACTION_HIDE -> playerNotificationManager?.setPlayer(null)
-        }
-        return super.onStartCommand(intent, flags, startId)
+    override fun onCreate() {
+        super.onCreate()
+        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
     }
 
     override fun onDestroy() {
-        playerNotificationManager?.setPlayer(null)
-        player?.release()
+        playerNotificationManager.setPlayer(null)
+        player.release()
         super.onDestroy()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
+    override fun onBind(intent: Intent): IBinder? {
+        val channelId = getString(R.string.notification_playback_channel_id)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (manager.getNotificationChannel(channelId) == null) {
+                val channel = NotificationChannel(channelId, getString(R.string.notification_playback_channel_title), NotificationManager.IMPORTANCE_LOW)
+                channel.setSound(null, null)
+                manager.createNotificationChannel(channel)
+            }
+        }
+        mediaSource = HlsMediaSource.Factory(DefaultDataSourceFactory(this, Util.getUserAgent(this, getString(R.string.app_name))))
+                .setAllowChunklessPreparation(true)
+                .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
+                .createMediaSource(intent.getStringExtra(KEY_PLAYLIST_URL).toUri())
+        player.apply {
+            addListener(object : Player.EventListener {
+                override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+                    if (shouldInitialize) {
+                        for (i in 0 until trackGroups.length) {
+                            val trackGroup = trackGroups[i]
+                            for (j in 0 until trackGroup.length) {
+                                if (trackGroup.getFormat(j).sampleMimeType?.startsWith("audio") == true) {
+                                    trackSelector.parameters = trackSelector.buildUponParameters()
+                                            .setRendererDisabled(0, true)
+                                            .setSelectionOverride(1, trackGroups, DefaultTrackSelector.SelectionOverride(i, j))
+                                            .build()
+                                    shouldInitialize = false
+                                    playWhenReady = true
+                                    return
+                                }
+                            }
+                        }
+                    }
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException?) {
+                    prepare(mediaSource)
+                    playWhenReady = true
+                }
+            })
+            prepare(mediaSource)
+        }
+        playerNotificationManager = CustomPlayerNotificationManager(
+                this,
+                channelId,
+                System.currentTimeMillis().toInt(),
+                DescriptionAdapter(intent.getStringExtra(KEY_TITLE), intent.getStringExtra(KEY_CHANNEL_NAME), intent.getStringExtra(KEY_IMAGE_URL)),
+                object : PlayerNotificationManager.NotificationListener {
+                    override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
+                        startForeground(notificationId, notification)
+                    }
+
+                    override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+                        if (dismissedByUser) {
+                            stopSelf()
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                stopForeground(STOP_FOREGROUND_REMOVE)
+                            } else {
+                                stopForeground(true)
+                            }
+                        }
+                    }
+                }
+        ).apply {
+            setUseNavigationActions(false)
+            setUsePlayPauseActions(intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false))
+            setUseStopAction(true)
+            setFastForwardIncrementMs(0)
+            setRewindIncrementMs(0)
+            setSmallIcon(R.drawable.baseline_audiotrack_black_24)
+        }
+        return AudioBinder()
+    }
+
+    inner class AudioBinder : Binder() {
+
+        val player: ExoPlayer
+            get() = this@AudioPlayerService.player
+
+        fun showNotification() {
+            playerNotificationManager.setPlayer(player)
+        }
+
+        fun hideNotification() {
+            playerNotificationManager.setPlayer(null)
+        }
+
+        fun restartPlayer() {
+            shouldInitialize = true
+            player.stop()
+            player.prepare(mediaSource)
+        }
     }
 
     private class CustomPlayerNotificationManager(context: Context, channelId: String, notificationId: Int, mediaDescriptionAdapter: MediaDescriptionAdapter, notificationListener: NotificationListener) : PlayerNotificationManager(context, channelId, notificationId, mediaDescriptionAdapter, notificationListener) {
@@ -143,10 +196,6 @@ class AudioPlayerService : Service() {
         const val KEY_TITLE = "title"
         const val KEY_IMAGE_URL = "imageUrl"
         const val KEY_USE_PLAY_PAUSE = "playPause"
-
-        const val ACTION_START = "com.github.exact7.action.AUDIO_START"
-        const val ACTION_SHOW = "com.github.exact7.action.AUDIO_SHOW"
-        const val ACTION_HIDE = "com.github.exact7.action.AUDIO_HIDE"
 
         const val REQUEST_CODE_RESUME = 2
     }

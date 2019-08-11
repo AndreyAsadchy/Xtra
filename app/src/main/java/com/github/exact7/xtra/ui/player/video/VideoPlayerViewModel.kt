@@ -74,8 +74,8 @@ class VideoPlayerViewModel @Inject constructor(
         when {
             index < qualities.lastIndex -> setVideoQuality(index)
             else -> {
-                startBackgroundAudio(helper.urls.getValue("Audio only"), video.channel.status, video.channel.displayName, video.channel.logo, true)
-                playerMode = PlayerMode.AUDIO_ONLY
+                startBackgroundAudio((player.currentManifest as HlsManifest).masterPlaylist.baseUri, video.channel.status, video.channel.displayName, video.channel.logo, true)
+                _playerMode.value = PlayerMode.AUDIO_ONLY
             }
         }
     }

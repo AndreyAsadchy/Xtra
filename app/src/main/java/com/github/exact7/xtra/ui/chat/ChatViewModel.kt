@@ -127,7 +127,7 @@ class ChatViewModel @Inject constructor(
             private val startTime: Double,
             private val getCurrentPosition: () -> Double) : ChatController {
 
-        private lateinit var chatReplayManager: ChatReplayManager
+        private var chatReplayManager: ChatReplayManager? = null
 
         override fun send(message: CharSequence) {
 
@@ -142,7 +142,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun stop() {
-            chatReplayManager.stop()
+            chatReplayManager?.stop()
         }
     }
 
@@ -150,7 +150,7 @@ class ChatViewModel @Inject constructor(
             private val user: User,
             private val channelName: String) : ChatController {
 
-        private lateinit var chat: LiveChatThread
+        private var chat: LiveChatThread? = null
         private val allEmotesMap: MutableMap<String, Emote> = ChatFragment.defaultBttvAndFfzEmotes().associateByTo(HashMap()) { it.name }
         private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
@@ -161,7 +161,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun send(message: CharSequence) {
-            chat.send(message)
+            chat?.send(message)
             val usedEmotes = hashSetOf<RecentEmote>()
             val currentTime = System.currentTimeMillis()
             message.split(' ').forEach { word ->
@@ -177,7 +177,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun pause() {
-            chat.disconnect()
+            chat?.disconnect()
         }
 
         override fun stop() {
