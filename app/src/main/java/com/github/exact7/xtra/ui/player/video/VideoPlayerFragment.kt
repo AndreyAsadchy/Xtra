@@ -94,6 +94,6 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     }
 
     override fun getCurrentPosition(): Double {
-        return runBlocking(Dispatchers.Main) { viewModel.player.currentPosition / 1000.0 }
+        return runBlocking(Dispatchers.Main) { viewModel.currentPlayer.value!!.currentPosition / 1000.0 }
     }
 }

@@ -51,10 +51,10 @@ class ChatViewModel @Inject constructor(
 
     private var subscriberBadges: SubscriberBadgesResponse? = null
 
-    private lateinit var chat: ChatController
+    private var chat: ChatController? = null
 
     fun startLive(user: User, channelId: String, channelName: String) {
-        if (!this::chat.isInitialized) {
+        if (chat == null) {
             chat = LiveChatController(user, channelName)
             init(channelId, channelName)
 
@@ -62,18 +62,18 @@ class ChatViewModel @Inject constructor(
     }
 
     fun startReplay(channelId: String, channelName: String, videoId: String, startTime: Double, getCurrentPosition: () -> Double) {
-        if (!this::chat.isInitialized) {
+        if (chat == null) {
             chat = VideoChatController(videoId, startTime, getCurrentPosition)
             init(channelId, channelName)
         }
     }
 
     fun start() {
-        chat.start()
+        chat?.start()
     }
 
     fun stop() {
-        chat.pause()
+        chat?.pause()
     }
 
     override fun onMessage(message: ChatMessage) {
@@ -85,23 +85,22 @@ class ChatViewModel @Inject constructor(
     }
 
     override fun send(message: CharSequence) {
-        chat.send(message)
+        chat?.send(message)
     }
 
     override fun onCleared() {
-        chat.stop()
+        chat?.stop()
         super.onCleared()
     }
 
     private fun init(channelId: String, channelName: String) {
         playerRepository.loadSubscriberBadges(channelId)
                 .subscribeBy(onSuccess = {
-                    it.badges
                     subscriberBadges = it
-                    chat.start()
+                    chat?.start()
                 }, onError = {
                     //no subscriber badges
-                    chat.start()
+                    chat?.start()
                 })
                 .addTo(compositeDisposable)
         playerRepository.loadBttvEmotes(channelName)

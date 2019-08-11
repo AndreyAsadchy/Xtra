@@ -44,6 +44,7 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
                     .setMessage(getString(R.string.are_you_sure))
                     .setPositiveButton(delete) { _, _ -> viewModel.delete(it) }
                     .setNegativeButton(getString(android.R.string.cancel), null)
+                    .show()
         }
         recyclerView.adapter = adapter
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
