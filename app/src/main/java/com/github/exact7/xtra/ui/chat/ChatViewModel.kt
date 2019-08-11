@@ -138,7 +138,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun pause() {
-
+            chatReplayManager?.stop()
         }
 
         override fun stop() {

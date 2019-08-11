@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
+import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.google.android.exoplayer2.DefaultRenderersFactory
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
-abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, CoroutineScope by MainScope() {
+abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, OnQualityChangeListener, CoroutineScope by MainScope() {
 
     protected val tag: String = javaClass.simpleName
 
@@ -56,6 +57,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         get() = _playerMode
     var qualityIndex = 0
         protected set
+    protected var playbackPosition: Long = 0
 
     protected var binder: AudioPlayerService.AudioBinder? = null
     private val connection = object : ServiceConnection {
@@ -87,7 +89,6 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     }
 
     protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, imageUrl: String, usePlayPause: Boolean) {
-        player.stop()
         val context = getApplication<Application>()
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             putExtra(AudioPlayerService.KEY_PLAYLIST_URL, playlistUrl)
@@ -95,7 +96,9 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
             putExtra(AudioPlayerService.KEY_TITLE, title)
             putExtra(AudioPlayerService.KEY_IMAGE_URL, imageUrl)
             putExtra(AudioPlayerService.KEY_USE_PLAY_PAUSE, usePlayPause)
+            putExtra(AudioPlayerService.KEY_CURRENT_POSITION, player.currentPosition)
         }
+        player.stop()
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
@@ -122,6 +125,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     override fun onPlayerError(error: ExoPlaybackException) {
         Log.e(tag, "Player error", error)
+        playbackPosition = player.currentPosition
         val context = getApplication<Application>()
         if (context.isNetworkAvailable) {
             try {

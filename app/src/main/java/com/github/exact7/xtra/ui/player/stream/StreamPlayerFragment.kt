@@ -10,7 +10,6 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.chat.ChatFragment
-import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.C
@@ -19,7 +18,7 @@ import com.github.exact7.xtra.util.enable
 import kotlinx.android.synthetic.main.player_stream.*
 
 @Suppress("PLUGIN_WARNING")
-class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
+class StreamPlayerFragment : BasePlayerFragment() {
 
     private lateinit var chatFragment: ChatFragment
     private lateinit var viewModel: StreamPlayerViewModel
@@ -28,7 +27,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
         get() = stream.channel
 
     override val shouldEnterPictureInPicture: Boolean
-        get() = viewModel.playerMode == PlayerMode.NORMAL
+        get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

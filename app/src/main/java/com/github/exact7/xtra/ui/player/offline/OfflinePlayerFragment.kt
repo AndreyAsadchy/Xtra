@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
-import kotlinx.android.synthetic.main.fragment_player_offline.*
+import com.github.exact7.xtra.ui.player.PlayerMode
+import com.github.exact7.xtra.util.FragmentUtils
 
 class OfflinePlayerFragment : BasePlayerFragment() {
 //    override fun play(obj: Parcelable) {
@@ -19,7 +21,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
         get() = null!!
 
     override val shouldEnterPictureInPicture: Boolean
-        get() = true
+        get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableNetworkCheck = false
@@ -32,8 +34,9 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 
     override fun initialize() {
         viewModel = getViewModel()
-        playerView.player = viewModel.player
+        initializeViewModel(viewModel)
         viewModel.setVideo(requireArguments().getParcelable("video")!!)
+        requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex) }
     }
 
     override fun onNetworkRestored() {
@@ -50,5 +53,9 @@ class OfflinePlayerFragment : BasePlayerFragment() {
         if (!wasInPictureInPictureMode) {
             viewModel.onPause()
         }
+    }
+
+    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+        viewModel.changeQuality(index)
     }
 }

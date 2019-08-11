@@ -2,14 +2,16 @@ package com.github.exact7.xtra.ui.player.clip
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
+import com.crashlytics.android.Crashlytics
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
-import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.player.PlayerHelper
@@ -18,9 +20,6 @@ import com.github.exact7.xtra.util.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import io.reactivex.rxkotlin.addTo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "ClipPlayerViewModel"
@@ -28,11 +27,10 @@ private const val TAG = "ClipPlayerViewModel"
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository,
-        private val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
+        private val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
     private lateinit var clip: Clip
     private val factory: ProgressiveMediaSource.Factory = ProgressiveMediaSource.Factory(dataSourceFactory)
-    private var playbackProgress = 0L
     private val prefs = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
     private val helper = PlayerHelper()
     val qualities: Map<String, String>
@@ -44,7 +42,7 @@ class ClipPlayerViewModel @Inject constructor(
     override lateinit var follow: FollowLiveData
 
     override fun changeQuality(index: Int) {
-        playbackProgress = player.currentPosition
+        playbackPosition = player.currentPosition
         val quality = helper.urls.values.elementAt(index)
         play(quality)
         prefs.edit { putString(TAG, helper.urls.keys.elementAt(index)) }
@@ -53,17 +51,12 @@ class ClipPlayerViewModel @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        launch {
-            delay(1000L)
-            launch(Dispatchers.Main) {
-                player.seekTo(playbackProgress)
-            }
-        }
+        player.seekTo(playbackPosition)
     }
 
     override fun onPause() {
         super.onPause()
-        playbackProgress = player.currentPosition
+        playbackPosition = player.currentPosition
     }
 
     fun setClip(clip: Clip) {
@@ -86,7 +79,7 @@ class ClipPlayerViewModel @Inject constructor(
     private fun play(url: String) {
         mediaSource = factory.createMediaSource(url.toUri())
         play()
-        player.seekTo(playbackProgress)
+        player.seekTo(playbackPosition)
     }
 
     override fun setUser(user: LoggedIn) {
@@ -96,7 +89,10 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        super.onPlayerError(error)
-        playbackProgress = player.currentPosition
+        val context = getApplication<Application>()
+        Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
+        changeQuality(++qualityIndex)
+        Crashlytics.logException(error)
+
     }
 }

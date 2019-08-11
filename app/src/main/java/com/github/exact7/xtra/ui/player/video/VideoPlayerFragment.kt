@@ -11,7 +11,6 @@ import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.chat.ChatReplayPlayerFragment
-import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
@@ -23,7 +22,7 @@ import com.github.exact7.xtra.util.enable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog, ChatReplayPlayerFragment {
+class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPlayerFragment {
 //    override fun play(obj: Parcelable) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
@@ -34,7 +33,7 @@ class VideoPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnSo
         get() = video.channel
 
     override val shouldEnterPictureInPicture: Boolean
-        get() = viewModel.playerMode == PlayerMode.NORMAL
+        get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

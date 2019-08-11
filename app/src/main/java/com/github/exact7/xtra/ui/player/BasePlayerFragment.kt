@@ -19,6 +19,7 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
+import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -42,7 +43,7 @@ private const val CHAT_OPENED = "ChatOpened"
 private const val WAS_IN_PIP = "wasInPip"
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment {
+abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment {
 
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: PlayerView
@@ -130,7 +131,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
             playerView.resizeMode = resizeMode
             prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
         }
-        view.findViewById<ImageButton>(R.id.settings).disable()
         playerView.post {
             playerWidth = playerView.width
             playerHeight = playerView.height
@@ -149,6 +149,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, Lifecycle
                 }
                 setPreferredChatVisibility()
             }
+            view.findViewById<ImageButton>(R.id.settings).disable()
             view.findViewById<TextView>(R.id.channel).apply {
                 text = channel.displayName
                 setOnClickListener {

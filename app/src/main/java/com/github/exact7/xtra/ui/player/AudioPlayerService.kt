@@ -67,6 +67,8 @@ class AudioPlayerService : Service() {
                 .setAllowChunklessPreparation(true)
                 .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
                 .createMediaSource(intent.getStringExtra(KEY_PLAYLIST_URL).toUri())
+        var currentPlaybackPosition = intent.getLongExtra(KEY_CURRENT_POSITION, 0)
+        val usePlayPause = intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false)
         player.apply {
             addListener(object : Player.EventListener {
                 override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
@@ -81,6 +83,9 @@ class AudioPlayerService : Service() {
                                             .build()
                                     shouldInitialize = false
                                     playWhenReady = true
+                                    if (usePlayPause) {
+                                        player.seekTo(currentPlaybackPosition)
+                                    }
                                     return
                                 }
                             }
@@ -89,8 +94,9 @@ class AudioPlayerService : Service() {
                 }
 
                 override fun onPlayerError(error: ExoPlaybackException?) {
+                    currentPlaybackPosition = player.currentPosition
                     prepare(mediaSource)
-                    playWhenReady = true
+                    shouldInitialize = true
                 }
             })
             prepare(mediaSource)
@@ -116,10 +122,11 @@ class AudioPlayerService : Service() {
                             }
                         }
                     }
-                }
+                },
+                !usePlayPause
         ).apply {
             setUseNavigationActions(false)
-            setUsePlayPauseActions(intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false))
+            setUsePlayPauseActions(usePlayPause)
             setUseStopAction(true)
             setFastForwardIncrementMs(0)
             setRewindIncrementMs(0)
@@ -148,13 +155,13 @@ class AudioPlayerService : Service() {
         }
     }
 
-    private class CustomPlayerNotificationManager(context: Context, channelId: String, notificationId: Int, mediaDescriptionAdapter: MediaDescriptionAdapter, notificationListener: NotificationListener) : PlayerNotificationManager(context, channelId, notificationId, mediaDescriptionAdapter, notificationListener) {
+    private class CustomPlayerNotificationManager(context: Context, channelId: String, notificationId: Int, mediaDescriptionAdapter: MediaDescriptionAdapter, notificationListener: NotificationListener, private val isLive: Boolean) : PlayerNotificationManager(context, channelId, notificationId, mediaDescriptionAdapter, notificationListener) {
         override fun createNotification(player: Player, builder: NotificationCompat.Builder?, ongoing: Boolean, largeIcon: Bitmap?): NotificationCompat.Builder? {
-            return super.createNotification(player, builder, ongoing, largeIcon)?.apply { mActions[0].icon = R.drawable.baseline_close_black_24 }
+            return super.createNotification(player, builder, ongoing, largeIcon)?.apply { mActions[if (isLive) 0 else 1].icon = R.drawable.baseline_close_black_36 }
         }
 
         override fun getActionIndicesForCompactView(actionNames: List<String>, player: Player): IntArray {
-            return intArrayOf(0)
+            return if (isLive) intArrayOf(0) else intArrayOf(0, 1)
         }
     }
 
@@ -196,6 +203,7 @@ class AudioPlayerService : Service() {
         const val KEY_TITLE = "title"
         const val KEY_IMAGE_URL = "imageUrl"
         const val KEY_USE_PLAY_PAUSE = "playPause"
+        const val KEY_CURRENT_POSITION = "currentPosition"
 
         const val REQUEST_CODE_RESUME = 2
     }

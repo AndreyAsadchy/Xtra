@@ -118,4 +118,5 @@
     <string name="recent_emotes">الأخيرة</string>
     <string name="notification_playback_channel_title">تشغيل</string>
     <string name="channels">قنوات</string>
+    <string name="video">فيديو</string>
 </resources>

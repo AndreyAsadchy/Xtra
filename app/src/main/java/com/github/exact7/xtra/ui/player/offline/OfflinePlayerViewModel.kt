@@ -2,14 +2,13 @@ package com.github.exact7.xtra.ui.player.offline
 
 import android.app.Application
 import androidx.core.net.toUri
+import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.repository.OfflineRepository
+import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class OfflinePlayerViewModel @Inject constructor(
@@ -17,6 +16,7 @@ class OfflinePlayerViewModel @Inject constructor(
         private val repository: OfflineRepository) : PlayerViewModel(context) {
 
     private lateinit var video: OfflineVideo
+    val qualities = listOf(context.getString(R.string.video), context.getString(R.string.audio_only))
 
     fun setVideo(video: OfflineVideo) {
         if (!this::video.isInitialized) {
@@ -33,18 +33,46 @@ class OfflinePlayerViewModel @Inject constructor(
     }
 
     override fun onResume() {
-        stopBackgroundAudio()
+        isResumed = true
+        if (playerMode.value == PlayerMode.NORMAL) {
+            super.onResume()
+            player.seekTo(playbackPosition)
+        } else if (playerMode.value == PlayerMode.AUDIO_ONLY) {
+            hideBackgroundAudio()
+        }
     }
 
     override fun onPause() {
-        startBackgroundAudio(video.url, video.channelName, video.name, video.channelLogo, true)
+        isResumed = false
+        if (playerMode.value == PlayerMode.NORMAL) {
+            playbackPosition = player.currentPosition
+            super.onPause()
+        } else if (playerMode.value == PlayerMode.AUDIO_ONLY) {
+            showBackgroundAudio()
+        }
+    }
+
+    override fun changeQuality(index: Int) {
+        qualityIndex = index
+        _playerMode.value = if (qualityIndex == 0) {
+            playbackPosition = currentPlayer.value!!.currentPosition
+            stopBackgroundAudio()
+            _currentPlayer.value = player
+            play()
+            player.seekTo(playbackPosition)
+            PlayerMode.NORMAL
+        } else {
+            startBackgroundAudio(video.url, video.channelName, video.name, video.channelLogo, true)
+            PlayerMode.AUDIO_ONLY
+        }
     }
 
     override fun onCleared() {
-        launch {
-            repository.updateVideo(video.apply {
-                lastWatchPosition = runBlocking(Dispatchers.Main) { player.currentPosition }
-            })
+        repository.updateVideo(video.apply {
+            lastWatchPosition = currentPlayer.value!!.currentPosition
+        })
+        if (playerMode.value == PlayerMode.AUDIO_ONLY && isResumed) {
+            stopBackgroundAudio()
         }
         super.onCleared()
     }

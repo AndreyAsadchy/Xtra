@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.repository.TwitchService
-import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
@@ -28,7 +27,7 @@ private const val TAG = "HlsPlayerViewModel"
 
 abstract class HlsPlayerViewModel(
         context: Application,
-        val repository: TwitchService) : PlayerViewModel(context), OnQualityChangeListener, FollowViewModel {
+        val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()
@@ -100,7 +99,7 @@ abstract class HlsPlayerViewModel(
                     if (matcher.find()) {
                         val quality = matcher.group(1)
                         val url = it.variants[trackIndex++].url.toString()
-                        urls[if (!quality.startsWith("audio", true)) quality else audioOnly.also { println("PUT $url") }] = url
+                        urls[if (!quality.startsWith("audio", true)) quality else audioOnly] = url
                     }
                 }
                 helper.urls = urls.apply {
