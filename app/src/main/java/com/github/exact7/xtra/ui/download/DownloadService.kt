@@ -72,9 +72,12 @@ class DownloadService : IntentService(TAG), Injectable {
         val activeRequests = HashSet<Int>()
     }
 
-    @Inject lateinit var playerRepository: PlayerRepository
-    @Inject lateinit var offlineRepository: OfflineRepository
-    @Inject lateinit var fetchProvider: FetchProvider
+    @Inject
+    lateinit var playerRepository: PlayerRepository
+    @Inject
+    lateinit var offlineRepository: OfflineRepository
+    @Inject
+    lateinit var fetchProvider: FetchProvider
     private lateinit var fetch: Fetch
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManagerCompat
@@ -106,7 +109,8 @@ class DownloadService : IntentService(TAG), Injectable {
     @SuppressLint("CheckResult")
     override fun onHandleIntent(intent: Intent?) {
         request = intent!!.getParcelableExtra(KEY_REQUEST)
-        offlineVideo = runBlocking { offlineRepository.getVideoByIdAsync(request.offlineVideoId).await() } ?: return //Download was canceled
+        offlineVideo = runBlocking { offlineRepository.getVideoByIdAsync(request.offlineVideoId).await() }
+                ?: return //Download was canceled
         Log.d(TAG, "Starting download. Id: ${offlineVideo.id}")
         fetch = fetchProvider.get(offlineVideo.id, intent.getBooleanExtra(KEY_WIFI, false))
         val countDownLatch = CountDownLatch(1)
@@ -129,8 +133,13 @@ class DownloadService : IntentService(TAG), Injectable {
         notificationManager = NotificationManagerCompat.from(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val oldChannelId = getString(R.string.old_notification_downloads_channel_id)
+            if (manager.getNotificationChannel(oldChannelId) != null) { //TODO remove later
+                manager.deleteNotificationChannel(oldChannelId)
+            }
             if (manager.getNotificationChannel(channelId) == null) {
                 NotificationChannel(channelId, getString(R.string.notification_downloads_channel_title), NotificationManager.IMPORTANCE_DEFAULT).apply {
+                    setSound(null, null)
                     manager.createNotificationChannel(this)
                 }
             }
@@ -145,7 +154,7 @@ class DownloadService : IntentService(TAG), Injectable {
                 }
 
                 override fun onCompleted(download: Download) {
-                    with (offlineVideo) {
+                    with(offlineVideo) {
                         if (++progress < maxProgress) {
                             Log.d(TAG, "$progress / $maxProgress")
                             updateProgress(maxProgress, progress)

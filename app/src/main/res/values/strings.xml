@@ -53,7 +53,8 @@
     <string name="follow_tab_login_prompt">Your followed channels will be shown here</string>
     <string name="downloads_empty">Your downloaded videos will be shown here</string>
     <string name="notification_downloads_channel_title">Downloads</string>
-    <string name="notification_downloads_channel_id" translatable="false">xtra_download_channel</string>
+    <string name="notification_downloads_channel_id" translatable="false">xtra_downloads_channel</string>
+    <string name="old_notification_downloads_channel_id" translatable="false">xtra_download_channel</string>
     <string name="storage_permission_title">The app needs storage permission</string>
     <string name="storage_permission_message">Storage permission is required to download videos.</string>
     <string name="permission_denied">Required permissions were denied</string>
