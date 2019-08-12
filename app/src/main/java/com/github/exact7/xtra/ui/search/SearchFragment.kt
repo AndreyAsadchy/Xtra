@@ -46,7 +46,7 @@ class SearchFragment : MediaPagerFragment() {
             private var job: Job? = null
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                (currentFragment as Searchable).search(query)
+                (currentFragment as? Searchable)?.search(query)
                 return false
             }
 
@@ -56,11 +56,11 @@ class SearchFragment : MediaPagerFragment() {
                     job = GlobalScope.launch {
                         delay(750)
                         withContext(Dispatchers.Main) {
-                            (currentFragment as Searchable).search(newText)
+                            (currentFragment as? Searchable)?.search(newText)
                         }
                     }
                 } else {
-                    (currentFragment as Searchable).search(newText)
+                    (currentFragment as? Searchable)?.search(newText) //might be null on rotation, so as?
                 }
                 return false
             }

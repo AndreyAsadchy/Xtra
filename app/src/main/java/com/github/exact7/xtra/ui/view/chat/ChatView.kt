@@ -45,8 +45,8 @@ class ChatView : ConstraintLayout {
 
     private var isChatTouched = false
 
-    private var recentEmotes = listOf<Emote>()
-    private lateinit var twitchEmotes: List<Emote>
+    private var recentEmotes = emptyList<Emote>()
+    private var twitchEmotes = emptyList<Emote>()
     private var otherEmotes: MutableSet<Emote> = HashSet()
     private var emotesAddedCount = 0
 
