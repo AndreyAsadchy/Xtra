@@ -236,9 +236,9 @@ class DownloadService : IntentService(TAG), Injectable {
                     requests.add(Request(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
                 }
             } catch (e: IndexOutOfBoundsException) {
-                Crashlytics.logException(e)
                 Crashlytics.log("DownloadService.enqueueNext: Playlist tracks size: ${playlist.tracks.size}. Segment to: $segmentTo. Current + ENQUEUE_SIZE: ${current + ENQUEUE_SIZE}.")
-                offlineRepository.updateVideo(offlineVideo.apply { maxProgress = tracks.size })
+                Crashlytics.logException(e)
+                offlineRepository.updateVideo(offlineVideo.apply { segmentTo = tracks.lastIndex })
             }
         }
         fetch.enqueue(requests)
@@ -273,7 +273,8 @@ class DownloadService : IntentService(TAG), Injectable {
                     }
                     return
                 } catch (e: IndexOutOfBoundsException) {
-
+                    Crashlytics.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
+                    Crashlytics.logException(e)
                 }
                 val mediaPlaylist = MediaPlaylist.Builder()
                         .withTargetDuration(playlist.targetDuration)

@@ -31,7 +31,7 @@ data class OfflineVideo(
         var lastWatchPosition: Long,
         var progress: Int,
         @ColumnInfo(name = "max_progress")
-        var maxProgress: Int,
+        val maxProgress: Int,
         var status: Int = STATUS_PENDING) : Parcelable {
 
     @IgnoredOnParcel

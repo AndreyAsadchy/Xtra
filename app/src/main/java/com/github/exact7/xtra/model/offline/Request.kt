@@ -22,4 +22,4 @@ data class Request(
         @ColumnInfo(name = "segment_from")
         val segmentFrom: Int? = null,
         @ColumnInfo(name = "segment_to")
-        val segmentTo: Int? = null) : Parcelable
+        var segmentTo: Int? = null) : Parcelable
