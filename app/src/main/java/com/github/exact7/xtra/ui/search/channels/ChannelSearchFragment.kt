@@ -31,7 +31,7 @@ class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel>
     }
 
     override fun search(query: String) {
-        if (query.isNotEmpty()) {
+        if (query.isNotEmpty()) { //TODO same query doesn't fire
             viewModel.setQuery(query)
         } else {
             adapter.submitList(null)

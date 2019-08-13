@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
@@ -303,12 +304,14 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && playerFragment!!.shouldEnterPictureInPicture && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
-            try {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && playerFragment!!.shouldEnterPictureInPicture && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
                 enterPictureInPictureMode(PictureInPictureParams.Builder().build())
-            } catch (e: IllegalStateException) {
-                //device doesn't support PIP
             }
+        } catch (e: IllegalStateException) {
+            //device doesn't support PIP
+        } catch (e: Exception) { //TODO playerFragment null, wtf?
+            Crashlytics.logException(e)
         }
     }
 
