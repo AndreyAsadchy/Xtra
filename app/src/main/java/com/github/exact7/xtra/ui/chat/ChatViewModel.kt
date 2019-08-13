@@ -24,6 +24,7 @@ import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import java.util.Collections
 import javax.inject.Inject
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
@@ -41,7 +42,7 @@ class ChatViewModel @Inject constructor(
         get() = _ffz
 
     private val _chatMessages: MutableLiveData<MutableList<ChatMessage>> by lazy {
-        MutableLiveData<MutableList<ChatMessage>>().apply { value = ArrayList(MAX_LIST_COUNT) }
+        MutableLiveData<MutableList<ChatMessage>>().apply { value = Collections.synchronizedList(ArrayList(MAX_LIST_COUNT)) }
     }
     val chatMessages: LiveData<MutableList<ChatMessage>>
         get() = _chatMessages
