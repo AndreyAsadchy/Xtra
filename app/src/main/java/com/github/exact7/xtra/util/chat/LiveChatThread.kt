@@ -3,7 +3,6 @@ package com.github.exact7.xtra.util.chat
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.ui.view.chat.ChatView
-
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.IOException
@@ -70,14 +69,15 @@ class LiveChatThread(
     private fun connect() {
         Log.d(TAG, "Connecting to Twitch IRC")
         try {
-            socketIn = Socket("irc.twitch.tv", 6667).also {
-                readerIn = BufferedReader(InputStreamReader(it.getInputStream()))
-                writerIn = BufferedWriter(OutputStreamWriter(it.getOutputStream()))
+            socketIn = Socket("irc.twitch.tv", 6667).apply {
+                soTimeout = 5000
+                readerIn = BufferedReader(InputStreamReader(getInputStream()))
+                writerIn = BufferedWriter(OutputStreamWriter(getOutputStream()))
             }
             userName?.let {
-                socketOut = Socket("irc.twitch.tv", 6667).also {
-                    readerOut = BufferedReader(InputStreamReader(it.getInputStream()))
-                    writerOut = BufferedWriter(OutputStreamWriter(it.getOutputStream()))
+                socketOut = Socket("irc.twitch.tv", 6667).apply {
+                    readerOut = BufferedReader(InputStreamReader(getInputStream()))
+                    writerOut = BufferedWriter(OutputStreamWriter(getOutputStream()))
                     write("PASS oauth:$userToken", writerOut)
                     write("NICK $it", writerOut)
                 }

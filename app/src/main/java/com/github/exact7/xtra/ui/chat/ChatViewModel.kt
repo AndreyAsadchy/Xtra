@@ -173,6 +173,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun start() {
+            pause() //TODO test
             chat = TwitchApiHelper.startChat(channelName, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this@ChatViewModel)
         }
 
