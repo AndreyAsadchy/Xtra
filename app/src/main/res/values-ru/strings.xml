@@ -82,6 +82,7 @@
     <string name="thank_you">Спасибо!</string>
     <string name="rate_app_message">Если Вам нравится приложение, пожалуйста, уделите минуту чтобы оставить отзыв. Спасибо за Вашу поддержку!</string>
     <string name="rate">Оценить</string>
+    <string name="rate_app">Оценить приложение</string>
     <string name="remind_me_later">Напомнить позже</string>
     <string name="no_thanks">Нет, спасибо</string>
     <string name="no_storage_detected">Хранилище телефона не доступно (вероятнее всего телефон подключен к компьютеру).</string>

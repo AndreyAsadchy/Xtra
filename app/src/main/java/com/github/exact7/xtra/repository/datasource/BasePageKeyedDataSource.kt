@@ -52,14 +52,14 @@ abstract class BasePageKeyedDataSource<T>(
     }
 
     protected fun PageKeyedDataSource.LoadInitialCallback<String, T>.onFailure(t: Throwable, params: PageKeyedDataSource.LoadInitialParams<String>) {
-        Log.e(tag, "Error loading data: ${t.message}")
+        Log.e(tag, "Error finished data: ${t.message}")
         t.printStackTrace()
         retry = { loadInitial(params, this) }
         loadingState.postValue(LoadingState.FAILED)
     }
 
     protected fun PageKeyedDataSource.LoadCallback<String, T>.onFailure(t: Throwable, params: PageKeyedDataSource.LoadParams<String>) {
-        Log.e(tag, "Error loading data: ${t.message}")
+        Log.e(tag, "Error finished data: ${t.message}")
         t.printStackTrace()
         retry = { loadAfter(params, this) }
         pagingState.postValue(LoadingState.FAILED)

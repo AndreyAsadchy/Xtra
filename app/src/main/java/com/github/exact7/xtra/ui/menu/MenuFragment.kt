@@ -1,6 +1,8 @@
 package com.github.exact7.xtra.ui.menu
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,13 +36,21 @@ class MenuFragment : Fragment() {
         val activity = requireActivity() as MainActivity
         val viewModel = ViewModelProviders.of(activity).get(MainViewModel::class.java)
         viewModel.user.observe(this, Observer { loginText.text = if (it !is NotLoggedIn) getString(R.string.log_out) else getString(R.string.log_in) })
+        search.setOnClickListener { activity.openSearch() }
         settings.setOnClickListener {
             activity.startActivityFromFragment(this, Intent(activity, SettingsActivity::class.java), 3)
         }
+        rate.setOnClickListener {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${activity.packageName}")))
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${activity.packageName}")))
+            }
+        }
+        donate.setOnClickListener { DonationDialog().show(childFragmentManager, null) }
         login.setOnClickListener {
             activity.startActivityForResult(Intent(activity, LoginActivity::class.java), if (viewModel.user.value is NotLoggedIn) 1 else 2)
         }
-        search.setOnClickListener { activity.openSearch() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

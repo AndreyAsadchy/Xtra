@@ -82,6 +82,7 @@
     <string name="thank_you">شكراً جزيلاً!</string>
     <string name="rate_app_message">إذا كنت تستمتع باستخدام إكسترا، يرجى أخذ بعض الوقت لتقييمه. لن يستغرق الأمر أكثر من دقيقة. شكراً لدعمك!</string>
     <string name="rate">قَيم</string>
+    <string name="rate_app">معدل التطبيق</string>
     <string name="remind_me_later">ذكرني لاحقاً</string>
     <string name="no_thanks">لا، شكراً</string>
     <string name="no_storage_detected">لم يتم اكتشاف سعة تخزينية (على الأرجح أن الهاتف متصل بجهاز كومبيوتر).</string>

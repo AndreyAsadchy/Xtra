@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -36,6 +37,44 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/rate"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:src="@drawable/baseline_thumb_up_black_24"
+            style="@style/MenuIcon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rate_app"
+            android:textAllCaps="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/donate"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:src="@drawable/baseline_favorite_black_24"
+            style="@style/MenuIcon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Support the developer"
+            android:textAllCaps="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -50,7 +89,8 @@
             android:id="@+id/loginText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAllCaps="true"/>
+            android:textAllCaps="true"
+            tools:text="@string/log_in"/>
 
     </LinearLayout>
 

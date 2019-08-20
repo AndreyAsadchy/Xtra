@@ -48,14 +48,14 @@ abstract class BasePositionalDataSource<T>(
     }
 
     protected fun PositionalDataSource.LoadInitialCallback<T>.onFailure(t: Throwable, params: PositionalDataSource.LoadInitialParams) {
-        Log.e(tag, "Error loading data: ${t.message}")
+        Log.e(tag, "Error finished data: ${t.message}")
         t.printStackTrace()
         retry = { loadInitial(params, this) }
         loadingState.postValue(LoadingState.FAILED)
     }
 
     protected fun PositionalDataSource.LoadRangeCallback<T>.onFailure(t: Throwable, params: PositionalDataSource.LoadRangeParams) {
-        Log.e(tag, "Error loading data: ${t.message}")
+        Log.e(tag, "Error finished data: ${t.message}")
         t.printStackTrace()
         retry = { loadRange(params, this) }
         pagingState.postValue(LoadingState.FAILED)
