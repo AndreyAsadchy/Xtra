@@ -183,7 +183,7 @@ class SlidingLayout : LinearLayout {
                 performClick()
             }
             return isDragViewHit || isSecondViewHit
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
 
         }
         return false

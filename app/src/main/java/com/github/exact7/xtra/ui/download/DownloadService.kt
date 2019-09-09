@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
+import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.ui.main.MainActivity
@@ -27,15 +28,11 @@ import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.ParsingMode
 import com.iheartradio.m3u8.PlaylistParser
-import com.iheartradio.m3u8.PlaylistWriter
 import com.iheartradio.m3u8.data.MediaPlaylist
-import com.iheartradio.m3u8.data.Playlist
 import com.iheartradio.m3u8.data.TrackData
-import com.iheartradio.m3u8.data.TrackInfo
 import com.tonyodev.fetch2.AbstractFetchListener
 import com.tonyodev.fetch2.Download
 import com.tonyodev.fetch2.Fetch
-import com.tonyodev.fetch2.Request
 import dagger.android.AndroidInjection
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -44,11 +41,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.io.FileOutputStream
 import java.net.URL
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
 import kotlin.math.min
+import com.tonyodev.fetch2.Request as FetchRequest
 
 
 class DownloadService : IntentService(TAG), Injectable {
@@ -81,7 +78,7 @@ class DownloadService : IntentService(TAG), Injectable {
     private lateinit var fetch: Fetch
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private lateinit var notificationManager: NotificationManagerCompat
-    private lateinit var request: com.github.exact7.xtra.model.offline.Request
+    private lateinit var request: Request
     private lateinit var offlineVideo: OfflineVideo
 
     private lateinit var playlist: MediaPlaylist
@@ -211,7 +208,7 @@ class DownloadService : IntentService(TAG), Injectable {
                     countDownLatch.countDown()
                 }
             })
-            fetch.enqueue(Request(request.url, request.path).apply { groupId = request.offlineVideoId })
+            fetch.enqueue(FetchRequest(request.url, request.path).apply { groupId = request.offlineVideoId })
         }
         offlineRepository.updateVideo(offlineVideo.apply { status = OfflineVideo.STATUS_DOWNLOADING })
         startForeground(offlineVideo.id, notificationBuilder.build())
@@ -226,7 +223,7 @@ class DownloadService : IntentService(TAG), Injectable {
     }
 
     private fun enqueueNext() {
-        val requests = mutableListOf<Request>()
+        val requests = mutableListOf<FetchRequest>()
         val tracks: List<TrackData>
         try {
             tracks = playlist.tracks
@@ -242,7 +239,7 @@ class DownloadService : IntentService(TAG), Injectable {
             try {
                 for (i in current..min(current + ENQUEUE_SIZE, segmentTo!!)) {
                     val track = tracks[i]
-                    requests.add(Request(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
+                    requests.add(FetchRequest(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
                 }
             } catch (e: IndexOutOfBoundsException) {
                 Crashlytics.log("DownloadService.enqueueNext: Playlist tracks size: ${playlist.tracks.size}. Segment to: $segmentTo. Current + ENQUEUE_SIZE: ${current + ENQUEUE_SIZE}.")
@@ -266,14 +263,12 @@ class DownloadService : IntentService(TAG), Injectable {
         if (offlineVideo.vod) {
             Log.d(TAG, "Downloaded video")
             with(request) {
-                val tracks = ArrayList<TrackData>(offlineVideo.maxProgress)
+                val mainFile = File(path + "${System.currentTimeMillis()}.ts")
                 try {
                     for (i in segmentFrom!!..segmentTo!!) {
-                        val track = playlist.tracks[i] //TODO encrypt files
-                        tracks.add(TrackData.Builder()
-                                .withUri("$path${track.uri}")
-                                .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
-                                .build())
+                        val file = File("$path${playlist.tracks[i].uri}")
+                        mainFile.appendBytes(file.readBytes())
+                        file.delete()
                     }
                 } catch (e: UninitializedPropertyAccessException) {
                     GlobalScope.launch {
@@ -285,17 +280,7 @@ class DownloadService : IntentService(TAG), Injectable {
                     Crashlytics.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
                     Crashlytics.logException(e)
                 }
-                val mediaPlaylist = MediaPlaylist.Builder()
-                        .withTargetDuration(playlist.targetDuration)
-                        .withTracks(tracks)
-                        .build()
-                val playlist = Playlist.Builder()
-                        .withMediaPlaylist(mediaPlaylist)
-                        .build()
-                FileOutputStream(offlineVideo.url).use {
-                    PlaylistWriter(it, Format.EXT_M3U, Encoding.UTF_8).write(playlist)
-                }
-                Log.d(TAG, "Playlist created")
+                Log.d(TAG, "Merged videos")
             }
         } else {
             Log.d(TAG, "Downloaded clip")
@@ -364,3 +349,33 @@ class DownloadService : IntentService(TAG), Injectable {
         }
     }
 }
+
+//                try {
+//                    for (i in segmentFrom!!..segmentTo!!) {
+//                        val track = playlist.tracks[i] //TODO encrypt files
+//                        tracks.add(TrackData.Builder()
+//                                .withUri("$path${track.uri}")
+//                                .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
+//                                .build())
+//                    }
+//                } catch (e: UninitializedPropertyAccessException) {
+//                    GlobalScope.launch {
+//                        delay(3000L)
+//                        onDownloadCompleted()
+//                    }
+//                    return
+//                } catch (e: IndexOutOfBoundsException) {
+//                    Crashlytics.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
+//                    Crashlytics.logException(e)
+//                }
+//                val mediaPlaylist = MediaPlaylist.Builder()
+//                        .withTargetDuration(playlist.targetDuration)
+//                        .withTracks(tracks)
+//                        .build()
+//                val playlist = Playlist.Builder()
+//                        .withMediaPlaylist(mediaPlaylist)
+//                        .build()
+//                FileOutputStream(offlineVideo.url).use {
+//                    PlaylistWriter(it, Format.EXT_M3U, Encoding.UTF_8).write(playlist)
+//                }
+//                Log.d(TAG, "Playlist created")

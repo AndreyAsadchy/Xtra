@@ -80,6 +80,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+
     testImplementation 'junit:junit:4.13-beta-1'
     androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -121,7 +123,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
-    implementation "com.google.android.exoplayer:extension-cast:$exoplayer"
+//    implementation "com.google.android.exoplayer:extension-cast:$exoplayer"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"

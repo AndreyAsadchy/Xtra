@@ -35,10 +35,12 @@ class VideoDownloadDialog : BaseDownloadDialog() {
         private const val KEY_VIDEO_INFO = "videoInfo"
         private const val KEY_VIDEO = "video"
 
-        fun newInstance(videoInfo: VideoDownloadInfo? = null, video: Video? = null): VideoDownloadDialog {
-            return VideoDownloadDialog().apply {
-                arguments = bundleOf(KEY_VIDEO_INFO to videoInfo, KEY_VIDEO to video)
-            }
+        fun newInstance(videoInfo: VideoDownloadInfo): VideoDownloadDialog {
+            return VideoDownloadDialog().apply { arguments = bundleOf(KEY_VIDEO_INFO to videoInfo) }
+        }
+
+        fun newInstance(video: Video): VideoDownloadDialog {
+            return VideoDownloadDialog().apply { arguments = bundleOf(KEY_VIDEO to video) }
         }
     }
 

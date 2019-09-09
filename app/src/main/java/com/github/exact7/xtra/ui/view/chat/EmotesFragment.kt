@@ -13,7 +13,6 @@ import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.chat.ChatFragment
-import com.github.exact7.xtra.ui.streams.EmotesAdapter
 import com.github.exact7.xtra.ui.view.GridAutofitLayoutManager
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
@@ -49,11 +48,11 @@ class EmotesFragment : Fragment() {
             is BttvEmote, is FfzEmote -> 2
             else -> 0
         }
-        updateEmotes(emotes)
+        setEmotes(emotes)
         recyclerView.layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f))
     }
 
-    fun updateEmotes(list: List<Emote>) {
+    fun setEmotes(list: List<Emote>) {
         recyclerView.adapter = EmotesAdapter(list, listener)
     }
 }

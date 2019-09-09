@@ -25,9 +25,9 @@ class VideoPlayerViewModel @Inject constructor(
         repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
     private lateinit var video: Video
-    val videoInfo: VideoDownloadInfo
+    val videoInfo: VideoDownloadInfo?
         get() {
-            val playlist = (player.currentManifest as HlsManifest).mediaPlaylist
+            val playlist = (player.currentManifest as? HlsManifest)?.mediaPlaylist ?: return null
             val segments = playlist.segments
             val size = segments.size
             val relativeTimes = ArrayList<Long>(size)

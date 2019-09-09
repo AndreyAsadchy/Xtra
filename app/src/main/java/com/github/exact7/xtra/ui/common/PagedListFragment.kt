@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.repository.LoadingState
 import com.github.exact7.xtra.util.gone
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
@@ -21,12 +22,18 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFra
         adapter = createAdapter().apply {
             registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    if (isResumed) {
-                        recyclerView.post {
-                            if (positionStart < (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()) {
-                                recyclerView.scrollToPosition(0)
+                    try {
+                        if (isResumed) {
+                            recyclerView.post {
+                                recyclerView?.let {
+                                    if (positionStart < (it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()) {
+                                        it.scrollToPosition(0)
+                                    }
+                                }
                             }
                         }
+                    } catch (e: Exception) {
+                        Crashlytics.logException(e)
                     }
                 }
             })

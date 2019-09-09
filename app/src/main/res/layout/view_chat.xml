@@ -5,98 +5,111 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/messageView">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:animateLayoutChanges="true">
+            android:layout_height="match_parent"
+            tools:listitem="@layout/chat_list_item"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/chat_list_item"/>
-
-            <Button
-                android:id="@+id/btnDown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/scroll_down"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:visibility="visible"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:id="@+id/messageView"
+        <Button
+            android:id="@+id/btnDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="?attr/primaryColor"
+            android:text="@string/scroll_down"
             android:visibility="gone"
-            android:animateLayoutChanges="true"
-            tools:visibility="visible">
+            android:layout_gravity="bottom"
+            tools:visibility="visible"/>
+    </FrameLayout>
 
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:inputType="textCapSentences|textAutoComplete|textNoSuggestions"
-                android:imeOptions="actionSend|flagNoFullscreen"
-                tools:visibility="visible"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/autoCompleteRecyclerView"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:background="?primaryColor"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/messageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:listitem="@layout/auto_complete_emotes_list_item"
+        tools:visibility="visible"/>
 
-            <ImageButton
-                android:id="@+id/clear"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/baseline_backspace_black_24"
-                android:tint="?attr/textColor"
-                android:background="?android:selectableItemBackground"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+    <LinearLayout
+        android:id="@+id/messageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?attr/primaryColor"
+        android:visibility="gone"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toTopOf="@id/viewPager"
+        tools:visibility="visible">
 
-            <ImageButton
-                android:id="@+id/emotes"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_tag_faces_black_24dp"
-                android:tint="?attr/textColor"
-                android:background="?android:selectableItemBackground"
-                tools:visibility="visible"/>
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="textCapSentences|textAutoComplete|textNoSuggestions"
+            android:imeOptions="actionSend|flagNoFullscreen"
+            android:importantForAutofill="no"
+            tools:visibility="visible"
+            tools:ignore="LabelFor" />
 
-            <ImageButton
-                android:id="@+id/send"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_send_black_24dp"
-                android:tint="?attr/textColor"
-                android:background="?android:selectableItemBackground"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/clear"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_backspace_black_24"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:visibility="gone">
+        <ImageButton
+            android:id="@+id/emotes"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_tag_faces_black_24dp"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"
+            tools:visibility="visible"/>
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMaxWidth="0dp"
-                app:tabMode="fixed"
-                app:tabGravity="fill"/>
-        </androidx.viewpager.widget.ViewPager>
-
+        <ImageButton
+            android:id="@+id/send"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_send_black_24dp"
+            android:tint="?attr/textColor"
+            android:background="?android:selectableItemBackground"
+            android:visibility="gone"
+            tools:visibility="visible"/>
     </LinearLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
+            app:tabGravity="fill"/>
+    </androidx.viewpager.widget.ViewPager>
 
     <TextView
         android:id="@+id/chatReplayUnavailable"

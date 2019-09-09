@@ -9,7 +9,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
-import java.util.Random
+import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -39,8 +39,8 @@ class LiveChatThread(
         try {
             connect()
             while (true) {
-                val lineListener = readerIn.readLine() ?: break
-                lineListener.run {
+                val messageIn = readerIn.readLine() ?: break
+                messageIn.run {
                     when {
                         contains("PRIVMSG") -> listener.onMessage(this)
                         contains("USERNOTICE") -> listener.onUserNotice(this)
@@ -52,8 +52,8 @@ class LiveChatThread(
                 }
 
                 if (userName != null) {
-                    val lineSender = readerOut!!.readLine() ?: break
-                    if (lineSender.startsWith("PING")) {
+                    val messageOut = readerOut!!.readLine() ?: break
+                    if (messageOut.startsWith("PING")) {
                         handlePing(writerOut!!)
                     }
                 }
@@ -70,7 +70,6 @@ class LiveChatThread(
         Log.d(TAG, "Connecting to Twitch IRC")
         try {
             socketIn = Socket("irc.twitch.tv", 6667).apply {
-                soTimeout = 5000
                 readerIn = BufferedReader(InputStreamReader(getInputStream()))
                 writerIn = BufferedWriter(OutputStreamWriter(getOutputStream()))
             }

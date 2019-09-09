@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.streams
+package com.github.exact7.xtra.ui.view.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.Emote
-import com.github.exact7.xtra.util.chat.EmotesUrlHelper
 import com.github.exact7.xtra.util.loadImage
 
 class EmotesAdapter(
@@ -20,7 +19,7 @@ class EmotesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val emote = list[position]
         (holder.itemView as ImageView).apply {
-            loadImage(EmotesUrlHelper.resolveUrl(emote))
+            loadImage(emote.url)
             setOnClickListener { clickListener(emote) }
         }
     }

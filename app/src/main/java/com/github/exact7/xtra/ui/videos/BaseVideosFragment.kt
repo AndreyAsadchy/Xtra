@@ -47,7 +47,7 @@ abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFra
 
     override fun showDownloadDialog() {
         lastSelectedItem?.let {
-            VideoDownloadDialog.newInstance(video = it).show(childFragmentManager, null)
+            VideoDownloadDialog.newInstance(it).show(childFragmentManager, null)
         }
     }
 }

@@ -27,12 +27,14 @@ class SettingsActivity : AppCompatActivity() {
         applyTheme()
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { finish() }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.settings, SettingsFragment())
-                .commit()
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.settings, SettingsFragment())
+                    .commit()
+        }
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {

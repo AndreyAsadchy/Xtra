@@ -47,8 +47,9 @@ class ChatView : ConstraintLayout {
 
     private var recentEmotes = emptyList<Emote>()
     private var twitchEmotes = emptyList<Emote>()
-    private var otherEmotes: MutableSet<Emote> = HashSet()
+    private var otherEmotes = mutableSetOf<Emote>()
     private var emotesAddedCount = 0
+    private var autoCompleteAdapter: AutoCompleteEmotesAdapter? = null
 
     private lateinit var fragmentManager: FragmentManager
     private var messagingEnabled = false
@@ -110,6 +111,12 @@ class ChatView : ConstraintLayout {
             val notBlank = text?.isNotBlank() == true
             send.isVisible = notBlank
             clear.isVisible = notBlank
+            if (text?.startsWith(":") == true) {
+                autoCompleteRecyclerView.visible()
+                autoCompleteAdapter!!.submitList(twitchEmotes)
+            } else {
+                autoCompleteRecyclerView.gone()
+            }
         })
         clear.setOnClickListener {
             val text = editText.text.toString().trimEnd()
@@ -205,6 +212,8 @@ class ChatView : ConstraintLayout {
         }
         if (enableMessaging) {
             messagingEnabled = true
+            //TODO try PopupWindow
+            autoCompleteRecyclerView.adapter = AutoCompleteEmotesAdapter {  }.also { autoCompleteAdapter = it }
             messageView.visible()
         }
     }
@@ -250,7 +259,7 @@ class ChatView : ConstraintLayout {
             override fun getItemPosition(`object`: Any): Int {
                 (`object` as EmotesFragment).run {
                     if (type == 0) {
-                        updateEmotes(recentEmotes)
+                        setEmotes(recentEmotes)
                     }
                 }
                 return super.getItemPosition(`object`)

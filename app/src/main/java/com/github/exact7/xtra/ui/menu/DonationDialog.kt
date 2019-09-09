@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import kotlinx.android.synthetic.main.dialog_donation.*
@@ -24,5 +26,8 @@ class DonationDialog : DialogFragment() {
         list.setOnItemClickListener { _, _, position, _ ->
             viewModel.launchBillingFlow(activity, position)
         }
+        viewModel.state.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(activity, if (it) "SUCCESS".also { dismiss() } else "ERROR", Toast.LENGTH_LONG).show()
+        })
     }
 }

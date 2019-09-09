@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 data class RecentEmote(
         @PrimaryKey
         override val name: String,
-        val url: String,
+        override val url: String,
         @ColumnInfo(name = "used_at")
         val usedAt: Long) : Emote(), Parcelable {
 

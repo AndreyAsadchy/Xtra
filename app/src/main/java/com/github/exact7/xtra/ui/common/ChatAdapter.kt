@@ -26,10 +26,10 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
-import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.Image
-import com.github.exact7.xtra.util.chat.EmotesUrlHelper
-import java.util.Random
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.math.min
 
@@ -108,8 +108,8 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
         builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         val originalMessage = "$userName: ${chatMessage.message}"
         try {
-            chatMessage.emotes?.let {
-                val copy = it.map { e -> e.copy() }
+            chatMessage.emotes?.let { emotes ->
+                val copy = emotes.map { it.copy() }
                 index += userNameLength + 2
                 for (e in copy) {
                     val begin = index + e.begin
@@ -124,7 +124,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     }
                     e.end -= length
                 }
-                copy.forEach { (id, begin, end) -> images.add(Image(EmotesUrlHelper.getTwitchUrl(id), index + begin, index + end + 1, true)) }
+                copy.forEach { images.add(Image(it.url, index + it.begin, index + it.end + 1, true)) }
             }
             val split = builder.split(" ")
             var builderIndex = 0
@@ -165,18 +165,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     }
                     builder.replace(builderIndex, endIndex, ".")
                     builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    val url: String
-                    val isPng: Boolean
-                    if (emote is BttvEmote) {
-                        url = EmotesUrlHelper.getBttvUrl(emote.id)
-                        isPng = emote.isPng
-                    } else { //FFZ
-                        (emote as FfzEmote).also {
-                            url = it.url
-                            isPng = true
-                        }
-                    }
-                    images.add(Image(url, builderIndex, builderIndex + 1, true, isPng))
+                    images.add(Image(emote.url, builderIndex, builderIndex + 1, true, emote !is BttvEmote || emote.isPng))
                     if (i != split.lastIndex) 2 else 1
                 }
             }
@@ -260,6 +249,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
             }
         }
     }
+
 
     fun addEmotes(list: List<Emote>) {
         emotes.putAll(list.associateBy { it.name })

@@ -17,7 +17,6 @@ import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.enable
 import kotlinx.android.synthetic.main.player_stream.*
 
-@Suppress("PLUGIN_WARNING")
 class StreamPlayerFragment : BasePlayerFragment() {
 
     private lateinit var chatFragment: ChatFragment

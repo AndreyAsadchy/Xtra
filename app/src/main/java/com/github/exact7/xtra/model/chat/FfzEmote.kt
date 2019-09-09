@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class FfzEmote(
         override val name: String,
-        val url: String) : Emote(), Parcelable {
+        override val url: String) : Emote(), Parcelable {
 
     override fun equals(other: Any?): Boolean = super.equals(other)
     override fun hashCode(): Int = super.hashCode()

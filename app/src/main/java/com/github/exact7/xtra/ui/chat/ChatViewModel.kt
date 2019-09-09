@@ -18,14 +18,24 @@ import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.ui.view.chat.MAX_LIST_COUNT
 import com.github.exact7.xtra.util.TwitchApiHelper
-import com.github.exact7.xtra.util.chat.EmotesUrlHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import java.util.Collections
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.associateBy
+import kotlin.collections.associateByTo
+import kotlin.collections.find
+import kotlin.collections.forEach
+import kotlin.collections.hashSetOf
+import kotlin.collections.isNotEmpty
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
@@ -165,7 +175,7 @@ class ChatViewModel @Inject constructor(
             val usedEmotes = hashSetOf<RecentEmote>()
             val currentTime = System.currentTimeMillis()
             message.split(' ').forEach { word ->
-                allEmotesMap[word]?.let { usedEmotes.add(RecentEmote(word, EmotesUrlHelper.resolveUrl(it), currentTime)) }
+                allEmotesMap[word]?.let { usedEmotes.add(RecentEmote(word, it.url, currentTime)) }
             }
             if (usedEmotes.isNotEmpty()) {
                 playerRepository.insertRecentEmotes(usedEmotes)
