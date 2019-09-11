@@ -13,7 +13,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "emotes")
 @Parcelize
-data class Emote(
+class Emote(
         @PrimaryKey
         val id: Int,
         @field:[SerializedName("code") ColumnInfo(name = "code")]
@@ -22,7 +22,4 @@ data class Emote(
         @Ignore
         @IgnoredOnParcel
         override val url: String = "$TWITCH_EMOTES_URL$id/2.0"
-
-        override fun equals(other: Any?): Boolean = super.equals(other)
-        override fun hashCode(): Int = super.hashCode()
 }

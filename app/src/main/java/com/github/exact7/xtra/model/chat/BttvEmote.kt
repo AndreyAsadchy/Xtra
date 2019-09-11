@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 private const val BTTV_URL = "https://cdn.betterttv.net/emote/"
 
 @Parcelize
-data class BttvEmote(
+class BttvEmote(
         val id: String,
         @SerializedName("code")
         override val name: String,
@@ -18,7 +18,4 @@ data class BttvEmote(
 
     @IgnoredOnParcel
     override val url: String = "$BTTV_URL$id/2x"
-
-    override fun equals(other: Any?): Boolean = super.equals(other)
-    override fun hashCode(): Int = super.hashCode()
 }

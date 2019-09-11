@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.menu
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.billingclient.api.BillingClient
@@ -23,11 +22,11 @@ class DonationDialogViewModel : BaseViewModel() {
 
     fun launchBillingFlow(activity: Activity, index: Int) {
         if (billingClient == null) {
-            Log.i("DONATION", "billingClient null")
             billingClient = BillingClient.newBuilder(activity)
-                    .setListener { billingResult, purchases ->
-                        Log.i("DONATION", "Result ${billingResult.responseCode}, $purchases")
-                        _state.value = billingResult.responseCode == BillingClient.BillingResponseCode.OK
+                    .setListener { billingResult, _ ->
+                        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                            _state.value = true
+                        }
                     }
                     .enablePendingPurchases()
                     .build().also {
@@ -40,7 +39,6 @@ class DonationDialogViewModel : BaseViewModel() {
                                             .build()
                                     it.querySkuDetailsAsync(skuDetails) { skuDetailsBillingResult, skuDetailsList ->
                                         if (skuDetailsBillingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                                            Log.i("DONATION", "Query sku details ${billingResult.responseCode}")
                                             if (skuDetailsList.isEmpty()) return@querySkuDetailsAsync
                                             this@DonationDialogViewModel.skuDetailsList = skuDetailsList
                                             launch(activity, index)
@@ -50,12 +48,11 @@ class DonationDialogViewModel : BaseViewModel() {
                             }
 
                             override fun onBillingServiceDisconnected() {
-                                Log.i("DONATION", "onBillingServiceDisconnected")
+
                             }
                         })
                     }
         } else {
-            Log.i("DONATION", "billingClient not null")
             launch(activity, index)
         }
     }

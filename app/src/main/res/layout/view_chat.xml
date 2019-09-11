@@ -28,21 +28,6 @@
             tools:visibility="visible"/>
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/autoCompleteRecyclerView"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:background="?primaryColor"
-        android:scrollbars="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/messageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:listitem="@layout/auto_complete_emotes_list_item"
-        tools:visibility="visible"/>
-
     <LinearLayout
         android:id="@+id/messageView"
         android:layout_width="match_parent"
@@ -54,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@id/viewPager"
         tools:visibility="visible">
 
-        <EditText
+        <MultiAutoCompleteTextView
             android:id="@+id/editText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -62,6 +47,7 @@
             android:inputType="textCapSentences|textAutoComplete|textNoSuggestions"
             android:imeOptions="actionSend|flagNoFullscreen"
             android:importantForAutofill="no"
+            android:completionThreshold="1"
             tools:visibility="visible"
             tools:ignore="LabelFor" />
 

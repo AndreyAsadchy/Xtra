@@ -13,4 +13,8 @@ abstract class Emote {
     override fun hashCode(): Int {
         return name.hashCode()
     }
+
+    override fun toString(): String {
+        return ":$name"
+    }
 }

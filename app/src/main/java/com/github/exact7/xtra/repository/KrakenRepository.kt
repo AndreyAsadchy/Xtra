@@ -12,6 +12,7 @@ import com.github.exact7.xtra.model.kraken.game.GameWrapper
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
 import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
+import com.github.exact7.xtra.model.kraken.user.Emote
 import com.github.exact7.xtra.model.kraken.user.User
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Period
@@ -182,7 +183,7 @@ class KrakenRepository @Inject constructor(
                                 13 -> ";P"
                                 else -> "R)"
                             }
-                            emotes[i] = emotes[i].copy(name = value)
+                            emotes[i] = Emote(emotes[i].id, value)
                             if (++modified == 14) {
                                 break
                             }
