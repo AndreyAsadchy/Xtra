@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import android.widget.TextView
@@ -26,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
+import com.github.exact7.xtra.model.chat.Chatter
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.RecentEmote
@@ -34,10 +34,12 @@ import com.github.exact7.xtra.ui.common.ChatAdapter
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
+import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.showKeyboard
 import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.auto_complete_emotes_list_item.view.*
 import kotlinx.android.synthetic.main.view_chat.view.*
 import kotlin.math.max
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
@@ -60,7 +62,8 @@ class ChatView : ConstraintLayout {
     private var otherEmotes = mutableSetOf<Emote>()
     private var emotesAddedCount = 0
 
-    private var chatters = emptyList<String>()
+    private var chatters = emptyList<Chatter>()
+    private var autoCompleteAdapter: AutoCompleteAdapter? = null
 
     private lateinit var fragmentManager: FragmentManager
     private var messagingEnabled = false
@@ -119,10 +122,15 @@ class ChatView : ConstraintLayout {
             }
         }
         editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
-            val notBlank = text?.isNotBlank() == true
-            send.isVisible = notBlank
-            clear.isVisible = notBlank
+            if (text?.isNotBlank() == true) {
+                send.visible()
+                clear.visible()
+            } else {
+                send.gone()
+                clear.gone()
+            }
         })
+        editText.setOnFocusChangeListener { _, hasFocus -> autoCompleteAdapter?.setNotifyOnChange(hasFocus) }
         clear.setOnClickListener {
             val text = editText.text.toString().trimEnd()
             editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
@@ -156,6 +164,10 @@ class ChatView : ConstraintLayout {
         }
     }
 
+    fun addChatter(chatter: Chatter) {
+        autoCompleteAdapter //TODO need chatters list anyways because after orientation change
+    }
+
     fun addEmotes(list: List<Emote>?) {
         list?.let {
             when (it.firstOrNull()) {
@@ -169,83 +181,20 @@ class ChatView : ConstraintLayout {
         }
         if (++emotesAddedCount == 4 && messagingEnabled) {
             initEmotesViewPager()
-            editText.setAdapter(EmotesAutoCompleteAdapter(context, (recentEmotes + twitchEmotes + otherEmotes)))
-            editText.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    editText.selectionStart
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                }
-
-            }
+            dataset = recentEmotes + twitchEmotes + otherEmotes + chatters
+            editText.setAdapter(AutoCompleteAdapter(context, dataset).also { autoCompleteAdapter = it })
             editText.setTokenizer(SpaceTokenizer())
         } else if (emotesAddedCount > 4) {
             viewPager.adapter?.notifyDataSetChanged()
         }
     }
 
-    class SpaceTokenizer : MultiAutoCompleteTextView.Tokenizer {
-
-        override fun findTokenStart(text: CharSequence, cursor: Int): Int {
-            var i = cursor
-
-            while (i > 0 && text[i - 1] != ' ') {
-                i--
-            }
-            while (i < cursor && text[i] == ' ') {
-                i++
-            }
-
-            return i
-        }
-
-        override fun findTokenEnd(text: CharSequence, cursor: Int): Int {
-            var i = cursor
-            val len = text.length
-
-            while (i < len) {
-                if (text[i] == ' ') {
-                    return i
-                } else {
-                    i++
-                }
-            }
-
-            return len
-        }
-
-        override fun terminateToken(text: CharSequence): CharSequence {
-            var i = text.length
-
-            while (i > 0 && text[i - 1] == ' ') {
-                i--
-            }
-
-            return if (i > 0 && text[i - 1] == ' ') {
-                text.substring(1)
-            } else {
-                if (text is Spanned) {
-                    val sp = SpannableString("$text ")
-                    TextUtils.copySpansFrom(text, 0, text.length, Any::class.java, sp, 0)
-                    sp.substring(1)
-                } else {
-                    "${text.substring(1)} "
-                }
-            }
-        }
-    }
-
-    class Chatter(val name: String) {
-
-        override fun toString(): String {
-            return "@$name"
-        }
-    }
-
     fun setUsername(username: String) {
         adapter.setUsername(username)
+    }
+
+    fun setChatters(chatters: List<Chatter>) {
+        this.chatters = chatters
     }
 
     fun setCallback(callback: MessageSenderCallback) {
@@ -289,25 +238,6 @@ class ChatView : ConstraintLayout {
             messagingEnabled = true
             messageView.visible()
         }
-    }
-
-    class EmotesAutoCompleteAdapter(context: Context, list: List<Emote>) : ArrayAdapter<Emote>(context, android.R.layout.simple_list_item_1, list) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            val view: View
-            val viewHolder: ViewHolder
-            if (convertView == null) {
-                view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
-                viewHolder = ViewHolder(view).also { view.tag = it }
-            } else {
-                view = convertView
-                viewHolder = convertView.tag as ViewHolder
-            }
-            val item = getItem(position)!!
-            (viewHolder.containerView as TextView).text = item.name
-            return view
-        }
-
-        inner class ViewHolder(override val containerView: View) : LayoutContainer
     }
 
     private fun sendMessage(): Boolean {
@@ -382,5 +312,84 @@ class ChatView : ConstraintLayout {
         val range = recyclerView.computeVerticalScrollRange()
         val percentage = (100f * offset / (range - extent).toFloat())
         return percentage < 97f
+    }
+
+    class SpaceTokenizer : MultiAutoCompleteTextView.Tokenizer {
+
+        override fun findTokenStart(text: CharSequence, cursor: Int): Int {
+            var i = cursor
+
+            while (i > 0 && text[i - 1] != ' ') {
+                i--
+            }
+            while (i < cursor && text[i] == ' ') {
+                i++
+            }
+
+            return i
+        }
+
+        override fun findTokenEnd(text: CharSequence, cursor: Int): Int {
+            var i = cursor
+            val len = text.length
+
+            while (i < len) {
+                if (text[i] == ' ') {
+                    return i
+                } else {
+                    i++
+                }
+            }
+
+            return len
+        }
+
+        override fun terminateToken(text: CharSequence): CharSequence {
+            var i = text.length
+
+            while (i > 0 && text[i - 1] == ' ') {
+                i--
+            }
+
+            return if (i > 0 && text[i - 1] == ' ') {
+                text.substring(1)
+            } else {
+                if (text is Spanned) {
+                    val sp = SpannableString("$text ")
+                    TextUtils.copySpansFrom(text, 0, text.length, Any::class.java, sp, 0)
+                    sp.substring(1)
+                } else {
+                    "${text.substring(1)} "
+                }
+            }
+        }
+    }
+
+    class AutoCompleteAdapter(context: Context, list: List<Any>) : ArrayAdapter<Any>(context, 0, list) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            val view: View
+            val viewHolder: ViewHolder
+            val item = getItem(position)!!
+            val isEmote = item is Emote
+            if (convertView == null) {
+                view = LayoutInflater.from(context).inflate(if (isEmote) R.layout.auto_complete_emotes_list_item else android.R.layout.simple_list_item_1, parent, false)
+                viewHolder = ViewHolder(view).also { view.tag = it }
+            } else {
+                view = convertView
+                viewHolder = convertView.tag as ViewHolder
+            }
+            return (viewHolder.containerView).apply {
+                if (isEmote) {
+                    item as Emote
+                    image.loadImage(item.url)
+                    name.text = item.name
+                } else {
+                    (this as TextView).text = (item as Chatter).name
+                }
+            }
+        }
+
+        class ViewHolder(override val containerView: View) : LayoutContainer
     }
 }

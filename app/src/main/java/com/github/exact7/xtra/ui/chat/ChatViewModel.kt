@@ -7,10 +7,12 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
+import com.github.exact7.xtra.model.chat.Chatter
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
+import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.BaseViewModel
@@ -27,20 +29,12 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.associateBy
-import kotlin.collections.associateByTo
-import kotlin.collections.find
-import kotlin.collections.forEach
-import kotlin.collections.hashSetOf
-import kotlin.collections.isNotEmpty
+import kotlin.collections.HashSet
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
         private val repository: TwitchService,
-        private val playerRepository: PlayerRepository): BaseViewModel(), OnChatMessageReceivedListener, ChatView.MessageSenderCallback {
+        private val playerRepository: PlayerRepository): BaseViewModel(), ChatView.MessageSenderCallback {
 
     val emotes by lazy { playerRepository.loadEmotes() }
     val recentEmotes by lazy { playerRepository.loadRecentEmotes() }
@@ -64,18 +58,21 @@ class ChatViewModel @Inject constructor(
 
     private var chat: ChatController? = null
 
-    fun startLive(user: User, channelId: String, channelName: String) {
-        if (chat == null) {
-            chat = LiveChatController(user, channelName)
-            init(channelId, channelName)
+    private val _newChatter = MutableLiveData<Chatter>()
+    val newChatter: LiveData<Chatter>
+        get() = _newChatter
 
+    fun startLive(user: User, channel: Channel) {
+        if (chat == null) {
+            chat = LiveChatController(user, channel.name, channel.displayName)
+            init(channel.id, channel.name)
         }
     }
 
-    fun startReplay(channelId: String, channelName: String, videoId: String, startTime: Double, getCurrentPosition: () -> Double) {
+    fun startReplay(channel: Channel, videoId: String, startTime: Double, getCurrentPosition: () -> Double) {
         if (chat == null) {
             chat = VideoChatController(videoId, startTime, getCurrentPosition)
-            init(channelId, channelName)
+            init(channel.id, channel.name)
         }
     }
 
@@ -85,14 +82,6 @@ class ChatViewModel @Inject constructor(
 
     fun stop() {
         chat?.pause()
-    }
-
-    override fun onMessage(message: ChatMessage) {
-        message.badges?.find { it.id == "subscriber" }?.let {
-            message.subscriberBadge = subscriberBadges?.getBadge(it.version.toInt())
-        }
-        _chatMessages.value!!.add(message)
-        _newMessage.postValue(message)
     }
 
     override fun send(message: CharSequence) {
@@ -132,42 +121,23 @@ class ChatViewModel @Inject constructor(
                 .addTo(compositeDisposable)
     }
 
-    private inner class VideoChatController(
-            private val videoId: String,
-            private val startTime: Double,
-            private val getCurrentPosition: () -> Double) : ChatController {
-
-        private var chatReplayManager: ChatReplayManager? = null
-
-        override fun send(message: CharSequence) {
-
-        }
-
-        override fun start() {
-            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this@ChatViewModel, { _chatMessages.postValue(ArrayList()) })
-        }
-
-        override fun pause() {
-            chatReplayManager?.stop()
-        }
-
-        override fun stop() {
-            chatReplayManager?.stop()
-        }
-    }
-
     private inner class LiveChatController(
             private val user: User,
-            private val channelName: String) : ChatController {
+            private val channelName: String,
+            displayName: String) : ChatController() {
 
         private var chat: LiveChatThread? = null
         private val allEmotesMap: MutableMap<String, Emote> = ChatFragment.defaultBttvAndFfzEmotes().associateByTo(HashMap()) { it.name }
         private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
+        private val chattersSet = HashSet<String>()
+
         init {
             if (user is LoggedIn) {
                 localEmotesObserver = Observer<List<TwitchEmote>> { addEmotes(it) }.also(emotes::observeForever)
             }
+            chattersSet.add(displayName)
+            _newChatter.value = Chatter(displayName)
         }
 
         override fun send(message: CharSequence) {
@@ -184,7 +154,7 @@ class ChatViewModel @Inject constructor(
 
         override fun start() {
             pause() //TODO test
-            chat = TwitchApiHelper.startChat(channelName, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this@ChatViewModel)
+            chat = TwitchApiHelper.startChat(channelName, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this)
         }
 
         override fun pause() {
@@ -196,6 +166,13 @@ class ChatViewModel @Inject constructor(
             localEmotesObserver?.let(emotes::removeObserver)
         }
 
+        override fun onMessage(message: ChatMessage) {
+            super.onMessage(message)
+            if (chattersSet.add(message.displayName)) {
+                _newChatter.value = Chatter(message.displayName)
+            }
+        }
+
         fun addEmotes(list: List<Emote>) {
             if (user is LoggedIn) {
                 allEmotesMap.putAll(list.associateBy { it.name })
@@ -203,10 +180,42 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private interface ChatController {
-        fun send(message: CharSequence)
-        fun start()
-        fun pause()
-        fun stop()
+    private inner class VideoChatController(
+            private val videoId: String,
+            private val startTime: Double,
+            private val getCurrentPosition: () -> Double) : ChatController() {
+
+        private var chatReplayManager: ChatReplayManager? = null
+
+        override fun send(message: CharSequence) {
+
+        }
+
+        override fun start() {
+            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this, { _chatMessages.postValue(ArrayList()) })
+        }
+
+        override fun pause() {
+            chatReplayManager?.stop()
+        }
+
+        override fun stop() {
+            chatReplayManager?.stop()
+        }
+    }
+
+    private abstract inner class ChatController : OnChatMessageReceivedListener {
+        abstract fun send(message: CharSequence)
+        abstract fun start()
+        abstract fun pause()
+        abstract fun stop()
+
+        override fun onMessage(message: ChatMessage) {
+            message.badges?.find { it.id == "subscriber" }?.let {
+                message.subscriberBadge = subscriberBadges?.getBadge(it.version.toInt())
+            }
+            _chatMessages.value!!.add(message)
+            _newMessage.postValue(message)
+        }
     }
 }

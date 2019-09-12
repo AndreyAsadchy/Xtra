@@ -57,9 +57,10 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
         val userIsLoggedIn = user is LoggedIn
         val isLive = args.getBoolean(KEY_IS_LIVE)
         val enableChat = if (isLive) {
-            viewModel.startLive(user, channel.id, channel.name)
+            viewModel.startLive(user, channel)
             chatView.setCallback(viewModel)
             if (userIsLoggedIn) {
+                chatView.setChatters(viewModel.chatters)
                 chatView.setUsername(user.name)
                 val emotesObserver = Observer(chatView::addEmotes)
                 viewModel.emotes.observe(viewLifecycleOwner, emotesObserver)
@@ -70,7 +71,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             args.getString(KEY_VIDEO_ID).let {
                 if (it != null) {
                     val getCurrentPosition = (parentFragment as ChatReplayPlayerFragment)::getCurrentPosition
-                    viewModel.startReplay(channel.id, channel.name, it, args.getDouble(KEY_START_TIME), getCurrentPosition)
+                    viewModel.startReplay(channel, it, args.getDouble(KEY_START_TIME), getCurrentPosition)
                     true
                 } else {
                     chatView.chatReplayUnavailable.visible()
