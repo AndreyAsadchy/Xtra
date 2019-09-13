@@ -3,15 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layoutDirection="ltr">
+    android:layoutDirection="ltr" >
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
-        app:controller_layout_id="@layout/player_video"
-        style="@style/Player.Landscape"/>
+        style="@style/Player.Landscape"
+        app:controller_layout_id="@layout/player_video" />
 
-    <FrameLayout
-        android:id="@+id/chatFragmentContainer"
-        style="@style/ChatViewLandscape"/>
+    <LinearLayout
+        android:id="@+id/clipLandscapeChatContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/chatFragmentContainer"
+            style="@style/ChatViewLandscape"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="5dp" />
+
+        <Button
+            android:id="@+id/watchVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Watch full video"
+            android:textAllCaps="true"/>
+
+    </LinearLayout>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.edit
@@ -23,6 +22,7 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
@@ -47,7 +47,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: PlayerView
-    private lateinit var chatLayout: FrameLayout
+    private lateinit var chatLayout: ViewGroup
     private var secondView: ViewGroup? = null
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
@@ -77,8 +77,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isInPictureInPictureMode = savedInstanceState?.getBoolean(C.PICTURE_IN_PICTURE) == true
-        wasInPictureInPictureMode = savedInstanceState?.getBoolean(WAS_IN_PIP) == true
+        savedInstanceState?.let {
+            isInPictureInPictureMode = it.getBoolean(C.PICTURE_IN_PICTURE)
+            wasInPictureInPictureMode = it.getBoolean(WAS_IN_PIP)
+        }
         prefs = requireContext().prefs()
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -96,7 +98,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         slidingLayout.addListener(this)
         view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
         if (isPortrait) {
-            view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
             showStatusBar()
         } else {
             activity.window.decorView.setOnSystemUiVisibilityChangeListener {
@@ -120,7 +122,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
         playerView = view.findViewById(R.id.playerView)
         var resizeMode = if (isPortrait) {
-            playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0)  }
+            playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) }
             prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
         } else {
             prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIT)
@@ -136,7 +138,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             playerHeight = playerView.height
         }
         if (this !is OfflinePlayerFragment) {
-            chatLayout = view.findViewById(R.id.chatFragmentContainer)
+            chatLayout = view.findViewById(if (this !is ClipPlayerFragment || isPortrait) R.id.chatFragmentContainer else R.id.clipLandscapeChatContainer)
             secondView = chatLayout
             if (!isPortrait) {
                 chatWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)

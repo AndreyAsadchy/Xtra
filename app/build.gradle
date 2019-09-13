@@ -80,7 +80,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
 
     testImplementation 'junit:junit:4.13-beta-1'
     androidTestImplementation 'androidx.test:core:1.2.0'

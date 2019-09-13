@@ -2,9 +2,6 @@ package com.github.exact7.xtra.ui.view.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -62,7 +59,7 @@ class ChatView : ConstraintLayout {
     private var otherEmotes = mutableSetOf<Emote>()
     private var emotesAddedCount = 0
 
-    private var chatters = emptyList<Chatter>()
+    private val autoCompleteList: MutableList<Any>
     private var autoCompleteAdapter: AutoCompleteAdapter? = null
 
     private lateinit var fragmentManager: FragmentManager
@@ -86,6 +83,7 @@ class ChatView : ConstraintLayout {
         val emotes: List<Emote> = ChatFragment.defaultBttvAndFfzEmotes()
         adapter.addEmotes(emotes)
         otherEmotes.addAll(emotes)
+        autoCompleteList = emotes.toMutableList()
     }
 
     private fun init(context: Context) {
@@ -109,37 +107,10 @@ class ChatView : ConstraintLayout {
 
         btnDown.setOnClickListener {
             post {
-                recyclerView.scrollToPosition(adapter.itemCount - 1)
+                recyclerView.scrollToPosition(adapter.messages!!.lastIndex)
                 it.toggleVisibility()
             }
         }
-
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEND) {
-                sendMessage()
-            } else {
-                false
-            }
-        }
-        editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
-            if (text?.isNotBlank() == true) {
-                send.visible()
-                clear.visible()
-            } else {
-                send.gone()
-                clear.gone()
-            }
-        })
-        editText.setOnFocusChangeListener { _, hasFocus -> autoCompleteAdapter?.setNotifyOnChange(hasFocus) }
-        clear.setOnClickListener {
-            val text = editText.text.toString().trimEnd()
-            editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
-        }
-        clear.setOnLongClickListener {
-            editText.text.clear()
-            true
-        }
-        send.setOnClickListener { sendMessage() }
     }
 
     fun submitList(list: MutableList<ChatMessage>) {
@@ -147,14 +118,12 @@ class ChatView : ConstraintLayout {
     }
 
     fun notifyMessageAdded() {
-        adapter.messages?.apply {
+        adapter.messages!!.apply {
             adapter.notifyItemInserted(lastIndex)
             if (size >= MAX_LIST_COUNT) {
                 val removeCount = size - MAX_ADAPTER_COUNT
-                adapter.messages?.apply {
-                    repeat(removeCount) {
-                        removeAt(0)
-                    }
+                repeat(removeCount) {
+                    removeAt(0)
                 }
                 adapter.notifyItemRangeRemoved(0, removeCount)
             }
@@ -162,10 +131,6 @@ class ChatView : ConstraintLayout {
                 recyclerView.scrollToPosition(lastIndex)
             }
         }
-    }
-
-    fun addChatter(chatter: Chatter) {
-        autoCompleteAdapter //TODO need chatters list anyways because after orientation change
     }
 
     fun addEmotes(list: List<Emote>?) {
@@ -178,12 +143,13 @@ class ChatView : ConstraintLayout {
                 is TwitchEmote -> twitchEmotes = it
                 is RecentEmote -> recentEmotes = it
             }
+            if (messagingEnabled) {
+                autoCompleteList.addAll(it)
+            }
         }
         if (++emotesAddedCount == 4 && messagingEnabled) {
             initEmotesViewPager()
-            dataset = recentEmotes + twitchEmotes + otherEmotes + chatters
-            editText.setAdapter(AutoCompleteAdapter(context, dataset).also { autoCompleteAdapter = it })
-            editText.setTokenizer(SpaceTokenizer())
+            autoCompleteAdapter!!.notifyDataSetChanged()
         } else if (emotesAddedCount > 4) {
             viewPager.adapter?.notifyDataSetChanged()
         }
@@ -193,8 +159,12 @@ class ChatView : ConstraintLayout {
         adapter.setUsername(username)
     }
 
-    fun setChatters(chatters: List<Chatter>) {
-        this.chatters = chatters
+    fun setChatters(chatters: Collection<Chatter>) {
+        autoCompleteList.addAll(chatters)
+    }
+
+    fun addChatter(chatter: Chatter) {
+        autoCompleteAdapter?.add(chatter)
     }
 
     fun setCallback(callback: MessageSenderCallback) {
@@ -235,8 +205,43 @@ class ChatView : ConstraintLayout {
             MessageClickedDialog.newInstance(enableMessaging, original, formatted).show(fragmentManager, null)
         }
         if (enableMessaging) {
-            messagingEnabled = true
+            editText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    sendMessage()
+                } else {
+                    false
+                }
+            }
+            editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
+                if (text?.isNotBlank() == true) {
+                    send.visible()
+                    clear.visible()
+                } else {
+                    send.gone()
+                    clear.gone()
+                }
+            })
+            editText.setAdapter(AutoCompleteAdapter(context, autoCompleteList).also { autoCompleteAdapter = it })
+            editText.setTokenizer(SpaceTokenizer())
+            var previousSize = autoCompleteList.size
+            editText.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus && autoCompleteList.size != previousSize) {
+                    previousSize = autoCompleteList.size
+                    autoCompleteAdapter!!.notifyDataSetChanged()
+                }
+                autoCompleteAdapter!!.setNotifyOnChange(hasFocus)
+            }
+            clear.setOnClickListener {
+                val text = editText.text.toString().trimEnd()
+                editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
+            }
+            clear.setOnLongClickListener {
+                editText.text.clear()
+                true
+            }
+            send.setOnClickListener { sendMessage() }
             messageView.visible()
+            messagingEnabled = true
         }
     }
 
@@ -345,23 +350,7 @@ class ChatView : ConstraintLayout {
         }
 
         override fun terminateToken(text: CharSequence): CharSequence {
-            var i = text.length
-
-            while (i > 0 && text[i - 1] == ' ') {
-                i--
-            }
-
-            return if (i > 0 && text[i - 1] == ' ') {
-                text.substring(1)
-            } else {
-                if (text is Spanned) {
-                    val sp = SpannableString("$text ")
-                    TextUtils.copySpansFrom(text, 0, text.length, Any::class.java, sp, 0)
-                    sp.substring(1)
-                } else {
-                    "${text.substring(1)} "
-                }
-            }
+            return "${if (text.startsWith(':')) text.substring(1) else text} "
         }
     }
 

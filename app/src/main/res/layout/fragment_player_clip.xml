@@ -4,15 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layoutDirection="ltr">
+    android:layoutDirection="ltr" >
 
     <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
-        app:controller_layout_id="@layout/player_video"
-        style="@style/Player.Portrait"/>
+        style="@style/Player.Portrait"
+        android:layout_height="200dp"
+        app:controller_layout_id="@layout/player_video" />
 
     <FrameLayout
         android:id="@+id/chatFragmentContainer"
-        style="@style/ChatViewPortrait"/>
+        style="@style/ChatViewPortrait"
+        android:layout_marginBottom="5dp"/>
+
+    <Button
+        android:id="@+id/watchVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Watch full video"
+        android:textAllCaps="true"/>
 
 </com.github.exact7.xtra.ui.view.SlidingLayout>

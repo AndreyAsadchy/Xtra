@@ -147,6 +147,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                         username?.let {
                             if (value.contains(it, true) && !value.endsWith(':')) {
                                 builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                builder.setSpan(ForegroundColorSpan(Color.WHITE), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                             }
                         }
                     }

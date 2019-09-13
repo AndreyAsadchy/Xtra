@@ -19,6 +19,7 @@ import com.github.exact7.xtra.ui.common.BaseViewModel
 import com.github.exact7.xtra.ui.player.ChatReplayManager
 import com.github.exact7.xtra.ui.view.chat.ChatView
 import com.github.exact7.xtra.ui.view.chat.MAX_LIST_COUNT
+import com.github.exact7.xtra.util.SingleLiveEvent
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
@@ -29,7 +30,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
@@ -45,12 +45,12 @@ class ChatViewModel @Inject constructor(
     val ffz: LiveData<List<FfzEmote>>
         get() = _ffz
 
-    private val _chatMessages: MutableLiveData<MutableList<ChatMessage>> by lazy {
+    private val _chatMessages by lazy {
         MutableLiveData<MutableList<ChatMessage>>().apply { value = Collections.synchronizedList(ArrayList(MAX_LIST_COUNT)) }
     }
     val chatMessages: LiveData<MutableList<ChatMessage>>
         get() = _chatMessages
-    private val _newMessage: MutableLiveData<ChatMessage> by lazy { MutableLiveData<ChatMessage>() }
+    private val _newMessage by lazy { MutableLiveData<ChatMessage>() }
     val newMessage: LiveData<ChatMessage>
         get() = _newMessage
 
@@ -58,9 +58,12 @@ class ChatViewModel @Inject constructor(
 
     private var chat: ChatController? = null
 
-    private val _newChatter = MutableLiveData<Chatter>()
+    private val _newChatter by lazy { SingleLiveEvent<Chatter>() }
     val newChatter: LiveData<Chatter>
         get() = _newChatter
+
+    val chatters: Collection<Chatter>
+        get() = (chat as LiveChatController).chatters.values
 
     fun startLive(user: User, channel: Channel) {
         if (chat == null) {
@@ -130,14 +133,13 @@ class ChatViewModel @Inject constructor(
         private val allEmotesMap: MutableMap<String, Emote> = ChatFragment.defaultBttvAndFfzEmotes().associateByTo(HashMap()) { it.name }
         private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
-        private val chattersSet = HashSet<String>()
+        val chatters = HashMap<String, Chatter>()
 
         init {
             if (user is LoggedIn) {
                 localEmotesObserver = Observer<List<TwitchEmote>> { addEmotes(it) }.also(emotes::observeForever)
             }
-            chattersSet.add(displayName)
-            _newChatter.value = Chatter(displayName)
+            chatters[displayName] = Chatter(displayName)
         }
 
         override fun send(message: CharSequence) {
@@ -168,8 +170,10 @@ class ChatViewModel @Inject constructor(
 
         override fun onMessage(message: ChatMessage) {
             super.onMessage(message)
-            if (chattersSet.add(message.displayName)) {
-                _newChatter.value = Chatter(message.displayName)
+            if (!chatters.containsKey(message.displayName)) {
+                val chatter = Chatter(message.displayName)
+                chatters[message.displayName] = chatter
+                _newChatter.postValue(chatter)
             }
         }
 
@@ -215,6 +219,7 @@ class ChatViewModel @Inject constructor(
                 message.subscriberBadge = subscriberBadges?.getBadge(it.version.toInt())
             }
             _chatMessages.value!!.add(message)
+            println("MESSAGE ${Thread.currentThread()}")
             _newMessage.postValue(message)
         }
     }

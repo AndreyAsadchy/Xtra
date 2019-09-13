@@ -19,6 +19,8 @@ import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.enable
+import com.github.exact7.xtra.util.gone
+import kotlinx.android.synthetic.main.fragment_player_clip.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -54,6 +56,9 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
                 startTime = TwitchApiHelper.parseClipOffset(it.url)
             }
             childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, ChatFragment.newInstance(channel, videoId, startTime)).commit()
+        }
+        if (clip.vod == null) {
+            watchVideo.gone()
         }
         viewModel = getViewModel()
     }

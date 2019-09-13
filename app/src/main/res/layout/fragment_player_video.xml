@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layoutDirection="ltr" >
+    android:layoutDirection="ltr">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <com.github.exact7.xtra.ui.view.CustomPlayerView
         android:id="@+id/playerView"
         app:controller_layout_id="@layout/player_video"
         style="@style/Player.Portrait"/>
