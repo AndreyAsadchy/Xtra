@@ -82,12 +82,12 @@
     <string name="thank_you">شكراً جزيلاً!</string>
     <string name="rate_app_message">إذا كنت تستمتع باستخدام إكسترا، يرجى أخذ بعض الوقت لتقييمه. لن يستغرق الأمر أكثر من دقيقة. شكراً لدعمك!</string>
     <string name="rate">قَيم</string>
-    <string name="rate_app">معدل التطبيق</string>
+    <string name="rate_app">قَيم التطبيق </string>
     <string name="remind_me_later">ذكرني لاحقاً</string>
     <string name="no_thanks">لا، شكراً</string>
     <string name="no_storage_detected">لم يتم اكتشاف سعة تخزينية (على الأرجح أن الهاتف متصل بجهاز كومبيوتر).</string>
     <string name="rewind">الترجيع</string>
-    <string name="forward">التقديم السريع</string>
+    <string name="forward"> التقديم</string>
     <string name="seconds">%s ثواني</string>
     <string name="unfollow">  إلغاء مُتابعة %s؟</string>
     <string name="now_following">أنت الآن تُتابع %s</string>
@@ -118,16 +118,16 @@
     <string name="chat">الدردشة</string>
     <string name="recent_emotes">الأخيرة</string>
     <string name="notification_playback_channel_title">تشغيل</string>
-    <string name="channels">قنوات</string>
-    <string name="video">فيديو</string>
-    <string name="watch_video">مشاهدة الفيديو الكامل</string>
-    <string name="new_update">ما الجديد في هذا التحديث</string>
+    <string name="channels">القنوات</string>
+    <string name="video">الفيديو</string>
+    <string name="watch_video">مشاهدة الفيديو بأكمله</string>
+    <string name="new_update">ما الجديد في هذا التحديث؟ </string>
     <string name="dont_show_changelogs">لا تعرض التغييرات </string>
     <string name="show_changelogs">عرض التغييرات بعد التحديث</string>
     <string name="support_the_developer">إدعم المطور</string>
     <string name="donate_prompt">كم تريد أن تتبرع؟</string>
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
-    <string name="animated_emotes">الرموز التعبيرية المتحركة</string>
+    <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog"><b>September 15th, 1.4.0</b>
         \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
 \n- Added ability when watching a clip to continue watching it in the full video

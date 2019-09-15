@@ -112,7 +112,7 @@ class ChatAdapter(
         val originalMessage = "$userName: ${chatMessage.message}"
         try {
             chatMessage.emotes?.let { emotes ->
-                val copy = emotes.map { it.copy() }
+                val copy = emotes.toMutableList()
                 index += userNameLength + 2
                 for (e in copy) {
                     val begin = index + e.begin
