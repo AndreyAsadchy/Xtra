@@ -19,10 +19,10 @@ class NewUpdateChangelogDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        changelog.text = ""
+        changelog.text = getText(R.string.changelog)
         ok.setOnClickListener {
             if (dontShow.isChecked) {
-                requireContext().prefs().edit { putBoolean(C.SHOW_CHANGELOG, false) }
+                requireContext().prefs().edit { putBoolean(C.SHOW_CHANGELOGS, false) }
             }
             dismiss()
         }

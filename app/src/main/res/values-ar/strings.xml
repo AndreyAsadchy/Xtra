@@ -120,8 +120,21 @@
     <string name="notification_playback_channel_title">تشغيل</string>
     <string name="channels">قنوات</string>
     <string name="video">فيديو</string>
-    <string name="watch_video">Watch full video</string>
-    <string name="new_update">What\'s new in this update</string>
-    <string name="dont_show_changelogs">Don\'t show changelogs</string>
-    <string name="show_changelogs">Show changes after update</string>
+    <string name="watch_video">مشاهدة الفيديو الكامل</string>
+    <string name="new_update">ما الجديد في هذا التحديث</string>
+    <string name="dont_show_changelogs">لا تعرض التغييرات </string>
+    <string name="show_changelogs">عرض التغييرات بعد التحديث</string>
+    <string name="support_the_developer">إدعم المطور</string>
+    <string name="donate_prompt">كم تريد أن تتبرع؟</string>
+    <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
+    <string name="animated_gifs">الرسوم المتحركة GIF العواطف</string>
+    <string name="changelog"><b>September 15th, 1.4.0</b>
+        \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
+\n- Added ability when watching a clip to continue watching it in the full video
+\n- Added ability to support the development of the app, located in the \"Menu\" tab
+\n- Added ability to disable animated GIF emotes
+\n- Fixed video position resetting after Internet connection was lost
+\n- Improved highlighting of a message when user was mentioned in the chat
+\n- Other bug fixes and improvements
+    </string>
 </resources>

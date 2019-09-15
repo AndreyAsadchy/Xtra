@@ -77,8 +77,14 @@
         app:isPreferenceVisible="false"
         />
 
-    <CheckBoxPreference
-        android:key="showChangelog"
+    <SwitchPreferenceCompat
+        android:key="animatedGifEmotes"
+        android:title="@string/animated_gifs"
+        android:defaultValue="true"
+        app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
+        android:key="showChangelogs"
         android:title="@string/show_changelogs"
         android:defaultValue="true"
         app:iconSpaceReserved="false"/>

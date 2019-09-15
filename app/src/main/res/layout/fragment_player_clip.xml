@@ -22,7 +22,7 @@
         <FrameLayout
             android:id="@+id/chatFragmentContainer"
             style="@style/ChatViewPortrait"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="3dp"/>
 
         <Button
             android:id="@+id/watchVideo"

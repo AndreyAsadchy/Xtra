@@ -5,8 +5,8 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+import android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE
 import android.text.method.LinkMovementMethod
-import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
@@ -33,7 +33,10 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.math.min
 
-class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(
+        private val emoteSize: Int,
+        private val badgeSize: Int,
+        private val animateGifs: Boolean) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     var messages: MutableList<ChatMessage>? = null
         set(value) {
@@ -128,6 +131,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
             }
             val split = builder.split(" ")
             var builderIndex = 0
+            var wasMentioned = false
             for (i in 0 until split.size) {
                 val value = split[i]
                 val length = value.length
@@ -145,9 +149,8 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                             builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         username?.let {
-                            if (value.contains(it, true) && !value.endsWith(':')) {
-                                builder.setSpan(BackgroundColorSpan(Color.RED), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                                builder.setSpan(ForegroundColorSpan(Color.WHITE), 0, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                            if (!wasMentioned && value.contains(it, true) && !value.endsWith(':')) {
+                                wasMentioned = true
                             }
                         }
                     }
@@ -170,6 +173,12 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
                     if (i != split.lastIndex) 2 else 1
                 }
             }
+            if (wasMentioned) {
+                builder.setSpan(ForegroundColorSpan(Color.WHITE), 0, builder.length, SPAN_INCLUSIVE_INCLUSIVE)
+                (holder.itemView as TextView).setBackgroundColor(Color.RED)
+            } else {
+                holder.itemView.background = null
+            }
             loadImages(holder, images, originalMessage, builder)
         } catch (e: Exception) {
             Crashlytics.logException(e)
@@ -182,7 +191,7 @@ class ChatAdapter(private val emoteSize: Int, private val badgeSize: Int) : Recy
     private fun loadImages(holder: ViewHolder, images: List<Image>, originalMessage: CharSequence, builder: SpannableStringBuilder) {
         val context = holder.itemView.context
         images.forEach { (url, start, end, isEmote, isPng) ->
-            if (isPng) {
+            if (isPng || !animateGifs) {
                 GlideApp.with(context)
                         .load(url)
                         .into(object : CustomTarget<Drawable>() {

@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.crashlytics.android.Crashlytics
+import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.NotLoggedIn
@@ -150,7 +151,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         var flag = notInitialized && !isNetworkAvailable
         viewModel.isNetworkAvailable.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { online -> //TODO maybe SingleLiveEvent is better?
+            it.getContentIfNotHandled()?.let { online ->
                 if (online) {
                     viewModel.validate(this)
                 }
@@ -180,9 +181,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //                override fun onProviderInstalled() {}
 //            })
             handleIntent(intent)
-            if (prefs.getString("lastUpdateVersion", null) != Build.VERSION.RELEASE) {
-                prefs.edit { putString("lastUpdateVersion", Build.VERSION.RELEASE) }
-                if (prefs.getBoolean(C.SHOW_CHANGELOG, true) && notFirstLaunch) {
+            if (prefs.getString("lastUpdateVersion", null) != BuildConfig.VERSION_NAME) {
+                prefs.edit { putString("lastUpdateVersion", BuildConfig.VERSION_NAME) }
+                if (prefs.getBoolean(C.SHOW_CHANGELOGS, true) && notFirstLaunch) {
                     NewUpdateChangelogDialog().show(supportFragmentManager, null)
                 }
             } else {
@@ -404,7 +405,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {
         playerFragment = fragment
-        supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment).commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.playerContainer, fragment).commit()
         viewModel.onPlayerStarted()
     }
 

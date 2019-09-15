@@ -28,8 +28,11 @@ import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.ParsingMode
 import com.iheartradio.m3u8.PlaylistParser
+import com.iheartradio.m3u8.PlaylistWriter
 import com.iheartradio.m3u8.data.MediaPlaylist
+import com.iheartradio.m3u8.data.Playlist
 import com.iheartradio.m3u8.data.TrackData
+import com.iheartradio.m3u8.data.TrackInfo
 import com.tonyodev.fetch2.AbstractFetchListener
 import com.tonyodev.fetch2.Download
 import com.tonyodev.fetch2.Fetch
@@ -41,6 +44,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.io.FileOutputStream
 import java.net.URL
 import java.util.concurrent.CountDownLatch
 import javax.inject.Inject
@@ -263,12 +267,14 @@ class DownloadService : IntentService(TAG), Injectable {
         if (offlineVideo.vod) {
             Log.d(TAG, "Downloaded video")
             with(request) {
-                val mainFile = File(path + "${System.currentTimeMillis()}.ts")
+                val tracks = ArrayList<TrackData>(offlineVideo.maxProgress)
                 try {
                     for (i in segmentFrom!!..segmentTo!!) {
-                        val file = File("$path${playlist.tracks[i].uri}")
-                        mainFile.appendBytes(file.readBytes())
-                        file.delete()
+                        val track = playlist.tracks[i] //TODO encrypt files
+                        tracks.add(TrackData.Builder()
+                                .withUri("$path${track.uri}")
+                                .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
+                                .build())
                     }
                 } catch (e: UninitializedPropertyAccessException) {
                     GlobalScope.launch {
@@ -280,7 +286,17 @@ class DownloadService : IntentService(TAG), Injectable {
                     Crashlytics.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
                     Crashlytics.logException(e)
                 }
-                Log.d(TAG, "Merged videos")
+                val mediaPlaylist = MediaPlaylist.Builder()
+                        .withTargetDuration(playlist.targetDuration)
+                        .withTracks(tracks)
+                        .build()
+                val playlist = Playlist.Builder()
+                        .withMediaPlaylist(mediaPlaylist)
+                        .build()
+                FileOutputStream(offlineVideo.url).use {
+                    PlaylistWriter(it, Format.EXT_M3U, Encoding.UTF_8).write(playlist)
+                }
+                Log.d(TAG, "Playlist created")
             }
         } else {
             Log.d(TAG, "Downloaded clip")
@@ -350,13 +366,12 @@ class DownloadService : IntentService(TAG), Injectable {
     }
 }
 
+//                val mainFile = File(path + "${System.currentTimeMillis()}.ts")
 //                try {
 //                    for (i in segmentFrom!!..segmentTo!!) {
-//                        val track = playlist.tracks[i] //TODO encrypt files
-//                        tracks.add(TrackData.Builder()
-//                                .withUri("$path${track.uri}")
-//                                .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
-//                                .build())
+//                        val file = File("$path${playlist.tracks[i].uri}")
+//                        mainFile.appendBytes(file.readBytes())
+//                        file.delete()
 //                    }
 //                } catch (e: UninitializedPropertyAccessException) {
 //                    GlobalScope.launch {
@@ -368,14 +383,4 @@ class DownloadService : IntentService(TAG), Injectable {
 //                    Crashlytics.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
 //                    Crashlytics.logException(e)
 //                }
-//                val mediaPlaylist = MediaPlaylist.Builder()
-//                        .withTargetDuration(playlist.targetDuration)
-//                        .withTracks(tracks)
-//                        .build()
-//                val playlist = Playlist.Builder()
-//                        .withMediaPlaylist(mediaPlaylist)
-//                        .build()
-//                FileOutputStream(offlineVideo.url).use {
-//                    PlaylistWriter(it, Format.EXT_M3U, Encoding.UTF_8).write(playlist)
-//                }
-//                Log.d(TAG, "Playlist created")
+//                Log.d(TAG, "Merged videos")

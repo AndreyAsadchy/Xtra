@@ -14,7 +14,9 @@ import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.view.GridAutofitLayoutManager
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
+import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 
@@ -26,6 +28,7 @@ class EmotesFragment : Fragment() {
 
     private lateinit var listener: (Emote) -> Unit
     private val recyclerView by lazy { requireView() as RecyclerView }
+    private var animateGifs = true
     var type = 0
         private set
 
@@ -42,6 +45,7 @@ class EmotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
+        animateGifs = context.prefs().getBoolean(C.ANIMATED_GIF_EMOTES, true)
         val emotes = requireArguments().getSerializable("list") as List<Emote>
         type = when (emotes.firstOrNull()) {
             is TwitchEmote -> 1
@@ -53,6 +57,6 @@ class EmotesFragment : Fragment() {
     }
 
     fun setEmotes(list: List<Emote>) {
-        recyclerView.adapter = EmotesAdapter(list, listener)
+        recyclerView.adapter = EmotesAdapter(list, listener, animateGifs)
     }
 }

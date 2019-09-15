@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.util
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -36,28 +35,27 @@ fun View.toggleVisibility() = if (isVisible) gone() else visible()
 
 @SuppressLint("CheckResult")
 fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean = false, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.AUTOMATIC) {
-    val context = context ?: return
-    if (context is Activity && ((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN && context.isDestroyed) || context.isFinishing)) {
-        return //not enough on some devices?
-    }
-    try {
-        val request = GlideApp.with(context)
-                .load(url)
-                .diskCacheStrategy(diskCacheStrategy)
-                .transition(DrawableTransitionOptions.withCrossFade())
-        if (changes) {
-            //update every 5 minutes
-            val minutes = System.currentTimeMillis() / 60000L
-            val lastMinute = minutes % 10
-            val key = if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5)
-            request.signature(ObjectKey(key))
+    if (context.isActivityResumed) { //not enough on some devices?
+        try {
+            val request = GlideApp.with(context)
+                    .load(url)
+                    .diskCacheStrategy(diskCacheStrategy)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+            if (changes) {
+                //update every 5 minutes
+                val minutes = System.currentTimeMillis() / 60000L
+                val lastMinute = minutes % 10
+                val key = if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5)
+                request.signature(ObjectKey(key))
+            }
+            if (circle) {
+                request.circleCrop()
+            }
+            request.into(this)
+        } catch (e: IllegalArgumentException) {
+            Crashlytics.logException(e)
         }
-        if (circle) {
-            request.circleCrop()
-        }
-        request.into(this)
-    } catch (e: IllegalArgumentException) {
-        Crashlytics.logException(e)
+        return
     }
 }
 

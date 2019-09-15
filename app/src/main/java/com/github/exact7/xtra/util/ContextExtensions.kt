@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.ConnectivityManager
+import android.os.Build
 import android.util.TypedValue
 import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
@@ -44,3 +45,6 @@ val Context.isInPortraitOrientation
 
 val Context.isInLandscapeOrientation
     get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+val Context.isActivityResumed
+    get() = this !is Activity || !((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN && isDestroyed) || isFinishing)

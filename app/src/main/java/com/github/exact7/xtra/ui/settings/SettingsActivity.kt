@@ -48,22 +48,31 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 true
             }
+            val resultIntent = Intent()
             findPreference<SeekBarPreference>("chatWidth").setOnPreferenceChangeListener { _, newValue ->
                 val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(activity, newValue as Int)
                 activity.prefs().edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
-                activity.setResult(Activity.RESULT_OK, Intent().putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
+                activity.setResult(Activity.RESULT_OK, resultIntent.putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true
             }
             findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
-                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.isInPortraitOrientation))
+                activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("shouldRecreate", activity.isInPortraitOrientation))
                 true
             }
             findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
-                activity.setResult(Activity.RESULT_OK, Intent().putExtra("shouldRecreate", activity.isInLandscapeOrientation))
+                activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("shouldRecreate", activity.isInLandscapeOrientation))
                 true
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                 findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE).isVisible = true
+            }
+            findPreference<SwitchPreferenceCompat>(C.ANIMATED_GIF_EMOTES).apply {
+                val originalValue = isChecked
+                setOnPreferenceChangeListener { _, newValue ->
+                    newValue as Boolean
+                    activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedAnimatedEmotes", newValue != originalValue))
+                    true
+                }
             }
         }
     }

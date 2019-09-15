@@ -27,7 +27,9 @@ class DonationDialog : DialogFragment() {
             viewModel.launchBillingFlow(activity, position)
         }
         viewModel.state.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(activity, if (it) "SUCCESS".also { dismiss() } else "ERROR", Toast.LENGTH_LONG).show()
+            if (it) {
+                Toast.makeText(activity, getString(R.string.thank_you_so_much), Toast.LENGTH_LONG).show()
+            }
         })
     }
 }

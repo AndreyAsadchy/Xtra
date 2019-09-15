@@ -68,7 +68,7 @@ class MenuFragment : Fragment() {
                     activity.playerContainer?.findViewById<FrameLayout>(R.id.chatFragmentContainer)?.updateLayoutParams { width = value }
                 }
             }
-            if (it.getBooleanExtra("shouldRecreate", false)) {
+            if (it.getBooleanExtra("shouldRecreate", false) || it.getBooleanExtra("changedAnimatedEmotes", false)) {
                 activity.recreate()
             }
         }

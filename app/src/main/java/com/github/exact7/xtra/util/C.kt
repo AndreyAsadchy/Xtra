@@ -21,5 +21,6 @@ object C {
     const val DOWNLOAD_NETWORK_PREFERENCE = "downloadNetworkPreference"
     const val KEY_LAST_SELECTED_ITEM = "lastSelectedItem"
     const val TWITCH_EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
-    const val SHOW_CHANGELOG = "showChangelog"
+    const val ANIMATED_GIF_EMOTES = "animatedGifEmotes"
+    const val SHOW_CHANGELOGS = "showChangelogs"//TODO separate keys for preferences
 }

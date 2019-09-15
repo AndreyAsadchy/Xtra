@@ -3,10 +3,10 @@ package com.github.exact7.xtra.ui.view.chat
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import android.widget.TextView
@@ -28,10 +28,12 @@ import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.common.ChatAdapter
+import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
 import com.github.exact7.xtra.util.loadImage
+import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.showKeyboard
 import com.github.exact7.xtra.util.toggleVisibility
 import com.github.exact7.xtra.util.visible
@@ -50,7 +52,8 @@ class ChatView : ConstraintLayout {
         fun send(message: CharSequence)
     }
 
-    private val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f))
+    private val animateGifs = context.prefs().getBoolean(C.ANIMATED_GIF_EMOTES, true)
+    private val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), animateGifs)
 
     private var isChatTouched = false
 
@@ -212,13 +215,6 @@ class ChatView : ConstraintLayout {
             MessageClickedDialog.newInstance(enableMessaging, original, formatted).show(fragmentManager, null)
         }
         if (enableMessaging) {
-            editText.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    sendMessage()
-                } else {
-                    false
-                }
-            }
             editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
                 if (text?.isNotBlank() == true) {
                     send.visible()
@@ -237,6 +233,13 @@ class ChatView : ConstraintLayout {
                     autoCompleteAdapter!!.notifyDataSetChanged()
                 }
                 autoCompleteAdapter!!.setNotifyOnChange(hasFocus)
+            }
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    sendMessage()
+                } else {
+                    false
+                }
             }
             clear.setOnClickListener {
                 val text = editText.text.toString().trimEnd()
