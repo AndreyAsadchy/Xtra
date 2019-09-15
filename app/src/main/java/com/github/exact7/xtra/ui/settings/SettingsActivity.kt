@@ -66,7 +66,7 @@ class SettingsActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                 findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE).isVisible = true
             }
-            findPreference<SwitchPreferenceCompat>(C.ANIMATED_GIF_EMOTES).apply {
+            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES).apply {
                 val originalValue = isChecked
                 setOnPreferenceChangeListener { _, newValue ->
                     newValue as Boolean

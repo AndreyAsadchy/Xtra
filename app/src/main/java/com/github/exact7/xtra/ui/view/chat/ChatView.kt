@@ -52,7 +52,7 @@ class ChatView : ConstraintLayout {
         fun send(message: CharSequence)
     }
 
-    private val animateGifs = context.prefs().getBoolean(C.ANIMATED_GIF_EMOTES, true)
+    private val animateGifs = context.prefs().getBoolean(C.ANIMATED_EMOTES, true)
     private val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), animateGifs)
 
     private var isChatTouched = false

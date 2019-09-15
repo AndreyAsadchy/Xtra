@@ -45,7 +45,7 @@ class EmotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        animateGifs = context.prefs().getBoolean(C.ANIMATED_GIF_EMOTES, true)
+        animateGifs = context.prefs().getBoolean(C.ANIMATED_EMOTES, true)
         val emotes = requireArguments().getSerializable("list") as List<Emote>
         type = when (emotes.firstOrNull()) {
             is TwitchEmote -> 1

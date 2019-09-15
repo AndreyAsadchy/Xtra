@@ -127,7 +127,7 @@
     <string name="support_the_developer">Поддержать разработчика</string>
     <string name="donate_prompt">Сколько бы Вы хотели пожертвовать?</string>
     <string name="thank_you_so_much">Огромное спасибо!!! ❤❤❤</string>
-    <string name="animated_gifs">Анимированные GIF картинки</string>
+    <string name="animated_emotes">Анимированные смайлики</string>
     <string name="changelog"><b>15 сентября, 1.4.0</b>
         \n- Добавлены подсказки в чате для пользователей (при вводе \"@\") и смайликов (при вводе \":\")
 \n- Добавлена возможность при просмотре клипа продолжить просмотр в полном видео

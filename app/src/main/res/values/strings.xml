@@ -131,7 +131,7 @@
     <string name="donate_prompt">How much would you like to donate?</string>
     <string name="thank_you_so_much">Thank you so much!!! ❤❤❤</string>
     <string name="support_the_developer">Support the developer</string>
-    <string name="animated_gifs">Animated GIF emotes</string>
+    <string name="animated_emotes">Animated emotes</string>
     <string name="changelog"><b>September 15th, 1.4.0</b>
         \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
 \n- Added ability when watching a clip to continue watching it in the full video

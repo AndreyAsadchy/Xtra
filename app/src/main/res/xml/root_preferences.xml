@@ -79,7 +79,7 @@
 
     <SwitchPreferenceCompat
         android:key="animatedGifEmotes"
-        android:title="@string/animated_gifs"
+        android:title="@string/animated_emotes"
         android:defaultValue="true"
         app:iconSpaceReserved="false"/>
 
