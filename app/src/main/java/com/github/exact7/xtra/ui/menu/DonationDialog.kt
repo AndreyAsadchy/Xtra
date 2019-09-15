@@ -29,6 +29,7 @@ class DonationDialog : DialogFragment() {
         viewModel.state.observe(viewLifecycleOwner, Observer {
             if (it) {
                 Toast.makeText(activity, getString(R.string.thank_you_so_much), Toast.LENGTH_LONG).show()
+                dismiss()
             }
         })
     }
