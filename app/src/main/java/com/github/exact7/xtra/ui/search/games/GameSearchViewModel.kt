@@ -15,7 +15,7 @@ class GameSearchViewModel @Inject constructor(
 
     private val query = MutableLiveData<String>()
     val list: LiveData<List<Game>> = Transformations.switchMap(query) {
-        repository.loadGames(it, compositeDisposable)
+        repository.loadGames(it)
                 .doOnSubscribe { _loadingState.value = LoadingState.LOADING }
                 .doOnEvent { _, _ -> _loadingState.value = LoadingState.LOADED }
                 .doOnError { shouldRetry = true }

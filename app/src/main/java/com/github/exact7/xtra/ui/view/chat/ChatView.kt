@@ -139,19 +139,26 @@ class ChatView : ConstraintLayout {
                 is BttvEmote, is FfzEmote -> {
                     otherEmotes.addAll(it)
                     adapter.addEmotes(it)
+                    if (messagingEnabled) {
+                        autoCompleteList.addAll(it)
+                    }
                 }
-                is TwitchEmote -> twitchEmotes = it
+                is TwitchEmote -> {
+                    twitchEmotes = it
+                    if (messagingEnabled) {
+                        autoCompleteList.addAll(it)
+                    }
+                }
                 is RecentEmote -> recentEmotes = it
             }
-            if (messagingEnabled) {
-                autoCompleteList.addAll(it)
-            }
         }
-        if (++emotesAddedCount == 4 && messagingEnabled) {
-            initEmotesViewPager()
-            autoCompleteAdapter!!.notifyDataSetChanged()
-        } else if (emotesAddedCount > 4) {
-            viewPager.adapter?.notifyDataSetChanged()
+        if (messagingEnabled) {
+            if (++emotesAddedCount == 4) {
+                initEmotesViewPager()
+                autoCompleteAdapter!!.notifyDataSetChanged()
+            } else if (emotesAddedCount > 4) {
+                viewPager.adapter?.notifyDataSetChanged()
+            }
         }
     }
 
@@ -223,10 +230,10 @@ class ChatView : ConstraintLayout {
             })
             editText.setAdapter(AutoCompleteAdapter(context, autoCompleteList).also { autoCompleteAdapter = it })
             editText.setTokenizer(SpaceTokenizer())
-            var previousSize = autoCompleteList.size
+            var previousSize = autoCompleteAdapter!!.count
             editText.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus && autoCompleteList.size != previousSize) {
-                    previousSize = autoCompleteList.size
+                    previousSize = autoCompleteAdapter!!.count
                     autoCompleteAdapter!!.notifyDataSetChanged()
                 }
                 autoCompleteAdapter!!.setNotifyOnChange(hasFocus)
@@ -234,6 +241,7 @@ class ChatView : ConstraintLayout {
             clear.setOnClickListener {
                 val text = editText.text.toString().trimEnd()
                 editText.setText(text.substring(0, max(text.lastIndexOf(' '), 0)))
+                editText.setSelection(editText.length())
             }
             clear.setOnLongClickListener {
                 editText.text.clear()

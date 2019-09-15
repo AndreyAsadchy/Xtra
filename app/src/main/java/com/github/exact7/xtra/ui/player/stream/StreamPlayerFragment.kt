@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -12,7 +13,6 @@ import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
-import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.enable
 import kotlinx.android.synthetic.main.player_stream.*
@@ -30,7 +30,7 @@ class StreamPlayerFragment : BasePlayerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        stream = requireArguments().getParcelable(C.STREAM)!!
+        stream = requireArguments().getParcelable(KEY_STREAM)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -106,5 +106,13 @@ class StreamPlayerFragment : BasePlayerFragment() {
 
     override fun onNetworkRestored() {
         viewModel.onResume()
+    }
+
+    companion object {
+        private const val KEY_STREAM = "stream"
+
+        fun newInstance(stream: Stream): StreamPlayerFragment {
+            return StreamPlayerFragment().apply { arguments = bundleOf(KEY_STREAM to stream) }
+        }
     }
 }

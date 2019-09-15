@@ -124,4 +124,8 @@
     <string name="notification_playback_channel_id" translatable="false">xtra_playback_channel</string>
     <string name="channels">Channels</string>
     <string name="video">Video</string>
+    <string name="watch_video">Watch full video</string>
+    <string name="new_update">What\'s new in this update</string>
+    <string name="dont_show_changelogs">Don\'t show changelogs</string>
+    <string name="show_changelogs">Show changes after update</string>
 </resources>

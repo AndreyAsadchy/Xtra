@@ -13,6 +13,7 @@ import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.model.kraken.user.UsersResponse
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
+import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.kraken.video.VideosResponse
 import io.reactivex.Single
 import okhttp3.ResponseBody
@@ -46,6 +47,9 @@ interface KrakenApi {
 
     @GET("clips/followed")
     fun getFollowedClips(@Header("Authorization") token: String, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): Single<ClipsResponse>
+
+    @GET("videos/{id}")
+    fun getVideo(@Path("id") videoId: String): Single<Video>
 
     @GET("videos/top")
     fun getTopVideos(@Query("game") game: String?, @Query("period") period: com.github.exact7.xtra.model.kraken.video.Period?, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Single<VideosResponse>

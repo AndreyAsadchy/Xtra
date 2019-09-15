@@ -43,7 +43,7 @@ class VideoPlayerViewModel @Inject constructor(
     override val channelInfo: Pair<String, String>
         get() = video.channel.id to video.channel.displayName
 
-    fun setVideo(video: Video) {
+    fun setVideo(video: Video, offset: Double) {
         if (!this::video.isInitialized) {
             this.video = video
             playerRepository.loadVideoPlaylist(video.id)
@@ -53,6 +53,9 @@ class VideoPlayerViewModel @Inject constructor(
                         if (it.isSuccessful) {
                             mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(it.raw().request().url().toString()))
                             play()
+                            if (offset > 0) {
+                                player.seekTo(offset.toLong())
+                            }
                         } else if (it.code() == 403) {
                             val context = getApplication<Application>()
                             Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
@@ -84,11 +87,11 @@ class VideoPlayerViewModel @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        player.seekTo(playbackPosition)
+        currentPlayer.value!!.seekTo(playbackPosition)
     }
 
     override fun onPause() {
+        playbackPosition = currentPlayer.value!!.currentPosition
         super.onPause()
-        playbackPosition = player.currentPosition
     }
 }

@@ -138,7 +138,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             playerHeight = playerView.height
         }
         if (this !is OfflinePlayerFragment) {
-            chatLayout = view.findViewById(if (this !is ClipPlayerFragment || isPortrait) R.id.chatFragmentContainer else R.id.clipLandscapeChatContainer)
+            chatLayout = view.findViewById(if (this !is ClipPlayerFragment) R.id.chatFragmentContainer else R.id.clipChatContainer)
             secondView = chatLayout
             if (!isPortrait) {
                 chatWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)

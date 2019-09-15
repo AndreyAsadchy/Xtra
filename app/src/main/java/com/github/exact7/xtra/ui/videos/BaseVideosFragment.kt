@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFragment<Video, VM>(), Scrollable, HasDownloadDialog {
 
     interface OnVideoSelectedListener {
-        fun startVideo(video: Video)
+        fun startVideo(video: Video, offset: Double? = null)
     }
 
     var lastSelectedItem: Video? = null

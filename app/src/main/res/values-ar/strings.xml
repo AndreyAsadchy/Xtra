@@ -120,4 +120,8 @@
     <string name="notification_playback_channel_title">تشغيل</string>
     <string name="channels">قنوات</string>
     <string name="video">فيديو</string>
+    <string name="watch_video">Watch full video</string>
+    <string name="new_update">What\'s new in this update</string>
+    <string name="dont_show_changelogs">Don\'t show changelogs</string>
+    <string name="show_changelogs">Show changes after update</string>
 </resources>

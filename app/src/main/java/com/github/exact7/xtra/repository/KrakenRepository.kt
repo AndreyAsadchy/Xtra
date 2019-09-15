@@ -108,6 +108,12 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config, networkExecutor)
     }
 
+    override fun loadVideo(videoId: String): Single<Video> {
+        return api.getVideo(videoId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
     override fun loadVideos(game: String?, period: Period, broadcastType: BroadcastType, language: String?, sort: Sort, compositeDisposable: CompositeDisposable): Listing<Video> {
         val factory = VideosDataSource.Factory(game, period, broadcastType, language, sort, api, networkExecutor, compositeDisposable)
         val config = PagedList.Config.Builder()
@@ -224,31 +230,31 @@ class KrakenRepository @Inject constructor(
         Log.d(TAG, "Loading if user is following channel $channelId")
         return api.getUserFollows(userId, channelId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map { it.body()?.let { body -> body.string().length > 300 } == true }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun followChannel(userToken: String, userId: String, channelId: String): Single<Boolean> {
         Log.d(TAG, "Following channel $channelId")
         return api.followChannel("OAuth $userToken", userId, channelId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map { it.body() != null }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun unfollowChannel(userToken: String, userId: String, channelId: String): Single<Boolean> {
         Log.d(TAG, "Unfollowing channel $channelId")
         return api.unfollowChannel("OAuth $userToken", userId, channelId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map { it.code() == 204 }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun loadGames(query: String, compositeDisposable: CompositeDisposable): Single<List<Game>> {
+    override fun loadGames(query: String): Single<List<Game>> {
         Log.d(TAG, "Loading games containing: $query")
         return api.getGames(query)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map { it.games ?: emptyList() }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 }

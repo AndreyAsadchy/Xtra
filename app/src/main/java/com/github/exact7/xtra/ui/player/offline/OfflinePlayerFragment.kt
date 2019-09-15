@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.os.bundleOf
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
+import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.FragmentUtils
@@ -35,7 +37,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override fun initialize() {
         viewModel = getViewModel()
         initializeViewModel(viewModel)
-        viewModel.setVideo(requireArguments().getParcelable("video")!!)
+        viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
         requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex) }
     }
 
@@ -57,5 +59,13 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index)
+    }
+
+    companion object {
+        private const val KEY_VIDEO = "video"
+
+        fun newInstance(video: OfflineVideo): OfflinePlayerFragment {
+            return OfflinePlayerFragment().apply { arguments = bundleOf(KEY_VIDEO to video) }
+        }
     }
 }

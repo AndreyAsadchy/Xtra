@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -15,7 +16,6 @@ import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
-import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.enable
@@ -37,7 +37,7 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        video = requireArguments().getParcelable(C.VIDEO)!!
+        video = requireArguments().getParcelable(KEY_VIDEO)!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,7 +53,7 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     }
 
     override fun initialize() {
-        viewModel.setVideo(video)
+        viewModel.setVideo(video, requireArguments().getDouble(KEY_OFFSET))
         initializeViewModel(viewModel)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         val download = requireView().findViewById<ImageButton>(R.id.download)
@@ -93,7 +93,20 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
         viewModel.onResume()
     }
 
+    override fun onNetworkLost() {
+        viewModel.onPause()
+    }
+
     override fun getCurrentPosition(): Double {
         return runBlocking(Dispatchers.Main) { viewModel.currentPlayer.value!!.currentPosition / 1000.0 }
+    }
+
+    companion object {
+        private const val KEY_VIDEO = "video"
+        private const val KEY_OFFSET = "offset"
+
+        fun newInstance(video: Video, offset: Double? = null): VideoPlayerFragment {
+            return VideoPlayerFragment().apply { arguments = bundleOf(KEY_VIDEO to video, KEY_OFFSET to offset) }
+        }
     }
 }

@@ -29,6 +29,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
 
     abstract fun initialize()
     abstract fun onNetworkRestored()
+    open fun onNetworkLost() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,16 +49,22 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
             }
             getMainViewModel().isNetworkAvailable.observe(viewLifecycleOwner, Observer {
                 val isOnline = it.peekContent()
-                if (isOnline && !lastState) {
-                    shouldRestore = if (userVisibleHint) {
-                        if (isInitialized) {
-                            onNetworkRestored()
+                if (isOnline) {
+                    if (!lastState) {
+                        shouldRestore = if (userVisibleHint) {
+                            if (isInitialized) {
+                                onNetworkRestored()
+                            } else {
+                                init()
+                            }
+                            false
                         } else {
-                            init()
+                            true
                         }
-                        false
-                    } else {
-                        true
+                    }
+                } else {
+                    if (isInitialized) {
+                        onNetworkLost()
                     }
                 }
                 lastState = isOnline

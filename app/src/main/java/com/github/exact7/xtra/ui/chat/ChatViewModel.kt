@@ -196,6 +196,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun start() {
+            stop()
             chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this, { _chatMessages.postValue(ArrayList()) })
         }
 
@@ -219,7 +220,6 @@ class ChatViewModel @Inject constructor(
                 message.subscriberBadge = subscriberBadges?.getBadge(it.version.toInt())
             }
             _chatMessages.value!!.add(message)
-            println("MESSAGE ${Thread.currentThread()}")
             _newMessage.postValue(message)
         }
     }

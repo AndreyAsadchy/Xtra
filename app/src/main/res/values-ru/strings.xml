@@ -120,4 +120,8 @@
     <string name="notification_playback_channel_title">Воспроизведение</string>
     <string name="channels">Пользователи</string>
     <string name="video">Видео</string>
+    <string name="watch_video">Смотреть полное видео</string>
+    <string name="new_update">Новое обновление</string>
+    <string name="dont_show_changelogs">Больше не показывать изменения</string>
+    <string name="show_changelogs">Показывать измения в новых обновлениях</string>
 </resources>

@@ -13,12 +13,10 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -81,7 +79,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     companion object {
         const val KEY_CODE = "code"
-        const val KEY_VIDEO = C.VIDEO
+        const val KEY_VIDEO = "video"
 
         const val INTENT_OPEN_DOWNLOADS_TAB = 0
         const val INTENT_OPEN_DOWNLOADED_VIDEO = 1
@@ -112,7 +110,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = prefs()
-        if (!prefs.getBoolean(C.FIRST_LAUNCH, true)) {
+        val notFirstLaunch = !prefs.getBoolean(C.FIRST_LAUNCH, true)
+        if (notFirstLaunch) {
             currentTheme = applyTheme()
         } else {
             prefs.edit {
@@ -133,44 +132,23 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
         setContentView(R.layout.activity_main)
 
-        if (prefs.getBoolean("showRateAppDialog", true) && savedInstanceState == null) {
-            val launchCount = prefs.getInt("launchCount", 0) + 1
-            val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
-            if (System.currentTimeMillis() < dateOfFirstLaunch + 345600000L || launchCount < 5) {
-                prefs.edit { putInt("launchCount", launchCount) }
-            } else { //4 days passed and launched at least 5 times
-                AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.thank_you))
-                        .setMessage(getString(R.string.rate_app_message))
-                        .setPositiveButton(getString(R.string.rate)) { _, _ ->
-                            prefs.edit { putBoolean("showRateAppDialog", false) }
-                            try {
-                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
-                            } catch (e: ActivityNotFoundException) {
-                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
-                            }
-                        }
-                        .setNegativeButton(getString(R.string.remind_me_later), null)
-                        .setNeutralButton(getString(R.string.no_thanks)) { _, _ -> prefs.edit { putBoolean("showRateAppDialog", false) } }
-                        .show()
-            }
-        }
+        val notInitialized = savedInstanceState == null
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         val user = User.get(this)
         viewModel.setUser(user)
         initNavigation()
         if (user !is NotLoggedIn) {
             fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
-            if (savedInstanceState == null) {
+            if (notInitialized) {
                 navBar.selectedItemId = R.id.fragment_follow
             }
         } else {
             fragNavController.initialize(INDEX_TOP, savedInstanceState)
-            if (savedInstanceState == null) {
+            if (notInitialized) {
                 navBar.selectedItemId = R.id.fragment_top
             }
         }
-        var flag = savedInstanceState == null && !isNetworkAvailable
+        var flag = notInitialized && !isNetworkAvailable
         viewModel.isNetworkAvailable.observe(this, Observer {
             it.getContentIfNotHandled()?.let { online -> //TODO maybe SingleLiveEvent is better?
                 if (online) {
@@ -187,7 +165,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             hideNavigationBar()
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        if (savedInstanceState == null) {
+        if (notInitialized) {
 //            ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
 //                override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
 //                    GoogleApiAvailability.getInstance().apply {
@@ -202,6 +180,35 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 //                override fun onProviderInstalled() {}
 //            })
             handleIntent(intent)
+            if (prefs.getString("lastUpdateVersion", null) != Build.VERSION.RELEASE) {
+                prefs.edit { putString("lastUpdateVersion", Build.VERSION.RELEASE) }
+                if (prefs.getBoolean(C.SHOW_CHANGELOG, true) && notFirstLaunch) {
+                    NewUpdateChangelogDialog().show(supportFragmentManager, null)
+                }
+            } else {
+                if (prefs.getBoolean("showRateAppDialog", true)) {
+                    val launchCount = prefs.getInt("launchCount", 0) + 1
+                    val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
+                    if (System.currentTimeMillis() < dateOfFirstLaunch + 345600000L || launchCount < 7) {
+                        prefs.edit { putInt("launchCount", launchCount) }
+                    } else { //4 days passed and launched at least 8 times
+                        AlertDialog.Builder(this)
+                                .setTitle(getString(R.string.thank_you))
+                                .setMessage(getString(R.string.rate_app_message))
+                                .setPositiveButton(getString(R.string.rate)) { _, _ ->
+                                    prefs.edit { putBoolean("showRateAppDialog", false) }
+                                    try {
+                                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                                    } catch (e: ActivityNotFoundException) {
+                                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                                    }
+                                }
+                                .setNegativeButton(getString(R.string.remind_me_later), null)
+                                .setNeutralButton(getString(R.string.no_thanks)) { _, _ -> prefs.edit { putBoolean("showRateAppDialog", false) } }
+                                .show()
+                    }
+                }
+            }
         }
         restorePlayerFragment()
     }
@@ -359,19 +366,19 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun startStream(stream: Stream) {
 //        playerFragment?.play(stream)
-        startPlayer(StreamPlayerFragment(), C.STREAM, stream)
+        startPlayer(StreamPlayerFragment.newInstance(stream))
     }
 
-    override fun startVideo(video: Video) {
-        startPlayer(VideoPlayerFragment(), C.VIDEO, video)
+    override fun startVideo(video: Video, offset: Double?) {
+        startPlayer(VideoPlayerFragment.newInstance(video, offset))
     }
 
     override fun startClip(clip: Clip) {
-        startPlayer(ClipPlayerFragment(), C.CLIP, clip)
+        startPlayer(ClipPlayerFragment.newInstance(clip))
     }
 
     override fun startOfflineVideo(video: OfflineVideo) {
-        startPlayer(OfflinePlayerFragment(), C.VIDEO, video)
+        startPlayer(OfflinePlayerFragment.newInstance(video))
     }
 
     override fun viewChannel(channel: Channel) {
@@ -394,9 +401,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
 //Player methods
 
-    private fun startPlayer(fragment: BasePlayerFragment, argKey: String, argValue: Parcelable) {
+    private fun startPlayer(fragment: BasePlayerFragment) {
 //        if (playerFragment == null) {
-        playerFragment = fragment.apply { arguments = bundleOf(argKey to argValue) }
+        playerFragment = fragment
         supportFragmentManager.beginTransaction().replace(R.id.playerContainer, fragment).commit()
         viewModel.onPlayerStarted()
     }

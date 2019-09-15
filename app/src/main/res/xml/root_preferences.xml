@@ -77,4 +77,10 @@
         app:isPreferenceVisible="false"
         />
 
+    <CheckBoxPreference
+        android:key="showChangelog"
+        android:title="@string/show_changelogs"
+        android:defaultValue="true"
+        app:iconSpaceReserved="false"/>
+
 </androidx.preference.PreferenceScreen>
