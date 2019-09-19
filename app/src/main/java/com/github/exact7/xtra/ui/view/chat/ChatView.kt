@@ -368,17 +368,15 @@ class ChatView : ConstraintLayout {
     class AutoCompleteAdapter(context: Context, list: List<Any>) : ArrayAdapter<Any>(context, 0, list) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            val view: View
             val viewHolder: ViewHolder
 
             val item = getItem(position)!!
             return when (getItemViewType(position)) {
                 TYPE_EMOTE -> {
                     if (convertView == null) {
-                        view = LayoutInflater.from(context).inflate(R.layout.auto_complete_emotes_list_item, parent, false)
+                        val view = LayoutInflater.from(context).inflate(R.layout.auto_complete_emotes_list_item, parent, false)
                         viewHolder = ViewHolder(view).also { view.tag = it }
                     } else {
-                        view = convertView
                         viewHolder = convertView.tag as ViewHolder
                     }
                     viewHolder.containerView.apply {
@@ -389,10 +387,9 @@ class ChatView : ConstraintLayout {
                 }
                 else -> {
                     if (convertView == null) {
-                        view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
+                        val view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
                         viewHolder = ViewHolder(view).also { view.tag = it }
                     } else {
-                        view = convertView
                         viewHolder = convertView.tag as ViewHolder
                     }
                     (viewHolder.containerView as TextView).apply {
