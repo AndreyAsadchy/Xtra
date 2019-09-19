@@ -23,13 +23,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.Image
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import java.util.Random
 import kotlin.collections.set
 import kotlin.math.min
 
@@ -169,7 +166,7 @@ class ChatAdapter(
                     }
                     builder.replace(builderIndex, endIndex, ".")
                     builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    images.add(Image(emote.url, builderIndex, builderIndex + 1, true, emote !is BttvEmote || emote.isPng))
+                    images.add(Image(emote.url, builderIndex, builderIndex + 1, true, emote.isPng))
                     if (i != split.lastIndex) 2 else 1
                 }
             }

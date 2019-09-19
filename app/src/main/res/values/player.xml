@@ -4,7 +4,7 @@
         <item name="show_buffering">always</item>
         <item name="android:background">@android:color/black</item>
         <item name="android:animateLayoutChanges">true</item>
-        <item name="surface_type">texture_view</item>
+        <item name="surface_type">surface_view</item>
     </style>
 
     <style name="Player.Portrait" parent="Player">

@@ -95,15 +95,15 @@ class ChatView : ConstraintLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        recyclerView.apply {
-            adapter = this@ChatView.adapter
-            itemAnimator = null
-            layoutManager = LinearLayoutManager(context).apply { stackFromEnd = true }
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.let {
+            it.adapter = adapter
+            it.itemAnimator = null
+            it.layoutManager = LinearLayoutManager(context).apply { stackFromEnd = true }
+            it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     isChatTouched = newState == RecyclerView.SCROLL_STATE_DRAGGING
-                    this@ChatView.btnDown.isVisible = shouldShowButton()
+                    btnDown.isVisible = shouldShowButton()
                 }
             })
         }
@@ -370,26 +370,49 @@ class ChatView : ConstraintLayout {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val view: View
             val viewHolder: ViewHolder
+
             val item = getItem(position)!!
-            val isEmote = item is Emote
-            if (convertView == null) {
-                view = LayoutInflater.from(context).inflate(if (isEmote) R.layout.auto_complete_emotes_list_item else android.R.layout.simple_list_item_1, parent, false)
-                viewHolder = ViewHolder(view).also { view.tag = it }
-            } else {
-                view = convertView
-                viewHolder = convertView.tag as ViewHolder
-            }
-            return (viewHolder.containerView).apply {
-                if (isEmote) {
-                    item as Emote
-                    image.loadImage(item.url)
-                    name.text = item.name
-                } else {
-                    (this as TextView).text = (item as Chatter).name
+            return when (getItemViewType(position)) {
+                TYPE_EMOTE -> {
+                    if (convertView == null) {
+                        view = LayoutInflater.from(context).inflate(R.layout.auto_complete_emotes_list_item, parent, false)
+                        viewHolder = ViewHolder(view).also { view.tag = it }
+                    } else {
+                        view = convertView
+                        viewHolder = convertView.tag as ViewHolder
+                    }
+                    viewHolder.containerView.apply {
+                        item as Emote
+                        image.loadImage(item.url)
+                        name.text = item.name
+                    }
+                }
+                else -> {
+                    if (convertView == null) {
+                        view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
+                        viewHolder = ViewHolder(view).also { view.tag = it }
+                    } else {
+                        view = convertView
+                        viewHolder = convertView.tag as ViewHolder
+                    }
+                    (viewHolder.containerView as TextView).apply {
+                        text = (item as Chatter).name
+                    }
                 }
             }
         }
 
+        override fun getItemViewType(position: Int): Int {
+            return if (getItem(position) is Emote) TYPE_EMOTE else TYPE_USERNAME
+        }
+
+        override fun getViewTypeCount(): Int = 2
+
         class ViewHolder(override val containerView: View) : LayoutContainer
+
+        private companion object {
+            const val TYPE_EMOTE = 0
+            const val TYPE_USERNAME = 1
+        }
     }
 }

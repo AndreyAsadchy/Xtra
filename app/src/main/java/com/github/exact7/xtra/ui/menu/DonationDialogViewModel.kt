@@ -7,6 +7,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.github.exact7.xtra.ui.common.BaseViewModel
@@ -23,9 +24,19 @@ class DonationDialogViewModel : BaseViewModel() {
     fun launchBillingFlow(activity: Activity, index: Int) {
         if (billingClient == null) {
             billingClient = BillingClient.newBuilder(activity)
-                    .setListener { billingResult, _ ->
+                    .setListener { billingResult, purchases ->
                         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                            _state.value = true
+                            purchases?.forEach {
+                                val params = ConsumeParams.newBuilder()
+                                        .setPurchaseToken(it.purchaseToken)
+                                        .setDeveloperPayload(it.developerPayload)
+                                        .build()
+                                billingClient!!.consumeAsync(params) { billingResult, _ ->
+                                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                        _state.value = true
+                                    }
+                                }
+                            }
                         }
                     }
                     .enablePendingPurchases()

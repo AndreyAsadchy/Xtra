@@ -13,7 +13,7 @@ class BttvEmote(
         override val name: String,
         val imageType: String) : Emote(), Parcelable {
 
-    val isPng: Boolean
+    override val isPng: Boolean
         get() = imageType.endsWith("png")
 
     override val url: String

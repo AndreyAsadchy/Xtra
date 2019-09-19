@@ -3,6 +3,8 @@ package com.github.exact7.xtra.model.chat
 abstract class Emote {
     abstract val name: String
     abstract val url: String //TODO null if property
+    open val isPng: Boolean
+        get() = false
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
