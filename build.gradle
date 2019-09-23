@@ -5,7 +5,7 @@ buildscript {
     ext.paging = '2.1.0'
     ext.lifecycle = '2.0.0'
     ext.room = '2.1.0'
-    ext.exoplayer = "2.10.4"
+    ext.exoplayer = "2.10.5"
     ext.dagger = '2.21'
     ext.retrofit = '2.5.0'
     ext.glide = '4.9.0'
@@ -19,7 +19,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.0'
+        classpath 'com.google.gms:google-services:4.3.2'
         classpath 'io.fabric.tools:gradle:1.27.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

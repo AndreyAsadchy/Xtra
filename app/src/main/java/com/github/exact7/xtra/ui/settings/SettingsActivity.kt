@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceScreen
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.exact7.xtra.R
@@ -20,7 +21,7 @@ import com.github.exact7.xtra.util.isInPortraitOrientation
 import com.github.exact7.xtra.util.prefs
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +38,16 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, pref: PreferenceScreen): Boolean {
+        println("$caller $pref")
+        return true
+    }
+
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             val activity = requireActivity()
-            findPreference<ListPreference>(C.THEME).setOnPreferenceChangeListener { _, _ ->
+            findPreference<ListPreference>(C.THEME)!!.setOnPreferenceChangeListener { _, _ ->
                 activity.apply {
                     applyTheme()
                     recreate()
@@ -49,24 +55,24 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
             val resultIntent = Intent()
-            findPreference<SeekBarPreference>("chatWidth").setOnPreferenceChangeListener { _, newValue ->
+            findPreference<SeekBarPreference>("chatWidth")!!.setOnPreferenceChangeListener { _, newValue ->
                 val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(activity, newValue as Int)
                 activity.prefs().edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 activity.setResult(Activity.RESULT_OK, resultIntent.putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true
             }
-            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
+            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT)!!.setOnPreferenceChangeListener { _, _ ->
                 activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("shouldRecreate", activity.isInPortraitOrientation))
                 true
             }
-            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT).setOnPreferenceChangeListener { _, _ ->
+            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT)!!.setOnPreferenceChangeListener { _, _ ->
                 activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("shouldRecreate", activity.isInLandscapeOrientation))
                 true
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
-                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE).isVisible = true
+                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE)!!.isVisible = true
             }
-            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES).apply {
+            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.apply {
                 val originalValue = isChecked
                 setOnPreferenceChangeListener { _, newValue ->
                     newValue as Boolean

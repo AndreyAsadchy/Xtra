@@ -32,6 +32,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
+import com.github.exact7.xtra.util.loadBitmap
 import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.showKeyboard
@@ -57,12 +58,12 @@ class ChatView : ConstraintLayout {
 
     private var isChatTouched = false
 
-    private var recentEmotes = emptyList<Emote>()
-    private var twitchEmotes = emptyList<Emote>()
-    private var otherEmotes = mutableSetOf<Emote>()
+    private var recentEmotes: List<Emote>? = null
+    private var twitchEmotes: List<Emote>? = null
+    private var otherEmotes: MutableSet<Emote>? = null
     private var emotesAddedCount = 0
 
-    private val autoCompleteList: MutableList<Any>
+    private var autoCompleteList: MutableList<Any>? = null
     private var autoCompleteAdapter: AutoCompleteAdapter? = null
 
     private lateinit var fragmentManager: FragmentManager
@@ -83,10 +84,7 @@ class ChatView : ConstraintLayout {
     }
 
     init {
-        val emotes: List<Emote> = ChatFragment.defaultBttvAndFfzEmotes()
-        adapter.addEmotes(emotes)
-        otherEmotes.addAll(emotes)
-        autoCompleteList = emotes.toMutableList()
+        adapter.addEmotes(ChatFragment.defaultBttvAndFfzEmotes())
     }
 
     private fun init(context: Context) {
@@ -140,16 +138,16 @@ class ChatView : ConstraintLayout {
         list?.let {
             when (it.firstOrNull()) {
                 is BttvEmote, is FfzEmote -> {
-                    otherEmotes.addAll(it)
                     adapter.addEmotes(it)
                     if (messagingEnabled) {
-                        autoCompleteList.addAll(it)
+                        otherEmotes!!.addAll(it)
+                        autoCompleteList!!.addAll(it)
                     }
                 }
                 is TwitchEmote -> {
                     twitchEmotes = it
                     if (messagingEnabled) {
-                        autoCompleteList.addAll(it)
+                        autoCompleteList!!.addAll(it)
                     }
                 }
                 is RecentEmote -> recentEmotes = it
@@ -157,10 +155,13 @@ class ChatView : ConstraintLayout {
         }
         if (messagingEnabled) {
             if (++emotesAddedCount == 4) {
+                val adapter = AutoCompleteAdapter(context, autoCompleteList!! + ChatFragment.defaultBttvAndFfzEmotes(), animateGifs)
+                adapter.setNotifyOnChange(false)
+                autoCompleteAdapter = adapter
+                editText.setAdapter(adapter)
                 initEmotesViewPager()
-                autoCompleteAdapter!!.notifyDataSetChanged()
             } else if (emotesAddedCount > 4) {
-                viewPager.adapter?.notifyDataSetChanged()
+                viewPager.adapter!!.notifyDataSetChanged()
             }
         }
     }
@@ -170,7 +171,7 @@ class ChatView : ConstraintLayout {
     }
 
     fun setChatters(chatters: Collection<Chatter>) {
-        autoCompleteList.addAll(chatters)
+        autoCompleteList = chatters.toMutableList()
     }
 
     fun addChatter(chatter: Chatter) {
@@ -224,16 +225,15 @@ class ChatView : ConstraintLayout {
                     clear.gone()
                 }
             })
-            editText.setAdapter(AutoCompleteAdapter(context, autoCompleteList).also { autoCompleteAdapter = it })
-            editText.setTokenizer(SpaceTokenizer())
-            var previousSize = autoCompleteAdapter!!.count
+            var previousSize = 0
             editText.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus && autoCompleteList.size != previousSize) {
+                if (hasFocus && autoCompleteAdapter!!.count != previousSize) {
                     previousSize = autoCompleteAdapter!!.count
                     autoCompleteAdapter!!.notifyDataSetChanged()
                 }
                 autoCompleteAdapter!!.setNotifyOnChange(hasFocus)
             }
+            editText.setTokenizer(SpaceTokenizer())
             editText.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     sendMessage()
@@ -252,6 +252,7 @@ class ChatView : ConstraintLayout {
             }
             send.setOnClickListener { sendMessage() }
             messageView.visible()
+            otherEmotes = HashSet(ChatFragment.defaultBttvAndFfzEmotes())
             messagingEnabled = true
         }
     }
@@ -277,9 +278,9 @@ class ChatView : ConstraintLayout {
 
             override fun getItem(position: Int): Fragment {
                 val list = when (position) {
-                    0 -> recentEmotes
-                    1 -> twitchEmotes.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-                    else -> otherEmotes.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+                    0 -> recentEmotes!!
+                    1 -> twitchEmotes!!.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+                    else -> otherEmotes!!.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
                 }
                 return EmotesFragment.newInstance(list)
             }
@@ -297,7 +298,7 @@ class ChatView : ConstraintLayout {
             override fun getItemPosition(`object`: Any): Int {
                 (`object` as EmotesFragment).run {
                     if (type == 0) {
-                        setEmotes(recentEmotes)
+                        setEmotes(recentEmotes!!)
                     }
                 }
                 return super.getItemPosition(`object`)
@@ -308,7 +309,7 @@ class ChatView : ConstraintLayout {
             //TODO add animation
             with(viewPager) {
                 if (isGone) {
-                    if (recentEmotes.isEmpty() && currentItem == 0) {
+                    if (recentEmotes!!.isEmpty() && currentItem == 0) {
                         setCurrentItem(1, false)
                     }
                     visible()
@@ -365,9 +366,9 @@ class ChatView : ConstraintLayout {
         }
     }
 
-    class AutoCompleteAdapter(context: Context, list: List<Any>) : ArrayAdapter<Any>(context, 0, list) {
+    class AutoCompleteAdapter(context: Context, list: List<Any>, private val animateGifs: Boolean) : ArrayAdapter<Any>(context, 0, list) {
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val viewHolder: ViewHolder
 
             val item = getItem(position)!!
@@ -381,7 +382,11 @@ class ChatView : ConstraintLayout {
                     }
                     viewHolder.containerView.apply {
                         item as Emote
-                        image.loadImage(item.url)
+                        if (animateGifs) {
+                            image.loadImage(item.url)
+                        } else {
+                            image.loadBitmap(item.url)
+                        }
                         name.text = item.name
                     }
                 }

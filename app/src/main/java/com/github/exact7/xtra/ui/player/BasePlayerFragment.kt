@@ -331,6 +331,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         playerView.useController = false
         if (!isPortrait) {
             showStatusBar()
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 
@@ -345,10 +346,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     }
 
     override fun onClose() {
-        if (!isPortrait) {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            showStatusBar()
-        }
+
     }
 
     private fun setPreferredChatVisibility() {

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.crashlytics.android.Crashlytics
@@ -56,6 +57,20 @@ fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean 
             Crashlytics.logException(e)
         }
         return
+    }
+}
+
+fun ImageView.loadBitmap(url: String) {
+    if (context.isActivityResumed) {
+        try {
+            GlideApp.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .transition(BitmapTransitionOptions.withCrossFade())
+                    .into(this)
+        } catch (e: IllegalArgumentException) {
+            Crashlytics.logException(e)
+        }
     }
 }
 

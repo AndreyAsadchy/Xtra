@@ -26,7 +26,9 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.Image
-import java.util.Random
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.collections.set
 import kotlin.math.min
 
@@ -100,7 +102,8 @@ class ChatAdapter(
             if (userColor == null) {
                 userColors[userName] ?: getRandomColor().also { userColors[userName] = it }
             } else {
-                savedColors[userColor] ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
+                savedColors[userColor]
+                        ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
             }
         }
         val userNameLength = userName.length
@@ -109,6 +112,7 @@ class ChatAdapter(
         val originalMessage = "$userName: ${chatMessage.message}"
         try {
             chatMessage.emotes?.let { emotes ->
+//                val copy = emotes.map { it } //TODO test
                 val copy = emotes.toMutableList()
                 index += userNameLength + 2
                 for (e in copy) {

@@ -4,12 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
-import com.crashlytics.android.Crashlytics
-import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.Emote
-import com.github.exact7.xtra.util.isActivityResumed
+import com.github.exact7.xtra.util.loadBitmap
 import com.github.exact7.xtra.util.loadImage
 
 class EmotesAdapter(
@@ -27,17 +24,7 @@ class EmotesAdapter(
             if (animateGifs) {
                 loadImage(emote.url)
             } else {
-                if (context.isActivityResumed) {
-                    try {
-                        GlideApp.with(context)
-                                .asBitmap()
-                                .load(emote.url)
-                                .transition(BitmapTransitionOptions.withCrossFade())
-                                .into(this)
-                    } catch (e: IllegalArgumentException) {
-                        Crashlytics.logException(e)
-                    }
-                }
+                loadBitmap(emote.url)
             }
             setOnClickListener { clickListener(emote) }
         }

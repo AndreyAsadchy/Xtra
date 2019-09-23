@@ -18,8 +18,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import java.util.LinkedHashMap
-import java.util.LinkedList
+import java.util.*
 import java.util.regex.Pattern
 
 private const val VIDEO_RENDERER = 0
@@ -70,7 +69,7 @@ abstract class HlsPlayerViewModel(
         if (trackSelector.currentMappedTrackInfo != null) {
             if (helper.loaded.value != true) {
                 helper.loaded.value = true
-                val index = prefs.getString(TAG, "Auto").let { quality: String ->
+                val index = prefs.getString(TAG, "Auto").let { quality ->
                     if (quality == "Auto") {
                         0
                     } else {

@@ -1,5 +1,6 @@
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ListPreference
         android:key="theme"
@@ -9,6 +10,20 @@
         android:entryValues="@array/themeValues"
         app:iconSpaceReserved="false"
         />
+
+    <PreferenceScreen
+        android:key="secondscreen"
+        android:title="testscreen">
+
+<!--        <Preference-->
+<!--            android:layout="@layout/dialog_clip_download"/>-->
+
+        <CheckBoxPreference
+            android:key="themeTest"
+            android:title="@string/theme"
+            />
+
+    </PreferenceScreen>
 
     <SeekBarPreference
         android:key="chatWidth"
@@ -75,6 +90,7 @@
         android:defaultValue="true"
         app:iconSpaceReserved="false"
         app:isPreferenceVisible="false"
+        tools:isPreferenceVisible="true"
         />
 
     <SwitchPreferenceCompat
@@ -89,4 +105,4 @@
         android:defaultValue="true"
         app:iconSpaceReserved="false"/>
 
-</androidx.preference.PreferenceScreen>
+</PreferenceScreen>

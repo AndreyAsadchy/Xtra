@@ -31,8 +31,8 @@ class DonationDialogViewModel : BaseViewModel() {
                                         .setPurchaseToken(it.purchaseToken)
                                         .setDeveloperPayload(it.developerPayload)
                                         .build()
-                                billingClient!!.consumeAsync(params) { billingResult, _ ->
-                                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                billingClient!!.consumeAsync(params) { consumeResult, _ ->
+                                    if (consumeResult.responseCode == BillingClient.BillingResponseCode.OK) {
                                         _state.value = true
                                     }
                                 }
