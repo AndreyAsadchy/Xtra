@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.os.bundleOf
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
@@ -39,7 +40,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     }
 
     override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, pref: PreferenceScreen): Boolean {
-        println("$caller $pref")
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.settings, SettingsSubScreenFragment().apply { arguments = bundleOf(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT to pref.key) }, null)
+                .addToBackStack(null)
+                .commit()
         return true
     }
 
@@ -80,6 +84,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     true
                 }
             }
+        }
+    }
+
+    class SettingsSubScreenFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.root_preferences, rootKey)
         }
     }
 }

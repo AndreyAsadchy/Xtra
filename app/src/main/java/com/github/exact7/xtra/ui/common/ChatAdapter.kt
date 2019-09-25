@@ -26,9 +26,8 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.Image
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import com.github.exact7.xtra.model.chat.TwitchEmote
+import java.util.Random
 import kotlin.collections.set
 import kotlin.math.min
 
@@ -112,8 +111,7 @@ class ChatAdapter(
         val originalMessage = "$userName: ${chatMessage.message}"
         try {
             chatMessage.emotes?.let { emotes ->
-//                val copy = emotes.map { it } //TODO test
-                val copy = emotes.toMutableList()
+                val copy = emotes.map { TwitchEmote(it.name, it.begin, it.end) }
                 index += userNameLength + 2
                 for (e in copy) {
                     val begin = index + e.begin

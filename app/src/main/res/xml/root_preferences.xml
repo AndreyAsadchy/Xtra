@@ -12,26 +12,29 @@
         />
 
     <PreferenceScreen
-        android:key="secondscreen"
-        android:title="testscreen">
+        android:key="chatSettings"
+        android:title="@string/chat_settings"
+        app:iconSpaceReserved="false">
 
 <!--        <Preference-->
 <!--            android:layout="@layout/dialog_clip_download"/>-->
 
-        <CheckBoxPreference
-            android:key="themeTest"
-            android:title="@string/theme"
+        <SeekBarPreference
+            android:key="chatWidth"
+            android:title="@string/landscape_chat_width"
+            android:summary="@string/percentage_of_screen"
+            android:max="50"
+            app:iconSpaceReserved="false"
             />
 
-    </PreferenceScreen>
+        <SwitchPreferenceCompat
+            android:key="animatedGifEmotes"
+            android:title="@string/animated_emotes"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false"/>
 
-    <SeekBarPreference
-        android:key="chatWidth"
-        android:title="@string/landscape_chat_width"
-        android:summary="@string/percentage_of_screen"
-        android:max="50"
-        app:iconSpaceReserved="false"
-        />
+
+    </PreferenceScreen>
 
     <ListPreference
         android:key="columnsPortrait"
@@ -92,12 +95,6 @@
         app:isPreferenceVisible="false"
         tools:isPreferenceVisible="true"
         />
-
-    <SwitchPreferenceCompat
-        android:key="animatedGifEmotes"
-        android:title="@string/animated_emotes"
-        android:defaultValue="true"
-        app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat
         android:key="showChangelogs"

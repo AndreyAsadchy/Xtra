@@ -141,4 +141,5 @@
 \n- Improved highlighting of a message when user was mentioned in the chat
 \n- Other bug fixes and improvements
     </string>
+    <string name="chat_settings">Chat settings</string>
 </resources>
