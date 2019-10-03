@@ -3,103 +3,114 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ListPreference
-        android:key="theme"
-        android:title="@string/theme"
-        android:summary="%s"
         android:entries="@array/themeEntries"
         android:entryValues="@array/themeValues"
+        android:key="theme"
+        android:summary="%s"
+        android:title="@string/theme"
+        app:iconSpaceReserved="false" />
+
+    <SeekBarPreference
+        android:key="chatWidth"
+        android:title="@string/landscape_chat_width"
+        android:summary="@string/percentage_of_screen"
+        android:max="50"
+        app:showSeekBarValue="true"
         app:iconSpaceReserved="false"
         />
 
-    <PreferenceScreen
-        android:key="chatSettings"
-        android:title="@string/chat_settings"
-        app:iconSpaceReserved="false">
+    <!--    <PreferenceScreen-->
+    <!--        android:key="chatSettings"-->
+    <!--        android:title="@string/chat_settings"-->
+    <!--        app:iconSpaceReserved="false">-->
 
-<!--        <Preference-->
-<!--            android:layout="@layout/dialog_clip_download"/>-->
+    <!--        <com.github.exact7.xtra.ui.settings.ChatViewPreference-->
+    <!--            android:key="chatView"-->
+    <!--            android:selectable="false"-->
+    <!--            app:iconSpaceReserved="false"/>-->
 
-        <SeekBarPreference
-            android:key="chatWidth"
-            android:title="@string/landscape_chat_width"
-            android:summary="@string/percentage_of_screen"
-            android:max="50"
-            app:iconSpaceReserved="false"
-            />
+    <!--        <SeekBarPreference-->
+    <!--            android:key="chatWidth"-->
+    <!--            android:title="@string/landscape_chat_width"-->
+    <!--            android:summary="@string/percentage_of_screen"-->
+    <!--            android:max="50"-->
+    <!--            app:showSeekBarValue="true"-->
+    <!--            app:iconSpaceReserved="false"-->
+    <!--            />-->
 
-        <SwitchPreferenceCompat
-            android:key="animatedGifEmotes"
-            android:title="@string/animated_emotes"
-            android:defaultValue="true"
-            app:iconSpaceReserved="false"/>
+    <!--        <SwitchPreferenceCompat-->
+    <!--            android:key="animatedGifEmotes"-->
+    <!--            android:title="@string/animated_emotes"-->
+    <!--            android:defaultValue="true"-->
+    <!--            app:iconSpaceReserved="false"/>-->
 
 
-    </PreferenceScreen>
+    <!--    </PreferenceScreen>-->
 
     <ListPreference
-        android:key="columnsPortrait"
-        android:title="@string/portrait_column_count"
-        android:summary="%s"
+        android:defaultValue="1"
         android:entries="@array/portraitColumnCount"
         android:entryValues="@array/portraitColumnCount"
-        android:defaultValue="1"
-        app:iconSpaceReserved="false"
-        />
+        android:key="columnsPortrait"
+        android:summary="%s"
+        android:title="@string/portrait_column_count"
+        app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:key="columnsLandscape"
-        android:title="@string/landscape_column_count"
-        android:summary="%s"
+        android:defaultValue="2"
         android:entries="@array/landscapeColumnCount"
         android:entryValues="@array/landscapeColumnCount"
-        android:defaultValue="2"
-        app:iconSpaceReserved="false"
-        />
+        android:key="columnsLandscape"
+        android:summary="%s"
+        android:title="@string/landscape_column_count"
+        app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:key="downloadNetworkPreference"
-        android:title="@string/download_preference"
-        android:summary="%s"
+        android:defaultValue="3"
         android:entries="@array/networkDownloadPreferencesEntries"
         android:entryValues="@array/networkDownloadPreferencesValues"
-        android:defaultValue="3"
-        app:iconSpaceReserved="false"
-        />
+        android:key="downloadNetworkPreference"
+        android:summary="%s"
+        android:title="@string/download_preference"
+        app:iconSpaceReserved="false" />
 
     <ListPreference
+        android:defaultValue="5000"
+        android:entries="@array/playerSeekEntries"
+        android:entryValues="@array/playerSeekValues"
         android:key="playerRewind"
-        android:title="@string/rewind"
         android:summary="@string/seconds"
-        android:entries="@array/playerSeekEntries"
-        android:entryValues="@array/playerSeekValues"
-        android:defaultValue="5000"
-        app:iconSpaceReserved="false"
-        />
+        android:title="@string/rewind"
+        app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:key="playerForward"
-        android:title="@string/forward"
-        android:summary="@string/seconds"
+        android:defaultValue="5000"
         android:entries="@array/playerSeekEntries"
         android:entryValues="@array/playerSeekValues"
-        android:defaultValue="5000"
-        app:iconSpaceReserved="false"
-        />
+        android:key="playerForward"
+        android:summary="@string/seconds"
+        android:title="@string/forward"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
-        android:key="pictureInPicture"
-        android:title="@string/picture_in_picture"
-        android:summary="@string/continue_playback"
         android:defaultValue="true"
+        android:key="pictureInPicture"
+        android:summary="@string/continue_playback"
+        android:title="@string/picture_in_picture"
         app:iconSpaceReserved="false"
         app:isPreferenceVisible="false"
-        tools:isPreferenceVisible="true"
-        />
+        tools:isPreferenceVisible="true" />
 
     <SwitchPreferenceCompat
-        android:key="showChangelogs"
-        android:title="@string/show_changelogs"
+        android:key="animatedGifEmotes"
+        android:title="@string/animated_emotes"
         android:defaultValue="true"
         app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="showChangelogs"
+        android:title="@string/show_changelogs"
+        app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

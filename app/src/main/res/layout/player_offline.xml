@@ -25,6 +25,10 @@
         style="@style/Player.TopRightPanel">
 
         <ImageButton
+            style="@style/Player.Sleep"
+            />
+
+        <ImageButton
             style="@style/Player.Ratio" />
 
         <ImageButton

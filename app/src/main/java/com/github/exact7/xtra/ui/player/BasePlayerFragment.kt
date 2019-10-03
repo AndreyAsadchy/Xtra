@@ -43,7 +43,7 @@ private const val CHAT_OPENED = "ChatOpened"
 private const val WAS_IN_PIP = "wasInPip"
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment {
+abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment, SleepTimerDialog.OnSleepTimerStartedListener {
 
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: PlayerView
@@ -302,7 +302,20 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 }
             })
         }
+        viewModel.sleepTimer.observe(viewLifecycleOwner, Observer {
+            (requireActivity() as MainActivity).closePlayer()
+        })
+        requireView().findViewById<ImageButton>(R.id.sleepTimer).setOnClickListener {
+            if (viewModel.isTimerOff) {
+                SleepTimerDialog().show(childFragmentManager, null)
+            } else {
+                viewModel.stopTimer()
+            }
+        }
+        this.viewModel = viewModel
     }
+
+    private lateinit var viewModel: PlayerViewModel
 
 //    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
 
@@ -313,7 +326,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     fun maximize() {
         slidingLayout.maximize()
     }
-
 
     private fun showStatusBar() {
         if (isAdded) {
@@ -347,6 +359,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     override fun onClose() {
 
+    }
+
+    override fun onSleepTimerStarted(duration: Long) {
+        viewModel.startTimer(duration)
     }
 
     private fun setPreferredChatVisibility() {

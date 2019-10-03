@@ -7,13 +7,13 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.core.os.bundleOf
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
@@ -28,9 +28,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         super.onCreate(savedInstanceState)
         applyTheme()
         setContentView(R.layout.activity_settings)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.navigationIcon = Utils.getNavigationIcon(this)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
@@ -40,10 +39,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     }
 
     override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, pref: PreferenceScreen): Boolean {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.settings, SettingsSubScreenFragment().apply { arguments = bundleOf(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT to pref.key) }, null)
-                .addToBackStack(null)
-                .commit()
+//        supportFragmentManager.beginTransaction()
+//                .replace(R.id.settings, SettingsSubScreenFragment().apply { arguments = bundleOf(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT to pref.key) }, null)
+//                .addToBackStack(null)
+//                .commit()
         return true
     }
 

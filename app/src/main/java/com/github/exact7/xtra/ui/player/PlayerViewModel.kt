@@ -35,6 +35,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
+import kotlin.concurrent.schedule
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
 abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, OnQualityChangeListener, CoroutineScope by MainScope() {
@@ -73,10 +75,25 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     protected var isResumed = true
 
-    protected fun play() {
-        if (this::mediaSource.isInitialized) { //TODO
-            player.prepare(mediaSource)
-            player.playWhenReady = true
+    private var timer: Timer? = null
+    val isTimerOff
+        get() = timer == null
+    private val _sleepTimer = MutableLiveData<Boolean>()
+    val sleepTimer: LiveData<Boolean>
+        get() = _sleepTimer
+
+    fun startTimer(duration: Long) {
+        timer = Timer().apply {
+            schedule(duration) {
+                _sleepTimer.postValue(true)
+            }
+        }
+    }
+
+    fun stopTimer() {
+        timer?.let {
+            it.cancel()
+            timer = null
         }
     }
 
@@ -86,6 +103,13 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     open fun onPause() {
         player.stop()
+    }
+
+    protected fun play() {
+        if (this::mediaSource.isInitialized) { //TODO
+            player.prepare(mediaSource)
+            player.playWhenReady = true
+        }
     }
 
     protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, imageUrl: String, usePlayPause: Boolean) {
@@ -113,12 +137,6 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     protected fun hideBackgroundAudio() {
         binder?.hideNotification()
-    }
-
-    override fun onCleared() {
-        player.release()
-        cancel()
-        super.onCleared()
     }
 
     //Player.EventListener
@@ -163,5 +181,11 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                 Crashlytics.logException(e)
             }
         }
+    }
+
+    override fun onCleared() {
+        player.release()
+        cancel()
+        super.onCleared()
     }
 }

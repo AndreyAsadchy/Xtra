@@ -410,7 +410,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         viewModel.onPlayerStarted()
     }
 
-    private fun closePlayer() {
+    fun closePlayer() {
         supportFragmentManager.beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .remove(supportFragmentManager.findFragmentById(R.id.playerContainer)!!)

@@ -83,6 +83,11 @@
         <item name="android:visibility">gone</item>
     </style>
 
+    <style name="Player.Sleep" parent="Player.SmallImage">
+        <item name="android:id">@id/sleepTimer</item>
+        <item name="android:src">@drawable/baseline_alarm_black_24</item>
+    </style>
+
     <style name="Player.Text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
