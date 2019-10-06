@@ -89,7 +89,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
             timerEndTime = 0L
             timer = null
         }
-        if (duration > -1L) {
+        if (duration > 0L) {
             timer = Timer().apply {
                 timerEndTime = System.currentTimeMillis() + duration
                 schedule(duration) {

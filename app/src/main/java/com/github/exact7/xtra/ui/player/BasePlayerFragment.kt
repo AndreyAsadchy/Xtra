@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
@@ -293,18 +294,23 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 playerView.showController()
             }
         })
+        val view = requireView()
         if (this !is OfflinePlayerFragment) {
             getMainViewModel().user.observe(viewLifecycleOwner, Observer { user ->
                 if (user is LoggedIn) {
-                    initializeFollow(this, (viewModel as FollowViewModel), requireView().findViewById(R.id.follow), user)
+                    initializeFollow(this, (viewModel as FollowViewModel), view.findViewById(R.id.follow), user)
                 }
             })
         }
-        viewModel.sleepTimer.observe(viewLifecycleOwner, Observer {
-            (requireActivity() as MainActivity).closePlayer()
-        })
-        requireView().findViewById<ImageButton>(R.id.sleepTimer).setOnClickListener {
-            SleepTimerDialog.show(childFragmentManager, viewModel.timerTimeLeft)
+        if (this !is ClipPlayerFragment) {
+            viewModel.sleepTimer.observe(viewLifecycleOwner, Observer {
+                (requireActivity() as MainActivity).closePlayer()
+            })
+            view.findViewById<ImageButton>(R.id.sleepTimer).setOnClickListener {
+                SleepTimerDialog.show(childFragmentManager, viewModel.timerTimeLeft)
+            }
+        } else { //TODO
+            view.findViewById<ImageButton>(R.id.sleepTimer).gone()
         }
     }
 
@@ -352,8 +358,18 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     }
 
-    override fun onSleepTimerChanged(duration: Long) {
-        viewModel.setTimer(duration)
+    override fun onSleepTimerChanged(durationMs: Long, hours: Int, minutes: Int) {
+        val context = requireContext()
+        if (durationMs > 0L) {
+            Toast.makeText(context, when {
+                hours == 0 -> getString(R.string.playback_will_stop, resources.getQuantityString(R.plurals.minutes, minutes, minutes))
+                minutes == 0 -> getString(R.string.playback_will_stop, resources.getQuantityString(R.plurals.hours, hours, hours))
+                else -> getString(R.string.playback_will_stop_hours_minutes, resources.getQuantityString(R.plurals.hours, hours, hours), resources.getQuantityString(R.plurals.minutes, minutes, minutes))
+            }, Toast.LENGTH_LONG).show()
+        } else if (viewModel.timerTimeLeft > 0L) {
+            Toast.makeText(context, getString(R.string.timer_canceled), Toast.LENGTH_LONG).show()
+        }
+        viewModel.setTimer(durationMs)
     }
 
     override fun onDialogResult(requestCode: Int, resultCode: Int) {

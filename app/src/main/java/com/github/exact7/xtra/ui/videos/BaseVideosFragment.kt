@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
-import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
@@ -15,7 +15,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-abstract class BaseVideosFragment<VM : BaseVideosViewModel> : PagedListFragment<Video, VM>(), Scrollable, HasDownloadDialog {
+abstract class BaseVideosFragment<VM : BaseVideosViewModel> : PagedListFragment<Video, VM, BaseVideosAdapter>(), Scrollable, HasDownloadDialog {
 
     interface OnVideoSelectedListener {
         fun startVideo(video: Video, offset: Double? = null)
@@ -32,12 +32,19 @@ abstract class BaseVideosFragment<VM : BaseVideosViewModel> : PagedListFragment<
         return inflater.inflate(R.layout.fragment_videos, container, false)
     }
 
-    override fun createAdapter(): BasePagedListAdapter<Video> {
+    override fun createAdapter(): BaseVideosAdapter {
         val activity = requireActivity() as MainActivity
         return VideosAdapter(activity, activity) {
             lastSelectedItem = it
             showDownloadDialog()
         }
+    }
+
+    override fun initialize() {
+        super.initialize()
+        viewModel.positions.observe(viewLifecycleOwner, Observer {
+            adapter.setVideoPositions(it)
+        })
     }
 
     override fun scrollToTop() {

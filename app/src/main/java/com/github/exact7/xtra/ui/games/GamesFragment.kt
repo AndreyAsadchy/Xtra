@@ -14,7 +14,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 import kotlinx.android.synthetic.main.fragment_games.*
 
-class GamesFragment : PagedListFragment<GameWrapper, GamesViewModel>(), Scrollable {
+class GamesFragment : PagedListFragment<GameWrapper, GamesViewModel, BasePagedListAdapter<GameWrapper>>(), Scrollable {
 
     interface OnGameSelectedListener {
         fun openGame(game: Game)

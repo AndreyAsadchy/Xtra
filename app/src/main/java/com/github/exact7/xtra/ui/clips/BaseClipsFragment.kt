@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
 import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
@@ -15,7 +16,7 @@ import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-abstract class BaseClipsFragment<VM : PagedListViewModel<Clip>> : PagedListFragment<Clip, VM>(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
+abstract class BaseClipsFragment<VM : PagedListViewModel<Clip>> : PagedListFragment<Clip, VM, BasePagedListAdapter<Clip>>(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
 
     interface OnClipSelectedListener {
         fun startClip(clip: Clip)

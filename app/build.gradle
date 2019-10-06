@@ -27,7 +27,7 @@ android {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 16
         versionCode 54
-        versionName "1.4.0"
+        versionName "1.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 29
         javaCompileOptions {

@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.dialog_sleep_timer.view.*
 class SleepTimerDialog : DialogFragment() {
 
     interface OnSleepTimerStartedListener {
-        fun onSleepTimerChanged(duration: Long)
+        fun onSleepTimerChanged(durationMs: Long, hours: Int, minutes: Int)
     }
 
     private lateinit var listener: OnSleepTimerStartedListener
@@ -35,7 +35,7 @@ class SleepTimerDialog : DialogFragment() {
                 .setTitle(getString(R.string.sleep_timer))
                 .setView(LayoutInflater.from(context).inflate(R.layout.dialog_sleep_timer, null).also { dialogView = it })
         val positiveListener: (dialog: DialogInterface, which: Int) -> Unit = { _, _ ->
-            listener.onSleepTimerChanged(dialogView.hours.value * 3600_000L + dialogView.minutes.value * 60_000L)
+            listener.onSleepTimerChanged(dialogView.hours.value * 3600_000L + dialogView.minutes.value * 60_000L,  dialogView.hours.value, dialogView.minutes.value)
             dismiss()
         }
         if (requireArguments().getLong(KEY_TIME_LEFT) < 0L) {
@@ -44,7 +44,7 @@ class SleepTimerDialog : DialogFragment() {
         } else {
             builder.setPositiveButton(getString(R.string.set), positiveListener)
             builder.setNegativeButton(getString(R.string.stop)) { _, _ ->
-                listener.onSleepTimerChanged(-1L)
+                listener.onSleepTimerChanged(-1L, 0, 0)
                 dismiss()
             }
             builder.setNeutralButton(android.R.string.cancel) { _, _ -> dismiss() }

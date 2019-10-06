@@ -175,7 +175,7 @@
     <style name="Player.Channel" parent="Player.Text">
         <item name="android:id">@id/channel</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_height">35dp</item>
         <item name="android:layout_toEndOf">@id/minimize</item>
         <item name="android:layout_toRightOf">@id/minimize</item>
         <item name="android:layout_toStartOf">@id/topRightPanel</item>

@@ -2,6 +2,7 @@ package com.github.exact7.xtra.repository
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.api.ApiService
@@ -120,7 +121,7 @@ class PlayerRepository @Inject constructor(
         }
     }
 
-    fun loadVideoPositions() = Transformations.map(videoPositions.getAll()) { list -> list.associate { it.id to it.position } }
+    fun loadVideoPositions(): LiveData<Map<Long, Long>> = Transformations.map(videoPositions.getAll()) { list -> list.associate { it.id to it.position } }
 
     fun saveVideoPosition(position: VideoPosition) {
         GlobalScope.launch {

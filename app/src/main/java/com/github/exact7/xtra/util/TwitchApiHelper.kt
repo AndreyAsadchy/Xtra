@@ -7,10 +7,8 @@ import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.MessageListenerImpl
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 
 object TwitchApiHelper {
@@ -28,13 +26,7 @@ object TwitchApiHelper {
     }
 
     fun parseIso8601Date(date: String): Long {
-        try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            return dateFormat.parse(date).time
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        return 0L
+        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).parse(date)?.time ?: 0L
     }
 
     fun formatTime(context: Context, iso8601date: String): String {

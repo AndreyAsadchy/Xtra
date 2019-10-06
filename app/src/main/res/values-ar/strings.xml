@@ -128,7 +128,13 @@
     <string name="donate_prompt">كم تريد أن تتبرع؟</string>
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
-    <string name="changelog"><b>September 15th, 1.4.0</b>
+    <string name="changelog">
+        <b>October 6th, 1.4.1</b>
+\n- Added saving of position when watching videos
+\n- Added sleep timer
+\n- Fixed donations getting refunded after a few days
+\n- Other bug fixes and improvements
+        \n\n<b>September 15th, 1.4.0</b>
         \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
 \n- Added ability when watching a clip to continue watching it in the full video
 \n- Added ability to support the development of the app, located in the \"Menu\" tab
@@ -144,4 +150,7 @@
     <string name="stop">Stop</string>
     <string name="hours">h</string>
     <string name="minutes">m</string>
+    <string name="playback_will_stop">Playback will stop in %s</string>
+    <string name="playback_will_stop_hours_minutes">Playback will stop in %1$s %2$s</string>
+    <string name="timer_canceled">The timer has been canceled</string>
 </resources>

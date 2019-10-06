@@ -13,7 +13,7 @@ import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-abstract class BaseStreamsFragment<VM : PagedListViewModel<Stream>> : PagedListFragment<Stream, VM>(), Scrollable {
+abstract class BaseStreamsFragment<VM : PagedListViewModel<Stream>> : PagedListFragment<Stream, VM, BasePagedListAdapter<Stream>>(), Scrollable {
 
     interface OnStreamSelectedListener {
         fun startStream(stream: Stream)

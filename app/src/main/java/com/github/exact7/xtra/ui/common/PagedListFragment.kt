@@ -11,10 +11,10 @@ import com.github.exact7.xtra.repository.LoadingState
 import com.github.exact7.xtra.util.gone
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFragment() {
+abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter: BasePagedListAdapter<T>> : BaseNetworkFragment() {
 
     protected lateinit var viewModel: VM
-    protected lateinit var adapter: BasePagedListAdapter<T>
+    protected lateinit var adapter: Adapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,6 +67,6 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>> : BaseNetworkFra
         viewModel.retry()
     }
 
-    protected abstract fun createAdapter(): BasePagedListAdapter<T>
+    protected abstract fun createAdapter(): Adapter
     protected abstract fun createViewModel(): VM
 }

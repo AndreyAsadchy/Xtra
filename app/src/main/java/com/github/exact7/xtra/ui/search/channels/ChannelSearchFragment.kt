@@ -13,7 +13,7 @@ import com.github.exact7.xtra.ui.search.Searchable
 import com.github.exact7.xtra.util.gone
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel>(), Searchable {
+class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel, BasePagedListAdapter<Channel>>(), Searchable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.common_recycler_view_layout, container, false)
