@@ -227,11 +227,13 @@ class ChatView : ConstraintLayout {
             })
             var previousSize = 0
             editText.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus && autoCompleteAdapter!!.count != previousSize) {
-                    previousSize = autoCompleteAdapter!!.count
-                    autoCompleteAdapter!!.notifyDataSetChanged()
+                autoCompleteAdapter?.let {
+                    if (hasFocus && it.count != previousSize) {
+                        previousSize = it.count
+                        it.notifyDataSetChanged()
+                    }
+                    it.setNotifyOnChange(hasFocus)
                 }
-                autoCompleteAdapter!!.setNotifyOnChange(hasFocus)
             }
             editText.setTokenizer(SpaceTokenizer())
             editText.setOnKeyListener { _, keyCode, event ->

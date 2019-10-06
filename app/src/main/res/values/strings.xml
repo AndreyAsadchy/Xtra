@@ -134,9 +134,10 @@
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
         <b>October 6th, 1.4.1</b>
-\n- Added saving of position when watching videos
+\n- Videos now remember where you left off
 \n- Added sleep timer
 \n- Fixed donations getting refunded after a few days
+\n- Fixed 60 fps not working on some devices
 \n- Other bug fixes and improvements
         \n\n<b>September 15th, 1.4.0</b>
         \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat

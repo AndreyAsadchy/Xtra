@@ -97,7 +97,7 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        super.onCleared()
         playerRepository.saveVideoPosition(VideoPosition(video.id.substring(1).toLong(), currentPlayer.value!!.currentPosition))
+        super.onCleared()
     }
 }
