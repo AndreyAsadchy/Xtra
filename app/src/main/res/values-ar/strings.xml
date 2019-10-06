@@ -138,4 +138,10 @@
 \n- Other bug fixes and improvements
     </string>
     <string name="chat_settings">Chat settings</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="start">Start</string>
+    <string name="set">Set</string>
+    <string name="stop">Stop</string>
+    <string name="hours">h</string>
+    <string name="minutes">m</string>
 </resources>

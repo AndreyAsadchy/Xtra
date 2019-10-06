@@ -19,8 +19,8 @@ import kotlinx.android.synthetic.main.player_stream.*
 
 class StreamPlayerFragment : BasePlayerFragment() {
 
+    override lateinit var viewModel: StreamPlayerViewModel
     private lateinit var chatFragment: ChatFragment
-    private lateinit var viewModel: StreamPlayerViewModel
     private lateinit var stream: Stream
     override val channel: Channel
         get() = stream.channel
@@ -52,10 +52,8 @@ class StreamPlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        getMainViewModel().user.observe(viewLifecycleOwner, Observer {
-            viewModel.startStream(stream)
-            initializeViewModel(viewModel)
-        })
+        super.initialize()
+        viewModel.startStream(stream)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             settings.enable()

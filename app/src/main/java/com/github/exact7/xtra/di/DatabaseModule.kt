@@ -10,12 +10,13 @@ import com.github.exact7.xtra.db.AppDatabase
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.db.RequestsDao
+import com.github.exact7.xtra.db.VideoPositionsDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.util.TwitchApiHelper
 import dagger.Module
 import dagger.Provides
-import java.util.Calendar
+import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -40,6 +41,10 @@ class DatabaseModule {
     @Singleton
     @Provides
     fun providesRecentEmotesDao(database: AppDatabase): RecentEmotesDao = database.recentEmotes()
+
+    @Singleton
+    @Provides
+    fun providesVideoPositions(database: AppDatabase): VideoPositionsDao = database.videoPositons()
 
     @Singleton
     @Provides
@@ -142,6 +147,11 @@ class DatabaseModule {
                             object : Migration(5, 6) {
                                 override fun migrate(database: SupportSQLiteDatabase) {
                                     database.execSQL("CREATE TABLE IF NOT EXISTS recent_emotes (name TEXT NOT NULL, url TEXT NOT NULL, used_at INTEGER NOT NULL, PRIMARY KEY (name))")
+                                }
+                            },
+                            object : Migration(6, 7) {
+                                override fun migrate(database: SupportSQLiteDatabase) {
+                                    database.execSQL("CREATE TABLE IF NOT EXISTS video_positions (id INTEGER NOT NULL, position INTEGER NOT NULL, PRIMARY KEY (id))")
                                 }
                             }
                     )

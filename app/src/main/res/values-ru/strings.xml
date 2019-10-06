@@ -138,4 +138,10 @@
 \n- Другие исправления ошибок и улучшения
     </string>
     <string name="chat_settings">Настройки чата</string>
+    <string name="sleep_timer">Таймер выключения</string>
+    <string name="start">Старт</string>
+    <string name="set">Старт</string>
+    <string name="stop">Стоп</string>
+    <string name="hours">ч</string>
+    <string name="minutes">м</string>
 </resources>

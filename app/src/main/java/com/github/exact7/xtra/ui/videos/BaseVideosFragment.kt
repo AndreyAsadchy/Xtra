@@ -8,7 +8,6 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.common.BasePagedListAdapter
 import com.github.exact7.xtra.ui.common.PagedListFragment
-import com.github.exact7.xtra.ui.common.PagedListViewModel
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
 import com.github.exact7.xtra.ui.download.VideoDownloadDialog
@@ -16,7 +15,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-abstract class BaseVideosFragment<VM : PagedListViewModel<Video>> : PagedListFragment<Video, VM>(), Scrollable, HasDownloadDialog {
+abstract class BaseVideosFragment<VM : BaseVideosViewModel> : PagedListFragment<Video, VM>(), Scrollable, HasDownloadDialog {
 
     interface OnVideoSelectedListener {
         fun startVideo(video: Video, offset: Double? = null)

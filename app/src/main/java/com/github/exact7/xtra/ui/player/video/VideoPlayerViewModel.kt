@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.Toast
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.VideoDownloadInfo
+import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
@@ -93,5 +94,10 @@ class VideoPlayerViewModel @Inject constructor(
     override fun onPause() {
         playbackPosition = currentPlayer.value!!.currentPosition
         super.onPause()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        playerRepository.saveVideoPosition(VideoPosition(video.id.substring(1).toLong(), currentPlayer.value!!.currentPosition))
     }
 }

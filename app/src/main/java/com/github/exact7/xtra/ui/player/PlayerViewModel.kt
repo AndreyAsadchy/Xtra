@@ -76,24 +76,26 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     protected var isResumed = true
 
     private var timer: Timer? = null
-    val isTimerOff
-        get() = timer == null
     private val _sleepTimer = MutableLiveData<Boolean>()
     val sleepTimer: LiveData<Boolean>
         get() = _sleepTimer
+    private var timerEndTime = 0L
+    val timerTimeLeft
+        get() = timerEndTime - System.currentTimeMillis()
 
-    fun startTimer(duration: Long) {
-        timer = Timer().apply {
-            schedule(duration) {
-                _sleepTimer.postValue(true)
-            }
-        }
-    }
-
-    fun stopTimer() {
+    fun setTimer(duration: Long) {
         timer?.let {
             it.cancel()
+            timerEndTime = 0L
             timer = null
+        }
+        if (duration > -1L) {
+            timer = Timer().apply {
+                timerEndTime = System.currentTimeMillis() + duration
+                schedule(duration) {
+                    _sleepTimer.postValue(true)
+                }
+            }
         }
     }
 
@@ -185,6 +187,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     override fun onCleared() {
         player.release()
+        timer?.cancel()
         cancel()
         super.onCleared()
     }

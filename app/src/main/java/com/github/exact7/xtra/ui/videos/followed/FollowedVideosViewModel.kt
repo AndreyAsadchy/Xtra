@@ -11,13 +11,15 @@ import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.Listing
+import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
-import com.github.exact7.xtra.ui.common.PagedListViewModel
+import com.github.exact7.xtra.ui.videos.BaseVideosViewModel
 import javax.inject.Inject
 
 class FollowedVideosViewModel @Inject constructor(
         context: Application,
-        private val repository: TwitchService) : PagedListViewModel<Video>() {
+        private val repository: TwitchService,
+        playerRepository: PlayerRepository) : BaseVideosViewModel(playerRepository) {
 
     val sortOptions = listOf(R.string.upload_date, R.string.view_count)
     private val _sortText = MutableLiveData<CharSequence>()

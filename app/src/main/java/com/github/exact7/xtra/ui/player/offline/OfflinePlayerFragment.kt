@@ -18,7 +18,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    private lateinit var viewModel: OfflinePlayerViewModel
+    override lateinit var viewModel: OfflinePlayerViewModel
     override val channel: Channel
         get() = null!!
 
@@ -36,7 +36,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 
     override fun initialize() {
         viewModel = getViewModel()
-        initializeViewModel(viewModel)
+        super.initialize()
         viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
         requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex) }
     }

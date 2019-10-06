@@ -2,14 +2,17 @@ package com.github.exact7.xtra.repository
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.RecentEmotesDao
+import com.github.exact7.xtra.db.VideoPositionsDao
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
+import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
@@ -21,9 +24,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.util.Random
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 private const val TAG = "PlayerRepository"
 
@@ -33,7 +38,8 @@ class PlayerRepository @Inject constructor(
         private val usher: UsherApi,
         private val misc: MiscApi,
         private val emotes: EmotesDao,
-        private val recentEmotes: RecentEmotesDao) {
+        private val recentEmotes: RecentEmotesDao,
+        private val videoPositions: VideoPositionsDao) {
 
     fun loadStreamPlaylist(channelName: String): Single<Uri> {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
@@ -111,6 +117,14 @@ class PlayerRepository @Inject constructor(
                 emotes.toList().subList(listSize - RecentEmote.MAX_SIZE, listSize)
             }
             recentEmotes.ensureMaxSizeAndInsert(list)
+        }
+    }
+
+    fun loadVideoPositions() = Transformations.map(videoPositions.getAll()) { list -> list.associate { it.id to it.position } }
+
+    fun saveVideoPosition(position: VideoPosition) {
+        GlobalScope.launch {
+            videoPositions.insert(position)
         }
     }
 }

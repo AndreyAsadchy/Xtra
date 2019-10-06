@@ -17,6 +17,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
+import com.github.exact7.xtra.ui.common.AlertDialogFragment
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
@@ -39,11 +40,8 @@ import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 
 
-private const val CHAT_OPENED = "ChatOpened"
-private const val WAS_IN_PIP = "wasInPip"
-
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment, SleepTimerDialog.OnSleepTimerStartedListener {
+abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment, SleepTimerDialog.OnSleepTimerStartedListener, AlertDialogFragment.OnDialogResultListener {
 
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: PlayerView
@@ -51,6 +49,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     private var secondView: ViewGroup? = null
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
+
+    protected abstract val viewModel: PlayerViewModel
 
     protected var isPortrait: Boolean = false
         private set
@@ -279,7 +279,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    protected fun initializeViewModel(viewModel: PlayerViewModel) {
+    override fun initialize() {
         viewModel.currentPlayer.observe(viewLifecycleOwner, Observer {
             playerView.player = it
         })
@@ -294,11 +294,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
         })
         if (this !is OfflinePlayerFragment) {
-            getMainViewModel().user.observe(viewLifecycleOwner, Observer {
-                if (it is LoggedIn) {
-                    if (viewModel is FollowViewModel) {
-                        initializeFollow(this, viewModel, requireView().findViewById(R.id.follow), it)
-                    }
+            getMainViewModel().user.observe(viewLifecycleOwner, Observer { user ->
+                if (user is LoggedIn) {
+                    initializeFollow(this, (viewModel as FollowViewModel), requireView().findViewById(R.id.follow), user)
                 }
             })
         }
@@ -306,16 +304,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             (requireActivity() as MainActivity).closePlayer()
         })
         requireView().findViewById<ImageButton>(R.id.sleepTimer).setOnClickListener {
-            if (viewModel.isTimerOff) {
-                SleepTimerDialog().show(childFragmentManager, null)
-            } else {
-                viewModel.stopTimer()
-            }
+            SleepTimerDialog.show(childFragmentManager, viewModel.timerTimeLeft)
         }
-        this.viewModel = viewModel
     }
-
-    private lateinit var viewModel: PlayerViewModel
 
 //    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
 
@@ -361,8 +352,16 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     }
 
-    override fun onSleepTimerStarted(duration: Long) {
-        viewModel.startTimer(duration)
+    override fun onSleepTimerChanged(duration: Long) {
+        viewModel.setTimer(duration)
+    }
+
+    override fun onDialogResult(requestCode: Int, resultCode: Int) {
+        when (requestCode) {
+            REQUEST_FOLLOW -> {
+                //TODO
+            }
+        }
     }
 
     private fun setPreferredChatVisibility() {
@@ -381,5 +380,12 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         showChat.gone()
         chatLayout.visible()
         userPrefs.edit { putBoolean(CHAT_OPENED, true) }
+    }
+
+    private companion object {
+        const val CHAT_OPENED = "ChatOpened"
+        const val WAS_IN_PIP = "wasInPip"
+
+        const val REQUEST_FOLLOW = 0
     }
 }

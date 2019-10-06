@@ -21,10 +21,13 @@ class VideosAdapter(
                     oldItem.id == newItem.id
 
             override fun areContentsTheSame(oldItem: Video, newItem: Video): Boolean =
+                    false &&
                     oldItem.views == newItem.views &&
                             oldItem.preview == newItem.preview &&
                             oldItem.title == newItem.title
         }) {
+
+    private var positions: Map<Long, Long>? = null
 
     override val layoutId: Int = R.layout.fragment_videos_list_item
 
@@ -37,6 +40,7 @@ class VideosAdapter(
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
             views.text = TwitchApiHelper.formatCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.length.toLong())
+            progressBar.progress = positions?.get(item.id.substring(1).toLong()).let { if (it != null) (it / (item.length * 10L)).toInt() else 0 }
             userImage.apply {
                 setOnClickListener(channelListener)
                 loadImage(item.channel.logo, circle = true)
@@ -54,6 +58,13 @@ class VideosAdapter(
                     show()
                 }
             }
+        }
+    }
+
+    fun setPositions(positions: Map<Long, Long>) {
+        this.positions = positions
+        if (!currentList.isNullOrEmpty()) {
+            notifyDataSetChanged()
         }
     }
 }

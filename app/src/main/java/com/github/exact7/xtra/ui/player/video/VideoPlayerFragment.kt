@@ -27,7 +27,7 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    private lateinit var viewModel: VideoPlayerViewModel
+    override lateinit var viewModel: VideoPlayerViewModel
     private lateinit var video: Video
     override val channel: Channel
         get() = video.channel
@@ -53,8 +53,8 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     }
 
     override fun initialize() {
+        super.initialize()
         viewModel.setVideo(video, requireArguments().getDouble(KEY_OFFSET))
-        initializeViewModel(viewModel)
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         val download = requireView().findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
