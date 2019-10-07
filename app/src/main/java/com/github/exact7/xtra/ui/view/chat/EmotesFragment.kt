@@ -53,10 +53,16 @@ class EmotesFragment : Fragment() {
             else -> 0
         }
         setEmotes(emotes)
+        if (type == 0) {
+            println("SET1 $emotes")
+        }
         recyclerView.layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f))
     }
 
     fun setEmotes(list: List<Emote>) {
+        if (type == 0) {
+            println("SET2 $list")
+        }
         recyclerView.adapter = EmotesAdapter(list, listener, animateGifs)
     }
 }

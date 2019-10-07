@@ -160,6 +160,7 @@ class ChatView : ConstraintLayout {
                 autoCompleteAdapter = adapter
                 editText.setAdapter(adapter)
                 initEmotesViewPager()
+                viewPager.adapter!!.notifyDataSetChanged() //TODO https://stackoverflow.com/questions/7263291/viewpager-pageradapter-not-updating-the-view
             } else if (emotesAddedCount > 4) {
                 viewPager.adapter!!.notifyDataSetChanged()
             }
