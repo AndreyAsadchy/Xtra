@@ -14,7 +14,7 @@ class BttvEmote(
         val imageType: String) : Emote(), Parcelable {
 
     override val isPng: Boolean
-        get() = imageType.endsWith("png")
+        get() = imageType.endsWith("png", true)
 
     override val url: String
         get() = "$BTTV_URL$id/2x"
