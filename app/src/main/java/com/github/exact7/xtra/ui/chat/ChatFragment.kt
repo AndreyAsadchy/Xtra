@@ -46,7 +46,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
                 chatView.setUsername(user.name)
                 chatView.setChatters(viewModel.chatters)
                 val emotesObserver = Observer(chatView::addEmotes)
-                viewModel.emotes.observe(viewLifecycleOwner, emotesObserver)
+                viewModel.twitchEmotes.observe(viewLifecycleOwner, emotesObserver)
                 viewModel.recentEmotes.observe(viewLifecycleOwner, emotesObserver)
                 viewModel.newChatter.observe(viewLifecycleOwner, Observer(chatView::addChatter))
             }
@@ -67,9 +67,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             chatView.enableChatInteraction(isLive && userIsLoggedIn, childFragmentManager)
             viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
             viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyMessageAdded() })
-            val emotesObserver = Observer(chatView::addEmotes)
-            viewModel.bttv.observe(viewLifecycleOwner, emotesObserver)
-            viewModel.ffz.observe(viewLifecycleOwner, emotesObserver)
+            viewModel.otherEmotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))
         }
     }
 

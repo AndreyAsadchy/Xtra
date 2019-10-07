@@ -26,18 +26,8 @@ import com.github.exact7.xtra.model.chat.Chatter
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.RecentEmote
-import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.common.ChatAdapter
-import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.convertDpToPixels
-import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.hideKeyboard
-import com.github.exact7.xtra.util.loadBitmap
-import com.github.exact7.xtra.util.loadImage
-import com.github.exact7.xtra.util.prefs
-import com.github.exact7.xtra.util.showKeyboard
-import com.github.exact7.xtra.util.toggleVisibility
-import com.github.exact7.xtra.util.visible
+import com.github.exact7.xtra.util.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.auto_complete_emotes_list_item.view.*
 import kotlinx.android.synthetic.main.view_chat.view.*
@@ -58,9 +48,7 @@ class ChatView : ConstraintLayout {
 
     private var isChatTouched = false
 
-    private var recentEmotes: List<Emote>? = null
-    private var twitchEmotes: List<Emote>? = null
-    private var otherEmotes: MutableSet<Emote>? = null
+    private var hasRecentEmotes: Boolean? = null
     private var emotesAddedCount = 0
 
     private var autoCompleteList: MutableList<Any>? = null
@@ -81,10 +69,6 @@ class ChatView : ConstraintLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init(context)
-    }
-
-    init {
-        adapter.addEmotes(ChatFragment.defaultBttvAndFfzEmotes())
     }
 
     private fun init(context: Context) {
@@ -134,35 +118,34 @@ class ChatView : ConstraintLayout {
         }
     }
 
-    fun addEmotes(list: List<Emote>?) {
-        list?.let {
-            when (it.firstOrNull()) {
-                is BttvEmote, is FfzEmote -> {
-                    adapter.addEmotes(it)
-                    if (messagingEnabled) {
-                        otherEmotes!!.addAll(it)
-                        autoCompleteList!!.addAll(it)
-                    }
+    fun addEmotes(list: List<Emote>) {
+        when (list.firstOrNull()) {
+            is BttvEmote, is FfzEmote -> {
+                adapter.addEmotes(list)
+                if (messagingEnabled) {
+                    autoCompleteList!!.addAll(list)
                 }
-                is TwitchEmote -> {
-                    twitchEmotes = it
-                    if (messagingEnabled) {
-                        autoCompleteList!!.addAll(it)
-                    }
-                }
-                is RecentEmote -> recentEmotes = it
             }
+            is TwitchEmote -> {
+                if (messagingEnabled) {
+                    autoCompleteList!!.addAll(list)
+                }
+            }
+            is RecentEmote -> hasRecentEmotes = true
         }
-        if (messagingEnabled) {
-            if (++emotesAddedCount == 4) {
-                val adapter = AutoCompleteAdapter(context, autoCompleteList!! + ChatFragment.defaultBttvAndFfzEmotes(), animateGifs)
-                adapter.setNotifyOnChange(false)
-                autoCompleteAdapter = adapter
-                editText.setAdapter(adapter)
-                initEmotesViewPager()
-                viewPager.adapter!!.notifyDataSetChanged() //TODO https://stackoverflow.com/questions/7263291/viewpager-pageradapter-not-updating-the-view
-            } else if (emotesAddedCount > 4) {
-                viewPager.adapter!!.notifyDataSetChanged()
+        if (messagingEnabled && ++emotesAddedCount == 3) { //TODO refactor to not wait
+            autoCompleteAdapter = AutoCompleteAdapter(context, autoCompleteList!!, animateGifs).apply {
+                setNotifyOnChange(false)
+                editText.setAdapter(this)
+
+                var previousSize = 0
+                editText.setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus && count != previousSize) {
+                        previousSize = count
+                        notifyDataSetChanged()
+                    }
+                    setNotifyOnChange(hasFocus)
+                }
             }
         }
     }
@@ -226,16 +209,6 @@ class ChatView : ConstraintLayout {
                     clear.gone()
                 }
             })
-            var previousSize = 0
-            editText.setOnFocusChangeListener { _, hasFocus ->
-                autoCompleteAdapter?.let {
-                    if (hasFocus && it.count != previousSize) {
-                        previousSize = it.count
-                        it.notifyDataSetChanged()
-                    }
-                    it.setNotifyOnChange(hasFocus)
-                }
-            }
             editText.setTokenizer(SpaceTokenizer())
             editText.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -255,7 +228,36 @@ class ChatView : ConstraintLayout {
             }
             send.setOnClickListener { sendMessage() }
             messageView.visible()
-            otherEmotes = HashSet(ChatFragment.defaultBttvAndFfzEmotes())
+            viewPager.adapter = object : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
+                override fun getItem(position: Int): Fragment {
+                    return EmotesFragment.newInstance(position, animateGifs)
+                }
+
+                override fun getCount(): Int = 3
+
+                override fun getPageTitle(position: Int): CharSequence? {
+                    return when (position) {
+                        0 -> context.getString(R.string.recent_emotes)
+                        1 -> "Twitch"
+                        else -> "BTTV/FFZ"
+                    }
+                }
+            }
+            viewPager.offscreenPageLimit = 2
+            emotes.setOnClickListener {
+                //TODO add animation
+                with(viewPager) {
+                    if (isGone) {
+                        if (hasRecentEmotes != true && currentItem == 0) {
+                            setCurrentItem(1, false)
+                        }
+                        visible()
+                    } else {
+                        gone()
+                    }
+                }
+            }
             messagingEnabled = true
         }
     }
@@ -274,53 +276,6 @@ class ChatView : ConstraintLayout {
                 false
             }
         } == true
-    }
-
-    private fun initEmotesViewPager() {
-        viewPager.adapter = object : FragmentStatePagerAdapter(fragmentManager) {
-
-            override fun getItem(position: Int): Fragment {
-                val list = when (position) {
-                    0 -> recentEmotes!!
-                    1 -> twitchEmotes!!.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-                    else -> otherEmotes!!.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-                }
-                return EmotesFragment.newInstance(list)
-            }
-
-            override fun getCount(): Int = 3
-
-            override fun getPageTitle(position: Int): CharSequence? {
-                return when (position) {
-                    0 -> context.getString(R.string.recent_emotes)
-                    1 -> "Twitch"
-                    else -> "BTTV/FFZ"
-                }
-            }
-
-            override fun getItemPosition(`object`: Any): Int {
-                (`object` as EmotesFragment).run {
-                    if (type == 0) {
-                        setEmotes(recentEmotes!!)
-                    }
-                }
-                return super.getItemPosition(`object`)
-            }
-        }
-        viewPager.offscreenPageLimit = 2
-        emotes.setOnClickListener {
-            //TODO add animation
-            with(viewPager) {
-                if (isGone) {
-                    if (recentEmotes!!.isEmpty() && currentItem == 0) {
-                        setCurrentItem(1, false)
-                    }
-                    visible()
-                } else {
-                    gone()
-                }
-            }
-        }
     }
 
     private fun shouldShowButton(): Boolean {

@@ -25,10 +25,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.util.*
+import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 private const val TAG = "PlayerRepository"
@@ -95,14 +94,10 @@ class PlayerRepository @Inject constructor(
 
     fun loadBttvEmotes(channel: String): Single<Response<BttvEmotesResponse>> {
         return misc.getBttvEmotes(channel)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
     }
 
     fun loadFfzEmotes(channel: String): Single<Response<FfzRoomResponse>> {
         return misc.getFfzEmotes(channel)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
     }
 
     fun loadEmotes() = emotes.getAll()

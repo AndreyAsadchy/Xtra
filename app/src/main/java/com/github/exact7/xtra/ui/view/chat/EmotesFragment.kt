@@ -7,30 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.Emote
-import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.ui.chat.ChatFragment
+import com.github.exact7.xtra.ui.chat.ChatViewModel
 import com.github.exact7.xtra.ui.view.GridAutofitLayoutManager
-import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
-import com.github.exact7.xtra.util.prefs
-import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 
 class EmotesFragment : Fragment() {
 
-    companion object {
-        fun newInstance(emotes: List<Emote>) = EmotesFragment().apply { arguments = bundleOf("list" to emotes) }
-    }
-
     private lateinit var listener: (Emote) -> Unit
-    private val recyclerView by lazy { requireView() as RecyclerView }
-    private var animateGifs = true
-    var type = 0
-        private set
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,28 +31,30 @@ class EmotesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_emotes, container, false)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        animateGifs = context.prefs().getBoolean(C.ANIMATED_EMOTES, true)
-        val emotes = requireArguments().getSerializable("list") as List<Emote>
-        type = when (emotes.firstOrNull()) {
-            is TwitchEmote -> 1
-            is BttvEmote, is FfzEmote -> 2
-            else -> 0
+        val args = requireArguments()
+        val viewModel = ViewModelProviders.of(requireParentFragment()).get(ChatViewModel::class.java)
+        val emotesAdapter = EmotesAdapter(listener, args.getBoolean(KEY_ANIMATE_GIFS))
+        with(view as RecyclerView) {
+            itemAnimator = null
+            adapter = emotesAdapter
+            layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f))
+
         }
-        setEmotes(emotes)
-        if (type == 0) {
-            println("SET1 $emotes")
+        val observer: Observer<List<Emote>> = Observer(emotesAdapter::submitList)
+        when (args.getInt(KEY_POSITION)) {
+            0 -> viewModel.recentEmotes.observe(viewLifecycleOwner, observer)
+            1 -> viewModel.twitchEmotes.observe(viewLifecycleOwner, observer)
+            else -> viewModel.otherEmotes.observe(viewLifecycleOwner, observer)
         }
-        recyclerView.layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f))
     }
 
-    fun setEmotes(list: List<Emote>) {
-        if (type == 0) {
-            println("SET2 $list")
-        }
-        recyclerView.adapter = EmotesAdapter(list, listener, animateGifs)
+    companion object {
+        private const val KEY_POSITION = "position"
+        private const val KEY_ANIMATE_GIFS = "animateGifs"
+
+        fun newInstance(position: Int, animateGifs: Boolean) = EmotesFragment().apply { arguments = bundleOf("position" to position, KEY_ANIMATE_GIFS to animateGifs) }
     }
 }

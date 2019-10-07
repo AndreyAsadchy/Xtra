@@ -58,6 +58,9 @@ class ChatReplayManager @Inject constructor(
                 .doOnSubscribe { isLoading = true }
                 .doOnSuccess { isLoading = false }
                 .subscribe({
+                    it.messages.forEach {
+                        println("${it.id} ${it.message}")
+                    }
                     list.addAll(it.messages)
                     cursor = it.next
                     job = GlobalScope.launch {

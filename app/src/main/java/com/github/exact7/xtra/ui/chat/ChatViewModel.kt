@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
-import com.github.exact7.xtra.model.chat.BttvEmote
+import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Chatter
 import com.github.exact7.xtra.model.chat.Emote
-import com.github.exact7.xtra.model.chat.FfzEmote
+import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.Channel
@@ -24,26 +24,26 @@ import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import java.util.*
+import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
+import java.util.Collections
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
         private val repository: TwitchService,
         private val playerRepository: PlayerRepository): BaseViewModel(), ChatView.MessageSenderCallback {
 
-    val emotes by lazy { playerRepository.loadEmotes() }
     val recentEmotes by lazy { playerRepository.loadRecentEmotes() }
-    private val _bttv = MutableLiveData<List<BttvEmote>>()
-    val bttv: LiveData<List<BttvEmote>>
-        get() = _bttv
-    private val _ffz = MutableLiveData<List<FfzEmote>>()
-    val ffz: LiveData<List<FfzEmote>>
-        get() = _ffz
+    val twitchEmotes by lazy { playerRepository.loadEmotes() }
+    private val _otherEmotes = MutableLiveData<List<Emote>>()
+    val otherEmotes: LiveData<List<Emote>>
+        get() = _otherEmotes
 
     private val _chatMessages by lazy {
         MutableLiveData<MutableList<ChatMessage>>().apply { value = Collections.synchronizedList(ArrayList(MAX_LIST_COUNT)) }
@@ -106,21 +106,17 @@ class ChatViewModel @Inject constructor(
                     chat?.start()
                 })
                 .addTo(compositeDisposable)
-        playerRepository.loadBttvEmotes(channelName)
-                .subscribeBy(onSuccess = { response ->
-                    _bttv.value = response.body()?.let {
-                        (chat as? LiveChatController)?.addEmotes(it.emotes)
-                        it.emotes
-                    }
-                })
-                .addTo(compositeDisposable)
-        playerRepository.loadFfzEmotes(channelName)
-                .subscribeBy(onSuccess = { response ->
-                    _ffz.value = response.body()?.let {
-                        (chat as? LiveChatController)?.addEmotes(it.emotes)
-                        it.emotes
-                    }
-                })
+        Single.zip(playerRepository.loadBttvEmotes(channelName), playerRepository.loadFfzEmotes(channelName), BiFunction<Response<BttvEmotesResponse>, Response<FfzRoomResponse>, List<Emote>> { bttv, ffz ->
+            val list = ChatFragment.defaultBttvAndFfzEmotes().toMutableList()
+            bttv.body()?.emotes?.let(list::addAll)
+            ffz.body()?.emotes?.let(list::addAll)
+            val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+            (chat as? LiveChatController)?.addEmotes(sorted)
+            sorted
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy { _otherEmotes.value = it }
                 .addTo(compositeDisposable)
     }
 
@@ -137,7 +133,7 @@ class ChatViewModel @Inject constructor(
 
         init {
             if (user is LoggedIn) {
-                localEmotesObserver = Observer<List<TwitchEmote>> { addEmotes(it) }.also(emotes::observeForever)
+                localEmotesObserver = Observer<List<TwitchEmote>> { addEmotes(it) }.also(twitchEmotes::observeForever)
             }
             chatters[displayName] = Chatter(displayName)
         }
@@ -165,7 +161,7 @@ class ChatViewModel @Inject constructor(
 
         override fun stop() {
             pause()
-            localEmotesObserver?.let(emotes::removeObserver)
+            localEmotesObserver?.let(twitchEmotes::removeObserver)
         }
 
         override fun onMessage(message: ChatMessage) {
