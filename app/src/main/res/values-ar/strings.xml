@@ -144,14 +144,14 @@
 \n- Improved highlighting of a message when user was mentioned in the chat
 \n- Other bug fixes and improvements
     </string>
-    <string name="chat_settings">Chat settings</string>
-    <string name="sleep_timer">Sleep timer</string>
-    <string name="start">Start</string>
-    <string name="set">Set</string>
-    <string name="stop">Stop</string>
-    <string name="hours">h</string>
-    <string name="minutes">m</string>
-    <string name="playback_will_stop">Playback will stop in %s</string>
-    <string name="playback_will_stop_hours_minutes">Playback will stop in %1$s %2$s</string>
-    <string name="timer_canceled">The timer has been canceled</string>
+    <string name="chat_settings">إعدادات الدردشة</string>
+    <string name="sleep_timer">مؤقت النوم</string>
+    <string name="start">بدأ</string>
+    <string name="set">ضبط</string>
+    <string name="stop">توقف</string>
+    <string name="hours">س</string>
+    <string name="minutes">د</string>
+    <string name="playback_will_stop">سوف يتوقف التشغيل في%s</string>
+    <string name="playback_will_stop_hours_minutes">سيتم إيقاف التشغيل في %1$s$2% s</string>
+    <string name="timer_canceled">تم إلغاء الموقت</string>
 </resources>

@@ -10,11 +10,11 @@
         <item quantity="other">@string/viewers</item>
     </plurals>
     <plurals name="hours">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
+        <item quantity="one">%d ساعة</item>
+        <item quantity="other">%d ساعات</item>
     </plurals>
     <plurals name="minutes">
-        <item quantity="one">%d minute</item>
-        <item quantity="other">%d minutes</item>
+        <item quantity="one">%d دقيقة</item>
+        <item quantity="other">%d دقائق</item>
     </plurals>
 </resources>
