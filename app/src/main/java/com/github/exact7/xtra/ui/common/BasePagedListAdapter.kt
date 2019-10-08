@@ -3,12 +3,10 @@ package com.github.exact7.xtra.ui.common
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.repository.LoadingState
-import kotlinx.android.synthetic.main.paging_item.*
 
 abstract class BasePagedListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : PagedListAdapter<T, DefaultViewHolder>(diffCallback) {
 
@@ -24,8 +22,6 @@ abstract class BasePagedListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
     override fun onBindViewHolder(holder: DefaultViewHolder, position: Int) {
         if (getItemViewType(position) == layoutId) {
             bind(getItem(position)!!, holder.containerView)
-        } else {
-            holder.progressBar.isVisible = pagingState == LoadingState.LOADING
         }
     }
 
@@ -37,15 +33,16 @@ abstract class BasePagedListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
         }
     }
 
+    override fun getItemCount(): Int {
+        return super.getItemCount() + if (hasExtraRow()) 1 else 0
+    }
+
     fun setPagingState(pagingState: LoadingState) {
-        val previousState = pagingState
         val hadExtraRow = hasExtraRow()
         this.pagingState = pagingState
         val hasExtraRow = hasExtraRow()
         if (hadExtraRow != hasExtraRow) {
             notifyItemChanged(super.getItemCount())
-        } else if (hasExtraRow && previousState != pagingState) {
-            notifyItemChanged(itemCount - 1)
         }
     }
 
