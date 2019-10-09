@@ -215,7 +215,6 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
                 BttvEmote("566c9eeb65dbbdab32ec052b", "BasedGod", "png"),
                 BttvEmote("566c9f3b65dbbdab32ec052e", "bUrself", "png"),
                 BttvEmote("566c9f6365dbbdab32ec0532", "ConcernDoge", "png"),
-                BttvEmote("566c9f9265dbbdab32ec0538", "FapFapFap", "png"),
                 BttvEmote("566c9fde65dbbdab32ec053e", "FeelsGoodMan", "png"),
                 BttvEmote("566c9ff365dbbdab32ec0541", "FireSpeed", "png"),
                 BttvEmote("566ca06065dbbdab32ec054e", "NaM", "png"),
