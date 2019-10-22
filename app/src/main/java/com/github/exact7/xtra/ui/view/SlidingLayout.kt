@@ -12,14 +12,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.postDelayed
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isClick
+import com.github.exact7.xtra.util.isKeyboardShown
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
 
-private const val BOTTOM_MARGIN = 90f //before scaling
+private const val BOTTOM_MARGIN = 75f //before scaling
 private const val ANIMATION_DURATION = 250L
 
 class SlidingLayout : LinearLayout {
@@ -81,26 +83,36 @@ class SlidingLayout : LinearLayout {
         dragView = getChildAt(0) as PlayerView
         secondView = getChildAt(1)
         dragView.post {
-            val rootHeight = rootView.height
             topBound = paddingTop
-            minimizeThreshold = rootHeight / 5
             if (isPortrait) { //portrait
-                bottomBound = rootHeight / 2
                 minScaleX = 0.5f
                 minScaleY = 0.5f
             } else { //landscape
-                bottomBound = (rootHeight / 1.5f).toInt()
                 minScaleX = 0.3f
                 minScaleY = 0.325f
             }
             bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
-            pivotX = width * 0.95f
-            pivotY = if (isPortrait) {
-                rootHeight * 2 - dragView.height - bottomMargin
-            } else {
-                rootHeight - bottomMargin
+
+            fun init() {
+                minimizeThreshold = height / 5
+                pivotX = width * 0.95f
+                if (isPortrait) {
+                    bottomBound = height / 2
+                    pivotY = height * 2 - dragView.height - bottomMargin
+                } else {
+                    bottomBound = (height / 1.5f).toInt()
+                    pivotY = height - bottomMargin
+                }
             }
 
+            if (!isPortrait || !isMaximized || !isKeyboardShown) {
+                init()
+            } else {
+                postDelayed(750L) {
+                    //delay to avoid issue after rotating from landscape with opened keyboard to portrait
+                    init()
+                }
+            }
             if (!isMaximized) {
                 scaleX = minScaleX
                 scaleY = minScaleY
