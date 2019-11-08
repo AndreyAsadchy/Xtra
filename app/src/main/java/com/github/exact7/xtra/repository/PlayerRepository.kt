@@ -11,7 +11,6 @@ import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.db.VideoPositionsDao
-import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
@@ -25,10 +24,16 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.util.Random
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.Collection
+import kotlin.collections.HashMap
+import kotlin.collections.Map
+import kotlin.collections.associate
+import kotlin.collections.associateBy
 import kotlin.collections.set
+import kotlin.collections.toList
 
 private const val TAG = "PlayerRepository"
 
@@ -52,7 +57,7 @@ class PlayerRepository @Inject constructor(
                 .flatMap {
                     options["nauth"] = it.token
                     options["nauthsig"] = it.sig
-//                    options["fast_bread"] = "true"
+//                    options["fast_bread"] = "true" //low latency
                     usher.getStreamPlaylist(channelName, options)
                 }
                 .map { Uri.parse(it.raw().request().url().toString()) }
@@ -67,14 +72,15 @@ class PlayerRepository @Inject constructor(
         options["allow_audio_only"] = "true"
         options["type"] = "any"
         options["p"] = Random().nextInt(999999).toString()
-        val tokenHeader = User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) "OAuth ${it.token}" else null }
+//        val tokenHeader = User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) "OAuth ${it.token}" else null }
+//        val tokenHeader = "gaijrtcbb1anjc1agcbpvuwnbezlhk"
+        val tokenHeader = User.get(XtraApp.INSTANCE).token
         return api.getVideoAccessToken(tokenHeader, videoId)
                 .flatMap {
                     options["nauth"] = it.token
                     options["nauthsig"] = it.sig
                     usher.getVideoPlaylist(tokenHeader, videoId.substring(1), options) //substring 1 to remove v, should be removed when upgraded to new api
                 }
-
     }
 
     fun loadClipQualities(slug: String): Single<Map<String, String>> {

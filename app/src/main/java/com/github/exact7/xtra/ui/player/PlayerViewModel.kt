@@ -154,8 +154,8 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                             this@PlayerViewModel is StreamPlayerViewModel &&
                             error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 404 }
                 } catch (e: IllegalStateException) {
-                    Crashlytics.log(Log.ERROR, tag, "onPlayerError: Stream end check error. Type: ${error.type}")
-                    Crashlytics.logException(e)
+//                    Crashlytics.log(Log.ERROR, tag, "onPlayerError: Stream end check error. Type: ${error.type}")
+//                    Crashlytics.logException(e)
                     return
                 }
                 if (isStreamEnded) {
@@ -173,15 +173,16 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                                 onResume()
                             }
                         } catch (e: Exception) {
-                            Crashlytics.log(Log.ERROR, tag, "onPlayerError: Retry error. ${e.message}")
-                            Crashlytics.logException(e)
+//                            Crashlytics.log(Log.ERROR, tag, "onPlayerError: Retry error. ${e.message}")
+//                            Crashlytics.logException(e)
                         }
                     }
                 }
             } catch (e: Exception) {
-                Crashlytics.log(Log.ERROR, tag, "onPlayerError ${e.message}")
-                Crashlytics.logException(e)
+//                Crashlytics.log(Log.ERROR, tag, "onPlayerError ${e.message}")
+//                Crashlytics.logException(e)
             }
+            Crashlytics.logException(error)
         }
     }
 

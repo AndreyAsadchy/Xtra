@@ -5,10 +5,10 @@ buildscript {
     ext.paging = '2.1.0'
     ext.lifecycle = '2.0.0'
     ext.room = '2.1.0'
-    ext.exoplayer = "2.10.5"
+    ext.exoplayer = "2.10.6"
     ext.dagger = '2.21'
     ext.retrofit = '2.5.0'
-    ext.glide = '4.9.0'
+    ext.glide = '4.10.0'
     ext.fetch = "3.1.0"
 
     repositories {
