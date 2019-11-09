@@ -80,8 +80,10 @@ class VideoPlayerViewModel @Inject constructor(
                 }
             }
             else -> {
-                startBackgroundAudio((player.currentManifest as HlsManifest).masterPlaylist.baseUri, video.channel.status, video.channel.displayName, video.channel.logo, true)
-                _playerMode.value = PlayerMode.AUDIO_ONLY
+                (player.currentManifest as? HlsManifest)?.let {
+                    startBackgroundAudio(it.masterPlaylist.baseUri, video.channel.status, video.channel.displayName, video.channel.logo, true)
+                    _playerMode.value = PlayerMode.AUDIO_ONLY
+                }
             }
         }
     }

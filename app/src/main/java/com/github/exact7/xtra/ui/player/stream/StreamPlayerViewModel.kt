@@ -49,8 +49,10 @@ class StreamPlayerViewModel @Inject constructor(
         when {
             index < qualities.size - 2 -> setVideoQuality(index)
             index < qualities.size - 1 -> {
-                startBackgroundAudio((player.currentManifest as HlsManifest).masterPlaylist.baseUri, stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
-                _playerMode.value = AUDIO_ONLY
+                (player.currentManifest as? HlsManifest)?.let {
+                    startBackgroundAudio(it.masterPlaylist.baseUri, stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
+                    _playerMode.value = AUDIO_ONLY
+                }
             }
             else -> {
                 player.stop()
