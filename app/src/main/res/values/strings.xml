@@ -158,4 +158,8 @@
     <string name="playback_will_stop">Playback will stop in %s</string>
     <string name="playback_will_stop_hours_minutes">Playback will stop in %1$s %2$s</string>
     <string name="timer_canceled">The timer has been canceled</string>
+    <string name="authorization">Authorization</string>
+    <string name="trouble_logging_in">Having trouble logging in?</string>
+    <string name="login_problem_solution">You can log in using an external browser. After you press \"Authorize\", a page with an error should appear. Next, return to the app and try logging in again, it will be working now</string>
+    <string name="no_browser_found">No browser app found</string>
 </resources>

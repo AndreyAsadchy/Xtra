@@ -12,8 +12,10 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
@@ -21,6 +23,7 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
+import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
@@ -38,6 +41,8 @@ class LoginActivity : AppCompatActivity(), Injectable {
     @Inject
     lateinit var repository: AuthRepository
     private val compositeDisposable = CompositeDisposable()
+
+    val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.getClientId()}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +95,27 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView.visible()
+        webViewContainer.visible()
+        toolbar.apply {
+            navigationIcon = Utils.getNavigationIcon(this@LoginActivity)
+            setNavigationOnClickListener { finish() }
+        }
+        havingTrouble.setOnClickListener {
+            AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.login_problem_solution))
+                    .setPositiveButton(R.string.log_in) { dialog, _ ->
+                        val intent = Intent(Intent.ACTION_VIEW, authUrl.toUri())
+                        if (intent.resolveActivity(packageManager) != null) {
+                            webView.reload()
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, getString(R.string.no_browser_found), Toast.LENGTH_LONG).show()
+                            dialog.dismiss()
+                        }
+                    }
+                    .setNegativeButton(android.R.string.cancel) { _, _ -> }
+                    .show()
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().removeAllCookies(null)
         } else {
@@ -105,7 +130,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                     val matcher = pattern.matcher(url)
                     if (matcher.find()) {
-                        webView.gone()
+                        webViewContainer.gone()
                         welcomeContainer.gone()
                         progressBar.visible()
                         val token = matcher.group(1)
@@ -123,13 +148,13 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
                 override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                     view?.apply {
-                        val html ="<html><body><div align=\"center\" >No internet connection</div></body>"
+                        val html = "<html><body><div align=\"center\" >No internet connection</div></body>"
                         loadUrl("about:blank")
-                        loadDataWithBaseURL(null , html, "text/html", "UTF-8", null)
+                        loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
                     }
                 }
             }
-            loadUrl("https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.getClientId()}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read")
+            loadUrl(authUrl)
         }
     }
 

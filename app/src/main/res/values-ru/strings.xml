@@ -153,4 +153,8 @@
     <string name="playback_will_stop">Воспроизведение остановится через %s</string>
     <string name="playback_will_stop_hours_minutes">Воспроизведение остановится через %1$s %2$s</string>
     <string name="timer_canceled">Таймер остановлен</string>
+    <string name="authorization">Авторизация</string>
+    <string name="trouble_logging_in">Проблемы со входом в аккаунт?</string>
+    <string name="login_problem_solution">Вы можете пройти авторизацию через внешний браузер. После нажатия на кнопку \"Разрешить\" должна загрузиться страница с сообщением об ошибке. Затем вернитесь в приложение и повторите попытку входа, теперь все должно работать</string>
+    <string name="no_browser_found">Не удалось найти установленный браузер</string>
 </resources>
