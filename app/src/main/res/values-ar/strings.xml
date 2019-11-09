@@ -129,6 +129,9 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
+        <b>November 9th, 1.4.2</b>
+\n- Fixed streams and videos not working (Until Twitch changes something again)
+\n- If you are having issues with logging in, there is a step-by-step solution located at the bottom of the login screen
         <b>October 6th, 1.4.1</b>
 \n- Videos now remember where you left off
 \n- Added sleep timer

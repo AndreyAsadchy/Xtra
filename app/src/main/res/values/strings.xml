@@ -133,6 +133,9 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
+        <b>November 9th, 1.4.2</b>
+\n- Fixed streams and videos not working (Until Twitch changes something again)
+\n- If you are having issues with logging in, there is a step-by-step solution located at the bottom of the login screen
         <b>October 6th, 1.4.1</b>
 \n- Videos now remember where you left off
 \n- Added sleep timer
@@ -140,7 +143,7 @@
 \n- Fixed 60 fps not working on some devices
 \n- Other bug fixes and improvements
         \n\n<b>September 15th, 1.4.0</b>
-        \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
+\n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
 \n- Added ability when watching a clip to continue watching it in the full video
 \n- Added ability to support the development of the app, located in the \"Menu\" tab
 \n- Added ability to disable animated GIF emotes
