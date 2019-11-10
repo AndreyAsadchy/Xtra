@@ -31,8 +31,12 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
-import java.util.Collections
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.set
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
@@ -129,7 +133,7 @@ class ChatViewModel @Inject constructor(
         private val allEmotesMap: MutableMap<String, Emote> = ChatFragment.defaultBttvAndFfzEmotes().associateByTo(HashMap()) { it.name }
         private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
-        val chatters = HashMap<String, Chatter>()
+        val chatters = ConcurrentHashMap<String, Chatter>()
 
         init {
             if (user is LoggedIn) {

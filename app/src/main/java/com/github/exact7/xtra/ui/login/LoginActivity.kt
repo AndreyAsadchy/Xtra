@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
     lateinit var repository: AuthRepository
     private val compositeDisposable = CompositeDisposable()
 
-    val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.getClientId()}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
+    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.getClientId()}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,14 +50,12 @@ class LoginActivity : AppCompatActivity(), Injectable {
         try {
             setContentView(R.layout.activity_login)
         } catch (e: Exception) {
+            Crashlytics.log("LoginActivity.onCreate: WebView not found. Message: ${e.message}")
             Crashlytics.logException(e)
-            if (e.message?.contains("WebView") == true) {
-                Crashlytics.log("LoginActivity.onCreate: WebView not found. Message: ${e.message}")
-                Toast.makeText(this, getString(R.string.webview_error), Toast.LENGTH_LONG).show()
-                finish()
-                startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                return
-            }
+            Toast.makeText(this, getString(R.string.webview_error), Toast.LENGTH_LONG).show()
+            finish()
+            startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+            return
         }
         try { //TODO remove after updated to 1.2.0
             val oldPrefs = getSharedPreferences("authPrefs", Context.MODE_PRIVATE)

@@ -27,7 +27,16 @@ import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.ui.common.ChatAdapter
-import com.github.exact7.xtra.util.*
+import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.convertDpToPixels
+import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.hideKeyboard
+import com.github.exact7.xtra.util.loadBitmap
+import com.github.exact7.xtra.util.loadImage
+import com.github.exact7.xtra.util.prefs
+import com.github.exact7.xtra.util.showKeyboard
+import com.github.exact7.xtra.util.toggleVisibility
+import com.github.exact7.xtra.util.visible
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.auto_complete_emotes_list_item.view.*
 import kotlinx.android.synthetic.main.view_chat.view.*

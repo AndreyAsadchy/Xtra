@@ -129,7 +129,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@id/toolbar"
@@ -143,17 +144,23 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/havingTrouble"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trouble_logging_in"
-            android:textSize="18sp"
-            android:textStyle="normal"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="?attr/selectableItemBackground"/>
+            android:gravity="center_horizontal"
+            android:background="@android:color/white">
+
+            <TextView
+                android:id="@+id/havingTrouble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trouble_logging_in"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:textColor="@android:color/black"
+                android:padding="10dp"
+                android:background="?attr/selectableItemBackground"/>
+        </LinearLayout>
     </LinearLayout>
 
 
