@@ -56,20 +56,22 @@ class MenuFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val activity = requireActivity() as MainActivity
-        if (activity.currentTheme != activity.prefs().getString(C.THEME, "0")) {
+        if (activity.currentTheme == activity.prefs().getString(C.THEME, "0")) {
+            data?.let {
+                if (!it.getBooleanExtra("shouldRecreate", false) && !it.getBooleanExtra("changedPlayerForward", false) && !it.getBooleanExtra("changedPlayerRewind", false) && !it.getBooleanExtra("changedAnimatedEmotes", false)) {
+                    it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
+                        if (value > -1 && activity.isInLandscapeOrientation) {
+                            activity.playerContainer?.findViewById<FrameLayout>(R.id.chatFragmentContainer)?.updateLayoutParams { width = value }
+                        }
+                    }
+                } else {
+                    activity.recreate()
+                }
+            }
+        } else {
             activity.apply {
                 applyTheme()
                 recreate()
-            }
-        }
-        data?.let {
-            it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
-                if (value > -1 && activity.isInLandscapeOrientation) {
-                    activity.playerContainer?.findViewById<FrameLayout>(R.id.chatFragmentContainer)?.updateLayoutParams { width = value }
-                }
-            }
-            if (it.getBooleanExtra("shouldRecreate", false) || it.getBooleanExtra("changedAnimatedEmotes", false)) {
-                activity.recreate()
             }
         }
     }

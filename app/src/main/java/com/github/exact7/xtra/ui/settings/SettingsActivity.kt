@@ -78,8 +78,21 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.apply {
                 val originalValue = isChecked
                 setOnPreferenceChangeListener { _, newValue ->
-                    newValue as Boolean
                     activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedAnimatedEmotes", newValue != originalValue))
+                    true
+                }
+            }
+            findPreference<ListPreference>("playerForward")!!.apply {
+                val originalValue = value
+                setOnPreferenceChangeListener { _, newValue ->
+                    activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedPlayerForward", newValue != originalValue))
+                    true
+                }
+            }
+            findPreference<ListPreference>("playerRewind")!!.apply {
+                val originalValue = value
+                setOnPreferenceChangeListener { _, newValue ->
+                    activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedPlayerRewind", newValue != originalValue))
                     true
                 }
             }
