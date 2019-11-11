@@ -20,7 +20,6 @@ import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.FetchProvider
 import com.github.exact7.xtra.util.TlsSocketFactory
-import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
 import com.tonyodev.fetch2.FetchConfiguration
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
@@ -176,8 +175,8 @@ class XtraModule {
     fun providesOkHttpClientWithClientId(@Named("okHttpDefault") okHttpClient: OkHttpClient): OkHttpClient {
         return okHttpClient.newBuilder().addInterceptor { chain ->
             val request = chain.request().newBuilder()
-//                    .addHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko") //TODO
-                    .addHeader("Client-ID", TwitchApiHelper.getClientId())
+                    .addHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko") //TODO
+//                    .addHeader("Client-ID", TwitchApiHelper.getClientId())
                     .build()
             chain.proceed(request)
         }.build()
