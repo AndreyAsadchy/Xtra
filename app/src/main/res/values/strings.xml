@@ -133,7 +133,9 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>November 9th, 1.4.2</b>
+        <b>November 12th, 1.4.2.1</b>
+\n- Fixed streams and videos not working, again
+        \n\n<b>November 9th, 1.4.2</b>
 \n- Fixed streams and videos not working (Until Twitch changes something again)
 \n- If you are having issues with logging in, there is a step-by-step solution located at the bottom of the login screen
         \n\n<b>October 6th, 1.4.1</b>
