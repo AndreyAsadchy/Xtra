@@ -11,7 +11,6 @@ import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.db.VideoPositionsDao
-import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
@@ -68,9 +67,9 @@ class PlayerRepository @Inject constructor(
         options["allow_audio_only"] = "true"
         options["type"] = "any"
         options["p"] = Random().nextInt(999999).toString()
-        val tokenHeader = User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) "OAuth ${it.token}" else null }
+//        val tokenHeader = User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) "OAuth ${it.token}" else null }
 //        val tokenHeader = "gaijrtcbb1anjc1agcbpvuwnbezlhk"
-//        val tokenHeader = User.get(XtraApp.INSTANCE).token
+        val tokenHeader = User.get(XtraApp.INSTANCE).token
         return api.getVideoAccessToken(tokenHeader, videoId)
                 .flatMap {
                     options["nauth"] = it.token
