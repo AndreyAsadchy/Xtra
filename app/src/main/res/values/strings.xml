@@ -133,7 +133,9 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>November 12th, 1.4.2.2</b>
+        <b>November 14th, 1.4.2.3</b>
+\n- Fixed everything except for subscribers-only VODs
+        \n\n<b>November 12th, 1.4.2.2</b>
 \n- Fixed VODs not working. Subscribers-only VODs might not be working for now. Apologies for the inconvenience, lately the API is changing back and forth. FeelsWeirdMan
         \n\n<b>November 12th, 1.4.2.1</b>
 \n- Fixed streams and videos not working, again
