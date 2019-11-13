@@ -11,12 +11,14 @@ import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.db.VideoPositionsDao
+import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
+import com.github.exact7.xtra.util.TwitchApiHelper
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -31,6 +33,8 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 
 private const val TAG = "PlayerRepository"
+private const val TWITCH_CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko"
+private const val UNDEFINED = "undefined"
 
 @Singleton
 class PlayerRepository @Inject constructor(
@@ -43,15 +47,18 @@ class PlayerRepository @Inject constructor(
 
     fun loadStreamPlaylist(channelName: String): Single<Uri> {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
-        val options = HashMap<String, String>()
-        options["allow_source"] = "true"
-        options["allow_audio_only"] = "true"
-        options["type"] = "any"
-        options["p"] = Random().nextInt(999999).toString()
-        return api.getStreamAccessToken(channelName)
+//        options["show_ads"] = "false"
+//        options["server_ads"] = "false"
+        return api.getStreamAccessToken(TwitchApiHelper.getClientId(), channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
+                .onErrorResumeNext { api.getStreamAccessToken(TWITCH_CLIENT_ID, channelName, UNDEFINED) }
                 .flatMap {
-                    options["nauth"] = it.token
-                    options["nauthsig"] = it.sig
+                    val options = HashMap<String, String>()
+                    options["token"] = it.token
+                    options["sig"] = it.sig
+                    options["allow_source"] = "true"
+                    options["allow_audio_only"] = "true"
+                    options["type"] = "any"
+                    options["p"] = Random().nextInt(999999).toString()
 //                    options["fast_bread"] = "true" //low latency
                     usher.getStreamPlaylist(channelName, options)
                 }
@@ -61,20 +68,19 @@ class PlayerRepository @Inject constructor(
     }
 
     fun loadVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
-        Log.d(TAG, "Getting video playlist for video $videoId")
-        val options = HashMap<String, String>()
-        options["allow_source"] = "true"
-        options["allow_audio_only"] = "true"
-        options["type"] = "any"
-        options["p"] = Random().nextInt(999999).toString()
-//        val tokenHeader = User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) "OAuth ${it.token}" else null }
-//        val tokenHeader = "gaijrtcbb1anjc1agcbpvuwnbezlhk"
-        val tokenHeader = User.get(XtraApp.INSTANCE).token
-        return api.getVideoAccessToken(tokenHeader, videoId)
+        val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
+        Log.d(TAG, "Getting video playlist for video $id")
+        return api.getVideoAccessToken(TwitchApiHelper.getClientId(), id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
+                .onErrorResumeNext { api.getVideoAccessToken(TWITCH_CLIENT_ID, id, UNDEFINED) }
                 .flatMap {
-                    options["nauth"] = it.token
-                    options["nauthsig"] = it.sig
-                    usher.getVideoPlaylist(tokenHeader, videoId.substring(1), options) //substring 1 to remove v, should be removed when upgraded to new api
+                    val options = HashMap<String, String>()
+                    options["token"] = it.token
+                    options["sig"] = it.sig
+                    options["allow_source"] = "true"
+                    options["allow_audio_only"] = "true"
+                    options["type"] = "any"
+                    options["p"] = Random().nextInt(999999).toString()
+                    usher.getVideoPlaylist(id, options)
                 }
     }
 

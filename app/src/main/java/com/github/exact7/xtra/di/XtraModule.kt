@@ -20,6 +20,7 @@ import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.FetchProvider
 import com.github.exact7.xtra.util.TlsSocketFactory
+import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.GsonBuilder
 import com.tonyodev.fetch2.FetchConfiguration
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
@@ -36,7 +37,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.security.KeyStore
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
@@ -53,11 +53,12 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesKrakenApi(@Named("okHttpWithClientId") client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): KrakenApi {
+    fun providesKrakenApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): KrakenApi {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/kraken/")
                 .client(client.newBuilder().addInterceptor { chain ->
                     val request = chain.request().newBuilder()
+                            .addHeader("Client-ID", TwitchApiHelper.getClientId())
                             .addHeader("Accept", "application/vnd.twitchtv.v5+json")
                             .build()
                     chain.proceed(request)
@@ -70,7 +71,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesApiService(@Named("okHttpWithClientId") client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): ApiService {
+    fun providesApiService(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): ApiService {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/api/")
                 .client(client)
@@ -82,7 +83,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesUsherApi(@Named("okHttpWithClientId") client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): UsherApi {
+    fun providesUsherApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): UsherApi {
         return Retrofit.Builder()
                 .baseUrl("https://usher.ttvnw.net/")
                 .client(client)
@@ -94,7 +95,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesMiscApi(@Named("okHttpDefault") client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): MiscApi {
+    fun providesMiscApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): MiscApi {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/") //placeholder url
                 .client(client)
@@ -106,7 +107,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesIdApi(@Named("okHttpDefault") client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): IdApi {
+    fun providesIdApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): IdApi {
         return Retrofit.Builder()
                 .baseUrl("https://id.twitch.tv/oauth2/")
                 .client(client)
@@ -134,8 +135,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    @Named("okHttpDefault")
-    fun providesDefaultOkHttpClient(): OkHttpClient {
+    fun providesOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder().apply {
             if (BuildConfig.DEBUG) {
                 addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
@@ -171,19 +171,6 @@ class XtraModule {
 
     @Singleton
     @Provides
-    @Named("okHttpWithClientId")
-    fun providesOkHttpClientWithClientId(@Named("okHttpDefault") okHttpClient: OkHttpClient): OkHttpClient {
-        return okHttpClient.newBuilder().addInterceptor { chain ->
-            val request = chain.request().newBuilder()
-                    .addHeader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko") //TODO
-//                    .addHeader("Client-ID", TwitchApiHelper.getClientId())
-                    .build()
-            chain.proceed(request)
-        }.build()
-    }
-
-    @Singleton
-    @Provides
     fun providesExecutor(): Executor {
         return AsyncTask.THREAD_POOL_EXECUTOR
     }
@@ -196,7 +183,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesFetchConfigurationBuilder(application: Application, @Named("okHttpDefault") okHttpClient: OkHttpClient): FetchConfiguration.Builder {
+    fun providesFetchConfigurationBuilder(application: Application, okHttpClient: OkHttpClient): FetchConfiguration.Builder {
         return FetchConfiguration.Builder(application)
                 .enableLogging(BuildConfig.DEBUG)
                 .enableRetryOnNetworkGain(true)

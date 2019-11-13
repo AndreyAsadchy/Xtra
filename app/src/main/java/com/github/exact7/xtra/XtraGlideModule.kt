@@ -11,13 +11,12 @@ import com.github.exact7.xtra.di.AppInjector
 import okhttp3.OkHttpClient
 import java.io.InputStream
 import javax.inject.Inject
-import javax.inject.Named
 
 
 @GlideModule
 class XtraGlideModule : AppGlideModule() {
 
-    @field:[Inject Named("okHttpDefault")]
+    @Inject
     lateinit var okHttpClient: OkHttpClient
 
     init {
