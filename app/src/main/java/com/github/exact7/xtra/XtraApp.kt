@@ -22,7 +22,9 @@ import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
 import io.fabric.sdk.android.Fabric
 import io.reactivex.plugins.RxJavaPlugins
+import java.net.UnknownHostException
 import javax.inject.Inject
+
 
 class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
 
@@ -40,7 +42,11 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         INSTANCE = this
         AppInjector.init(this)
         Fabric.with(this, Crashlytics())
-        RxJavaPlugins.setErrorHandler { Crashlytics.logException(it) }
+        RxJavaPlugins.setErrorHandler {
+            if (it !is UnknownHostException) {
+                Crashlytics.logException(it)
+            }
+        }
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
         val prefs = prefs()
         val all = prefs.all

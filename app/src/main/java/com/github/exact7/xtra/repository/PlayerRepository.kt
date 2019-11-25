@@ -18,7 +18,7 @@ import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.util.TwitchApiHelper
+import com.github.exact7.xtra.util.TwitchApiHelper.TWITCH_CLIENT_ID
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -33,7 +33,6 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 
 private const val TAG = "PlayerRepository"
-private const val TWITCH_CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko"
 private const val UNDEFINED = "undefined"
 
 @Singleton
@@ -49,8 +48,7 @@ class PlayerRepository @Inject constructor(
         Log.d(TAG, "Getting stream playlist for channel $channelName")
 //        options["show_ads"] = "false"
 //        options["server_ads"] = "false"
-        return api.getStreamAccessToken(TwitchApiHelper.getClientId(), channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
-                .onErrorResumeNext { api.getStreamAccessToken(TWITCH_CLIENT_ID, channelName, UNDEFINED) }
+        return api.getStreamAccessToken(TWITCH_CLIENT_ID, channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
                 .flatMap {
                     val options = HashMap<String, String>()
                     options["token"] = it.token
@@ -70,8 +68,7 @@ class PlayerRepository @Inject constructor(
     fun loadVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
         Log.d(TAG, "Getting video playlist for video $id")
-        return api.getVideoAccessToken(TwitchApiHelper.getClientId(), id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
-                .onErrorResumeNext { api.getVideoAccessToken(TWITCH_CLIENT_ID, id, UNDEFINED) }
+        return api.getVideoAccessToken(TWITCH_CLIENT_ID, id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
                 .flatMap {
                     val options = HashMap<String, String>()
                     options["token"] = it.token

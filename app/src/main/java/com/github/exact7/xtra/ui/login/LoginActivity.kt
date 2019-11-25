@@ -42,7 +42,8 @@ class LoginActivity : AppCompatActivity(), Injectable {
     lateinit var repository: AuthRepository
     private val compositeDisposable = CompositeDisposable()
 
-    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.getClientId()}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
+//    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
+    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://twitch.tv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,19 +82,21 @@ class LoginActivity : AppCompatActivity(), Injectable {
             }
         } else {
             repository.deleteAllEmotes()
+            User.set(this, null)
             TwitchApiHelper.validated = false
             initWebView()
-            if (!intent.getBooleanExtra("expired", false)) {
-                repository.revoke(user.token)
-                        .subscribe { _ -> User.set(this, null) }
-                        .addTo(compositeDisposable)
-            }
+//            if (!intent.getBooleanExtra("expired", false)) {
+//                repository.revoke(user.token)
+//                        .subscribe { _ -> User.set(this, null) }
+//                        .addTo(compositeDisposable)
+//            }
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
         webViewContainer.visible()
+        welcomeContainer.gone()
         toolbar.apply {
             navigationIcon = Utils.getNavigationIcon(this@LoginActivity)
             setNavigationOnClickListener { finish() }

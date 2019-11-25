@@ -26,8 +26,8 @@ android {
     defaultConfig {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 16
-        versionCode 62
-        versionName "1.4.2.3"
+        versionCode 63
+        versionName "1.4.3-beta1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 29
         javaCompileOptions {
@@ -51,11 +51,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-    }
-    externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
         }
     }
     compileOptions {

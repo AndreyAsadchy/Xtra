@@ -27,7 +27,7 @@ class AuthRepository @Inject constructor(
     }
 
     fun revoke(token: String): Single<ResponseBody> {
-        return api.revokeToken(TwitchApiHelper.getClientId(), token)
+        return api.revokeToken(TwitchApiHelper.TWITCH_CLIENT_ID, token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

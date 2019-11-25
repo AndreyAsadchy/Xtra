@@ -13,11 +13,8 @@ import java.util.*
 
 object TwitchApiHelper {
 
-    init {
-        System.loadLibrary("keys")
-    }
-
-    external fun getClientId(): String
+    const val CLIENT_ID = "ilfexgv3nnljz3isbm257gzwrzr7bi"
+    const val TWITCH_CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko"
 
     var validated = false
 
