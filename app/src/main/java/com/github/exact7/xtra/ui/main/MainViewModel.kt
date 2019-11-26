@@ -115,7 +115,7 @@ class MainViewModel @Inject constructor(
                                 User.set(activity, null)
                                 Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
                                 if (!isPlayerMaximized) {
-                                    startActivityForResult(Intent(this, LoginActivity::class.java).putExtra("expired", true), 2)
+                                    startActivityForResult(Intent(this, LoginActivity::class.java), 2)
                                 }
                             }
                         }

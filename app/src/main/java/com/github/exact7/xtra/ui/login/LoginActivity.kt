@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
     lateinit var repository: AuthRepository
     private val compositeDisposable = CompositeDisposable()
 
-//    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
+//        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
     private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://twitch.tv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
             if (oldPrefs.all.isNotEmpty()) {
                 with(oldPrefs) {
                     if (getString(C.USER_ID, null) != null) {
-                        User.set(this@LoginActivity, LoggedIn(getString(C.USER_ID, null)!!, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!))
+                        User.set(this@LoginActivity, LoggedIn(getString(C.USER_ID, null)!!, getString(C.USERNAME, null)!!, getString(C.TOKEN, null)!!, true))
                     }
                 }
                 oldPrefs.edit { clear() }
@@ -81,15 +81,16 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 initWebView()
             }
         } else {
-            repository.deleteAllEmotes()
-            User.set(this, null)
             TwitchApiHelper.validated = false
             initWebView()
-//            if (!intent.getBooleanExtra("expired", false)) {
-//                repository.revoke(user.token)
-//                        .subscribe { _ -> User.set(this, null) }
-//                        .addTo(compositeDisposable)
-//            }
+            repository.deleteAllEmotes()
+            if (!user.newToken) {
+                repository.revoke(user.token)
+                        .subscribe { User.set(this, null) }
+                        .addTo(compositeDisposable)
+            } else {
+                User.set(this, null)
+            }
         }
     }
 
@@ -138,7 +139,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         repository.validate(token)
                                 .subscribe { response ->
                                     TwitchApiHelper.validated = true
-                                    User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token))
+                                    User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
                                     setResult(RESULT_OK)
                                     finish()
                                 }

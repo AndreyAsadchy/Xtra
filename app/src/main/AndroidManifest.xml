@@ -17,6 +17,7 @@
         android:theme="@style/DarkTheme"
         android:supportsRtl="true"
         android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_rules"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.settings.SettingsActivity"/>

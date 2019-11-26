@@ -133,10 +133,9 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>November 25th, 1.4.3-beta1</b>
-    <b>BETA VERSION, PLEASE PROVIDE FEEDBACK. THANK YOU</b>
-\n- Attempt to fix subscribers-only VODs not working. <b>Need to relogin</b>
-\n- <b>For Android 4:</b> attempt to fix streams not working
+        <b>November 26th, 1.4.3</b>
+\n- Fixed subscribers-only VODs not working. <b>YOU NEED TO RELOGIN INTO YOUR ACCOUNT</b>
+\n- <b>For Android 4:</b> Fixed streams not working
        \n\n<b>November 14th, 1.4.2.3</b>
 \n- Fixed everything except for subscribers-only VODs
         \n\n<b>November 12th, 1.4.2.2</b>

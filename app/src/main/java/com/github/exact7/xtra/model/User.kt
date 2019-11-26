@@ -8,7 +8,8 @@ import com.github.exact7.xtra.util.prefs
 
 sealed class User(val id: String,
                   val name: String,
-                  val token: String) {
+                  val token: String,
+                  val newToken: Boolean) {
 
     companion object {
         fun get(context: Context): User {
@@ -17,10 +18,11 @@ sealed class User(val id: String,
                 if (id != null) {
                     val name = getString(C.USERNAME, null)!!
                     val token = getString(C.TOKEN, null)!!
+                    val newToken = getBoolean(C.NEW_TOKEN, false)
                     if (TwitchApiHelper.validated) {
-                        LoggedIn(id, name, token)
+                        LoggedIn(id, name, token, newToken)
                     } else {
-                        NotValidated(id, name, token)
+                        NotValidated(id, name, token, newToken)
                     }
                 } else {
                     NotLoggedIn()
@@ -30,9 +32,17 @@ sealed class User(val id: String,
 
         fun set(context: Context, user: User?) {
             context.prefs().edit {
-                putString(C.USER_ID, user?.id)
-                putString(C.USERNAME, user?.name)
-                putString(C.TOKEN, user?.token)
+                if (user != null) {
+                    putString(C.USER_ID, user.id)
+                    putString(C.USERNAME, user.name)
+                    putString(C.TOKEN, user.token)
+                    putBoolean(C.NEW_TOKEN, user.newToken)
+                } else {
+                    putString(C.USER_ID, null)
+                    putString(C.USERNAME, null)
+                    putString(C.TOKEN, null)
+                    putBoolean(C.NEW_TOKEN, true)
+                }
             }
         }
     }
@@ -58,8 +68,8 @@ sealed class User(val id: String,
     }
 }
 
-class LoggedIn(id: String, name: String, token: String) : User(id, name, token) {
-    constructor(user: NotValidated) : this(user.id, user.name, user.token)
+class LoggedIn(id: String, name: String, token: String, newToken: Boolean) : User(id, name, token, newToken) {
+    constructor(user: NotValidated) : this(user.id, user.name, user.token, user.newToken)
 }
-class NotValidated(id: String, name: String, token: String) : User(id, name, token)
-class NotLoggedIn : User("", "", "")
+class NotValidated(id: String, name: String, token: String, newToken: Boolean) : User(id, name, token, newToken)
+class NotLoggedIn : User("", "", "", false)

@@ -48,7 +48,7 @@ class PlayerRepository @Inject constructor(
         Log.d(TAG, "Getting stream playlist for channel $channelName")
 //        options["show_ads"] = "false"
 //        options["server_ads"] = "false"
-        return api.getStreamAccessToken(TWITCH_CLIENT_ID, channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
+        return api.getStreamAccessToken(TWITCH_CLIENT_ID, channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn && it.newToken) it.token else UNDEFINED })
                 .flatMap {
                     val options = HashMap<String, String>()
                     options["token"] = it.token
@@ -68,7 +68,7 @@ class PlayerRepository @Inject constructor(
     fun loadVideoPlaylist(videoId: String): Single<Response<ResponseBody>> {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
         Log.d(TAG, "Getting video playlist for video $id")
-        return api.getVideoAccessToken(TWITCH_CLIENT_ID, id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn) it.token else UNDEFINED })
+        return api.getVideoAccessToken(TWITCH_CLIENT_ID, id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn && it.newToken) it.token else UNDEFINED })
                 .flatMap {
                     val options = HashMap<String, String>()
                     options["token"] = it.token

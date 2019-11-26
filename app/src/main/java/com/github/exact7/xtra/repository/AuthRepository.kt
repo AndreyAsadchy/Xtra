@@ -4,12 +4,12 @@ import com.github.exact7.xtra.api.IdApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.id.ValidationResponse
 import com.github.exact7.xtra.util.TwitchApiHelper
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,8 +26,8 @@ class AuthRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun revoke(token: String): Single<ResponseBody> {
-        return api.revokeToken(TwitchApiHelper.TWITCH_CLIENT_ID, token)
+    fun revoke(token: String): Completable {
+        return api.revokeToken(TwitchApiHelper.CLIENT_ID, token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
