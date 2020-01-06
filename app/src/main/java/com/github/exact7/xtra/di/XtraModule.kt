@@ -6,6 +6,7 @@ import android.os.Build
 import android.util.Log
 import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.api.ApiService
+import com.github.exact7.xtra.api.GraphQLApi
 import com.github.exact7.xtra.api.IdApi
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.api.MiscApi
@@ -115,6 +116,23 @@ class XtraModule {
                 .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(IdApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGraphQLApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): GraphQLApi {
+        return Retrofit.Builder()
+                .baseUrl("https://gql.twitch.tv/gql/")
+                .client(client.newBuilder().addInterceptor { chain ->
+                    val request = chain.request().newBuilder()
+                            .addHeader("Client-ID", TwitchApiHelper.TWITCH_CLIENT_ID)
+                            .build()
+                    chain.proceed(request)
+                }.build())
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJavaAdapterFactory)
+                .build()
+                .create(GraphQLApi::class.java)
     }
 
     @Singleton

@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.player.lowlatency;
+package com.github.exact7.xtra.player.lowlatency;
 
 import android.net.Uri;
 import android.os.Handler;

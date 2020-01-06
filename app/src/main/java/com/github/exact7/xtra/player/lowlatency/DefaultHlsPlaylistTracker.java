@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.player.lowlatency;
+package com.github.exact7.xtra.player.lowlatency;
 
 import android.net.Uri;
 import android.os.Handler;
@@ -464,10 +464,6 @@ public final class DefaultHlsPlaylistTracker
         private long blacklistUntilMs;
         private boolean loadPending;
         private IOException playlistError;
-        private long refLoadMs;
-        private long refSegmentNum = -1;
-        private static final int DEFAULT_REFRESH_DELAY_US = 100000;
-        private long refreshDelayUs = 0;
 
         public MediaPlaylistBundle(Uri playlistUrl) {
             this.playlistUrl = playlistUrl;
@@ -659,7 +655,6 @@ public final class DefaultHlsPlaylistTracker
                 }
             }
             earliestNextLoadTimeMs = currentTimeMs + C.usToMs(playlistSnapshot.targetDurationUs / 3);
-            System.out.println(this + " " + oldPlaylist);
 //             Schedule a load if this is the primary playlist and it doesn't have an end tag. Else the
 //             next load will be scheduled when refreshPlaylist is called, or when this playlist becomes
 //             the primary.

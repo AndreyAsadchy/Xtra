@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.player.lowlatency;
+package com.github.exact7.xtra.player.lowlatency;
 
 import com.google.android.exoplayer2.source.hls.playlist.HlsMasterPlaylist;
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylist;

@@ -70,7 +70,7 @@ class ClipPlayerViewModel @Inject constructor(
     fun setClip(clip: Clip) {
         if (!this::clip.isInitialized) {
             this.clip = clip
-            playerRepository.loadClipQualities(clip.slug)
+            playerRepository.loadClipUrls(clip.slug)
                     .subscribe({
                         helper.urls = it
                         val quality = prefs.getString(TAG, it.keys.first())!!
@@ -78,7 +78,7 @@ class ClipPlayerViewModel @Inject constructor(
                         qualityIndex = it.keys.indexOf(quality)
                         helper.loaded.value = true
                     }, {
-
+                        it.printStackTrace()
                     })
                     .addTo(compositeDisposable)
         }

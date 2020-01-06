@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.api.ApiService
+import com.github.exact7.xtra.api.GraphQLApi
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
@@ -19,6 +20,8 @@ import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.TwitchApiHelper.TWITCH_CLIENT_ID
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -40,6 +43,7 @@ class PlayerRepository @Inject constructor(
         private val api: ApiService,
         private val usher: UsherApi,
         private val misc: MiscApi,
+        private val graphQL: GraphQLApi,
         private val emotes: EmotesDao,
         private val recentEmotes: RecentEmotesDao,
         private val videoPositions: VideoPositionsDao) {
@@ -81,10 +85,25 @@ class PlayerRepository @Inject constructor(
                 }
     }
 
-    fun loadClipQualities(slug: String): Single<Map<String, String>> {
-        return misc.getClipStatus(slug)
+    fun loadClipUrls(slug: String): Single<Map<String, String>> {
+        val array = JsonArray(1)
+        val videoAccessTokenOperation = JsonObject().apply {
+            addProperty("operationName", "VideoAccessToken_Clip")
+            add("variables", JsonObject().apply {
+                addProperty("slug", slug)
+            })
+            add("extensions", JsonObject().apply {
+                add("persistedQuery", JsonObject().apply {
+                    addProperty("version", 1)
+                    addProperty("sha256Hash", "9bfcc0177bffc730bd5a5a89005869d2773480cf1738c592143b5173634b7d15")
+                })
+            })
+        }
+        array.add(videoAccessTokenOperation)
+        return graphQL.getClipData(array)
                 .map { response ->
-                    response.qualityOptions.associateBy({ if (it.frameRate == 60) "${it.quality}p${it.frameRate}" else it.quality + "p" }, { it.source })
+                    println("RESPONSE $response")
+                    response.qualities.associateBy({ if (it.frameRate == 60) "${it.quality}p${it.frameRate}" else it.quality + "p" }, { it.url }).also { println("RETURN $it") }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -96,11 +115,11 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun loadBttvEmotes(channel: String): Single<Response<BttvEmotesResponse>> {
+    fun loadBttvEmotes(channel: String): Single<BttvEmotesResponse> { //TODO test without Response<>
         return misc.getBttvEmotes(channel)
     }
 
-    fun loadFfzEmotes(channel: String): Single<Response<FfzRoomResponse>> {
+    fun loadFfzEmotes(channel: String): Single<FfzRoomResponse> {
         return misc.getFfzEmotes(channel)
     }
 
