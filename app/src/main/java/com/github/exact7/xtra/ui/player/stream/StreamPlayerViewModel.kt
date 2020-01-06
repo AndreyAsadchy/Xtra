@@ -10,9 +10,10 @@ import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
+import com.github.exact7.xtra.ui.player.lowlatency.DefaultHlsPlaylistParserFactory
+import com.github.exact7.xtra.ui.player.lowlatency.DefaultHlsPlaylistTracker
+import com.github.exact7.xtra.ui.player.lowlatency.HlsMediaSource
 import com.google.android.exoplayer2.source.hls.HlsManifest
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
@@ -31,8 +32,10 @@ class StreamPlayerViewModel @Inject constructor(
             playerRepository.loadStreamPlaylist(stream.channel.name)
                     .subscribe({
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory)
-                                .setAllowChunklessPreparation(true)
-                                .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
+//                                .setAllowChunklessPreparation(true)
+                                .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
+                                .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
+//                                .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
                                 .createMediaSource(it)
                         play()
 

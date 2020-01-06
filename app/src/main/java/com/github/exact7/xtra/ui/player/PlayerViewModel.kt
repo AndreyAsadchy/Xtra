@@ -16,7 +16,7 @@ import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
-import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -47,8 +47,11 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     protected val trackSelector = DefaultTrackSelector()
     val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
             context,
-            DefaultRenderersFactory(context),
-            trackSelector).apply { addListener(this@PlayerViewModel) }
+            trackSelector,
+            DefaultLoadControl.Builder()
+                    .setBufferDurationsMs(15000, 50000, 2000, 2000)
+                    .createDefaultLoadControl())
+            .apply { addListener(this@PlayerViewModel) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
     protected val _currentPlayer = MutableLiveData<ExoPlayer>().apply { value = player }
@@ -70,6 +73,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             binder = service as AudioPlayerService.AudioBinder
             _currentPlayer.value = service.player
+
         }
     }
 

@@ -57,7 +57,7 @@ class PlayerRepository @Inject constructor(
                     options["allow_audio_only"] = "true"
                     options["type"] = "any"
                     options["p"] = Random().nextInt(999999).toString()
-//                    options["fast_bread"] = "true" //low latency
+                    options["fast_bread"] = "true" //low latency
                     usher.getStreamPlaylist(channelName, options)
                 }
                 .map { Uri.parse(it.raw().request().url().toString()) }
