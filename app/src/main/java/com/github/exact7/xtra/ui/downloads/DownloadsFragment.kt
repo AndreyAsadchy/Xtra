@@ -54,9 +54,14 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
         })
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    recyclerView?.smoothScrollToPosition(0)
-                }
+                adapter.unregisterAdapterDataObserver(this)
+                adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        if (positionStart == 0) {
+                            recyclerView.smoothScrollToPosition(0)
+                        }
+                    }
+                })
             }
         })
         search.setOnClickListener { activity.openSearch() }

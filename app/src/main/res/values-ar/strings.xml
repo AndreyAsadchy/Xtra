@@ -129,7 +129,12 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
-        <b>November 26th, 1.4.3</b>
+        <b>January 7th, 1.4.4-beta1</b>
+\n- <b>Added support for low-latency streams (no more chat being ahead of the stream). Please let me know if streams work fine or buffer (loading) too much</b>
+\n- Fixed clips not working
+\n- Fixed audio only setting using too much data
+\n- More stability improvements
+        \n\n<b>November 26th, 1.4.3</b>
 \n- Fixed subscribers-only VODs not working. <b>YOU NEED TO RELOGIN INTO YOUR ACCOUNT</b>
 \n- <b>For Android 4:</b> Fixed streams not working
         \n\n<b>November 14th, 1.4.2.3</b>
