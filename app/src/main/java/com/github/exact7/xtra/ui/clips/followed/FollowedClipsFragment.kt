@@ -2,6 +2,7 @@ package com.github.exact7.xtra.ui.clips.followed
 
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.clips.BaseClipsFragment
 import com.github.exact7.xtra.ui.clips.ClipsAdapter
@@ -25,11 +26,9 @@ class FollowedClipsFragment : BaseClipsFragment<FollowedClipsViewModel>() {
 
     override fun initialize() {
         super.initialize()
+        viewModel.setUser(User.get(requireContext()))
         viewModel.sortText.observe(viewLifecycleOwner, Observer {
             sortText.text = it
-        })
-        getMainViewModel().user.observe(viewLifecycleOwner, Observer {
-            viewModel.setUser(it)
         })
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }

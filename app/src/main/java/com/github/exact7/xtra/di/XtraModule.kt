@@ -15,6 +15,8 @@ import com.github.exact7.xtra.model.chat.FfzRoomDeserializer
 import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.SubscriberBadgeDeserializer
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
+import com.github.exact7.xtra.model.gql.clip.ClipDataDeserializer
+import com.github.exact7.xtra.model.gql.clip.ClipDataResponse
 import com.github.exact7.xtra.model.kraken.user.UserEmotesDeserializer
 import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
@@ -142,6 +144,7 @@ class XtraModule {
                 .registerTypeAdapter(SubscriberBadgesResponse::class.java, SubscriberBadgeDeserializer())
                 .registerTypeAdapter(UserEmotesResponse::class.java, UserEmotesDeserializer())
                 .registerTypeAdapter(FfzRoomResponse::class.java, FfzRoomDeserializer())
+                .registerTypeAdapter(ClipDataResponse::class.java, ClipDataDeserializer())
                 .create())
     }
 

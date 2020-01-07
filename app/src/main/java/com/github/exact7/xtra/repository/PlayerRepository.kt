@@ -102,8 +102,7 @@ class PlayerRepository @Inject constructor(
         array.add(videoAccessTokenOperation)
         return graphQL.getClipData(array)
                 .map { response ->
-                    println("RESPONSE $response")
-                    response.qualities.associateBy({ if (it.frameRate == 60) "${it.quality}p${it.frameRate}" else it.quality + "p" }, { it.url }).also { println("RETURN $it") }
+                    response.videos.associateBy({ if (it.frameRate != 60) "${it.quality}p" else "${it.quality}p${it.frameRate}" }, { it.url })
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -115,11 +114,11 @@ class PlayerRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
     }
 
-    fun loadBttvEmotes(channel: String): Single<BttvEmotesResponse> { //TODO test without Response<>
+    fun loadBttvEmotes(channel: String): Single<Response<BttvEmotesResponse>> {
         return misc.getBttvEmotes(channel)
     }
 
-    fun loadFfzEmotes(channel: String): Single<FfzRoomResponse> {
+    fun loadFfzEmotes(channel: String): Single<Response<FfzRoomResponse>> {
         return misc.getFfzEmotes(channel)
     }
 

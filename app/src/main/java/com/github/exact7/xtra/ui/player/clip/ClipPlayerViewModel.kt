@@ -71,14 +71,31 @@ class ClipPlayerViewModel @Inject constructor(
         if (!this::clip.isInitialized) {
             this.clip = clip
             playerRepository.loadClipUrls(clip.slug)
-                    .subscribe({
-                        helper.urls = it
-                        val quality = prefs.getString(TAG, it.keys.first())!!
-                        play((it[quality] ?: it.values.first()))
-                        qualityIndex = it.keys.indexOf(quality)
+                    .subscribe({ urls ->
+                        val preferredQuality = prefs.getString(TAG, null)
+                        if (preferredQuality != null) {
+                            var url: String? = null
+                            for (entry in urls.entries.withIndex()) {
+                                if (entry.value.key == preferredQuality) {
+                                    url = entry.value.value
+                                    qualityIndex = entry.index
+                                    break
+                                }
+                            }
+                            url.let {
+                                if (it != null) {
+                                    play(it)
+                                } else {
+                                    play(urls.keys.first())
+                                }
+                            }
+                        } else {
+                            play(urls.keys.first())
+                        }
+                        helper.urls = urls
                         helper.loaded.value = true
                     }, {
-                        it.printStackTrace()
+
                     })
                     .addTo(compositeDisposable)
         }

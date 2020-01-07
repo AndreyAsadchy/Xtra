@@ -1,6 +1,6 @@
 package com.github.exact7.xtra.api
 
-import com.github.exact7.xtra.model.kraken.clip.ClipDataResponse
+import com.github.exact7.xtra.model.gql.clip.ClipDataResponse
 import com.google.gson.JsonArray
 import io.reactivex.Single
 import retrofit2.http.Body

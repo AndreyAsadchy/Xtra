@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                 initWebView()
             }
         } else {
-            TwitchApiHelper.validated = false
+            TwitchApiHelper.checkedValidation = false
             initWebView()
             repository.deleteAllEmotes()
             if (!user.newToken) {
@@ -138,7 +138,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         val token = matcher.group(1)
                         repository.validate(token)
                                 .subscribe { response ->
-                                    TwitchApiHelper.validated = true
+                                    TwitchApiHelper.checkedValidation = true
                                     User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
                                     setResult(RESULT_OK)
                                     finish()

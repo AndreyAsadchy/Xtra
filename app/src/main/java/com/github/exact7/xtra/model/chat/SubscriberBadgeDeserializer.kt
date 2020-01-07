@@ -13,16 +13,15 @@ class SubscriberBadgeDeserializer : JsonDeserializer<SubscriberBadgesResponse> {
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): SubscriberBadgesResponse {
         val gson = Gson()
         val badgeSets = json.asJsonObject.getAsJsonObject("badge_sets")
-        val response: SubscriberBadgesResponse
-        if (badgeSets.size() > 0) {
+        return if (badgeSets.size() > 0) {
             val versions = badgeSets.getAsJsonObject("subscriber").getAsJsonObject("versions")
-            response = SubscriberBadgesResponse(LinkedHashMap(versions.size()))
+            val map = LinkedHashMap<Int, SubscriberBadge>(versions.size())
             for ((key, value) in versions.entrySet()) {
-                response.badges?.put(key.toInt(), gson.fromJson(value.asJsonObject, SubscriberBadge::class.java))
+                map[key.toInt()] = gson.fromJson(value.asJsonObject, SubscriberBadge::class.java)
             }
+            SubscriberBadgesResponse(map)
         } else {
-            response = SubscriberBadgesResponse()
+            SubscriberBadgesResponse()
         }
-        return response
     }
 }

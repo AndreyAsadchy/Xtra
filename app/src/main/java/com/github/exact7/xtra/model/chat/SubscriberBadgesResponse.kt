@@ -1,8 +1,6 @@
 package com.github.exact7.xtra.model.chat
 
-class SubscriberBadgesResponse(val badges: LinkedHashMap<Int, SubscriberBadge>? = null) {
+class SubscriberBadgesResponse(private val badges: Map<Int, SubscriberBadge> = emptyMap()) {
 
-    fun getBadge(months: Int): SubscriberBadge? {
-        return badges?.get(months)
-    }
+    fun getBadge(months: Int): SubscriberBadge? = badges[months]
 }

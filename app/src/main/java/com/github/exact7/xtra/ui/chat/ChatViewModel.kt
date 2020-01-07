@@ -110,10 +110,10 @@ class ChatViewModel @Inject constructor(
                     chat?.start()
                 })
                 .addTo(compositeDisposable)
-        Single.zip(playerRepository.loadBttvEmotes(channelName), playerRepository.loadFfzEmotes(channelName), BiFunction<BttvEmotesResponse, FfzRoomResponse, List<Emote>> { bttv, ffz ->
+        Single.zip(playerRepository.loadBttvEmotes(channelName), playerRepository.loadFfzEmotes(channelName), BiFunction<Response<BttvEmotesResponse>, Response<FfzRoomResponse>, List<Emote>> { bttv, ffz ->
             val list = ChatFragment.defaultBttvAndFfzEmotes().toMutableList()
-            bttv.emotes.let(list::addAll)
-            ffz.emotes.let(list::addAll)
+            bttv.body()?.emotes?.let(list::addAll)
+            ffz.body()?.emotes?.let(list::addAll)
             val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
             (chat as? LiveChatController)?.addEmotes(sorted)
             sorted

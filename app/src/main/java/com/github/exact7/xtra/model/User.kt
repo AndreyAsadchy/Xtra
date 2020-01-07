@@ -12,14 +12,16 @@ sealed class User(val id: String,
                   val newToken: Boolean) {
 
     companion object {
+        private var user: User? = null
+
         fun get(context: Context): User {
-            return with(context.prefs()) {
+            return user ?: with(context.prefs()) {
                 val id = getString(C.USER_ID, null)
                 if (id != null) {
                     val name = getString(C.USERNAME, null)!!
                     val token = getString(C.TOKEN, null)!!
                     val newToken = getBoolean(C.NEW_TOKEN, false)
-                    if (TwitchApiHelper.validated) {
+                    if (TwitchApiHelper.checkedValidation) {
                         LoggedIn(id, name, token, newToken)
                     } else {
                         NotValidated(id, name, token, newToken)
@@ -27,10 +29,11 @@ sealed class User(val id: String,
                 } else {
                     NotLoggedIn()
                 }
-            }
+            }.also { user = it }
         }
 
         fun set(context: Context, user: User?) {
+            this.user = user
             context.prefs().edit {
                 if (user != null) {
                     putString(C.USER_ID, user.id)
@@ -44,6 +47,10 @@ sealed class User(val id: String,
                     putBoolean(C.NEW_TOKEN, true)
                 }
             }
+        }
+
+        fun validated() {
+            user = LoggedIn(user as NotValidated)
         }
     }
 

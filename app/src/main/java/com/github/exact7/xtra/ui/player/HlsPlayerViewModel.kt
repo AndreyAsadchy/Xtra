@@ -6,21 +6,18 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
-import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.C
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 import java.util.regex.Pattern
 

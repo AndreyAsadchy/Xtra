@@ -265,7 +265,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onBackPressed() {
         if (!viewModel.isPlayerMaximized) {
             if (fragNavController.isRootFragment) {
-                if (viewModel.user.value !is NotLoggedIn) {
+                if (User.get(this) !is NotLoggedIn) {
                     if (fragNavController.currentStackIndex != INDEX_FOLLOWED) {
                         navBar.selectedItemId = R.id.fragment_follow
                     } else {

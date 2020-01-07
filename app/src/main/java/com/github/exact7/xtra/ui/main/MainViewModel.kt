@@ -32,11 +32,7 @@ class MainViewModel @Inject constructor(
         application: Application,
         private val repository: TwitchService,
         private val authRepository: AuthRepository,
-        private val offlineRepository: OfflineRepository): ViewModel() {
-
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
-        get() = _user
+        private val offlineRepository: OfflineRepository) : ViewModel() {
 
     private val playerMaximized = MutableLiveData<Boolean>()
     private val _isNetworkAvailable = MutableLiveData<Event<Boolean>>()
@@ -61,12 +57,6 @@ class MainViewModel @Inject constructor(
                     DownloadUtils.download(application, it, application.prefs().getString(C.DOWNLOAD_NETWORK_PREFERENCE, "3") == "2")
                 }
             }
-        }
-    }
-
-    fun setUser(user: User) {
-        if (_user.value != user) {
-            _user.value = user
         }
     }
 
@@ -96,18 +86,17 @@ class MainViewModel @Inject constructor(
     }
 
     fun validate(activity: Activity) {
-        val user = user.value
-        if (TwitchApiHelper.validated) {
+        val user = User.get(activity)
+        if (TwitchApiHelper.checkedValidation) {
             if (user is LoggedIn) {
                 repository.loadUserEmotes(user.token, user.id, compositeDisposable)
             }
             return
         }
         if (user is NotValidated) {
-            TwitchApiHelper.validated = true
             authRepository.validate(user.token)
                     .subscribe({
-                        setUser(LoggedIn(user))
+                        User.validated()
                         repository.loadUserEmotes(user.token, user.id, compositeDisposable)
                     }, {
                         if (it is HttpException && it.code() == 401) {
@@ -122,6 +111,7 @@ class MainViewModel @Inject constructor(
                     })
                     .addTo(compositeDisposable)
         }
+        TwitchApiHelper.checkedValidation = true
     }
 
     override fun onCleared() {
