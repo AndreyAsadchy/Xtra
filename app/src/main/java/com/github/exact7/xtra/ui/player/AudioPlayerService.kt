@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Binder
@@ -18,10 +19,14 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistParserFactory
 import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistTracker
 import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
+import com.github.exact7.xtra.repository.OfflineRepository
+import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.ui.main.MainActivity
+import com.google.android.exoplayer2.DefaultControlDispatcher
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -32,16 +37,27 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.util.Util
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class AudioPlayerService : Service() {
+
+    @Inject
+    lateinit var playerRepository: PlayerRepository
+
+    @Inject
+    lateinit var offlineRepository: OfflineRepository
 
     private lateinit var player: ExoPlayer
     private lateinit var mediaSource: MediaSource
     private lateinit var playerNotificationManager: PlayerNotificationManager
 
     private var restorePosition = false
+    private var type = -1
+    private var videoId: Number? = null
 
     override fun onCreate() {
+        AndroidInjection.inject(this)
         super.onCreate()
         player = ExoPlayerFactory.newSimpleInstance(this, DefaultTrackSelector().apply {
             parameters = buildUponParameters().setRendererDisabled(0, true).build()
@@ -49,8 +65,18 @@ class AudioPlayerService : Service() {
     }
 
     override fun onDestroy() {
-        playerNotificationManager.setPlayer(null)
+        when (type) {
+            TYPE_VIDEO -> {
+                position = player.currentPosition
+                playerRepository.saveVideoPosition(VideoPosition(videoId as Long, position))
+            }
+            TYPE_OFFLINE -> {
+                position = player.currentPosition
+                offlineRepository.updateVideoPosition(videoId as Int, position)
+            }
+        }
         player.release()
+        connection = null
         super.onDestroy()
     }
 
@@ -70,8 +96,13 @@ class AudioPlayerService : Service() {
                 .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
                 .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
                 .createMediaSource(intent.getStringExtra(KEY_PLAYLIST_URL).toUri())
-        var currentPlaybackPosition = intent.getLongExtra(KEY_CURRENT_POSITION, 0)
+        var currentPlaybackPosition = intent.getLongExtra(KEY_CURRENT_POSITION, 0L)
         val usePlayPause = intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false)
+        type = intent.getIntExtra(KEY_TYPE, -1)
+        when (type) {
+            TYPE_VIDEO -> videoId = intent.getLongExtra(KEY_VIDEO_ID, -1L)
+            TYPE_OFFLINE -> videoId = intent.getIntExtra(KEY_VIDEO_ID, -1)
+        }
         player.apply {
             addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -82,7 +113,7 @@ class AudioPlayerService : Service() {
                 }
 
                 override fun onPlayerError(error: ExoPlaybackException) {
-                    if (usePlayPause) { //if it's a vod
+                    if (usePlayPause && !restorePosition) { //if it's a vod and didn't already save position
                         currentPlaybackPosition = player.currentPosition
                         restorePosition = true
                     }
@@ -91,6 +122,9 @@ class AudioPlayerService : Service() {
             })
             prepare(mediaSource)
             playWhenReady = true
+            if (currentPlaybackPosition > 0) {
+                player.seekTo(currentPlaybackPosition)
+            }
         }
         playerNotificationManager = CustomPlayerNotificationManager(
                 this,
@@ -103,14 +137,10 @@ class AudioPlayerService : Service() {
                     }
 
                     override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-                        if (dismissedByUser) {
-                            stopSelf()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            stopForeground(STOP_FOREGROUND_REMOVE)
                         } else {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                stopForeground(STOP_FOREGROUND_REMOVE)
-                            } else {
-                                stopForeground(true)
-                            }
+                            stopForeground(true)
                         }
                     }
                 },
@@ -122,6 +152,19 @@ class AudioPlayerService : Service() {
             setFastForwardIncrementMs(0)
             setRewindIncrementMs(0)
             setSmallIcon(R.drawable.baseline_audiotrack_black_24)
+            setControlDispatcher(object : DefaultControlDispatcher() {
+                override fun dispatchStop(player: Player, reset: Boolean): Boolean {
+                    connection.let {
+                        //TODO TEMP FIX, REWORK SERVICE BINDING NORMALLY
+                        if (it != null) {
+                            applicationContext.unbindService(it)
+                        } else {
+                            playerNotificationManager.setPlayer(null)
+                        }
+                    }
+                    return true
+                }
+            })
         }
         return AudioBinder()
     }
@@ -140,7 +183,6 @@ class AudioPlayerService : Service() {
         }
 
         fun restartPlayer() {
-            restorePosition = true
             player.stop()
             player.prepare(mediaSource)
         }
@@ -195,7 +237,16 @@ class AudioPlayerService : Service() {
         const val KEY_IMAGE_URL = "imageUrl"
         const val KEY_USE_PLAY_PAUSE = "playPause"
         const val KEY_CURRENT_POSITION = "currentPosition"
+        const val KEY_TYPE = "type"
+        const val KEY_VIDEO_ID = "videoId"
 
         const val REQUEST_CODE_RESUME = 2
+
+        const val TYPE_STREAM = 0
+        const val TYPE_VIDEO = 1
+        const val TYPE_OFFLINE = 2
+
+        var connection: ServiceConnection? = null
+        var position = 0L
     }
 }

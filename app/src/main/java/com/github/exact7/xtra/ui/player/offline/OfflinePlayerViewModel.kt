@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.repository.OfflineRepository
+import com.github.exact7.xtra.ui.player.AudioPlayerService
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -37,7 +38,7 @@ class OfflinePlayerViewModel @Inject constructor(
         if (playerMode.value == PlayerMode.NORMAL) {
             super.onResume()
             player.seekTo(playbackPosition)
-        } else if (playerMode.value == PlayerMode.AUDIO_ONLY) {
+        } else {
             hideBackgroundAudio()
         }
     }
@@ -47,7 +48,7 @@ class OfflinePlayerViewModel @Inject constructor(
         if (playerMode.value == PlayerMode.NORMAL) {
             playbackPosition = player.currentPosition
             super.onPause()
-        } else if (playerMode.value == PlayerMode.AUDIO_ONLY) {
+        } else {
             showBackgroundAudio()
         }
     }
@@ -62,16 +63,15 @@ class OfflinePlayerViewModel @Inject constructor(
             player.seekTo(playbackPosition)
             PlayerMode.NORMAL
         } else {
-            startBackgroundAudio(video.url, video.channelName, video.name, video.channelLogo, true)
+            startBackgroundAudio(video.url, video.channelName, video.name, video.channelLogo, true, AudioPlayerService.TYPE_OFFLINE, video.id)
             PlayerMode.AUDIO_ONLY
         }
     }
 
     override fun onCleared() {
-        repository.updateVideo(video.apply {
-            lastWatchPosition = currentPlayer.value!!.currentPosition
-        })
-        if (playerMode.value == PlayerMode.AUDIO_ONLY && isResumed) {
+        if (playerMode.value == PlayerMode.NORMAL) {
+            repository.updateVideoPosition(video.id, player.currentPosition)
+        } else if (isResumed) {
             stopBackgroundAudio()
         }
         super.onCleared()

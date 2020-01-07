@@ -33,6 +33,10 @@ class OfflineRepository @Inject constructor(
         GlobalScope.launch { videosDao.update(video) }
     }
 
+    fun updateVideoPosition(id: Int, position: Long) {
+        GlobalScope.launch { videosDao.updatePosition(id, position) }
+    }
+
     fun getRequestsAsync() = GlobalScope.async {
         requestsDao.getAll()
     }

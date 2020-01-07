@@ -62,20 +62,10 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         get() = _playerMode
     var qualityIndex = 0
         protected set
+    protected var qualityBeforeAudio = 0
     protected var playbackPosition: Long = 0
 
     protected var binder: AudioPlayerService.AudioBinder? = null
-    private val connection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {
-        }
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            binder = service as AudioPlayerService.AudioBinder
-            _currentPlayer.value = service.player
-
-        }
-    }
 
     protected var isResumed = true
 
@@ -118,7 +108,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         }
     }
 
-    protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, imageUrl: String, usePlayPause: Boolean) {
+    protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String, imageUrl: String, usePlayPause: Boolean, type: Int, videoId: Number?) {
         val context = getApplication<Application>()
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             putExtra(AudioPlayerService.KEY_PLAYLIST_URL, playlistUrl)
@@ -127,14 +117,29 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
             putExtra(AudioPlayerService.KEY_IMAGE_URL, imageUrl)
             putExtra(AudioPlayerService.KEY_USE_PLAY_PAUSE, usePlayPause)
             putExtra(AudioPlayerService.KEY_CURRENT_POSITION, player.currentPosition)
+            putExtra(AudioPlayerService.KEY_TYPE, type)
+            putExtra(AudioPlayerService.KEY_VIDEO_ID, videoId)
         }
         player.stop()
+        val connection = object : ServiceConnection {
+
+            override fun onServiceDisconnected(name: ComponentName) {
+            }
+
+            override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                binder = service as AudioPlayerService.AudioBinder
+                _currentPlayer.value = service.player
+            }
+        }
+        AudioPlayerService.connection = connection
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     protected fun stopBackgroundAudio() {
-        val context = getApplication<Application>()
-        context.unbindService(connection)
+        AudioPlayerService.connection?.let {
+            val context = getApplication<Application>()
+            context.unbindService(it)
+        }
     }
 
     protected fun showBackgroundAudio() {
@@ -142,7 +147,14 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     }
 
     protected fun hideBackgroundAudio() {
-        binder?.hideNotification()
+        if (AudioPlayerService.connection != null) {
+            binder?.hideNotification()
+        } else {
+            qualityIndex = qualityBeforeAudio
+            _currentPlayer.value = player
+            play()
+            player.seekTo(AudioPlayerService.position)
+        }
     }
 
     //Player.EventListener

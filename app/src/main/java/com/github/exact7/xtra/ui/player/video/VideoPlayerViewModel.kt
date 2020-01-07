@@ -11,6 +11,7 @@ import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.ui.player.AudioPlayerService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -67,7 +68,6 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     override fun changeQuality(index: Int) {
-        super.changeQuality(index)
         when {
             index < qualities.lastIndex -> {
                 val audioOnly = playerMode.value == PlayerMode.AUDIO_ONLY
@@ -80,26 +80,34 @@ class VideoPlayerViewModel @Inject constructor(
                 }
             }
             else -> {
+                qualityBeforeAudio = qualityIndex
                 (player.currentManifest as? HlsManifest)?.let {
-                    startBackgroundAudio(helper.urls.values.last(), video.channel.status, video.channel.displayName, video.channel.logo, true)
+                    startBackgroundAudio(helper.urls.values.last(), video.channel.status, video.channel.displayName, video.channel.logo, true, AudioPlayerService.TYPE_VIDEO, video.id.substring(1).toLong())
                     _playerMode.value = PlayerMode.AUDIO_ONLY
                 }
             }
         }
+        super.changeQuality(index)
     }
 
     override fun onResume() {
         super.onResume()
-        currentPlayer.value!!.seekTo(playbackPosition)
+        if (playerMode.value != PlayerMode.AUDIO_ONLY) {
+            player.seekTo(playbackPosition)
+        }
     }
 
     override fun onPause() {
-        playbackPosition = currentPlayer.value!!.currentPosition
+        if (playerMode.value != PlayerMode.AUDIO_ONLY) {
+            playbackPosition = player.currentPosition
+        }
         super.onPause()
     }
 
     override fun onCleared() {
-        playerRepository.saveVideoPosition(VideoPosition(video.id.substring(1).toLong(), currentPlayer.value!!.currentPosition))
+        if (playerMode.value == PlayerMode.NORMAL) {
+            playerRepository.saveVideoPosition(VideoPosition(video.id.substring(1).toLong(), player.currentPosition))
+        }
         super.onCleared()
     }
 }

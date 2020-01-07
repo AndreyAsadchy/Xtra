@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.repository.LoadingState
 import com.github.exact7.xtra.util.gone
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
-abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter: BasePagedListAdapter<T>> : BaseNetworkFragment() {
+abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter : BasePagedListAdapter<T>> : BaseNetworkFragment() {
 
     protected lateinit var viewModel: VM
     protected lateinit var adapter: Adapter
@@ -21,20 +19,16 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter: BasePag
         viewModel = createViewModel()
         adapter = createAdapter().apply {
             registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    try {
-                        if (isResumed) {
-                            recyclerView.post {
-                                recyclerView?.let {
-                                    if (positionStart < (it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()) {
-                                        it.scrollToPosition(0)
-                                    }
-                                }
+                    unregisterAdapterDataObserver(this)
+                    registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                            if (positionStart == 0) {
+                                recyclerView.scrollToPosition(0)
                             }
                         }
-                    } catch (e: Exception) {
-                        Crashlytics.logException(e)
-                    }
+                    })
                 }
             })
         }

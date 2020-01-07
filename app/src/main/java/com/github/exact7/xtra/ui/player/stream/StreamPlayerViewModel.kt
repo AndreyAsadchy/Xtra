@@ -10,6 +10,7 @@ import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
+import com.github.exact7.xtra.ui.player.AudioPlayerService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
@@ -49,23 +50,25 @@ class StreamPlayerViewModel @Inject constructor(
     }
 
     override fun changeQuality(index: Int) {
-        super.changeQuality(index)
         when {
             index < qualities.size - 2 -> setVideoQuality(index)
             index < qualities.size - 1 -> {
+                qualityBeforeAudio = qualityIndex
                 (player.currentManifest as? HlsManifest)?.let {
-                    startBackgroundAudio(helper.urls.values.last(), stream.channel.status, stream.channel.displayName, stream.channel.logo, false)
+                    startBackgroundAudio(helper.urls.values.last(), stream.channel.status, stream.channel.displayName, stream.channel.logo, false, AudioPlayerService.TYPE_STREAM, null)
                     _playerMode.value = AUDIO_ONLY
                 }
             }
             else -> {
-                player.stop()
-                if (playerMode.value == AUDIO_ONLY) {
+                if (playerMode.value == NORMAL) {
+                    player.stop()
+                } else {
                     stopBackgroundAudio()
                 }
                 _playerMode.value = DISABLED
             }
         }
+        super.changeQuality(index)
     }
 
     fun restartPlayer() {

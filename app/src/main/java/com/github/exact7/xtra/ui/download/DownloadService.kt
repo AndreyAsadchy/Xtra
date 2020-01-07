@@ -17,7 +17,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
-import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.repository.OfflineRepository
@@ -52,7 +51,7 @@ import kotlin.math.min
 import com.tonyodev.fetch2.Request as FetchRequest
 
 
-class DownloadService : IntentService(TAG), Injectable {
+class DownloadService : IntentService(TAG) {
 
     companion object {
         private const val TAG = "DownloadService"
