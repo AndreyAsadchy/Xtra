@@ -9,9 +9,9 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.util.FragmentUtils
 import com.github.exact7.xtra.util.visible
 
-interface FollowFragment {
+interface FollowFragment { //TODO REFACTOR
     fun initializeFollow(fragment: Fragment, viewModel: FollowViewModel, followButton: ImageButton, user: LoggedIn) {
-        val activity = fragment.requireActivity()
+        val context = fragment.requireContext()
         with(viewModel) {
             setUser(user)
             followButton.visible()
@@ -19,15 +19,15 @@ interface FollowFragment {
             val channelName = channelInfo.second
             follow.observe(fragment.viewLifecycleOwner, Observer { following ->
                 if (initialized) {
-                    Toast.makeText(activity, activity.getString(if (following) R.string.now_following else R.string.unfollowed, channelName), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(if (following) R.string.now_following else R.string.unfollowed, channelName), Toast.LENGTH_SHORT).show()
                 } else {
                     initialized = true
                 }
                 followButton.setOnClickListener {
-                    if (following) {
-                        FragmentUtils.showUnfollowDialog(activity, channelName) { follow.value = !following }
+                    if (!following) {
+                        follow.value = true
                     } else {
-                        follow.value = !following
+                        FragmentUtils.showUnfollowDialog(context, channelName) { follow.value = false }
                     }
                 }
                 followButton.setImageResource(if (following) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)

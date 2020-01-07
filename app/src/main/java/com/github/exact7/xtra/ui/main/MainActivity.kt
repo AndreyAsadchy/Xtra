@@ -137,10 +137,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
         val notInitialized = savedInstanceState == null
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        val user = User.get(this)
-        viewModel.setUser(user)
         initNavigation()
-        if (user !is NotLoggedIn) {
+        if (User.get(this) !is NotLoggedIn) {
             fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)
             if (notInitialized) {
                 navBar.selectedItemId = R.id.fragment_follow

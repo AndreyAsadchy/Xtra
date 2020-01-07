@@ -52,8 +52,8 @@ class StreamPlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        super.initialize()
         viewModel.startStream(stream)
+        super.initialize()
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             settings.enable()

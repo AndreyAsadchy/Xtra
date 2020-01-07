@@ -60,9 +60,9 @@ abstract class HlsPlayerViewModel(
     }
 
     private fun updateVideoQuality() {
-        val parametersBuilder = trackSelector.buildUponParameters()
+        trackSelector.parameters = trackSelector.buildUponParameters()
                 .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, qualityIndex - 1))
-        trackSelector.setParameters(parametersBuilder)
+                .build()
     }
 
     override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {

@@ -17,6 +17,7 @@ import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.AlertDialogFragment
 import com.github.exact7.xtra.ui.common.BaseNetworkFragment
@@ -281,6 +282,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     }
 
     override fun initialize() {
+        val activity = requireActivity() as MainActivity
+        val view = requireView()
         viewModel.currentPlayer.observe(viewLifecycleOwner, Observer {
             playerView.player = it
         })
@@ -294,17 +297,16 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 playerView.showController()
             }
         })
-        val view = requireView()
         if (this !is OfflinePlayerFragment) {
-            getMainViewModel().user.observe(viewLifecycleOwner, Observer { user ->
-                if (user is LoggedIn) {
-                    initializeFollow(this, (viewModel as FollowViewModel), view.findViewById(R.id.follow), user)
+            User.get(activity).let {
+                if (it is LoggedIn) {
+                    initializeFollow(this, (viewModel as FollowViewModel), view.findViewById(R.id.follow), it)
                 }
-            })
+            }
         }
         if (this !is ClipPlayerFragment) {
             viewModel.sleepTimer.observe(viewLifecycleOwner, Observer {
-                (requireActivity() as MainActivity).closePlayer()
+                activity.closePlayer()
             })
             view.findViewById<ImageButton>(R.id.sleepTimer).setOnClickListener {
                 SleepTimerDialog.show(childFragmentManager, viewModel.timerTimeLeft)

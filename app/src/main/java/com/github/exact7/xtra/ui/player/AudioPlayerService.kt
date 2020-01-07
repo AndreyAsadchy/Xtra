@@ -18,16 +18,16 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistParserFactory
+import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistTracker
+import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
@@ -38,13 +38,14 @@ class AudioPlayerService : Service() {
     private lateinit var player: ExoPlayer
     private lateinit var mediaSource: MediaSource
     private lateinit var playerNotificationManager: PlayerNotificationManager
-    private val trackSelector = DefaultTrackSelector()
 
-    private var shouldInitialize = true
+    private var restorePosition = false
 
     override fun onCreate() {
         super.onCreate()
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+        player = ExoPlayerFactory.newSimpleInstance(this, DefaultTrackSelector().apply {
+            parameters = buildUponParameters().setRendererDisabled(0, true).build()
+        })
     }
 
     override fun onDestroy() {
@@ -65,41 +66,31 @@ class AudioPlayerService : Service() {
         }
         mediaSource = HlsMediaSource.Factory(DefaultDataSourceFactory(this, Util.getUserAgent(this, getString(R.string.app_name))))
                 .setAllowChunklessPreparation(true)
+                .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
+                .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
                 .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
                 .createMediaSource(intent.getStringExtra(KEY_PLAYLIST_URL).toUri())
         var currentPlaybackPosition = intent.getLongExtra(KEY_CURRENT_POSITION, 0)
         val usePlayPause = intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false)
         player.apply {
             addListener(object : Player.EventListener {
-                override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
-                    if (shouldInitialize) {
-                        for (i in 0 until trackGroups.length) {
-                            val trackGroup = trackGroups[i]
-                            for (j in 0 until trackGroup.length) {
-                                if (trackGroup.getFormat(j).sampleMimeType?.startsWith("audio") == true) {
-                                    trackSelector.parameters = trackSelector.buildUponParameters()
-                                            .setRendererDisabled(0, true)
-                                            .setSelectionOverride(1, trackGroups, DefaultTrackSelector.SelectionOverride(i, j))
-                                            .build()
-                                    shouldInitialize = false
-                                    playWhenReady = true
-                                    if (usePlayPause) {
-                                        player.seekTo(currentPlaybackPosition)
-                                    }
-                                    return
-                                }
-                            }
-                        }
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                    if (restorePosition && playbackState == Player.STATE_READY) {
+                        restorePosition = false
+                        player.seekTo(currentPlaybackPosition)
                     }
                 }
 
-                override fun onPlayerError(error: ExoPlaybackException?) {
-                    currentPlaybackPosition = player.currentPosition
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    if (usePlayPause) { //if it's a vod
+                        currentPlaybackPosition = player.currentPosition
+                        restorePosition = true
+                    }
                     prepare(mediaSource)
-                    shouldInitialize = true
                 }
             })
             prepare(mediaSource)
+            playWhenReady = true
         }
         playerNotificationManager = CustomPlayerNotificationManager(
                 this,
@@ -149,7 +140,7 @@ class AudioPlayerService : Service() {
         }
 
         fun restartPlayer() {
-            shouldInitialize = true
+            restorePosition = true
             player.stop()
             player.prepare(mediaSource)
         }

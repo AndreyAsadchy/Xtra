@@ -2,6 +2,7 @@ package com.github.exact7.xtra.ui.videos.followed
 
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
@@ -18,10 +19,8 @@ class FollowedVideosFragment : BaseVideosFragment<FollowedVideosViewModel>(), Ra
         viewModel.sortText.observe(viewLifecycleOwner, Observer {
             sortText.text = it
         })
-        getMainViewModel().user.observe(viewLifecycleOwner, Observer {
-            viewModel.setUser(it)
-        })
-        sortBar.setOnClickListener{ FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
+        viewModel.setUser(User.get(requireContext()))
+        sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

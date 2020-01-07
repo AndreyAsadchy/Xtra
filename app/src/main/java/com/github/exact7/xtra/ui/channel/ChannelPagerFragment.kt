@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.ui.common.follow.FollowFragment
@@ -87,11 +88,11 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
                 watchLive.setOnClickListener { activity.startStream(s) }
             }
         })
-        getMainViewModel().user.observe(viewLifecycleOwner, Observer {
+        User.get(activity).let {
             if (it is LoggedIn) {
                 initializeFollow(this, viewModel, follow, it)
             }
-        })
+        }
     }
 
     override fun onNetworkRestored() {

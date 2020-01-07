@@ -36,8 +36,8 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 
     override fun initialize() {
         viewModel = getViewModel()
-        super.initialize()
         viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
+        super.initialize()
         requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex) }
     }
 

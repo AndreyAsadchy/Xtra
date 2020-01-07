@@ -1,6 +1,5 @@
 package com.github.exact7.xtra.util
 
-import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
@@ -31,9 +30,9 @@ object FragmentUtils {
         ).show(fragmentManager, null)
     }
 
-    fun showUnfollowDialog(activity: Activity, channelName: String, positiveCallback: () -> Unit) {
-        AlertDialog.Builder(activity)
-                .setMessage(activity.getString(R.string.unfollow, channelName))
+    fun showUnfollowDialog(context: Context, channelName: String, positiveCallback: () -> Unit) {
+        AlertDialog.Builder(context)
+                .setMessage(context.getString(R.string.unfollow, channelName))
                 .setPositiveButton(R.string.yes) { _, _ -> positiveCallback.invoke() }
                 .setNegativeButton(R.string.no) { _, _ -> }
                 .show()
