@@ -10,13 +10,11 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.NotLoggedIn
+import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
-import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.settings.SettingsActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.applyTheme
@@ -34,8 +32,8 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
-        val viewModel = ViewModelProviders.of(activity).get(MainViewModel::class.java)
-        viewModel.user.observe(this, Observer { loginText.text = if (it !is NotLoggedIn) getString(R.string.log_out) else getString(R.string.log_in) })
+        val isLoggedIn = User.get(activity) !is NotLoggedIn
+        loginText.text = getString(if (isLoggedIn) R.string.log_out else R.string.log_in)
         search.setOnClickListener { activity.openSearch() }
         settings.setOnClickListener {
             activity.startActivityFromFragment(this, Intent(activity, SettingsActivity::class.java), 3)
@@ -49,7 +47,7 @@ class MenuFragment : Fragment() {
         }
         donate.setOnClickListener { DonationDialog().show(childFragmentManager, null) }
         login.setOnClickListener {
-            activity.startActivityForResult(Intent(activity, LoginActivity::class.java), if (viewModel.user.value is NotLoggedIn) 1 else 2)
+            activity.startActivityForResult(Intent(activity, LoginActivity::class.java), if (!isLoggedIn) 1 else 2)
         }
     }
 
