@@ -68,6 +68,8 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     override fun changeQuality(index: Int) {
+        previousQuality = qualityIndex
+        super.changeQuality(index)
         when {
             index < qualities.lastIndex -> {
                 val audioOnly = playerMode.value == PlayerMode.AUDIO_ONLY
@@ -80,14 +82,12 @@ class VideoPlayerViewModel @Inject constructor(
                 }
             }
             else -> {
-                qualityBeforeAudio = qualityIndex
                 (player.currentManifest as? HlsManifest)?.let {
                     startBackgroundAudio(helper.urls.values.last(), video.channel.status, video.channel.displayName, video.channel.logo, true, AudioPlayerService.TYPE_VIDEO, video.id.substring(1).toLong())
                     _playerMode.value = PlayerMode.AUDIO_ONLY
                 }
             }
         }
-        super.changeQuality(index)
     }
 
     override fun onResume() {

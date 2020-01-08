@@ -654,11 +654,12 @@ public final class DefaultHlsPlaylistTracker
                     }
                 }
             }
-            earliestNextLoadTimeMs = currentTimeMs + C.usToMs(playlistSnapshot.targetDurationUs / 3);
+//            earliestNextLoadTimeMs = currentTimeMs + C.usToMs(playlistSnapshot.targetDurationUs / 3);
+            earliestNextLoadTimeMs = currentTimeMs + 1000L;
 //             Schedule a load if this is the primary playlist and it doesn't have an end tag. Else the
 //             next load will be scheduled when refreshPlaylist is called, or when this playlist becomes
 //             the primary.
-            if (/*playlistUrl.equals(primaryMediaPlaylistUrl) && */!playlistSnapshot.hasEndTag) {
+            if (playlistUrl.equals(primaryMediaPlaylistUrl) && !playlistSnapshot.hasEndTag) {
                 loadPlaylist();
             }
         }

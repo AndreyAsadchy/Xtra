@@ -49,7 +49,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
             context,
             trackSelector,
             DefaultLoadControl.Builder()
-                    .setBufferDurationsMs(15000, 50000, 2000, 2000)
+                    .setBufferDurationsMs(15000, 50000, 2000, 5000)
                     .createDefaultLoadControl())
             .apply { addListener(this@PlayerViewModel) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
@@ -62,7 +62,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         get() = _playerMode
     var qualityIndex = 0
         protected set
-    protected var qualityBeforeAudio = 0
+    protected var previousQuality = 0
     protected var playbackPosition: Long = 0
 
     protected var binder: AudioPlayerService.AudioBinder? = null
@@ -150,7 +150,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
         if (AudioPlayerService.connection != null) {
             binder?.hideNotification()
         } else {
-            qualityIndex = qualityBeforeAudio
+            qualityIndex = previousQuality
             _currentPlayer.value = player
             play()
             player.seekTo(AudioPlayerService.position)

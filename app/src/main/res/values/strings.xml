@@ -133,7 +133,9 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>January 7th, 1.4.4-beta1</b>
+        <b>January 9th, 1.4.4-beta2</b>
+\n- Adjusted stream settings which were causing excessive buffering. Please let me know if it\'s better now
+        \n\n<b>January 7th, 1.4.4-beta1</b>
 \n- <b>Added support for low-latency streams (no more chat being ahead of the stream). Please let me know if streams work fine or buffer (loading) too much</b>
 \n- Fixed clips not working
 \n- Fixed audio only setting using too much data
