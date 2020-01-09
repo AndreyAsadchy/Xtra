@@ -221,7 +221,7 @@ class KrakenRepository @Inject constructor(
 
     override fun loadVideoChatAfter(videoId: String, cursor: String): Single<VideoMessagesResponse> {
         Log.d(TAG, "Loading chat log for video $videoId. Cursor: $cursor")
-        return api.getVideoChatLogAfter(videoId.substring(1), cursor, 75)
+        return api.getVideoChatLogAfter(videoId.substring(1), cursor, 100)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

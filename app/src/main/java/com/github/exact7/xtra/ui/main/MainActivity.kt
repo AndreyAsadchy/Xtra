@@ -13,10 +13,13 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -207,7 +210,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
                                     }
                                 }
-                                .setNegativeButton(getString(R.string.remind_me_later), null)
+                                .setNegativeButton(getString(R.string.remind_me_later)) { _, _ -> prefs.edit { putLong("firstLaunchDate", System.currentTimeMillis() - 172800000L) } } //remind 2 days later
                                 .setNeutralButton(getString(R.string.no_thanks)) { _, _ -> prefs.edit { putBoolean("showRateAppDialog", false) } }
                                 .show()
                     }
@@ -228,8 +231,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     override fun onDestroy() {
-//        val nMgr = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//        nMgr.cancelAll()
         unregisterReceiver(networkReceiver)
         super.onDestroy()
     }
@@ -343,7 +344,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 } else {
                     viewModel.wasInPictureInPicture = false
                     if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-                        recreate()
+                        Handler(Looper.getMainLooper()).postDelayed(250L) {
+                            recreate()
+                        }
                     }
                 }
             }

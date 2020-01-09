@@ -20,14 +20,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Emote
 import com.github.exact7.xtra.model.chat.Image
 import com.github.exact7.xtra.model.chat.TwitchEmote
-import java.util.Random
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.associateBy
+import kotlin.collections.forEach
+import kotlin.collections.lastIndex
+import kotlin.collections.map
 import kotlin.collections.set
 import kotlin.math.min
 
@@ -180,7 +187,7 @@ class ChatAdapter(
             }
             loadImages(holder, images, originalMessage, builder)
         } catch (e: Exception) {
-            Crashlytics.logException(e)
+//            Crashlytics.logException(e)
         }
         holder.bind(originalMessage, builder)
     }

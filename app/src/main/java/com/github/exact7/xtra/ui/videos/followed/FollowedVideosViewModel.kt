@@ -37,8 +37,8 @@ class FollowedVideosViewModel @Inject constructor(
     }
 
     fun setUser(user: User) {
-        if (filter.value?.user != user) {
-            filter.value = filter.value?.copy(user = user) ?: Filter(user)
+        if (filter.value == null) {
+            filter.value = Filter(user)
         }
     }
 

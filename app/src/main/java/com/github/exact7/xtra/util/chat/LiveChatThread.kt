@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.util.chat
 
 import android.util.Log
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.ui.view.chat.ChatView
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -59,10 +58,12 @@ class LiveChatThread(
                 }
             }
         } catch (e: IOException) {
-
-        } finally {
-            Log.d(TAG, "Disconnecting from $hashChannelName")
             disconnect()
+            if (e.message != "Software caused connection abort") {
+                Log.d(TAG, "Disconnecting from $hashChannelName")
+            } else {
+                run()
+            }
         }
     }
 
@@ -90,7 +91,6 @@ class LiveChatThread(
             Log.d(TAG, "Successfully connected to - $hashChannelName")
         } catch (e: IOException) {
             Log.e(TAG, "Error connecting to Twitch IRC", e)
-            Crashlytics.logException(e)
             throw e
         }
     }

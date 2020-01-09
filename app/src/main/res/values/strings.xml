@@ -133,13 +133,11 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>January 9th, 1.4.4-beta2</b>
-\n- Adjusted stream settings which were causing excessive buffering. Please let me know if it\'s better now
-        \n\n<b>January 7th, 1.4.4-beta1</b>
-\n- <b>Added support for low-latency streams (no more chat being ahead of the stream). Please let me know if streams work fine or buffer (loading) too much</b>
+        <b>January 10th, 1.4.4</b>
+\n- <b>Added support for low-latency streams (significantly reduced stream delay)</b>
 \n- Fixed clips not working
 \n- Fixed audio only setting using too much data
-\n- More stability improvements
+\n- Stability improvements for picture-in-picture and more
         \n\n<b>November 26th, 1.4.3</b>
 \n- Fixed subscribers-only VODs not working. <b>YOU NEED TO RELOGIN INTO YOUR ACCOUNT</b>
 \n- <b>For Android 4:</b> Fixed streams not working

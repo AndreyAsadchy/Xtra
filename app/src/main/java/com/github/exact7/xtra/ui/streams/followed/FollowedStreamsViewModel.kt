@@ -19,7 +19,7 @@ class FollowedStreamsViewModel @Inject constructor(val repository: TwitchService
     }
 
     fun setUser(user: User) {
-        if (this.user.value != user) {
+        if (this.user.value == null) {
             this.user.value  = user
         }
     }

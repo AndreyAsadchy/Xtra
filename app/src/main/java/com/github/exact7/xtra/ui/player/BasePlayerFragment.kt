@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import com.crashlytics.android.Crashlytics
@@ -59,7 +60,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     protected var isInPictureInPictureMode = false
         private set
     protected var wasInPictureInPictureMode = false //TODO refactor to PlayerViewModel?
-    private var shouldRecreate = false
     private var isKeyboardShown = false
     abstract val shouldEnterPictureInPicture: Boolean
 
@@ -135,7 +135,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             playerView.resizeMode = resizeMode
             prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
         }
-        playerView.post {
+        playerView.postDelayed(750L) {
             playerWidth = playerView.width
             playerHeight = playerView.height
         }
@@ -166,8 +166,38 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 secondView = view.findViewById(R.id.dummyView)
             }
         }
-        if (this !is StreamPlayerFragment) {
-            val prefs = activity.prefs()
+        if (this is StreamPlayerFragment) {
+            slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
+                if (slidingLayout.isKeyboardShown) {
+                    if (!isKeyboardShown) {
+                        isKeyboardShown = true
+                        if (!isPortrait) {
+                            try {
+                                chatLayout.updateLayoutParams { width = (slidingLayout.width / 1.8f).toInt() }
+                            } catch (e: UninitializedPropertyAccessException) { //TODO Just in case, remove if not needed
+                                Crashlytics.logException(e)
+                            }
+                            showStatusBar()
+                        }
+                    }
+                } else {
+                    if (isKeyboardShown) {
+                        isKeyboardShown = false
+                        secondView?.clearFocus()
+                        if (!isPortrait) {
+                            try {
+                                chatLayout.updateLayoutParams { width = chatWidth }
+                            } catch (e: UninitializedPropertyAccessException) {
+                                Crashlytics.logException(e)
+                            }
+                            if (slidingLayout.isMaximized) {
+                                hideStatusBar()
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
             val rewind = prefs.getString("playerRewind", "5000")!!.toInt()
             val forward = prefs.getString("playerForward", "5000")!!.toInt()
             val rewindImage = when (rewind) {
@@ -190,49 +220,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 view.findViewById<ImageButton>(R.id.download).disable()
             }
         }
-        slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            if (slidingLayout.isKeyboardShown) {
-                if (!isKeyboardShown) {
-                    isKeyboardShown = true
-                    if (!isPortrait) {
-                        if (this is StreamPlayerFragment) {
-                            try {
-                                chatLayout.updateLayoutParams { width = (slidingLayout.width / 1.8f).toInt() }
-                            } catch (e: UninitializedPropertyAccessException) { //TODO Just in case, remove if not needed
-                                Crashlytics.logException(e)
-                            }
-                        }
-                        showStatusBar()
-                    }
-                }
-            } else {
-                if (isKeyboardShown) {
-                    isKeyboardShown = false
-                    secondView?.clearFocus()
-                    if (!isPortrait) {
-                        if (this is StreamPlayerFragment) {
-                            try {
-                                chatLayout.updateLayoutParams { width = chatWidth }
-                            } catch (e: UninitializedPropertyAccessException) {
-                                Crashlytics.logException(e)
-                            }
-                        }
-                        if (slidingLayout.isMaximized) {
-                            hideStatusBar()
-                        }
-                    }
-                }
-            }
-        }
     }
 
     override fun onResume() {
         super.onResume()
         wasInPictureInPictureMode = false
-        if (shouldRecreate) {
-            shouldRecreate = false
-            requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
-        }
     }
 
     override fun onPause() {
@@ -240,11 +232,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         if (requireActivity().isChangingConfigurations) {
             secondView?.clearFocus()
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        shouldRecreate = isInPictureInPictureMode
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -264,7 +251,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 }
             }
             secondView?.gone()
-        } else if (!shouldRecreate) {
+        } else {
             wasInPictureInPictureMode = true
             if (isPortrait) {
                 secondView?.visible()
