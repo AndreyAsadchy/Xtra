@@ -344,7 +344,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 } else {
                     viewModel.wasInPictureInPicture = false
                     if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-                        Handler(Looper.getMainLooper()).postDelayed(250L) {
+                        Handler(Looper.getMainLooper()).postDelayed(500L) {
                             recreate()
                         }
                     }
