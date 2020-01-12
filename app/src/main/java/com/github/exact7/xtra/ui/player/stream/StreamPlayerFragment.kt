@@ -28,6 +28,8 @@ class StreamPlayerFragment : BasePlayerFragment() {
     override val shouldEnterPictureInPicture: Boolean
         get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
+    override val controllerAutoShow: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stream = requireArguments().getParcelable(KEY_STREAM)!!

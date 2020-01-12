@@ -11,6 +11,7 @@
         app:iconSpaceReserved="false" />
 
     <SeekBarPreference
+        android:defaultValue="25"
         android:key="chatWidth"
         android:title="@string/landscape_chat_width"
         android:summary="@string/percentage_of_screen"
@@ -48,46 +49,46 @@
     <!--    </PreferenceScreen>-->
 
     <ListPreference
-        android:defaultValue="1"
+        android:defaultValue="@string/portraitColumns"
+        android:key="columnsPortrait"
         android:entries="@array/portraitColumnCount"
         android:entryValues="@array/portraitColumnCount"
-        android:key="columnsPortrait"
         android:summary="%s"
         android:title="@string/portrait_column_count"
         app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:defaultValue="2"
+        android:defaultValue="@string/landscapeColumns"
+        android:key="columnsLandscape"
         android:entries="@array/landscapeColumnCount"
         android:entryValues="@array/landscapeColumnCount"
-        android:key="columnsLandscape"
         android:summary="%s"
         android:title="@string/landscape_column_count"
         app:iconSpaceReserved="false" />
 
     <ListPreference
         android:defaultValue="3"
+        android:key="downloadNetworkPreference"
         android:entries="@array/networkDownloadPreferencesEntries"
         android:entryValues="@array/networkDownloadPreferencesValues"
-        android:key="downloadNetworkPreference"
         android:summary="%s"
         android:title="@string/download_preference"
         app:iconSpaceReserved="false" />
 
     <ListPreference
         android:defaultValue="5000"
+        android:key="playerRewind"
         android:entries="@array/playerSeekEntries"
         android:entryValues="@array/playerSeekValues"
-        android:key="playerRewind"
         android:summary="@string/seconds"
         android:title="@string/rewind"
         app:iconSpaceReserved="false" />
 
     <ListPreference
         android:defaultValue="5000"
+        android:key="playerForward"
         android:entries="@array/playerSeekEntries"
         android:entryValues="@array/playerSeekValues"
-        android:key="playerForward"
         android:summary="@string/seconds"
         android:title="@string/forward"
         app:iconSpaceReserved="false" />
@@ -102,9 +103,9 @@
         tools:isPreferenceVisible="true" />
 
     <SwitchPreferenceCompat
+        android:defaultValue="true"
         android:key="animatedGifEmotes"
         android:title="@string/animated_emotes"
-        android:defaultValue="true"
         app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat

@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.R
@@ -60,6 +61,7 @@ import com.github.exact7.xtra.ui.top.TopFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.isNetworkAvailable
@@ -123,7 +125,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             prefs.edit {
                 putBoolean(C.FIRST_LAUNCH, false)
                 putLong("firstLaunchDate", System.currentTimeMillis())
+                putInt(C.PORTRAIT_PLAYER_HEIGHT, DisplayUtils.calculatePortraitHeightByPercent(this@MainActivity, resources.getInteger(R.integer.portraitPlayerHeight)))
+                putInt(C.LANDSCAPE_CHAT_WIDTH, DisplayUtils.calculateLandscapeWidthByPercent(this@MainActivity, 25))
             }
+            PreferenceManager.setDefaultValues(this@MainActivity, R.xml.root_preferences, false)
             AlertDialog.Builder(this)
                     .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.amoled), getString(R.string.light)), 0) { _, which -> currentTheme = which.toString() }
                     .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -187,12 +192,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 })
             }
             handleIntent(intent)
-            if (prefs.getString("lastUpdateVersion", null) != BuildConfig.VERSION_NAME) {
-                prefs.edit { putString("lastUpdateVersion", BuildConfig.VERSION_NAME) }
-                if (prefs.getBoolean(C.SHOW_CHANGELOGS, true) && notFirstLaunch) {
-                    NewUpdateChangelogDialog().show(supportFragmentManager, null)
-                }
-            } else {
+            val lastUpdateVersion = prefs.getString("lastUpdateVersion", null)
+            if (lastUpdateVersion == BuildConfig.VERSION_NAME) {
                 if (prefs.getBoolean("showRateAppDialog", true)) {
                     val launchCount = prefs.getInt("launchCount", 0) + 1
                     val dateOfFirstLaunch = prefs.getLong("firstLaunchDate", 0L)
@@ -213,6 +214,51 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                                 .setNegativeButton(getString(R.string.remind_me_later)) { _, _ -> prefs.edit { putLong("firstLaunchDate", System.currentTimeMillis() - 172800000L) } } //remind 2 days later
                                 .setNeutralButton(getString(R.string.no_thanks)) { _, _ -> prefs.edit { putBoolean("showRateAppDialog", false) } }
                                 .show()
+                    }
+                }
+            } else {
+                prefs.edit { putString("lastUpdateVersion", BuildConfig.VERSION_NAME) }
+                if (prefs.getBoolean(C.SHOW_CHANGELOGS, true) && notFirstLaunch) {
+                    NewUpdateChangelogDialog().show(supportFragmentManager, null)
+                }
+                if (resources.getBoolean(R.bool.isTablet)) { //TODO remove after updated to 1.4.5
+                    val height = DisplayUtils.calculatePortraitHeightByPercent(this, resources.getInteger(R.integer.portraitPlayerHeight))
+                    if (prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) != height) {
+                        prefs.edit {
+                            if (prefs.getString(C.PORTRAIT_COLUMN_COUNT, null) == null) {
+                                putString(C.PORTRAIT_COLUMN_COUNT, resources.getString(R.string.portraitColumns))
+                                putString(C.LANDSCAPE_COLUMN_COUNT, resources.getString(R.string.landscapeColumns))
+                            }
+                            putInt(C.PORTRAIT_PLAYER_HEIGHT, height)
+                        }
+                    }
+                }
+                if (lastUpdateVersion == null && notFirstLaunch) { //for very old versions
+                    val all = prefs.all
+                    if (all[C.THEME] is Boolean) { //TODO remove after updated to 1.3.0
+                        prefs.edit {
+                            remove(C.THEME)
+                            putString(C.THEME, if (all[C.THEME] == true) "0" else "2")
+                        }
+                    }
+                    if (all["chatWidth"] is String) { //TODO remove after updated to 1.1.9
+                        prefs.edit {
+                            remove("chatWidth")
+                            putInt("chatWidth", 25)
+                            putInt(C.LANDSCAPE_CHAT_WIDTH, DisplayUtils.calculateLandscapeWidthByPercent(this@MainActivity, 25))
+                        }
+                    }
+                    if (all[C.DOWNLOAD_STORAGE] is Boolean) { //TODO remove after updated to 1.1.12
+                        prefs.edit {
+                            remove(C.DOWNLOAD_STORAGE)
+                            putInt(C.DOWNLOAD_STORAGE, if (all[C.DOWNLOAD_STORAGE] == true) 0 else 1)
+                        }
+                    }
+                    if (all[C.THEME] is Boolean) { //TODO remove after updated to 1.3.0
+                        prefs.edit {
+                            remove(C.THEME)
+                            putString(C.THEME, if (all[C.THEME] == true) "0" else "2")
+                        }
                     }
                 }
             }

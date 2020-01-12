@@ -25,7 +25,7 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter : BasePa
                     registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                             if (positionStart == 0) {
-                                recyclerView.scrollToPosition(0)
+                                recyclerView?.scrollToPosition(0)
                             }
                         }
                     })

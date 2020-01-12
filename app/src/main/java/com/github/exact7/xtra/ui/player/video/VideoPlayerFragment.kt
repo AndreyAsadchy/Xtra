@@ -35,6 +35,8 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     override val shouldEnterPictureInPicture: Boolean
         get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
+    override val controllerShowTimeoutMs: Int = 5000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         video = requireArguments().getParcelable(KEY_VIDEO)!!

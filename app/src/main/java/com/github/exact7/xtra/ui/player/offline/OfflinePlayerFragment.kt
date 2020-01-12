@@ -25,6 +25,8 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override val shouldEnterPictureInPicture: Boolean
         get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
+    override val controllerShowTimeoutMs: Int = 5000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableNetworkCheck = false
         super.onCreate(savedInstanceState)

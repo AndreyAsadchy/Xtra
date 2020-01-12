@@ -38,7 +38,7 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
     override val shouldEnterPictureInPicture: Boolean
         get() = true
 
-    override val controllerTimeoutMs: Int = 1500
+    override val controllerShowTimeoutMs: Int = 2500
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

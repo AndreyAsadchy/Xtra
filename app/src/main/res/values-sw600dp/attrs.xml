@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="isTablet">true</bool>
+    <string translatable="false" name="portraitColumns">2</string>
+    <string translatable="false" name="landscapeColumns">3</string>
+    <integer name="portraitPlayerHeight">40</integer>
+</resources>

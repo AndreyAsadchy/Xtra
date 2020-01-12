@@ -59,7 +59,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     private var isKeyboardShown = false
 
     abstract val shouldEnterPictureInPicture: Boolean
-    open val controllerTimeoutMs: Int = 3000
+    open val controllerAutoShow: Boolean = true
+    open val controllerShowTimeoutMs: Int = 3000
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
@@ -119,11 +120,12 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         playerView = view.findViewById(R.id.playerView)
         var resizeMode = if (isPortrait) {
             playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) }
-            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT) //TODO 3 for phones, 0 for tablets
+            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FILL)
         } else {
             prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
         }
         playerView.resizeMode = resizeMode
+        playerView.controllerAutoShow = controllerAutoShow
         view.findViewById<ImageButton>(R.id.aspectRatio).setOnClickListener {
             resizeMode = (resizeMode + 1).let { if (it < 5) it else 0 }
             playerView.resizeMode = resizeMode
@@ -254,12 +256,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         val view = requireView()
         viewModel.currentPlayer.observe(viewLifecycleOwner, Observer {
             playerView.player = it
-                playerView.controllerAutoShow = false
         })
         viewModel.playerMode.observe(viewLifecycleOwner, Observer {
             if (it == PlayerMode.NORMAL) {
                 playerView.controllerHideOnTouch = true
-                playerView.controllerShowTimeoutMs = controllerTimeoutMs
+                playerView.controllerShowTimeoutMs = controllerShowTimeoutMs
             } else {
                 playerView.controllerHideOnTouch = false
                 playerView.controllerShowTimeoutMs = -1
