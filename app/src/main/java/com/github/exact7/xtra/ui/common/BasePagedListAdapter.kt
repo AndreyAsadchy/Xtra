@@ -38,11 +38,18 @@ abstract class BasePagedListAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
     }
 
     fun setPagingState(pagingState: LoadingState) {
+        val previousState = this.pagingState
         val hadExtraRow = hasExtraRow()
         this.pagingState = pagingState
         val hasExtraRow = hasExtraRow()
         if (hadExtraRow != hasExtraRow) {
-            notifyItemChanged(super.getItemCount())
+            if (hadExtraRow) {
+                notifyItemRemoved(super.getItemCount())
+            } else {
+                notifyItemInserted(super.getItemCount())
+            }
+        } else if (hasExtraRow && previousState != pagingState) {
+            notifyItemChanged(itemCount - 1)
         }
     }
 

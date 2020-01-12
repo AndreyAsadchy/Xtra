@@ -64,7 +64,7 @@ class PlayerRepository @Inject constructor(
                     options["fast_bread"] = "true" //low latency
                     usher.getStreamPlaylist(channelName, options)
                 }
-                .map { Uri.parse(it.raw().request.url.toString()) }
+                .map { Uri.parse(it.raw().request().url().toString()) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }

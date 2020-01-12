@@ -53,7 +53,7 @@ class VideoPlayerViewModel @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onSuccess = {
                         if (it.isSuccessful) {
-                            mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(it.raw().request.url.toString()))
+                            mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(it.raw().request().url().toString()))
                             play()
                             if (offset > 0) {
                                 player.seekTo(offset.toLong())

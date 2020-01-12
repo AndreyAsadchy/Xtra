@@ -7,7 +7,7 @@ buildscript {
     ext.room = '2.2.3'
     ext.exoplayer = "2.11.1"
     ext.dagger = '2.25.4'
-    ext.retrofit = '2.7.1'
+    ext.retrofit = '2.6.4'
     ext.glide = '4.11.0'
     ext.fetch = "3.1.4"
 

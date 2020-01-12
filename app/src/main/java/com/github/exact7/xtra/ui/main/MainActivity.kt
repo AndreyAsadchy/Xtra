@@ -64,6 +64,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.isActivityResumed
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
@@ -390,9 +391,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 } else {
                     viewModel.wasInPictureInPicture = false
                     if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-                        Handler(Looper.getMainLooper()).postDelayed(500L) {
-                            recreate()
-                        }
+                        supportFragmentManager.beginTransaction().detach(playerFragment!!).attach(playerFragment!!).commit()
+//                        Handler(Looper.getMainLooper()).postDelayed(500L) {
+//                            recreate()
+//                        }
                     }
                 }
             }
