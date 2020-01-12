@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.view
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,16 +18,32 @@ class GridRecyclerView : RecyclerView {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    private val prefs = context.prefs()
+    private val portraitColumns = prefs.getString(C.PORTRAIT_COLUMN_COUNT, "1")!!.toInt()
+    private val landscapeColumns = prefs.getString(C.LANDSCAPE_COLUMN_COUNT, "2")!!.toInt()
+
+    private val gridLayoutManager: GridLayoutManager
+
     init {
-        if (!isInEditMode) {
-            val prefs = context.prefs()
-            val count = if (context.isInPortraitOrientation) {
-                prefs.getString(C.PORTRAIT_COLUMN_COUNT, "1")!!.toInt()
-            } else {
-                prefs.getString(C.LANDSCAPE_COLUMN_COUNT, "2")!!.toInt()
-            }
-            layoutManager = GridLayoutManager(context, count)
-            addItemDecoration(if (count > 1) MarginItemDecoration(context.resources.getDimension(R.dimen.divider_margin).toInt(), count) else DividerItemDecoration(context, GridLayoutManager.VERTICAL))
-        }
+        val columns = getColumnsForConfiguration(resources.configuration)
+        gridLayoutManager = GridLayoutManager(context, columns)
+        layoutManager = gridLayoutManager
+        addItemDecoration(columns)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        removeItemDecorationAt(0)
+        val columns = getColumnsForConfiguration(newConfig)
+        gridLayoutManager.spanCount = columns
+        addItemDecoration(columns)
+    }
+
+    private fun getColumnsForConfiguration(configuration: Configuration): Int {
+        return if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) portraitColumns else landscapeColumns
+    }
+
+    private fun addItemDecoration(columns: Int) {
+        addItemDecoration(if (columns <= 1) DividerItemDecoration(context, GridLayoutManager.VERTICAL) else MarginItemDecoration(context.resources.getDimension(R.dimen.divider_margin).toInt(), columns))
     }
 }

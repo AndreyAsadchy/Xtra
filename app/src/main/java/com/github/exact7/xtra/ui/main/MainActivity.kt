@@ -22,6 +22,7 @@ import androidx.core.content.edit
 import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -377,29 +378,29 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
-            viewModel.orientationBeforePictureInPicture = resources.configuration.orientation
+            viewModel.orientationBeforePictureInPicture = newConfig.orientation
             viewModel.wasInPictureInPicture = true
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!isInPictureInPictureMode) {
+        playerFragment?.also {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                println("$isInPictureInPictureMode ${viewModel.wasInPictureInPicture}")
                 if (!viewModel.wasInPictureInPicture) {
-                    recreate()
-                } else {
+                    println("1")
+                    supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
+                } else if (!isInPictureInPictureMode) {
                     viewModel.wasInPictureInPicture = false
                     if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-                        supportFragmentManager.beginTransaction().detach(playerFragment!!).attach(playerFragment!!).commit()
-//                        Handler(Looper.getMainLooper()).postDelayed(500L) {
-//                            recreate()
-//                        }
+                        println("2")
+                        supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
                     }
                 }
+            } else {
+                supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
             }
-        } else {
-            recreate()
         }
     }
 
