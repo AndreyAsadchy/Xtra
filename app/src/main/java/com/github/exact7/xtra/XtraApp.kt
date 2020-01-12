@@ -1,9 +1,6 @@
 package com.github.exact7.xtra
 
-import android.app.Activity
 import android.app.Application
-import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import androidx.core.content.edit
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -17,24 +14,20 @@ import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.prefs
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.HasBroadcastReceiverInjector
-import dagger.android.HasServiceInjector
+import dagger.android.HasAndroidInjector
 import io.fabric.sdk.android.Fabric
 import io.reactivex.plugins.RxJavaPlugins
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 
-class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroadcastReceiverInjector {
+class XtraApp : Application(), HasAndroidInjector {
 
     companion object {
         lateinit var INSTANCE: Application
     }
 
-    @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
-    @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
-    @Inject lateinit var dispatchingBroadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
+    @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
     private val appLifecycleObserver = AppLifecycleObserver()
 
     override fun onCreate() {
@@ -88,9 +81,9 @@ class XtraApp : Application(), HasActivityInjector, HasServiceInjector, HasBroad
         }
     }
 
-    override fun activityInjector(): AndroidInjector<Activity> = dispatchingActivityInjector
-    override fun serviceInjector(): AndroidInjector<Service> = dispatchingServiceInjector
-    override fun broadcastReceiverInjector(): AndroidInjector<BroadcastReceiver> = dispatchingBroadcastReceiverInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return dispatchingAndroidInjector
+    }
 
     fun addLifecycleListener(listener: LifecycleListener) {
         appLifecycleObserver.addListener(listener)

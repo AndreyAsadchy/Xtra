@@ -78,15 +78,11 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     }
 
     override fun onMovedToForeground() {
-        if (!wasInPictureInPictureMode) {
-            viewModel.onResume()
-        }
+        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-        if (!wasInPictureInPictureMode) {
-            viewModel.onPause()
-        }
+        viewModel.onPause()
     }
 
     override fun onNetworkRestored() {

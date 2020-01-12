@@ -103,7 +103,6 @@
     <string name="source_vod_start">البداية:</string>
     <string name="source_vod_end">النهاية:</string>
     <string name="stream_ended">إنتهى البث المباشر</string>
-    <string name="webview_error">خطأ في تحميل متصفح الويب. ربما يتم تحديثه الآن. يرجى المحاولة مرة أُخرى بعد بضع دقائق</string>
     <string name="viewers">المُشاهِدين %s</string>
     <string name="views">مُشاهدة %s</string>
     <string name="play_services_not_available">خدمات متجر غوغل غير متوفرة. قد لا تعمل بعض الوظائف بشكل صحيح</string>

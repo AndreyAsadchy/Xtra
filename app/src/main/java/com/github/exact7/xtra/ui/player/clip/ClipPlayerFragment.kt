@@ -38,6 +38,8 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
     override val shouldEnterPictureInPicture: Boolean
         get() = true
 
+    override val controllerTimeoutMs: Int = 1500
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clip = requireArguments().getParcelable(KEY_CLIP)!!
@@ -94,15 +96,11 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
     }
 
     override fun onMovedToForeground() {
-        if (!wasInPictureInPictureMode) {
-            viewModel.onResume()
-        }
+        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-        if (!wasInPictureInPictureMode) {
-            viewModel.onPause()
-        }
+        viewModel.onPause()
     }
 
     override fun onNetworkRestored() {

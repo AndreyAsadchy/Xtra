@@ -39,7 +39,6 @@ import com.github.exact7.xtra.util.isKeyboardShown
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 
 
@@ -57,11 +56,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     protected var isPortrait: Boolean = false
         private set
-    protected var isInPictureInPictureMode = false
-        private set
-    protected var wasInPictureInPictureMode = false //TODO refactor to PlayerViewModel?
     private var isKeyboardShown = false
+
     abstract val shouldEnterPictureInPicture: Boolean
+    open val controllerTimeoutMs: Int = 3000
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
@@ -79,10 +77,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            isInPictureInPictureMode = it.getBoolean(C.PICTURE_IN_PICTURE)
-            wasInPictureInPictureMode = it.getBoolean(WAS_IN_PIP)
-        }
         prefs = requireContext().prefs()
         userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -125,9 +119,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         playerView = view.findViewById(R.id.playerView)
         var resizeMode = if (isPortrait) {
             playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) }
-            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
+            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT) //TODO 3 for phones, 0 for tablets
         } else {
-            prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIT)
+            prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
         }
         playerView.resizeMode = resizeMode
         view.findViewById<ImageButton>(R.id.aspectRatio).setOnClickListener {
@@ -222,11 +216,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        wasInPictureInPictureMode = false
-    }
-
     override fun onPause() {
         super.onPause()
         if (requireActivity().isChangingConfigurations) {
@@ -234,14 +223,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(C.PICTURE_IN_PICTURE, isInPictureInPictureMode)
-        outState.putBoolean(WAS_IN_PIP, wasInPictureInPictureMode)
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        this.isInPictureInPictureMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             playerView.apply {
                 useController = false
@@ -252,7 +234,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
             secondView?.gone()
         } else {
-            wasInPictureInPictureMode = true
             if (isPortrait) {
                 secondView?.visible()
             } else if (this !is OfflinePlayerFragment) {
@@ -273,11 +254,12 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         val view = requireView()
         viewModel.currentPlayer.observe(viewLifecycleOwner, Observer {
             playerView.player = it
+                playerView.controllerAutoShow = false
         })
         viewModel.playerMode.observe(viewLifecycleOwner, Observer {
             if (it == PlayerMode.NORMAL) {
                 playerView.controllerHideOnTouch = true
-                playerView.controllerShowTimeoutMs = PlayerControlView.DEFAULT_SHOW_TIMEOUT_MS
+                playerView.controllerShowTimeoutMs = controllerTimeoutMs
             } else {
                 playerView.controllerHideOnTouch = false
                 playerView.controllerShowTimeoutMs = -1
@@ -389,7 +371,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     private companion object {
         const val CHAT_OPENED = "ChatOpened"
-        const val WAS_IN_PIP = "wasInPip"
 
         const val REQUEST_FOLLOW = 0
     }

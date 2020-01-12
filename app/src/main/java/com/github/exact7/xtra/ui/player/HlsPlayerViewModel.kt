@@ -61,7 +61,7 @@ abstract class HlsPlayerViewModel(
 
     private fun updateVideoQuality() {
         trackSelector.parameters = trackSelector.buildUponParameters()
-                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo?.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, qualityIndex - 1))
+                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo!!.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, qualityIndex - 1))
                 .build()
     }
 

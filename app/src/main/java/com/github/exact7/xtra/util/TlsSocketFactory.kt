@@ -21,7 +21,7 @@ class TlsSocketFactory(private val delegate: SSLSocketFactory) : SSLSocketFactor
 
     private fun Socket.patch(): Socket {
         return (this as? SSLSocket)?.apply {
-            enabledProtocols += arrayOf(TlsVersion.TLS_1_1.javaName(), TlsVersion.TLS_1_2.javaName())
+            enabledProtocols += arrayOf(TlsVersion.TLS_1_1.javaName, TlsVersion.TLS_1_2.javaName)
         } ?: this
     }
 

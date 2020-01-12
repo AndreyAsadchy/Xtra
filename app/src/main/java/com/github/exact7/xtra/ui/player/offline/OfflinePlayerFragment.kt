@@ -46,15 +46,11 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun onMovedToForeground() {
-        if (!wasInPictureInPictureMode) {
-            viewModel.onResume()
-        }
+        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-        if (!wasInPictureInPictureMode) {
-            viewModel.onPause()
-        }
+        viewModel.onPause()
     }
 
     override fun onChange(index: Int, text: CharSequence, tag: Int?) {

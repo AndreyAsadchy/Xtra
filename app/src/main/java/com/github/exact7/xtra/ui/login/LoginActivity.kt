@@ -16,7 +16,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -24,7 +23,6 @@ import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.ui.Utils
-import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.applyTheme
@@ -42,22 +40,13 @@ class LoginActivity : AppCompatActivity(), Injectable {
     lateinit var repository: AuthRepository
     private val compositeDisposable = CompositeDisposable()
 
-//        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
+    //        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
     private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://twitch.tv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applyTheme()
-        try {
-            setContentView(R.layout.activity_login)
-        } catch (e: Exception) {
-            Crashlytics.log("LoginActivity.onCreate: WebView not found. Message: ${e.message}")
-            Crashlytics.logException(e)
-            Toast.makeText(this, getString(R.string.webview_error), Toast.LENGTH_LONG).show()
-            finish()
-            startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-            return
-        }
+        setContentView(R.layout.activity_login)
         try { //TODO remove after updated to 1.2.0
             val oldPrefs = getSharedPreferences("authPrefs", Context.MODE_PRIVATE)
             if (oldPrefs.all.isNotEmpty()) {

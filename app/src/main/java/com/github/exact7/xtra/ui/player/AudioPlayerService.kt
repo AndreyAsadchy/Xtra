@@ -213,7 +213,7 @@ class AudioPlayerService : Service() {
 
         override fun getCurrentContentText(player: Player): String? = text
 
-        override fun getCurrentContentTitle(player: Player): String? = title
+        override fun getCurrentContentTitle(player: Player): String = title
 
         override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
             GlideApp.with(this@AudioPlayerService)

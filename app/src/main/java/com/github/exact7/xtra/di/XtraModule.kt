@@ -168,9 +168,9 @@ class XtraModule {
                         init(null as KeyStore?)
                         trustManagers.first { it is X509TrustManager } as X509TrustManager
                     }
-                    val sslContext = SSLContext.getInstance(TlsVersion.TLS_1_2.javaName())
+                    val sslContext = SSLContext.getInstance(TlsVersion.TLS_1_2.javaName)
                     sslContext.init(null, arrayOf(trustManager), null)
-                    val cipherSuites = ConnectionSpec.MODERN_TLS.cipherSuites()!!.toMutableList().apply {
+                    val cipherSuites = ConnectionSpec.MODERN_TLS.cipherSuites!!.toMutableList().apply {
                         add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)
                     }.toTypedArray()
                     sslSocketFactory(TlsSocketFactory(sslContext.socketFactory), trustManager)

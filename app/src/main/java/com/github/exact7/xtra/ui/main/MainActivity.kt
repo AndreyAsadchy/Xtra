@@ -70,7 +70,7 @@ import com.google.android.gms.security.ProviderInstaller
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -81,7 +81,7 @@ const val INDEX_FOLLOWED = FragNavController.TAB3
 const val INDEX_DOWNLOADS = FragNavController.TAB4
 const val INDEX_MENU = FragNavController.TAB5
 
-class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasSupportFragmentInjector, DownloadsFragment.OnVideoSelectedListener, Injectable, SlidingLayout.Listener {
+class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, BaseStreamsFragment.OnStreamSelectedListener, OnChannelSelectedListener, BaseClipsFragment.OnClipSelectedListener, BaseVideosFragment.OnVideoSelectedListener, HasAndroidInjector, DownloadsFragment.OnVideoSelectedListener, Injectable, SlidingLayout.Listener {
 
     companion object {
         const val KEY_CODE = "code"
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
 
     @Inject
-    lateinit var dispatchingFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
@@ -447,8 +447,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         fragNavController.pushFragment(SearchFragment())
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
-        return dispatchingFragmentInjector
+    override fun androidInjector(): AndroidInjector<Any> {
+        return dispatchingAndroidInjector
     }
 
     private fun initNavigation() {
