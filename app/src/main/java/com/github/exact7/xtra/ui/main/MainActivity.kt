@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -65,6 +66,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.invisible
 import com.github.exact7.xtra.util.isActivityResumed
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.github.exact7.xtra.util.prefs
@@ -366,6 +368,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         super.onUserLeaveHint()
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && playerFragment!!.shouldEnterPictureInPicture && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
+                viewModel.orientationBeforePictureInPicture = resources.configuration.orientation
+                viewModel.wasInPictureInPicture = true
                 enterPictureInPictureMode(PictureInPictureParams.Builder().build())
             }
         } catch (e: IllegalStateException) {
@@ -375,34 +379,16 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if (isInPictureInPictureMode) {
-            viewModel.orientationBeforePictureInPicture = newConfig.orientation
-            viewModel.wasInPictureInPicture = true
-        }
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        playerFragment?.also {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                println("$isInPictureInPictureMode ${viewModel.wasInPictureInPicture}")
-                if (!viewModel.wasInPictureInPicture) {
-                    println("1")
-                    supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
-                } else if (!isInPictureInPictureMode) {
-                    viewModel.wasInPictureInPicture = false
-                    if (viewModel.orientationBeforePictureInPicture != newConfig.orientation) {
-                        println("2")
-                        supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
-                    }
-                }
-            } else {
+        playerFragment?.let {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!isInPictureInPictureMode && (!viewModel.wasInPictureInPicture || viewModel.orientationBeforePictureInPicture != newConfig.orientation.also { viewModel.wasInPictureInPicture = false }))) {
+                println("1")
                 supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
             }
         }
     }
+
 
     private fun handleIntent(intent: Intent?) {
         intent?.also {

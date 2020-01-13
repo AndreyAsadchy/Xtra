@@ -3,6 +3,7 @@ package com.github.exact7.xtra.ui.player
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -56,6 +57,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     protected var isPortrait: Boolean = false
         private set
+    protected var isInPictureInPictureMode = false
+        private set
     private var isKeyboardShown = false
 
     abstract val shouldEnterPictureInPicture: Boolean
@@ -90,6 +93,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         view.keepScreenOn = true
         val activity = requireActivity() as MainActivity
         isPortrait = activity.isInPortraitOrientation
+        println("ON VIEW $isPortrait")
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
@@ -97,9 +101,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         if (isPortrait) {
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
             showStatusBar()
+            activity.window.decorView.setOnSystemUiVisibilityChangeListener(null)
         } else {
             activity.window.decorView.setOnSystemUiVisibilityChangeListener {
-                if (!isKeyboardShown && slidingLayout.isMaximized) {
+                if (!isKeyboardShown && slidingLayout.isMaximized.also { println(it) }) {
                     hideStatusBar()
                 }
             }
@@ -226,6 +231,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        this.isInPictureInPictureMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             playerView.apply {
                 useController = false
