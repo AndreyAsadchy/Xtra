@@ -42,12 +42,12 @@ class StreamPlayerFragment : BasePlayerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         chatFragment = childFragmentManager.findFragmentById(R.id.chatFragmentContainer).let {
-            if (it == null) {
+            if (it != null) {
+                it as ChatFragment
+            } else {
                 val fragment = ChatFragment.newInstance(channel)
                 childFragmentManager.beginTransaction().replace(R.id.chatFragmentContainer, fragment).commit()
                 fragment
-            } else {
-                it as ChatFragment
             }
         }
         viewModel = getViewModel()

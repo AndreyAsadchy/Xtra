@@ -57,17 +57,17 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     protected var isPortrait: Boolean = false
         private set
-    protected var isInPictureInPictureMode = false
-        private set
+    private var wasInPictureInPicture = false
+    private var orientationBeforePictureInPicture = 0
     private var isKeyboardShown = false
 
-    abstract val shouldEnterPictureInPicture: Boolean
+    protected abstract val shouldEnterPictureInPicture: Boolean
     open val controllerAutoShow: Boolean = true
     open val controllerShowTimeoutMs: Int = 3000
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
-    abstract val channel: Channel
+    protected abstract val channel: Channel
 
     private var playerWidth = 0
     private var playerHeight = 0
@@ -81,8 +81,14 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = requireContext().prefs()
-        userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+        val activity = requireActivity()
+        prefs = activity.prefs()
+        userPrefs = activity.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+        activity.window.decorView.setOnSystemUiVisibilityChangeListener {
+            if (!isPortrait && !isKeyboardShown && slidingLayout.isMaximized) {
+                hideStatusBar()
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             systemUiFlags = systemUiFlags or (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
@@ -93,7 +99,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         view.keepScreenOn = true
         val activity = requireActivity() as MainActivity
         isPortrait = activity.isInPortraitOrientation
-        println("ON VIEW $isPortrait")
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
@@ -101,13 +106,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         if (isPortrait) {
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
             showStatusBar()
-            activity.window.decorView.setOnSystemUiVisibilityChangeListener(null)
         } else {
-            activity.window.decorView.setOnSystemUiVisibilityChangeListener {
-                if (!isKeyboardShown && slidingLayout.isMaximized.also { println(it) }) {
-                    hideStatusBar()
-                }
-            }
             slidingLayout.post {
                 if (slidingLayout.isMaximized) {
                     hideStatusBar()
@@ -168,31 +167,25 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
         }
         if (this is StreamPlayerFragment) {
-            slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
-                if (slidingLayout.isKeyboardShown) {
-                    if (!isKeyboardShown) {
-                        isKeyboardShown = true
-                        if (!isPortrait) {
-                            try {
+            if (savedInstanceState == null) {
+                slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
+                    if (slidingLayout.isKeyboardShown) {
+                        if (!isKeyboardShown) {
+                            isKeyboardShown = true
+                            if (!isPortrait) {
                                 chatLayout.updateLayoutParams { width = (slidingLayout.width / 1.8f).toInt() }
-                            } catch (e: UninitializedPropertyAccessException) { //TODO Just in case, remove if not needed
-                                Crashlytics.logException(e)
+                                showStatusBar()
                             }
-                            showStatusBar()
                         }
-                    }
-                } else {
-                    if (isKeyboardShown) {
-                        isKeyboardShown = false
-                        secondView?.clearFocus()
-                        if (!isPortrait) {
-                            try {
+                    } else {
+                        if (isKeyboardShown) {
+                            isKeyboardShown = false
+                            secondView?.clearFocus()
+                            if (!isPortrait) {
                                 chatLayout.updateLayoutParams { width = chatWidth }
-                            } catch (e: UninitializedPropertyAccessException) {
-                                Crashlytics.logException(e)
-                            }
-                            if (slidingLayout.isMaximized) {
-                                hideStatusBar()
+                                if (slidingLayout.isMaximized) {
+                                    hideStatusBar()
+                                }
                             }
                         }
                     }
@@ -230,8 +223,15 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val activity = requireActivity()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation.also { wasInPictureInPicture = false }))) {
+            activity.supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+        }
+    }
+
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        this.isInPictureInPictureMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             playerView.apply {
                 useController = false
@@ -292,28 +292,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-//    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
-
-    fun minimize() {
-        slidingLayout.minimize()
-    }
-
-    fun maximize() {
-        slidingLayout.maximize()
-    }
-
-    private fun showStatusBar() {
-        if (isAdded) {
-            requireActivity().window.decorView.systemUiVisibility = 0
-        }
-    }
-
-    private fun hideStatusBar() {
-        if (isAdded) {
-            requireActivity().window.decorView.systemUiVisibility = systemUiFlags
-        }
-    }
-
     override fun onMinimize() {
         playerView.useController = false
         if (!isPortrait) {
@@ -358,6 +336,26 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
+    //    abstract fun play(obj: Parcelable) //TODO instead maybe add livedata in mainactivity and observe it
+
+    fun minimize() {
+        slidingLayout.minimize()
+    }
+
+    fun maximize() {
+        slidingLayout.maximize()
+    }
+
+    fun enterPictureInPicture(): Boolean {
+        return if (slidingLayout.isMaximized && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && shouldEnterPictureInPicture) {
+            wasInPictureInPicture = true
+            orientationBeforePictureInPicture = resources.configuration.orientation
+            true
+        } else {
+            false
+        }
+    }
+
     private fun setPreferredChatVisibility() {
         if (userPrefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
     }
@@ -374,6 +372,19 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         showChat.gone()
         chatLayout.visible()
         userPrefs.edit { putBoolean(CHAT_OPENED, true) }
+    }
+
+
+    private fun showStatusBar() {
+        if (isAdded) {
+            requireActivity().window.decorView.systemUiVisibility = 0
+        }
+    }
+
+    private fun hideStatusBar() {
+        if (isAdded) {
+            requireActivity().window.decorView.systemUiVisibility = systemUiFlags
+        }
     }
 
     private companion object {

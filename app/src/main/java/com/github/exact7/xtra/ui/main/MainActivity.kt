@@ -8,22 +8,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -66,8 +60,6 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.invisible
-import com.github.exact7.xtra.util.isActivityResumed
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.visible
@@ -366,29 +358,14 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.isPlayerMaximized && playerFragment!!.shouldEnterPictureInPicture && prefs.getBoolean(C.PICTURE_IN_PICTURE, true)) {
-                viewModel.orientationBeforePictureInPicture = resources.configuration.orientation
-                viewModel.wasInPictureInPicture = true
+        if (playerFragment != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && playerFragment!!.enterPictureInPicture()) {
+            try {
                 enterPictureInPictureMode(PictureInPictureParams.Builder().build())
-            }
-        } catch (e: IllegalStateException) {
-            //device doesn't support PIP
-        } catch (e: Exception) { //TODO playerFragment null, wtf?
-            Crashlytics.logException(e)
-        }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        playerFragment?.let {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!isInPictureInPictureMode && (!viewModel.wasInPictureInPicture || viewModel.orientationBeforePictureInPicture != newConfig.orientation.also { viewModel.wasInPictureInPicture = false }))) {
-                println("1")
-                supportFragmentManager.beginTransaction().detach(it).attach(it).commit()
+            } catch (e: IllegalStateException) {
+                //device doesn't support PIP
             }
         }
     }
-
 
     private fun handleIntent(intent: Intent?) {
         intent?.also {

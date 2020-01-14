@@ -34,19 +34,15 @@ class MainViewModel @Inject constructor(
         private val authRepository: AuthRepository,
         private val offlineRepository: OfflineRepository) : ViewModel() {
 
-    private val playerMaximized = MutableLiveData<Boolean>()
     private val _isNetworkAvailable = MutableLiveData<Event<Boolean>>()
     val isNetworkAvailable: LiveData<Event<Boolean>>
         get() = _isNetworkAvailable
 
-    val isPlayerMaximized: Boolean
-        get() = playerMaximized.value == true
+    var isPlayerMaximized = false
+        private set
 
     var isPlayerOpened = false
         private set
-
-    var wasInPictureInPicture = false
-    var orientationBeforePictureInPicture = 0
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -61,22 +57,21 @@ class MainViewModel @Inject constructor(
     }
 
     fun onMaximize() {
-        playerMaximized.value = true
+        isPlayerMaximized = true
     }
 
     fun onMinimize() {
-        if (playerMaximized.value != false)
-            playerMaximized.value = false
+        isPlayerMaximized = false
     }
 
     fun onPlayerStarted() {
         isPlayerOpened = true
-        playerMaximized.value = true
+        isPlayerMaximized = true
     }
 
     fun onPlayerClosed() {
         isPlayerOpened = false
-        playerMaximized.value = false
+        isPlayerMaximized = false
     }
 
     fun setNetworkAvailable(available: Boolean) {

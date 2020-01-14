@@ -69,8 +69,9 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
     override fun initialize() {
         viewModel.setClip(clip)
         super.initialize()
-        val settings = requireView().findViewById<ImageButton>(R.id.settings)
-        val download = requireView().findViewById<ImageButton>(R.id.download)
+        val view = requireView()
+        val settings = view.findViewById<ImageButton>(R.id.settings)
+        val download = view.findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(this, Observer {
             settings.enable()
             download.enable()

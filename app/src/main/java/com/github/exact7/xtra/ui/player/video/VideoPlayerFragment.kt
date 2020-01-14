@@ -57,8 +57,9 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     override fun initialize() {
         viewModel.setVideo(video, requireArguments().getDouble(KEY_OFFSET))
         super.initialize()
-        val settings = requireView().findViewById<ImageButton>(R.id.settings)
-        val download = requireView().findViewById<ImageButton>(R.id.download)
+        val view = requireView()
+        val settings = view.findViewById<ImageButton>(R.id.settings)
+        val download = view.findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             settings.enable()
             download.enable()
