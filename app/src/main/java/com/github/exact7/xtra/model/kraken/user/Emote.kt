@@ -16,7 +16,7 @@ import kotlinx.android.parcel.Parcelize
 class Emote(
         @PrimaryKey
         val id: Int,
-        @field:[SerializedName("code") ColumnInfo(name = "code")]
+        @field:[SerializedName("code") ColumnInfo(name = "code", collate = ColumnInfo.NOCASE)]
         override val name: String) : Emote(), Parcelable {
 
         @Ignore

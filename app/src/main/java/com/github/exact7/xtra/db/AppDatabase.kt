@@ -8,7 +8,7 @@ import com.github.exact7.xtra.model.kraken.user.Emote
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
 
-@Database(entities = [OfflineVideo::class, Emote::class, Request::class, RecentEmote::class, VideoPosition::class], version = 7)
+@Database(entities = [OfflineVideo::class, Emote::class, Request::class, RecentEmote::class, VideoPosition::class], version = 8)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun videos(): VideosDao

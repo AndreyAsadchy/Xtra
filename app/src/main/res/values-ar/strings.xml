@@ -128,7 +128,13 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
-        <b>January 10th, 1.4.4</b>
+        <b>January 16th, 1.4.5</b>
+\n- <b>Fixed login error \"Error loading web browser\"</b>
+\n- Fixed when emotes sometimes were cutting text or not showing at all
+\n- Improved rendering of some emotes
+\n- Increased player height in portrait for tablets
+\n- More improvements and bug fixes
+        \n\n<b>January 10th, 1.4.4</b>
 \n- <b>Added support for low-latency streams (significantly reduced stream delay)</b>
 \n- Fixed clips not working
 \n- Fixed audio only setting using too much data

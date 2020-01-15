@@ -153,6 +153,14 @@ class DatabaseModule {
                                 override fun migrate(database: SupportSQLiteDatabase) {
                                     database.execSQL("CREATE TABLE IF NOT EXISTS video_positions (id INTEGER NOT NULL, position INTEGER NOT NULL, PRIMARY KEY (id))")
                                 }
+                            },
+                            object : Migration(7, 8) {
+                                override fun migrate(database: SupportSQLiteDatabase) {
+                                    database.execSQL("CREATE TABLE emotes1 (id INTEGER NOT NULL, code TEXT NOT NULL COLLATE NOCASE, PRIMARY KEY (id))")
+                                    database.execSQL("INSERT INTO emotes1 SELECT * FROM emotes")
+                                    database.execSQL("DROP TABLE emotes")
+                                    database.execSQL("ALTER TABLE emotes1 RENAME TO emotes")
+                                }
                             }
                     )
                     .build()

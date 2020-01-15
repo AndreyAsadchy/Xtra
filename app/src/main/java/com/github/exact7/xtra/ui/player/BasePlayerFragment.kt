@@ -15,10 +15,10 @@ import androidx.core.content.edit
 import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
+import com.github.exact7.xtra.model.NotLoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.AlertDialogFragment
@@ -167,7 +167,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
         }
         if (this is StreamPlayerFragment) {
-            if (savedInstanceState == null) {
+            if (savedInstanceState == null && User.get(activity) !is NotLoggedIn) {
                 slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
                     if (slidingLayout.isKeyboardShown) {
                         if (!isKeyboardShown) {
