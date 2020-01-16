@@ -216,6 +216,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (wasInPictureInPicture && orientationBeforePictureInPicture != resources.configuration.orientation.also { wasInPictureInPicture = false }) {
+            requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         if (requireActivity().isChangingConfigurations) {
@@ -226,7 +233,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val activity = requireActivity()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation.also { wasInPictureInPicture = false }))) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && isResumed && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation.also { wasInPictureInPicture = false }))) {
             activity.supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
         }
     }
@@ -357,26 +364,25 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     }
 
     private fun setPreferredChatVisibility() {
-        if (userPrefs.getBoolean(CHAT_OPENED, true)) showChat() else hideChat()
+        if (userPrefs.getBoolean(KEY_CHAT_OPENED, true)) showChat() else hideChat()
     }
 
     private fun hideChat() {
         hideChat.gone()
         showChat.visible()
         chatLayout.gone()
-        userPrefs.edit { putBoolean(CHAT_OPENED, false) }
+        userPrefs.edit { putBoolean(KEY_CHAT_OPENED, false) }
     }
 
     private fun showChat() {
         hideChat.visible()
         showChat.gone()
         chatLayout.visible()
-        userPrefs.edit { putBoolean(CHAT_OPENED, true) }
+        userPrefs.edit { putBoolean(KEY_CHAT_OPENED, true) }
     }
 
-
     private fun showStatusBar() {
-        if (isAdded) {
+        if (isAdded) { //TODO this check might not be needed anymore AND ANDROID 5
             requireActivity().window.decorView.systemUiVisibility = 0
         }
     }
@@ -388,7 +394,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     }
 
     private companion object {
-        const val CHAT_OPENED = "ChatOpened"
+        const val KEY_CHAT_OPENED = "ChatOpened"
 
         const val REQUEST_FOLLOW = 0
     }
