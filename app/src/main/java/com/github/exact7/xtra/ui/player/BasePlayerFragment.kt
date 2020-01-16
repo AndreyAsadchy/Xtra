@@ -57,6 +57,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     protected var isPortrait: Boolean = false
         private set
+    private var isInPictureInPictureMode = false
     private var wasInPictureInPicture = false
     private var orientationBeforePictureInPicture = 0
     private var isKeyboardShown = false
@@ -84,11 +85,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         val activity = requireActivity()
         prefs = activity.prefs()
         userPrefs = activity.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
-        activity.window.decorView.setOnSystemUiVisibilityChangeListener {
-            if (!isPortrait && !isKeyboardShown && slidingLayout.isMaximized) {
-                hideStatusBar()
-            }
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             systemUiFlags = systemUiFlags or (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
@@ -107,6 +103,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
             showStatusBar()
         } else {
+            activity.window.decorView.setOnSystemUiVisibilityChangeListener {
+                if (!isKeyboardShown && slidingLayout.isMaximized) {
+                    hideStatusBar()
+                }
+            }
             slidingLayout.post {
                 if (slidingLayout.isMaximized) {
                     hideStatusBar()
@@ -167,7 +168,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
         }
         if (this is StreamPlayerFragment) {
-            if (savedInstanceState == null && User.get(activity) !is NotLoggedIn) {
+            if (User.get(activity) !is NotLoggedIn) {
                 slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
                     if (slidingLayout.isKeyboardShown) {
                         if (!isKeyboardShown) {
@@ -216,13 +217,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (wasInPictureInPicture && orientationBeforePictureInPicture != resources.configuration.orientation.also { wasInPictureInPicture = false }) {
-            requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
-        }
-    }
-
     override fun onPause() {
         super.onPause()
         if (requireActivity().isChangingConfigurations) {
@@ -230,15 +224,25 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (wasInPictureInPicture && !isInPictureInPictureMode && orientationBeforePictureInPicture != resources.configuration.orientation.also { wasInPictureInPicture = false }) {
+            requireActivity().recreate()
+//            requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+        }
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val activity = requireActivity()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && isResumed && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation.also { wasInPictureInPicture = false }))) {
-            activity.supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+            activity.recreate()
+//            activity.supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
         }
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        this.isInPictureInPictureMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             playerView.apply {
                 useController = false
@@ -381,13 +385,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         userPrefs.edit { putBoolean(KEY_CHAT_OPENED, true) }
     }
 
-    private fun showStatusBar() {
+    fun showStatusBar() {
         if (isAdded) { //TODO this check might not be needed anymore AND ANDROID 5
             requireActivity().window.decorView.systemUiVisibility = 0
         }
     }
 
-    private fun hideStatusBar() {
+    fun hideStatusBar() {
         if (isAdded) {
             requireActivity().window.decorView.systemUiVisibility = systemUiFlags
         }

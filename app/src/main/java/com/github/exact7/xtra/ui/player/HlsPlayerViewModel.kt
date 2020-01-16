@@ -18,7 +18,8 @@ import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import java.util.*
+import java.util.LinkedHashMap
+import java.util.LinkedList
 import java.util.regex.Pattern
 
 private const val VIDEO_RENDERER = 0
@@ -60,9 +61,11 @@ abstract class HlsPlayerViewModel(
     }
 
     private fun updateVideoQuality() {
-        trackSelector.parameters = trackSelector.buildUponParameters()
-                .setSelectionOverride(VIDEO_RENDERER, trackSelector.currentMappedTrackInfo!!.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, qualityIndex - 1))
-                .build()
+        trackSelector.currentMappedTrackInfo?.let { //TODO
+            trackSelector.parameters = trackSelector.buildUponParameters()
+                    .setSelectionOverride(VIDEO_RENDERER, it.getTrackGroups(VIDEO_RENDERER), DefaultTrackSelector.SelectionOverride(0, qualityIndex - 1))
+                    .build()
+        }
     }
 
     override fun onTracksChanged(trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
@@ -132,6 +135,7 @@ abstract class HlsPlayerViewModel(
     override fun onPause() {
         isResumed = false
         if (playerMode.value == NORMAL) {
+            helper.loaded.value = false
             super.onPause()
         } else if (playerMode.value == AUDIO_ONLY) {
             showBackgroundAudio()

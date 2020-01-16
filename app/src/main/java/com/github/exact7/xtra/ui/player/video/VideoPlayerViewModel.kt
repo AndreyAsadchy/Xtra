@@ -105,7 +105,7 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        if (playerMode.value == PlayerMode.NORMAL) {
+        if (playerMode.value == PlayerMode.NORMAL && this::video.isInitialized) { //TODO
             playerRepository.saveVideoPosition(VideoPosition(video.id.substring(1).toLong(), player.currentPosition))
         }
         super.onCleared()

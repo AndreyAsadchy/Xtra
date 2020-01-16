@@ -18,6 +18,7 @@ import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.FragmentUtils
+import com.github.exact7.xtra.util.disable
 import com.github.exact7.xtra.util.enable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -61,8 +62,13 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
         val settings = view.findViewById<ImageButton>(R.id.settings)
         val download = view.findViewById<ImageButton>(R.id.download)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
-            settings.enable()
-            download.enable()
+            if (it) {
+                settings.enable()
+                download.enable()
+            } else {
+                download.disable()
+                settings.disable()
+            }
         })
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex)
