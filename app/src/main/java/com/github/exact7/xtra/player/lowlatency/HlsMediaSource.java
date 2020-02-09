@@ -5,8 +5,6 @@ import android.os.Handler;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
-import com.google.android.exoplayer2.drm.DrmSession;
-import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.extractor.Extractor;
 import com.google.android.exoplayer2.offline.StreamKey;
 import com.google.android.exoplayer2.source.BaseMediaSource;
@@ -16,13 +14,14 @@ import com.google.android.exoplayer2.source.MediaPeriod;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.MediaSourceEventListener;
 import com.google.android.exoplayer2.source.MediaSourceEventListener.EventDispatcher;
-import com.google.android.exoplayer2.source.MediaSourceFactory;
 import com.google.android.exoplayer2.source.SequenceableLoader;
 import com.google.android.exoplayer2.source.SinglePeriodTimeline;
+import com.google.android.exoplayer2.source.ads.AdsMediaSource;
 import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory;
 import com.google.android.exoplayer2.source.hls.HlsDataSourceFactory;
 import com.google.android.exoplayer2.source.hls.HlsExtractorFactory;
 import com.google.android.exoplayer2.source.hls.HlsMediaPeriod;
+import com.google.android.exoplayer2.source.hls.HlsMetadataType;
 import com.google.android.exoplayer2.source.hls.playlist.DefaultHlsPlaylistParserFactory;
 import com.google.android.exoplayer2.source.hls.playlist.DefaultHlsPlaylistTracker;
 import com.google.android.exoplayer2.source.hls.playlist.FilteringHlsPlaylistParserFactory;
@@ -37,14 +36,9 @@ import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Assertions;
 
 import java.io.IOException;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
 import java.util.List;
 
-import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /** An HLS {@link MediaSource}. */
 public final class HlsMediaSource extends BaseMediaSource
@@ -54,30 +48,8 @@ public final class HlsMediaSource extends BaseMediaSource
         ExoPlayerLibraryInfo.registerModule("goog.exo.hls");
     }
 
-    /**
-     * The types of metadata that can be extracted from HLS streams.
-     *
-     * <p>Allowed values:
-     *
-     * <ul>
-     *   <li>{@link #METADATA_TYPE_ID3}
-     *   <li>{@link #METADATA_TYPE_EMSG}
-     * </ul>
-     *
-     * <p>See {@link Factory#setMetadataType(int)}.
-     */
-    @Documented
-    @Retention(SOURCE)
-    @IntDef({METADATA_TYPE_ID3, METADATA_TYPE_EMSG})
-    public @interface MetadataType {}
-
-    /** Type for ID3 metadata in HLS streams. */
-    public static final int METADATA_TYPE_ID3 = 1;
-    /** Type for ESMG metadata in HLS streams. */
-    public static final int METADATA_TYPE_EMSG = 3;
-
-    /** Factory for {@link HlsMediaSource}s. */
-    public static final class Factory implements MediaSourceFactory {
+    /** Factory for {@link com.google.android.exoplayer2.source.hls.HlsMediaSource}s. */
+    public static final class Factory implements AdsMediaSource.MediaSourceFactory {
 
         private final HlsDataSourceFactory hlsDataSourceFactory;
 
@@ -86,16 +58,16 @@ public final class HlsMediaSource extends BaseMediaSource
         @Nullable private List<StreamKey> streamKeys;
         private HlsPlaylistTracker.Factory playlistTrackerFactory;
         private CompositeSequenceableLoaderFactory compositeSequenceableLoaderFactory;
-        private DrmSessionManager<?> drmSessionManager;
         private LoadErrorHandlingPolicy loadErrorHandlingPolicy;
         private boolean allowChunklessPreparation;
-        @MetadataType private int metadataType;
+        @HlsMetadataType
+        private int metadataType;
         private boolean useSessionKeys;
         private boolean isCreateCalled;
         @Nullable private Object tag;
 
         /**
-         * Creates a new factory for {@link HlsMediaSource}s.
+         * Creates a new factory for {@link com.google.android.exoplayer2.source.hls.HlsMediaSource}s.
          *
          * @param dataSourceFactory A data source factory that will be wrapped by a {@link
          *     DefaultHlsDataSourceFactory} to create {@link DataSource}s for manifests, segments and
@@ -106,7 +78,7 @@ public final class HlsMediaSource extends BaseMediaSource
         }
 
         /**
-         * Creates a new factory for {@link HlsMediaSource}s.
+         * Creates a new factory for {@link com.google.android.exoplayer2.source.hls.HlsMediaSource}s.
          *
          * @param hlsDataSourceFactory An {@link HlsDataSourceFactory} for {@link DataSource}s for
          *     manifests, segments and keys.
@@ -116,10 +88,9 @@ public final class HlsMediaSource extends BaseMediaSource
             playlistParserFactory = new DefaultHlsPlaylistParserFactory();
             playlistTrackerFactory = DefaultHlsPlaylistTracker.FACTORY;
             extractorFactory = HlsExtractorFactory.DEFAULT;
-            drmSessionManager = DrmSessionManager.getDummyDrmSessionManager();
             loadErrorHandlingPolicy = new DefaultLoadErrorHandlingPolicy();
             compositeSequenceableLoaderFactory = new DefaultCompositeSequenceableLoaderFactory();
-            metadataType = METADATA_TYPE_ID3;
+            metadataType = HlsMetadataType.ID3;
         }
 
         /**
@@ -131,7 +102,7 @@ public final class HlsMediaSource extends BaseMediaSource
          * @return This factory, for convenience.
          * @throws IllegalStateException If one of the {@code create} methods has already been called.
          */
-        public Factory setTag(@Nullable Object tag) {
+        public Factory setTag(Object tag) {
             Assertions.checkState(!isCreateCalled);
             this.tag = tag;
             return this;
@@ -149,20 +120,6 @@ public final class HlsMediaSource extends BaseMediaSource
         public Factory setExtractorFactory(HlsExtractorFactory extractorFactory) {
             Assertions.checkState(!isCreateCalled);
             this.extractorFactory = Assertions.checkNotNull(extractorFactory);
-            return this;
-        }
-
-        /**
-         * Sets the {@link DrmSessionManager} to use for acquiring {@link DrmSession DrmSessions}. The
-         * default value is {@link DrmSessionManager#DUMMY}.
-         *
-         * @param drmSessionManager The {@link DrmSessionManager}.
-         * @return This factory, for convenience.
-         * @throws IllegalStateException If one of the {@code create} methods has already been called.
-         */
-        public Factory setDrmSessionManager(DrmSessionManager<?> drmSessionManager) {
-            Assertions.checkState(!isCreateCalled);
-            this.drmSessionManager = drmSessionManager;
             return this;
         }
 
@@ -217,6 +174,19 @@ public final class HlsMediaSource extends BaseMediaSource
         }
 
         /**
+         * Sets a list of {@link StreamKey stream keys} by which the playlists are filtered.
+         *
+         * @param streamKeys A list of {@link StreamKey stream keys}.
+         * @return This factory, for convenience.
+         * @throws IllegalStateException If one of the {@code create} methods has already been called.
+         */
+        public Factory setStreamKeys(List<StreamKey> streamKeys) {
+            Assertions.checkState(!isCreateCalled);
+            this.streamKeys = streamKeys;
+            return this;
+        }
+
+        /**
          * Sets the {@link HlsPlaylistTracker} factory. The default value is {@link
          * DefaultHlsPlaylistTracker#FACTORY}.
          *
@@ -265,24 +235,24 @@ public final class HlsMediaSource extends BaseMediaSource
 
         /**
          * Sets the type of metadata to extract from the HLS source (defaults to {@link
-         * #METADATA_TYPE_ID3}).
+         * HlsMetadataType#ID3}).
          *
          * <p>HLS supports in-band ID3 in both TS and fMP4 streams, but in the fMP4 case the data is
          * wrapped in an EMSG box [<a href="https://aomediacodec.github.io/av1-id3/">spec</a>].
          *
-         * <p>If this is set to {@link #METADATA_TYPE_ID3} then raw ID3 metadata of will be extracted
+         * <p>If this is set to {@link HlsMetadataType#ID3} then raw ID3 metadata of will be extracted
          * from TS sources. From fMP4 streams EMSGs containing metadata of this type (in the variant
          * stream only) will be unwrapped to expose the inner data. All other in-band metadata will be
          * dropped.
          *
-         * <p>If this is set to {@link #METADATA_TYPE_EMSG} then all EMSG data from the fMP4 variant
+         * <p>If this is set to {@link HlsMetadataType#EMSG} then all EMSG data from the fMP4 variant
          * stream will be extracted. No metadata will be extracted from TS streams, since they don't
          * support EMSG.
          *
          * @param metadataType The type of metadata to extract.
          * @return This factory, for convenience.
          */
-        public Factory setMetadataType(@MetadataType int metadataType) {
+        public Factory setMetadataType(@HlsMetadataType int metadataType) {
             Assertions.checkState(!isCreateCalled);
             this.metadataType = metadataType;
             return this;
@@ -303,6 +273,32 @@ public final class HlsMediaSource extends BaseMediaSource
         }
 
         /**
+         * Returns a new {@link com.google.android.exoplayer2.source.hls.HlsMediaSource} using the current parameters.
+         *
+         * @return The new {@link com.google.android.exoplayer2.source.hls.HlsMediaSource}.
+         */
+        @Override
+        public HlsMediaSource createMediaSource(Uri playlistUri) {
+            isCreateCalled = true;
+            if (streamKeys != null) {
+                playlistParserFactory =
+                        new FilteringHlsPlaylistParserFactory(playlistParserFactory, streamKeys);
+            }
+            return new HlsMediaSource(
+                    playlistUri,
+                    hlsDataSourceFactory,
+                    extractorFactory,
+                    compositeSequenceableLoaderFactory,
+                    loadErrorHandlingPolicy,
+                    playlistTrackerFactory.createTracker(
+                            hlsDataSourceFactory, loadErrorHandlingPolicy, playlistParserFactory),
+                    allowChunklessPreparation,
+                    metadataType,
+                    useSessionKeys,
+                    tag);
+        }
+
+        /**
          * @deprecated Use {@link #createMediaSource(Uri)} and {@link #addEventListener(Handler,
          *     MediaSourceEventListener)} instead.
          */
@@ -318,40 +314,6 @@ public final class HlsMediaSource extends BaseMediaSource
             return mediaSource;
         }
 
-        /**
-         * Returns a new {@link HlsMediaSource} using the current parameters.
-         *
-         * @return The new {@link HlsMediaSource}.
-         */
-        @Override
-        public HlsMediaSource createMediaSource(Uri playlistUri) {
-            isCreateCalled = true;
-            if (streamKeys != null) {
-                playlistParserFactory =
-                        new FilteringHlsPlaylistParserFactory(playlistParserFactory, streamKeys);
-            }
-            return new HlsMediaSource(
-                    playlistUri,
-                    hlsDataSourceFactory,
-                    extractorFactory,
-                    compositeSequenceableLoaderFactory,
-                    drmSessionManager,
-                    loadErrorHandlingPolicy,
-                    playlistTrackerFactory.createTracker(
-                            hlsDataSourceFactory, loadErrorHandlingPolicy, playlistParserFactory),
-                    allowChunklessPreparation,
-                    metadataType,
-                    useSessionKeys,
-                    tag);
-        }
-
-        @Override
-        public Factory setStreamKeys(List<StreamKey> streamKeys) {
-            Assertions.checkState(!isCreateCalled);
-            this.streamKeys = streamKeys;
-            return this;
-        }
-
         @Override
         public int[] getSupportedTypes() {
             return new int[] {C.TYPE_HLS};
@@ -363,33 +325,30 @@ public final class HlsMediaSource extends BaseMediaSource
     private final Uri manifestUri;
     private final HlsDataSourceFactory dataSourceFactory;
     private final CompositeSequenceableLoaderFactory compositeSequenceableLoaderFactory;
-    private final DrmSessionManager<?> drmSessionManager;
     private final LoadErrorHandlingPolicy loadErrorHandlingPolicy;
     private final boolean allowChunklessPreparation;
-    private final @MetadataType int metadataType;
+    private final @HlsMetadataType int metadataType;
     private final boolean useSessionKeys;
     private final HlsPlaylistTracker playlistTracker;
-    @Nullable private final Object tag;
+    private final @Nullable Object tag;
 
-    @Nullable private TransferListener mediaTransferListener;
+    private @Nullable TransferListener mediaTransferListener;
 
     private HlsMediaSource(
             Uri manifestUri,
             HlsDataSourceFactory dataSourceFactory,
             HlsExtractorFactory extractorFactory,
             CompositeSequenceableLoaderFactory compositeSequenceableLoaderFactory,
-            DrmSessionManager<?> drmSessionManager,
             LoadErrorHandlingPolicy loadErrorHandlingPolicy,
             HlsPlaylistTracker playlistTracker,
             boolean allowChunklessPreparation,
-            @MetadataType int metadataType,
+            @HlsMetadataType int metadataType,
             boolean useSessionKeys,
             @Nullable Object tag) {
         this.manifestUri = manifestUri;
         this.dataSourceFactory = dataSourceFactory;
         this.extractorFactory = extractorFactory;
         this.compositeSequenceableLoaderFactory = compositeSequenceableLoaderFactory;
-        this.drmSessionManager = drmSessionManager;
         this.loadErrorHandlingPolicy = loadErrorHandlingPolicy;
         this.playlistTracker = playlistTracker;
         this.allowChunklessPreparation = allowChunklessPreparation;
@@ -405,9 +364,8 @@ public final class HlsMediaSource extends BaseMediaSource
     }
 
     @Override
-    protected void prepareSourceInternal(@Nullable TransferListener mediaTransferListener) {
+    public void prepareSourceInternal(@Nullable TransferListener mediaTransferListener) {
         this.mediaTransferListener = mediaTransferListener;
-        drmSessionManager.prepare();
         EventDispatcher eventDispatcher = createEventDispatcher(/* mediaPeriodId= */ null);
         playlistTracker.start(manifestUri, eventDispatcher, /* listener= */ this);
     }
@@ -425,7 +383,6 @@ public final class HlsMediaSource extends BaseMediaSource
                 playlistTracker,
                 dataSourceFactory,
                 mediaTransferListener,
-                drmSessionManager,
                 loadErrorHandlingPolicy,
                 eventDispatcher,
                 allocator,
@@ -441,9 +398,8 @@ public final class HlsMediaSource extends BaseMediaSource
     }
 
     @Override
-    protected void releaseSourceInternal() {
+    public void releaseSourceInternal() {
         playlistTracker.stop();
-        drmSessionManager.release();
     }
 
     @Override
@@ -459,9 +415,6 @@ public final class HlsMediaSource extends BaseMediaSource
                         ? windowStartTimeMs
                         : C.TIME_UNSET;
         long windowDefaultStartPositionUs = playlist.startOffsetUs;
-        // masterPlaylist is non-null because the first playlist has been fetched by now.
-        HlsManifest manifest =
-                new HlsManifest(Assertions.checkNotNull(playlistTracker.getMasterPlaylist()), playlist);
         if (playlistTracker.isLive()) {
             long offsetFromInitialStartTimeUs =
                     playlist.startTimeUs - playlistTracker.getInitialStartTimeUs();
@@ -482,8 +435,6 @@ public final class HlsMediaSource extends BaseMediaSource
                             windowDefaultStartPositionUs,
                             /* isSeekable= */ true,
                             /* isDynamic= */ !playlist.hasEndTag,
-                            /* isLive= */ true,
-                            manifest,
                             tag);
         } else /* not live */ {
             if (windowDefaultStartPositionUs == C.TIME_UNSET) {
@@ -499,11 +450,8 @@ public final class HlsMediaSource extends BaseMediaSource
                             windowDefaultStartPositionUs,
                             /* isSeekable= */ true,
                             /* isDynamic= */ false,
-                            /* isLive= */ false,
-                            manifest,
                             tag);
         }
-        refreshSourceInfo(timeline);
+        refreshSourceInfo(timeline, new HlsManifest(playlistTracker.getMasterPlaylist(), playlist));
     }
-
 }

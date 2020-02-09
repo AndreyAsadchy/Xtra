@@ -12,7 +12,6 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import io.fabric.sdk.android.Fabric
-import io.reactivex.plugins.RxJavaPlugins
 import java.net.UnknownHostException
 import javax.inject.Inject
 

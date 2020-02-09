@@ -5,9 +5,6 @@ import androidx.paging.PageKeyedDataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.Executor
 
 class ClipsDataSource(
         private val channelName: String?,
@@ -15,9 +12,7 @@ class ClipsDataSource(
         private val languages: String?,
         private val period: Period?,
         private val trending: Boolean?,
-        private val api: KrakenApi,
-        networkExecutor: Executor,
-        private val compositeDisposable: CompositeDisposable) : BasePageKeyedDataSource<Clip>(networkExecutor) {
+        private val api: KrakenApi) : BasePageKeyedDataSource<Clip>() {
 
     override fun loadInitial(params: PageKeyedDataSource.LoadInitialParams<String>, callback: LoadInitialCallback<String, Clip>) {
         super.loadInitial(params, callback)
@@ -39,11 +34,9 @@ class ClipsDataSource(
             private val languages: String?,
             private val period: Period?,
             private val trending: Boolean?,
-            private val api: KrakenApi,
-            private val networkExecutor: Executor,
-            private val compositeDisposable: CompositeDisposable) : BaseDataSourceFactory<String, Clip, ClipsDataSource>() {
+            private val api: KrakenApi) : BaseDataSourceFactory<String, Clip, ClipsDataSource>() {
 
         override fun create(): DataSource<String, Clip> =
-                ClipsDataSource(channelName, gameName, languages, period, trending, api, networkExecutor, compositeDisposable).also(sourceLiveData::postValue)
+                ClipsDataSource(channelName, gameName, languages, period, trending, api).also(sourceLiveData::postValue)
     }
 }

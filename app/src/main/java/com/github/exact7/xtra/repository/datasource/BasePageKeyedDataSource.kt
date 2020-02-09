@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.github.exact7.xtra.repository.LoadingState
 import com.github.exact7.xtra.util.nullIfEmpty
-import java.util.concurrent.Executor
 
-abstract class BasePageKeyedDataSource<T>(
-        private val retryExecutor: Executor) : PageKeyedDataSource<String, T>(), PagingDataSource {
+abstract class BasePageKeyedDataSource<T> : PageKeyedDataSource<String, T>(), PagingDataSource {
 
     protected val tag: String = javaClass.simpleName
     private var retry: (() -> Any)? = null
@@ -20,7 +18,7 @@ abstract class BasePageKeyedDataSource<T>(
         val prevRetry = retry
         retry = null
         prevRetry?.let {
-            retryExecutor.execute { it.invoke() }
+//            retryExecutor.execute { it.invoke() }
         }
     }
 

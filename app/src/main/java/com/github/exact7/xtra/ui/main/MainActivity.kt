@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
@@ -22,7 +23,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
@@ -358,11 +358,17 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (playerFragment != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && playerFragment!!.enterPictureInPicture()) {
-            try {
-                enterPictureInPictureMode(PictureInPictureParams.Builder().build())
-            } catch (e: IllegalStateException) {
-                //device doesn't support PIP
+        playerFragment.let {
+            if (it != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.enterPictureInPicture()) {
+                try {
+                    val params = PictureInPictureParams.Builder()
+                            .setSourceRectHint(Rect(0, 0, it.playerWidth, it.playerHeight))
+//                            .setAspectRatio(Rational(it.playerWidth, it.playerHeight))
+                            .build()
+                    enterPictureInPictureMode(params)
+                } catch (e: IllegalStateException) {
+                    //device doesn't support PIP
+                }
             }
         }
     }

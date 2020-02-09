@@ -7,9 +7,6 @@ import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Period
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.Executor
 
 class VideosDataSource private constructor(
         private val game: String?,
@@ -17,9 +14,7 @@ class VideosDataSource private constructor(
         private val broadcastTypes: BroadcastType,
         private val language: String?,
         private val sort: Sort,
-        private val api: KrakenApi,
-        retryExecutor: Executor,
-        private val compositeDisposable: CompositeDisposable) : BasePositionalDataSource<Video>(retryExecutor) {
+        private val api: KrakenApi) : BasePositionalDataSource<Video>() {
 
     override fun loadInitial(params: PositionalDataSource.LoadInitialParams, callback: PositionalDataSource.LoadInitialCallback<Video>) {
         super.loadInitial(params, callback)
@@ -41,11 +36,9 @@ class VideosDataSource private constructor(
             private val broadcastTypes: BroadcastType,
             private val language: String?,
             private val sort: Sort,
-            private val api: KrakenApi,
-            private val networkExecutor: Executor,
-            private val compositeDisposable: CompositeDisposable) : BaseDataSourceFactory<Int, Video, VideosDataSource>() {
+            private val api: KrakenApi) : BaseDataSourceFactory<Int, Video, VideosDataSource>() {
 
         override fun create(): DataSource<Int, Video> =
-            VideosDataSource(game, period, broadcastTypes, language, sort, api, networkExecutor, compositeDisposable).also(sourceLiveData::postValue)
+            VideosDataSource(game, period, broadcastTypes, language, sort, api).also(sourceLiveData::postValue)
     }
 }

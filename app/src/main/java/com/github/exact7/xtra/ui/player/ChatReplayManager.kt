@@ -3,15 +3,12 @@ package com.github.exact7.xtra.ui.player
 import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.LinkedList
-import java.util.Timer
+import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 import kotlin.math.max

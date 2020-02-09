@@ -9,9 +9,6 @@ import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 class ChannelPagerViewModel @Inject constructor(

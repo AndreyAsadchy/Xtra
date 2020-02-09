@@ -5,16 +5,11 @@ import androidx.paging.PositionalDataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.Executor
 
 class FollowedStreamsDataSource(
         userToken: String,
         private val streamType: StreamType,
-        private val api: KrakenApi,
-        retryExecutor: Executor,
-        private val compositeDisposable: CompositeDisposable) : BasePositionalDataSource<Stream>(retryExecutor) {
+        private val api: KrakenApi) : BasePositionalDataSource<Stream>() {
 
     private val userToken: String = "OAuth $userToken"
 
@@ -35,11 +30,9 @@ class FollowedStreamsDataSource(
     class Factory(
             private val userToken: String,
             private val streamType: StreamType,
-            private val api: KrakenApi,
-            private val networkExecutor: Executor,
-            private val compositeDisposable: CompositeDisposable) : BaseDataSourceFactory<Int, Stream, FollowedStreamsDataSource>() {
+            private val api: KrakenApi) : BaseDataSourceFactory<Int, Stream, FollowedStreamsDataSource>() {
 
         override fun create(): DataSource<Int, Stream> =
-            FollowedStreamsDataSource(userToken, streamType, api, networkExecutor, compositeDisposable).also(sourceLiveData::postValue)
+                FollowedStreamsDataSource(userToken, streamType, api).also(sourceLiveData::postValue)
     }
 }

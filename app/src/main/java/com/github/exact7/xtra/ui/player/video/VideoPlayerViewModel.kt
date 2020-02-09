@@ -1,8 +1,9 @@
 package com.github.exact7.xtra.ui.player.video
 
 import android.app.Application
-import android.net.Uri
 import android.widget.Toast
+import androidx.core.net.toUri
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.VideoDownloadInfo
 import com.github.exact7.xtra.model.VideoPosition
@@ -14,10 +15,7 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.AudioPlayerService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -48,22 +46,23 @@ class VideoPlayerViewModel @Inject constructor(
     fun setVideo(video: Video, offset: Double) {
         if (!this::video.isInitialized) {
             this.video = video
-            playerRepository.loadVideoPlaylist(video.id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(onSuccess = {
-                        if (it.isSuccessful) {
-                            mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(it.raw().request().url().toString()))
-                            play()
-                            if (offset > 0) {
-                                player.seekTo(offset.toLong())
-                            }
-                        } else if (it.code() == 403) {
-                            val context = getApplication<Application>()
-                            Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+            try {
+                viewModelScope.launch {
+                    val response = playerRepository.loadVideoPlaylist(video.id)
+                    if (response.isSuccessful) {
+                        mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(response.raw().request().url().toString().toUri())
+                        play()
+                        if (offset > 0) {
+                            player.seekTo(offset.toLong())
                         }
-                    })
-                    .addTo(compositeDisposable)
+                    } else if (response.code() == 403) {
+                        val context = getApplication<Application>()
+                        Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+
+            }
         }
     }
 

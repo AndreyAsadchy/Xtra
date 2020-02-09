@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.di
 
 import android.app.Application
-import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
 import com.github.exact7.xtra.BuildConfig
@@ -35,10 +34,8 @@ import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.security.KeyStore
-import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
@@ -56,7 +53,7 @@ class XtraModule {
 
     @Singleton
     @Provides
-    fun providesKrakenApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): KrakenApi {
+    fun providesKrakenApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): KrakenApi {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/kraken/")
                 .client(client.newBuilder().addInterceptor { chain ->
@@ -67,62 +64,57 @@ class XtraModule {
                     chain.proceed(request)
                 }.build())
                 .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(KrakenApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun providesApiService(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): ApiService {
+    fun providesApiService(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): ApiService {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/api/")
                 .client(client)
                 .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(ApiService::class.java)
     }
 
     @Singleton
     @Provides
-    fun providesUsherApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): UsherApi {
+    fun providesUsherApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): UsherApi {
         return Retrofit.Builder()
                 .baseUrl("https://usher.ttvnw.net/")
                 .client(client)
                 .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(UsherApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun providesMiscApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): MiscApi {
+    fun providesMiscApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): MiscApi {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/") //placeholder url
                 .client(client)
                 .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(MiscApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun providesIdApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): IdApi {
+    fun providesIdApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): IdApi {
         return Retrofit.Builder()
                 .baseUrl("https://id.twitch.tv/oauth2/")
                 .client(client)
                 .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(IdApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun providesGraphQLApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory, rxJavaAdapterFactory: RxJava2CallAdapterFactory): GraphQLApi {
+    fun providesGraphQLApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): GraphQLApi {
         return Retrofit.Builder()
                 .baseUrl("https://gql.twitch.tv/gql/")
                 .client(client.newBuilder().addInterceptor { chain ->
@@ -132,7 +124,6 @@ class XtraModule {
                     chain.proceed(request)
                 }.build())
                 .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaAdapterFactory)
                 .build()
                 .create(GraphQLApi::class.java)
     }
@@ -146,12 +137,6 @@ class XtraModule {
                 .registerTypeAdapter(FfzRoomResponse::class.java, FfzRoomDeserializer())
                 .registerTypeAdapter(ClipDataResponse::class.java, ClipDataDeserializer())
                 .create())
-    }
-
-    @Singleton
-    @Provides
-    fun providesRxJavaCallAdapterFactory(): RxJava2CallAdapterFactory {
-        return RxJava2CallAdapterFactory.create()
     }
 
     @Singleton
@@ -188,12 +173,6 @@ class XtraModule {
             readTimeout(5, TimeUnit.MINUTES)
         }
         return builder.build()
-    }
-
-    @Singleton
-    @Provides
-    fun providesExecutor(): Executor {
-        return AsyncTask.THREAD_POOL_EXECUTOR
     }
 
     @Singleton

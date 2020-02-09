@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.max
 
 class GridAutofitLayoutManager : GridLayoutManager {
 
@@ -20,6 +21,20 @@ class GridAutofitLayoutManager : GridLayoutManager {
         setColumnWidth(columnWidth)
     }
 
+    override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
+        if (widthChanged && width > 0 && height > 0) {
+            val totalSpace: Int = if (orientation == LinearLayoutManager.VERTICAL) {
+                width - paddingRight - paddingLeft
+            } else {
+                height - paddingTop - paddingBottom
+            }
+            val spanCount = max(1, totalSpace / columnWidth)
+            setSpanCount(spanCount)
+            widthChanged = false
+        }
+        super.onLayoutChildren(recycler, state)
+    }
+
     fun setColumnWidth(width: Int) {
         if (width <= 0) {
             throw IllegalArgumentException("Width should be more than 0. Provided $width")
@@ -30,17 +45,7 @@ class GridAutofitLayoutManager : GridLayoutManager {
         }
     }
 
-    override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
-        if (widthChanged && width > 0 && height > 0) {
-            val totalSpace: Int = if (orientation == LinearLayoutManager.VERTICAL) {
-                width - paddingRight - paddingLeft
-            } else {
-                height - paddingTop - paddingBottom
-            }
-            val spanCount = Math.max(1, totalSpace / columnWidth)
-            setSpanCount(spanCount)
-            widthChanged = false
-        }
-        super.onLayoutChildren(recycler, state)
+    fun updateWidth() {
+        widthChanged = true
     }
 }

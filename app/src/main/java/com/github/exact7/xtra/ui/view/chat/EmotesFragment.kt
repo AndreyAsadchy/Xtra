@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.view.chat
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import com.github.exact7.xtra.util.convertDpToPixels
 class EmotesFragment : Fragment() {
 
     private lateinit var listener: (Emote) -> Unit
+    private lateinit var layoutManager: GridAutofitLayoutManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,8 +42,7 @@ class EmotesFragment : Fragment() {
         with(view as RecyclerView) {
             itemAnimator = null
             adapter = emotesAdapter
-            layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f))
-
+            layoutManager = GridAutofitLayoutManager(context, context.convertDpToPixels(50f)).also { this@EmotesFragment.layoutManager = it }
         }
         val observer: Observer<List<Emote>> = Observer(emotesAdapter::submitList)
         when (args.getInt(KEY_POSITION)) {
@@ -49,6 +50,11 @@ class EmotesFragment : Fragment() {
             1 -> viewModel.twitchEmotes.observe(viewLifecycleOwner, observer)
             else -> viewModel.otherEmotes.observe(viewLifecycleOwner, observer)
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        layoutManager.updateWidth()
     }
 
     companion object {

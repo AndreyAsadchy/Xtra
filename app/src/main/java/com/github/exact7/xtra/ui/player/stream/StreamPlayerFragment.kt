@@ -94,11 +94,17 @@ class StreamPlayerFragment : BasePlayerFragment() {
     }
 
     override fun onMovedToForeground() {
-        viewModel.onResume()
+        println("FOR $wasInPictureInPicture")
+        if (!wasInPictureInPicture) {
+            viewModel.onResume()
+        }
     }
 
     override fun onMovedToBackground() {
-        viewModel.onPause()
+        println("BG $wasInPictureInPicture")
+        if (!wasInPictureInPicture) {
+            viewModel.onPause()
+        }
     }
 
     override fun onNetworkRestored() {

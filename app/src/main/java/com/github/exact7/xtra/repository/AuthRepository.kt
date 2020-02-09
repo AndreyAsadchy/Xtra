@@ -4,10 +4,6 @@ import com.github.exact7.xtra.api.IdApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.id.ValidationResponse
 import com.github.exact7.xtra.util.TwitchApiHelper
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,17 +16,9 @@ class AuthRepository @Inject constructor(
         private val api: IdApi,
         private val emotesDao: EmotesDao) {
 
-    fun validate(token: String): Single<ValidationResponse> {
-        return api.validateToken("OAuth $token")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
+    suspend fun validate(token: String): ValidationResponse = api.validateToken("OAuth $token")
 
-    fun revoke(token: String): Completable {
-        return api.revokeToken(TwitchApiHelper.CLIENT_ID, token)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
+    suspend fun revoke(token: String) = api.revokeToken(TwitchApiHelper.CLIENT_ID, token)
 
     fun deleteAllEmotes() {
         GlobalScope.launch {

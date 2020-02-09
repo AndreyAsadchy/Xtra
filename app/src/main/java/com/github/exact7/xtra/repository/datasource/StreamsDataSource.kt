@@ -5,17 +5,12 @@ import androidx.paging.PositionalDataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.Executor
 
 class StreamsDataSource private constructor(
         private val game: String?,
         private val languages: String?,
         private val streamType: StreamType,
-        private val api: KrakenApi,
-        retryExecutor: Executor,
-        private val compositeDisposable: CompositeDisposable) : BasePositionalDataSource<Stream>(retryExecutor) {
+        private val api: KrakenApi) : BasePositionalDataSource<Stream>() {
 
     override fun loadInitial(params: PositionalDataSource.LoadInitialParams, callback: PositionalDataSource.LoadInitialCallback<Stream>) {
         super.loadInitial(params, callback)
@@ -35,11 +30,9 @@ class StreamsDataSource private constructor(
             private val game: String?,
             private val languages: String?,
             private val streamType: StreamType,
-            private val api: KrakenApi,
-            private val networkExecutor: Executor,
-            private val compositeDisposable: CompositeDisposable) : BaseDataSourceFactory<Int, Stream, StreamsDataSource>() {
+            private val api: KrakenApi) : BaseDataSourceFactory<Int, Stream, StreamsDataSource>() {
 
         override fun create(): DataSource<Int, Stream> =
-                StreamsDataSource(game, languages, streamType, api, networkExecutor, compositeDisposable).also(sourceLiveData::postValue)
+                StreamsDataSource(game, languages, streamType, api).also(sourceLiveData::postValue)
     }
 }

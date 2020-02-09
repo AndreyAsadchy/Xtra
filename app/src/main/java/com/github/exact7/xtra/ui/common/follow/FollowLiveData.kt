@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.repository.TwitchService
-import io.reactivex.rxkotlin.subscribeBy
-
 class FollowLiveData(
         private val repository: TwitchService,
         private val user: LoggedIn,

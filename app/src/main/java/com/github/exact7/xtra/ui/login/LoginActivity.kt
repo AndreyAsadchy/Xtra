@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -28,9 +29,9 @@ import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.visible
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -38,7 +39,6 @@ class LoginActivity : AppCompatActivity(), Injectable {
 
     @Inject
     lateinit var repository: AuthRepository
-    private val compositeDisposable = CompositeDisposable()
 
     //        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
     private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://twitch.tv"
@@ -74,9 +74,10 @@ class LoginActivity : AppCompatActivity(), Injectable {
             initWebView()
             repository.deleteAllEmotes()
             if (!user.newToken) {
-                repository.revoke(user.token)
-                        .subscribe { User.set(this, null) }
-                        .addTo(compositeDisposable)
+                GlobalScope.launch {
+                    repository.revoke(user.token)
+                    User.set(this@LoginActivity, null)
+                }
             } else {
                 User.set(this, null)
             }
@@ -125,14 +126,13 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         welcomeContainer.gone()
                         progressBar.visible()
                         val token = matcher.group(1)
-                        repository.validate(token)
-                                .subscribe { response ->
-                                    TwitchApiHelper.checkedValidation = true
-                                    User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
-                                    setResult(RESULT_OK)
-                                    finish()
-                                }
-                                .addTo(compositeDisposable)
+                        lifecycleScope.launch {
+                            val response = repository.validate(token)
+                            TwitchApiHelper.checkedValidation = true
+                            User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
+                            setResult(RESULT_OK)
+                            finish()
+                        }
                     }
                     return super.shouldOverrideUrlLoading(view, url)
                 }
@@ -157,10 +157,5 @@ class LoginActivity : AppCompatActivity(), Injectable {
             }
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    override fun onDestroy() {
-        compositeDisposable.clear()
-        super.onDestroy()
     }
 }

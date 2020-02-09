@@ -10,11 +10,11 @@ import com.github.exact7.xtra.model.offline.Request
 interface RequestsDao {
 
     @Query("SELECT * FROM requests")
-    fun getAll(): List<Request>
+    suspend fun getAll(): List<Request>
 
     @Insert
-    fun insert(request: Request)
+    suspend fun insert(request: Request)
 
     @Delete
-    fun delete(request: Request)
+    suspend fun delete(request: Request)
 }

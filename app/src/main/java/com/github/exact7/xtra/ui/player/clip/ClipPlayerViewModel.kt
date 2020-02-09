@@ -7,7 +7,7 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -21,8 +21,7 @@ import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "ClipPlayerViewModel"
@@ -70,34 +69,35 @@ class ClipPlayerViewModel @Inject constructor(
     fun setClip(clip: Clip) {
         if (!this::clip.isInitialized) {
             this.clip = clip
-            playerRepository.loadClipUrls(clip.slug)
-                    .subscribe({ urls ->
-                        val preferredQuality = prefs.getString(TAG, null)
-                        if (preferredQuality != null) {
-                            var url: String? = null
-                            for (entry in urls.entries.withIndex()) {
-                                if (entry.value.key == preferredQuality) {
-                                    url = entry.value.value
-                                    qualityIndex = entry.index
-                                    break
-                                }
+            viewModelScope.launch {
+                try {
+                    val urls = playerRepository.loadClipUrls(clip.slug)
+                    val preferredQuality = prefs.getString(TAG, null)
+                    if (preferredQuality != null) {
+                        var url: String? = null
+                        for (entry in urls.entries.withIndex()) {
+                            if (entry.value.key == preferredQuality) {
+                                url = entry.value.value
+                                qualityIndex = entry.index
+                                break
                             }
-                            url.let {
-                                if (it != null) {
-                                    play(it)
-                                } else {
-                                    play(urls.keys.first())
-                                }
-                            }
-                        } else {
-                            play(urls.keys.first())
                         }
-                        helper.urls = urls
-                        helper.loaded.value = true
-                    }, {
+                        url.let {
+                            if (it != null) {
+                                play(it)
+                            } else {
+                                play(urls.keys.first())
+                            }
+                        }
+                    } else {
+                        play(urls.keys.first())
+                    }
+                    helper.urls = urls
+                    helper.loaded.value = true
+                } catch (e: Exception) {
 
-                    })
-                    .addTo(compositeDisposable)
+                }
+            }
         }
     }
 
@@ -108,10 +108,13 @@ class ClipPlayerViewModel @Inject constructor(
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        val context = getApplication<Application>()
-        Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
-        changeQuality(++qualityIndex)
-        Crashlytics.logException(error)
+        if (error.type == ExoPlaybackException.TYPE_UNEXPECTED && error.unexpectedException is IllegalStateException) {
+            val context = getApplication<Application>()
+            Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
+            if (qualityIndex < helper.urls.size - 1) {
+                changeQuality(++qualityIndex)
+            }
+        }
     }
 
     fun loadVideo() {

@@ -4,16 +4,11 @@ import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.clip.Clip
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.Executor
 
 class FollowedClipsDataSource(
         userToken: String,
         private val trending: Boolean?,
-        private val api: KrakenApi,
-        retryExecutor: Executor,
-        private val compositeDisposable: CompositeDisposable) : BasePageKeyedDataSource<Clip>(retryExecutor) {
+        private val api: KrakenApi) : BasePageKeyedDataSource<Clip>() {
 
     private val userToken: String = "OAuth $userToken"
 
@@ -34,11 +29,9 @@ class FollowedClipsDataSource(
     class Factory(
             private val userToken: String,
             private val trending: Boolean?,
-            private val api: KrakenApi,
-            private val networkExecutor: Executor,
-            private val compositeDisposable: CompositeDisposable) : BaseDataSourceFactory<String, Clip, FollowedClipsDataSource>() {
+            private val api: KrakenApi) : BaseDataSourceFactory<String, Clip, FollowedClipsDataSource>() {
 
         override fun create(): DataSource<String, Clip> =
-            FollowedClipsDataSource(userToken, trending, api, networkExecutor, compositeDisposable).also(sourceLiveData::postValue)
+            FollowedClipsDataSource(userToken, trending, api).also(sourceLiveData::postValue)
     }
 }

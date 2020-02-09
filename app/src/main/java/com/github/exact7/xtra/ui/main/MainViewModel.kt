@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.NotValidated
@@ -21,8 +22,6 @@ import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.Event
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.prefs
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -43,8 +42,6 @@ class MainViewModel @Inject constructor(
 
     var isPlayerOpened = false
         private set
-
-    private val compositeDisposable = CompositeDisposable()
 
     init {
         GlobalScope.launch {
@@ -89,28 +86,24 @@ class MainViewModel @Inject constructor(
             return
         }
         if (user is NotValidated) {
-            authRepository.validate(user.token)
-                    .subscribe({
-                        User.validated()
-                        repository.loadUserEmotes(user.token, user.id, compositeDisposable)
-                    }, {
-                        if (it is HttpException && it.code() == 401) {
-                            with(activity) {
-                                User.set(activity, null)
-                                Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
-                                if (!isPlayerMaximized) {
-                                    startActivityForResult(Intent(this, LoginActivity::class.java), 2)
-                                }
+            viewModelScope.launch {
+                try {
+                    authRepository.validate(user.token)
+                    User.validated()
+                    repository.loadUserEmotes(user.token, user.id, compositeDisposable)
+                } catch (e: Exception) {
+                    if (e is HttpException && e.code() == 401) {
+                        with(activity) {
+                            User.set(activity, null)
+                            Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                            if (!isPlayerMaximized) {
+                                startActivityForResult(Intent(this, LoginActivity::class.java), 2)
                             }
                         }
-                    })
-                    .addTo(compositeDisposable)
+                    }
+                }
+            }
         }
         TwitchApiHelper.checkedValidation = true
-    }
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
     }
 }

@@ -6,18 +6,13 @@ import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.Executor
 
 class FollowedVideosDataSource(
         userToken: String,
         private val broadcastTypes: BroadcastType,
         private val language: String?,
         private val sort: Sort,
-        private val api: KrakenApi,
-        networkExecutor: Executor,
-        private val compositeDisposable: CompositeDisposable) : BasePositionalDataSource<Video>(networkExecutor) {
+        private val api: KrakenApi) : BasePositionalDataSource<Video>() {
 
     private val userToken: String = "OAuth $userToken"
 
@@ -40,11 +35,9 @@ class FollowedVideosDataSource(
             private val broadcastTypes: BroadcastType,
             private val language: String?,
             private val sort: Sort,
-            private val api: KrakenApi,
-            private val networkExecutor: Executor,
-            private val compositeDisposable: CompositeDisposable) : BaseDataSourceFactory<Int, Video, FollowedVideosDataSource>() {
+            private val api: KrakenApi) : BaseDataSourceFactory<Int, Video, FollowedVideosDataSource>() {
 
         override fun create(): DataSource<Int, Video> =
-            FollowedVideosDataSource(userToken, broadcastTypes, language, sort, api, networkExecutor, compositeDisposable).also(sourceLiveData::postValue)
+            FollowedVideosDataSource(userToken, broadcastTypes, language, sort, api).also(sourceLiveData::postValue)
     }
 }

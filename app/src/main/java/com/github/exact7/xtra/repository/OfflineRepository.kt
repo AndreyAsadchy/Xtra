@@ -4,9 +4,11 @@ import com.github.exact7.xtra.db.RequestsDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,7 +39,7 @@ class OfflineRepository @Inject constructor(
         GlobalScope.launch { videosDao.updatePosition(id, position) }
     }
 
-    fun getRequestsAsync() = GlobalScope.async {
+    suspend fun getRequestsAsync() = withContext(Dispatchers.IO) {
         requestsDao.getAll()
     }
 

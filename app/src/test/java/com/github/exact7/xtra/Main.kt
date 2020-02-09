@@ -2,6 +2,9 @@ package com.github.exact7.xtra
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 
@@ -20,19 +23,11 @@ class Main {
 
     @Test
     fun test() {
-//        val minutes = System.currentTimeMillis() / 1000 / 60
-        val minutes = 26051805
-        val lastMinute = minutes % 10
-        println(minutes)
-        println(lastMinute)
-        println(if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5))
-    }
-
-    @Test
-    fun test2() {
-//        val minutes = 26051805
-        val minutes = System.currentTimeMillis() / 60000L
-        val lastMinute = minutes % 10
-        println(if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5))
+        runBlocking {
+            val job = GlobalScope.launch {
+                throw IllegalStateException()
+            }
+            job.join()
+        }
     }
 }

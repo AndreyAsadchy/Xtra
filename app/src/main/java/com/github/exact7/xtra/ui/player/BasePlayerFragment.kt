@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.edit
@@ -57,8 +58,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     protected var isPortrait: Boolean = false
         private set
-    private var isInPictureInPictureMode = false
-    private var wasInPictureInPicture = false
+    private var isInPictureInPicture = false
+    var wasInPictureInPicture = false
     private var orientationBeforePictureInPicture = 0
     private var isKeyboardShown = false
 
@@ -70,8 +71,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     private lateinit var userPrefs: SharedPreferences
     protected abstract val channel: Channel
 
-    private var playerWidth = 0
-    private var playerHeight = 0
+    var playerWidth = 0
+    var playerHeight = 0
     private var chatWidth = 0
 
     private var systemUiFlags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -82,9 +83,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val activity = requireActivity()
-        prefs = activity.prefs()
-        userPrefs = activity.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+        savedInstanceState?.let {
+            wasInPictureInPicture = it.getBoolean(KEY_WAS_IN_PIP)
+        }
+        prefs = requireContext().prefs()
+        userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             systemUiFlags = systemUiFlags or (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
@@ -98,10 +101,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
+        playerView = view.findViewById(R.id.playerView)
         view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
-        if (isPortrait) {
+        var resizeMode = if (isPortrait) {
             view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
             showStatusBar()
+            playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) }
+            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FILL)
         } else {
             activity.window.decorView.setOnSystemUiVisibilityChangeListener {
                 if (!isKeyboardShown && slidingLayout.isMaximized) {
@@ -121,12 +127,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 }
             }
-        }
-        playerView = view.findViewById(R.id.playerView)
-        var resizeMode = if (isPortrait) {
-            playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) }
-            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FILL)
-        } else {
             prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
         }
         playerView.resizeMode = resizeMode
@@ -217,6 +217,15 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        println("RESUME $wasInPictureInPicture")
+        if (wasInPictureInPicture && !isInPictureInPicture && orientationBeforePictureInPicture != resources.configuration.orientation.also { wasInPictureInPicture = false }) {
+            println("REC2")
+//            requireActivity().recreate()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         if (requireActivity().isChangingConfigurations) {
@@ -224,25 +233,49 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (wasInPictureInPicture && !isInPictureInPictureMode && orientationBeforePictureInPicture != resources.configuration.orientation.also { wasInPictureInPicture = false }) {
-            requireActivity().recreate()
-//            requireActivity().supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
-        }
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val activity = requireActivity()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && isResumed && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation.also { wasInPictureInPicture = false }))) {
-            activity.recreate()
+        println("RES $isResumed")
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation))) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && !wasInPictureInPicture)) {
+            if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) { //TODO player controller, chat view emotes columns count
+                slidingLayout.orientation = LinearLayout.VERTICAL
+                slidingLayout.init()
+                playerView.updateLayoutParams<LinearLayout.LayoutParams> {
+                    height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0)
+                    width = LinearLayout.LayoutParams.MATCH_PARENT
+                    weight = 0f
+                }
+                chatLayout.updateLayoutParams<LinearLayout.LayoutParams> {
+                    width = LinearLayout.LayoutParams.MATCH_PARENT
+                    height = LinearLayout.LayoutParams.MATCH_PARENT
+                    weight = 1f
+                }
+            } else {
+                slidingLayout.orientation = LinearLayout.HORIZONTAL
+                slidingLayout.init()
+                chatWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
+                playerView.updateLayoutParams<LinearLayout.LayoutParams> {
+                    height = LinearLayout.LayoutParams.MATCH_PARENT
+                    width = LinearLayout.LayoutParams.MATCH_PARENT
+                    weight = 1f
+                }
+                chatLayout.updateLayoutParams<LinearLayout.LayoutParams> {
+                    width = chatWidth
+                    height = LinearLayout.LayoutParams.MATCH_PARENT
+                    weight = 0f
+                }
+            }
+            println("REC")
+//            activity.recreate()
 //            activity.supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
         }
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        this.isInPictureInPictureMode = isInPictureInPictureMode
+        isInPictureInPicture = isInPictureInPictureMode
+        println("PIP $isInPictureInPictureMode")
         if (isInPictureInPictureMode) {
             playerView.apply {
                 useController = false
@@ -253,6 +286,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
             secondView?.gone()
         } else {
+            wasInPictureInPicture = true
             if (isPortrait) {
                 secondView?.visible()
             } else if (this !is OfflinePlayerFragment) {
@@ -266,6 +300,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(KEY_WAS_IN_PIP, wasInPictureInPicture)
+        super.onSaveInstanceState(outState)
     }
 
     override fun initialize() {
@@ -359,7 +398,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     fun enterPictureInPicture(): Boolean {
         return if (slidingLayout.isMaximized && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && shouldEnterPictureInPicture) {
-            wasInPictureInPicture = true
+//            wasInPictureInPicture = true
             orientationBeforePictureInPicture = resources.configuration.orientation
             true
         } else {
@@ -385,13 +424,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         userPrefs.edit { putBoolean(KEY_CHAT_OPENED, true) }
     }
 
-    fun showStatusBar() {
+    private fun showStatusBar() {
         if (isAdded) { //TODO this check might not be needed anymore AND ANDROID 5
             requireActivity().window.decorView.systemUiVisibility = 0
         }
     }
 
-    fun hideStatusBar() {
+    private fun hideStatusBar() {
         if (isAdded) {
             requireActivity().window.decorView.systemUiVisibility = systemUiFlags
         }
@@ -399,6 +438,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     private companion object {
         const val KEY_CHAT_OPENED = "ChatOpened"
+        const val KEY_WAS_IN_PIP = "wasInPip"
 
         const val REQUEST_FOLLOW = 0
     }

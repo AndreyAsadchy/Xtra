@@ -27,19 +27,13 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.concurrent.schedule
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
-abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, OnQualityChangeListener, CoroutineScope by MainScope() {
+abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, OnQualityChangeListener {
 
     protected val tag: String = javaClass.simpleName
 
@@ -205,7 +199,5 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     override fun onCleared() {
         player.release()
         timer?.cancel()
-        cancel()
-        super.onCleared()
     }
 }

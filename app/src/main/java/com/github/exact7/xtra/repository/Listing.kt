@@ -1,13 +1,12 @@
 package com.github.exact7.xtra.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.switchMap
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.github.exact7.xtra.repository.datasource.BaseDataSourceFactory
 import com.github.exact7.xtra.repository.datasource.PagingDataSource
-import java.util.concurrent.Executor
 
 class Listing<T> internal constructor(
         val pagedList: LiveData<PagedList<T>>,
@@ -18,10 +17,10 @@ class Listing<T> internal constructor(
 
     companion object {
 
-        fun <ListValue, DS> create(factory: BaseDataSourceFactory<*, ListValue, DS>, config: PagedList.Config, executor: Executor): Listing<ListValue> where DS : DataSource<*, ListValue>, DS : PagingDataSource {
-            val pagedList = LivePagedListBuilder(factory, config).setFetchExecutor(executor).build()
-            val loadingState = Transformations.switchMap(factory.sourceLiveData) { it.loadingState }
-            val pagingState = Transformations.switchMap(factory.sourceLiveData) { it.pagingState }
+        fun <ListValue, DS> create(factory: BaseDataSourceFactory<*, ListValue, DS>, config: PagedList.Config): Listing<ListValue> where DS : DataSource<*, ListValue>, DS : PagingDataSource {
+            val pagedList = LivePagedListBuilder(factory, config).build()
+            val loadingState = factory.sourceLiveData.switchMap { it.loadingState }
+            val pagingState = factory.sourceLiveData.switchMap { it.pagingState }
             return Listing(
                     pagedList,
                     loadingState,

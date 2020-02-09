@@ -111,13 +111,22 @@ class ChatAdapter(
         builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         val originalMessage = "$userName: ${chatMessage.message}"
+        println(originalMessage)
         try {
             chatMessage.emotes?.let { emotes ->
-                val copy = emotes.map { TwitchEmote(it.name, it.begin, it.end) }
+                val copy = emotes.map {
+                    val realBegin = chatMessage.message.offsetByCodePoints(0, it.begin)
+                    val realEnd = if (it.begin == realBegin) {
+                        it.end
+                    } else {
+                        it.end + realBegin - it.begin
+                    }
+                    TwitchEmote(it.name, realBegin, realEnd)
+                }
                 index += userNameLength + 2
                 for (e in copy) {
                     val begin = index + e.begin
-                    builder.replace(begin, index + e.end + 1, ".") //TODO emojis break this
+                    builder.replace(begin, index + e.end + 1, ".")
                     builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), begin, begin + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
                     val length = e.end - e.begin
                     for (e1 in copy) {
@@ -155,7 +164,7 @@ class ChatAdapter(
                     }
                     length + 1
                 } else {
-                    for (j in images.lastIndex - emotesFound downTo badgesCount) { //TODO still problem on summits channel
+                    for (j in images.lastIndex - emotesFound downTo badgesCount) {
                         val e = images[j]
                         if (e.start > builderIndex) {
                             val remove = length - 1

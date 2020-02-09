@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -82,50 +83,7 @@ class SlidingLayout : LinearLayout {
         super.onFinishInflate()
         dragView = getChildAt(0) as PlayerView
         secondView = getChildAt(1)
-        dragView.post {
-            topBound = paddingTop
-            if (isPortrait) { //portrait
-                minScaleX = 0.5f
-                minScaleY = 0.5f
-            } else { //landscape
-                minScaleX = 0.3f
-                minScaleY = 0.325f
-            }
-            bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
-
-            fun init() {
-                minimizeThreshold = height / 5
-                pivotX = width * 0.95f
-                if (isPortrait) {
-                    bottomBound = height / 2
-                    pivotY = height * 2 - dragView.height - bottomMargin
-                } else {
-                    bottomBound = (height / 1.5f).toInt()
-                    pivotY = height - bottomMargin
-                }
-            }
-
-            if (!isPortrait || !isMaximized || !isKeyboardShown) {
-                init()
-            } else {
-                postDelayed(750L) {
-                    //delay to avoid issue after rotating from landscape with opened keyboard to portrait
-                    init()
-                }
-            }
-            if (!isMaximized) {
-                scaleX = minScaleX
-                scaleY = minScaleY
-            }
-            timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
-        }
-        secondView?.post {
-            if (!isMaximized) {
-                if (!isPortrait) {
-                    secondView?.gone()
-                }
-            }
-        }
+        init()
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -142,6 +100,11 @@ class SlidingLayout : LinearLayout {
                 }
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        init()
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -196,17 +159,31 @@ class SlidingLayout : LinearLayout {
         return true
     }
 
-    private fun isViewHit(view: View, x: Int, y: Int): Boolean {
-        val viewLocation = IntArray(2)
-        view.getLocationOnScreen(viewLocation)
-        val parentLocation = IntArray(2)
-        getLocationOnScreen(parentLocation)
-        val screenX = parentLocation[0] + x
-        val screenY = parentLocation[1] + y
-        return (screenX >= viewLocation[0]
-                && screenX < viewLocation[0] + view.width
-                && screenY >= viewLocation[1]
-                && screenY < viewLocation[1] + view.height)
+    override fun computeScroll() {
+        if (viewDragHelper.continueSettling(true)) {
+            postInvalidateOnAnimation()
+        }
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        secondView?.let {
+            if (!isPortrait && isMaximized) {
+                maximizedSecondViewVisibility = it.visibility
+            }
+        }
+        return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized, "secondViewVisibility" to maximizedSecondViewVisibility)
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state.let {
+            if (it is Bundle) {
+                isMaximized = it.getBoolean("isMaximized")
+                maximizedSecondViewVisibility = it.getInt("secondViewVisibility")
+                it.getParcelable("superState")
+            } else {
+                it
+            }
+        })
     }
 
     fun maximize() {
@@ -246,6 +223,66 @@ class SlidingLayout : LinearLayout {
         listeners.forEach { it.onMinimize() }
     }
 
+    fun init() {
+        dragView.post {
+            topBound = paddingTop
+            if (isPortrait) { //portrait
+                minScaleX = 0.5f
+                minScaleY = 0.5f
+            } else { //landscape
+                minScaleX = 0.3f
+                minScaleY = 0.325f
+            }
+            bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
+
+            fun initialize() {
+                minimizeThreshold = height / 5
+                pivotX = width * 0.95f
+                if (isPortrait) {
+                    bottomBound = height / 2
+                    pivotY = height * 2 - dragView.height - bottomMargin
+                } else {
+                    bottomBound = (height / 1.5f).toInt()
+                    pivotY = height - bottomMargin
+                }
+            }
+
+            if (!isPortrait || !isMaximized || !isKeyboardShown) {
+                initialize()
+            } else {
+                postDelayed(750L) {
+                    //delay to avoid issue after rotating from landscape with opened keyboard to portrait
+                    initialize()
+                }
+            }
+            if (!isMaximized) {
+                scaleX = minScaleX
+                scaleY = minScaleY
+            }
+            timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
+        }
+        secondView?.post {
+            if (!isMaximized) {
+                if (!isPortrait) {
+                    secondView?.gone()
+                }
+            }
+        }
+    }
+
+    private fun isViewHit(view: View, x: Int, y: Int): Boolean {
+        val viewLocation = IntArray(2)
+        view.getLocationOnScreen(viewLocation)
+        val parentLocation = IntArray(2)
+        getLocationOnScreen(parentLocation)
+        val screenX = parentLocation[0] + x
+        val screenY = parentLocation[1] + y
+        return (screenX >= viewLocation[0]
+                && screenX < viewLocation[0] + view.width
+                && screenY >= viewLocation[1]
+                && screenY < viewLocation[1] + view.height)
+    }
+
     private fun animate(scaleX: Float, scaleY: Float) {
         val sclX = PropertyValuesHolder.ofFloat("scaleX", scaleX)
         val sclY = PropertyValuesHolder.ofFloat("scaleY", scaleY)
@@ -265,33 +302,6 @@ class SlidingLayout : LinearLayout {
     private fun closeTo(left: Int) {
         smoothSlideTo(left, dragViewTop)
         listeners.forEach { it.onClose() }
-    }
-
-    override fun computeScroll() {
-        if (viewDragHelper.continueSettling(true)) {
-            postInvalidateOnAnimation()
-        }
-    }
-
-    override fun onSaveInstanceState(): Parcelable? {
-        secondView?.let {
-            if (!isPortrait && isMaximized) {
-                maximizedSecondViewVisibility = it.visibility
-            }
-        }
-        return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized, "secondViewVisibility" to maximizedSecondViewVisibility)
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state.let {
-            if (it is Bundle) {
-                isMaximized = it.getBoolean("isMaximized")
-                maximizedSecondViewVisibility = it.getInt("secondViewVisibility")
-                it.getParcelable("superState")
-            } else {
-                it
-            }
-        })
     }
 
     fun addListener(listener: Listener) {
