@@ -19,13 +19,13 @@ abstract class BaseStreamsFragment<VM : PagedListViewModel<Stream>> : PagedListF
         fun startStream(stream: Stream)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_streams, container, false)
+    override val adapter: BasePagedListAdapter<Stream> by lazy {
+        val activity = requireActivity() as MainActivity
+        StreamsAdapter(activity, activity)
     }
 
-    override fun createAdapter(): BasePagedListAdapter<Stream> {
-        val activity = requireActivity() as MainActivity
-        return StreamsAdapter(activity, activity)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_streams, container, false)
     }
 
     override fun scrollToTop() {

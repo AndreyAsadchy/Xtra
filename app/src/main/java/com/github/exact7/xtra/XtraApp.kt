@@ -12,7 +12,6 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import io.fabric.sdk.android.Fabric
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -30,11 +29,12 @@ class XtraApp : Application(), HasAndroidInjector {
         INSTANCE = this
         AppInjector.init(this)
         Fabric.with(this, Crashlytics())
-        RxJavaPlugins.setErrorHandler {
-            if (it !is UnknownHostException) {
-                Crashlytics.logException(it)
-            }
-        }
+//        RxJavaPlugins.setErrorHandler { //TODO
+//            if (it !is UnknownHostException) {
+//                Crashlytics.logException(it)
+//            }
+//        }
+
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
     }
 

@@ -94,7 +94,7 @@ class VideoDownloadViewModel @Inject constructor(
                 val directory = "$path${File.separator}${video.id}${if (!quality.contains("Audio", true)) quality else "audio"}${File.separator}"
 
                 val offlineVideo = DownloadUtils.prepareDownload(context, video, url, directory, duration, startPosition, fromIndex, toIndex)
-                val videoId = offlineRepository.saveVideoAsync(offlineVideo).await().toInt()
+                val videoId = offlineRepository.saveVideo(offlineVideo).toInt()
                 val request = Request(videoId, url, directory, video.id, fromIndex, toIndex)
                 offlineRepository.saveRequest(request)
 

@@ -103,6 +103,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-process:$lifecycle"
     implementation "androidx.room:room-runtime:$room"
     implementation "androidx.room:room-ktx:$room"
     kapt "androidx.room:room-compiler:$room"

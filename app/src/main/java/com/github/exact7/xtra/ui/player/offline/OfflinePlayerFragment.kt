@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.offline.OfflineVideo
@@ -18,7 +19,7 @@ class OfflinePlayerFragment : BasePlayerFragment() {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    override lateinit var viewModel: OfflinePlayerViewModel
+    override val viewModel by viewModels<OfflinePlayerViewModel> { viewModelFactory }
     override val channel: Channel
         get() = null!!
 
@@ -37,7 +38,6 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        viewModel = getViewModel()
         viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
         super.initialize()
         requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex) }

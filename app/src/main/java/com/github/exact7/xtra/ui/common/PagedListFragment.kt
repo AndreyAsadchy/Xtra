@@ -12,31 +12,28 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
 abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter : BasePagedListAdapter<T>> : BaseNetworkFragment() {
 
-    protected lateinit var viewModel: VM
-    protected lateinit var adapter: Adapter
+    protected abstract val viewModel: VM
+    protected abstract val adapter: Adapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = createViewModel()
-        adapter = createAdapter().apply {
-            registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
 
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    unregisterAdapterDataObserver(this)
-                    registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                            try {
-                                if (positionStart == 0) {
-                                    recyclerView?.scrollToPosition(0)
-                                }
-                            } catch (e: Exception) {
-                                Crashlytics.logException(e)
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                adapter.unregisterAdapterDataObserver(this)
+                adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        try {
+                            if (positionStart == 0) {
+                                recyclerView?.scrollToPosition(0)
                             }
+                        } catch (e: Exception) {
+                            Crashlytics.logException(e)
                         }
-                    })
-                }
-            })
-        }
+                    }
+                })
+            }
+        })
         recyclerView.adapter = adapter
     }
 
@@ -65,7 +62,4 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter : BasePa
     override fun onNetworkRestored() {
         viewModel.retry()
     }
-
-    protected abstract fun createAdapter(): Adapter
-    protected abstract fun createViewModel(): VM
 }

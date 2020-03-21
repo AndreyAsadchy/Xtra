@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -21,7 +22,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.BuildConfig
 import com.github.exact7.xtra.R
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: MainViewModel
+    private val viewModel by viewModels<MainViewModel> { viewModelFactory }
     var playerFragment: BasePlayerFragment? = null
         private set
     private val fragNavController = FragNavController(supportFragmentManager, R.id.fragmentContainer)
@@ -140,7 +140,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         setContentView(R.layout.activity_main)
 
         val notInitialized = savedInstanceState == null
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         initNavigation()
         if (User.get(this) !is NotLoggedIn) {
             fragNavController.initialize(INDEX_FOLLOWED, savedInstanceState)

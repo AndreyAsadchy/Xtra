@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
@@ -27,9 +28,8 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -172,10 +172,8 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                     Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
-                    launch {
-                        withContext(Dispatchers.Default) {
-                            delay(1500L)
-                        }
+                    viewModelScope.launch {
+                        delay(1500L)
                         try {
                             if (this@PlayerViewModel is StreamPlayerViewModel) {
                                 play()

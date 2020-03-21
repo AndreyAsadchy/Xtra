@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.videos.followed
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.sort_bar.*
 
 class FollowedVideosFragment : BaseVideosFragment<FollowedVideosViewModel>(), RadioButtonDialogFragment.OnSortOptionChanged {
 
-    override fun createViewModel(): FollowedVideosViewModel = getViewModel()
+    override val viewModel by viewModels<FollowedVideosViewModel> { viewModelFactory }
 
     override fun initialize() {
         super.initialize()

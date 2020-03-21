@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.repository.LoadingState
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 
 class GameSearchFragment : BaseNetworkFragment(), Searchable {
 
-    private lateinit var viewModel: GameSearchViewModel
+    private val viewModel by viewModels<GameSearchViewModel> { viewModelFactory }
     private lateinit var adapter: GameSearchAdapter
 
     private var isInitialized = false
@@ -34,7 +35,6 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
     }
 
     override fun initialize() {
-        viewModel = getViewModel()
         viewModel.list.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
             nothing_here.isVisible = it.isEmpty()

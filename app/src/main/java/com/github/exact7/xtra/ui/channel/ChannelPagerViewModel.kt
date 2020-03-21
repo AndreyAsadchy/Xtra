@@ -3,18 +3,19 @@ package com.github.exact7.xtra.ui.channel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChannelPagerViewModel @Inject constructor(
         private val repository: TwitchService) : ViewModel(), FollowViewModel {
 
-    private val compositeDisposable = CompositeDisposable()
     private val _channel = MutableLiveData<Channel>()
     val channel: LiveData<Channel>
         get() = _channel
@@ -39,17 +40,15 @@ class ChannelPagerViewModel @Inject constructor(
     fun loadStream(channel: Channel) {
         if (_channel.value != channel) {
             _channel.value = channel
-            repository.loadStream(channel.id)
-                    .subscribeBy(onSuccess = {
-                        _stream.value = it
-                    })
-                    .addTo(compositeDisposable)
-        }
-    }
+            viewModelScope.launch {
+                try {
+                    val stream = repository.loadStream(channel.id)
+                    _stream.postValue(stream)
+                } catch (e: Exception) {
 
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
+                }
+            }
+        }
     }
 
     fun retry() {

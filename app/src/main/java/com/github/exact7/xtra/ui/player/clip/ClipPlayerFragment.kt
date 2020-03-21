@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -30,7 +31,7 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
 
-    override lateinit var viewModel: ClipPlayerViewModel
+    override val viewModel by viewModels<ClipPlayerViewModel> { viewModelFactory }
     private lateinit var clip: Clip
     override val channel: Channel
         get() = clip.broadcaster
@@ -63,7 +64,6 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
         if (clip.vod == null) {
             watchVideo.gone()
         }
-        viewModel = getViewModel()
     }
 
     override fun initialize() {

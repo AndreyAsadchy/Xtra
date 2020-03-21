@@ -21,6 +21,14 @@ abstract class BaseVideosFragment<VM : BaseVideosViewModel> : PagedListFragment<
         fun startVideo(video: Video, offset: Double? = null)
     }
 
+    override val adapter: BaseVideosAdapter by lazy {
+        val activity = requireActivity() as MainActivity
+        VideosAdapter(activity, activity) {
+            lastSelectedItem = it
+            showDownloadDialog()
+        }
+    }
+
     var lastSelectedItem: Video? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,14 +38,6 @@ abstract class BaseVideosFragment<VM : BaseVideosViewModel> : PagedListFragment<
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_videos, container, false)
-    }
-
-    override fun createAdapter(): BaseVideosAdapter {
-        val activity = requireActivity() as MainActivity
-        return VideosAdapter(activity, activity) {
-            lastSelectedItem = it
-            showDownloadDialog()
-        }
     }
 
     override fun initialize() {

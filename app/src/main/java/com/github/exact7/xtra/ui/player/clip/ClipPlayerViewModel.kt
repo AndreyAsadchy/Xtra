@@ -120,13 +120,16 @@ class ClipPlayerViewModel @Inject constructor(
     fun loadVideo() {
         if (!loadingVideo) {
             loadingVideo = true
-            repository.loadVideo(clip.vod!!.id)
-                    .doOnEvent { _, _ -> loadingVideo = false }
-                    .subscribeBy(onSuccess = {
-                        _video.value = it
-                    })
-                    .addTo(compositeDisposable)
+            viewModelScope.launch {
+                try {
+                    val video = repository.loadVideo(clip.vod!!.id)
+                    _video.postValue(video)
+                } catch (e: Exception) {
 
+                } finally {
+                    loadingVideo = false
+                }
+            }
         }
     }
 

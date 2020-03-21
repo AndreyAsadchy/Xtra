@@ -12,7 +12,5 @@ import javax.inject.Inject
 class GamesViewModel @Inject constructor(
         private val repository: TwitchService) : PagedListViewModel<GameWrapper>() {
 
-    override val result: LiveData<Listing<GameWrapper>> = MutableLiveData<Listing<GameWrapper>>().apply {
-        value = repository.loadTopGames(viewModelScope)
-    }
+    override val result: LiveData<Listing<GameWrapper>> = MutableLiveData<Listing<GameWrapper>>(repository.loadTopGames(viewModelScope))
 }

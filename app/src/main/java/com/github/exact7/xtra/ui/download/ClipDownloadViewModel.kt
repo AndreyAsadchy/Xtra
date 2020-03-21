@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.repository.OfflineRepository
@@ -25,20 +26,16 @@ class ClipDownloadViewModel @Inject constructor(
     val qualities: LiveData<Map<String, String>>
         get() = _qualities
 
-    private val compositeDisposable = CompositeDisposable()
     private lateinit var clip: Clip
 
     fun init(clip: Clip, qualities: Map<String, String>?) {
         if (!this::clip.isInitialized) {
             this.clip = clip
             if (qualities == null) {
-                playerRepository.loadClipUrls(clip.slug)
-                        .subscribe({
-                            _qualities.value = it
-                        }, {
-
-                        })
-                        .addTo(compositeDisposable)
+                viewModelScope.launch {
+                    val urls = playerRepository.loadClipUrls(clip.slug)
+                    _qualities.postValue(urls)
+                }
             } else {
                 _qualities.value = qualities
             }
@@ -53,16 +50,11 @@ class ClipDownloadViewModel @Inject constructor(
             val startPosition =  clip.vod?.let { TwitchApiHelper.parseClipOffset(it.url) }?.toLong()
 
             val offlineVideo = DownloadUtils.prepareDownload(context, clip, url, filePath, clip.duration.toLong(), startPosition)
-            val videoId = offlineRepository.saveVideoAsync(offlineVideo).await().toInt()
+            val videoId = offlineRepository.saveVideo(offlineVideo).toInt()
             val request = Request(videoId, url, offlineVideo.url)
             offlineRepository.saveRequest(request)
 
             DownloadUtils.download(context, request)
         }
-    }
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
     }
 }

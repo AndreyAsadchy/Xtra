@@ -15,14 +15,11 @@ import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.repository.AuthRepository
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.TwitchService
-import com.github.exact7.xtra.ui.download.DownloadService
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.Event
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.prefs
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -44,13 +41,7 @@ class MainViewModel @Inject constructor(
         private set
 
     init {
-        GlobalScope.launch {
-            offlineRepository.getRequestsAsync().await().forEach {
-                if (DownloadService.activeRequests.add(it.offlineVideoId)) {
-                    DownloadUtils.download(application, it, application.prefs().getString(C.DOWNLOAD_NETWORK_PREFERENCE, "3") == "2")
-                }
-            }
-        }
+        offlineRepository.resumeDownloads(application, application.prefs().getString(C.DOWNLOAD_NETWORK_PREFERENCE, "3") == "2")
     }
 
     fun onMaximize() {
@@ -81,7 +72,13 @@ class MainViewModel @Inject constructor(
         val user = User.get(activity)
         if (TwitchApiHelper.checkedValidation) {
             if (user is LoggedIn) {
-                repository.loadUserEmotes(user.token, user.id, compositeDisposable)
+                viewModelScope.launch {
+                    try {
+                        repository.loadUserEmotes(user.token, user.id)
+                    } catch (e: Exception) {
+
+                    }
+                }
             }
             return
         }
@@ -90,7 +87,7 @@ class MainViewModel @Inject constructor(
                 try {
                     authRepository.validate(user.token)
                     User.validated()
-                    repository.loadUserEmotes(user.token, user.id, compositeDisposable)
+                    repository.loadUserEmotes(user.token, user.id)
                 } catch (e: Exception) {
                     if (e is HttpException && e.code() == 401) {
                         with(activity) {

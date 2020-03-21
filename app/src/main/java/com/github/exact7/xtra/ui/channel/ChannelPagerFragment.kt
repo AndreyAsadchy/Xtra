@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.github.exact7.xtra.R
@@ -32,7 +33,7 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
         fun newInstance(channel: Channel) = ChannelPagerFragment().apply { arguments = bundleOf(C.CHANNEL to channel) }
     }
 
-    private lateinit var viewModel: ChannelPagerViewModel
+    private val viewModel by viewModels<ChannelPagerViewModel> { viewModelFactory }
     private lateinit var channel: Channel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +78,6 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
     }
 
     override fun initialize() {
-        viewModel = getViewModel()
         viewModel.loadStream(channel)
         val activity = requireActivity() as MainActivity
         viewModel.stream.observe(viewLifecycleOwner, Observer {

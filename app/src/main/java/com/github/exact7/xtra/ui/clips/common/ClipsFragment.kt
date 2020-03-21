@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.clips.common
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -17,15 +18,14 @@ import kotlinx.android.synthetic.main.sort_bar.*
 
 class ClipsFragment : BaseClipsFragment<ClipsViewModel>() {
 
-    override fun createViewModel(): ClipsViewModel = getViewModel()
-
-    override fun createAdapter(): BasePagedListAdapter<Clip> {
+    override val viewModel by viewModels<ClipsViewModel> { viewModelFactory }
+    override val adapter: BasePagedListAdapter<Clip> by lazy {
         val activity = requireActivity() as MainActivity
         val showDialog: (Clip) -> Unit = {
             lastSelectedItem = it
             showDownloadDialog()
         }
-        return if (arguments?.getParcelable<Channel?>(C.CHANNEL) != null) {
+        if (arguments?.getParcelable<Channel?>(C.CHANNEL) != null) {
             ChannelClipsAdapter(activity, showDialog)
         } else {
             ClipsAdapter(activity, activity, showDialog)

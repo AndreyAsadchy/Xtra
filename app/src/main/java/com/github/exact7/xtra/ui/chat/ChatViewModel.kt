@@ -3,13 +3,12 @@ package com.github.exact7.xtra.ui.chat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
-import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Chatter
 import com.github.exact7.xtra.model.chat.Emote
-import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.Channel
@@ -24,7 +23,7 @@ import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -35,7 +34,7 @@ import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
         private val repository: TwitchService,
-        private val playerRepository: PlayerRepository): BaseViewModel(), ChatView.MessageSenderCallback {
+        private val playerRepository: PlayerRepository) : BaseViewModel(), ChatView.MessageSenderCallback {
 
     val recentEmotes by lazy { playerRepository.loadRecentEmotes() }
     val twitchEmotes by lazy { playerRepository.loadEmotes() }
@@ -95,27 +94,28 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun init(channelId: String, channelName: String) {
-        playerRepository.loadSubscriberBadges(channelId)
-                .subscribeBy(onSuccess = {
-                    subscriberBadges = it
-                    chat?.start()
-                }, onError = {
-                    //no subscriber badges
-                    chat?.start()
-                })
-                .addTo(compositeDisposable)
-        Single.zip(playerRepository.loadBttvEmotes(channelName), playerRepository.loadFfzEmotes(channelName), BiFunction<Response<BttvEmotesResponse>, Response<FfzRoomResponse>, List<Emote>> { bttv, ffz ->
-            val list = ChatFragment.defaultBttvAndFfzEmotes().toMutableList()
-            bttv.body()?.emotes?.let(list::addAll)
-            ffz.body()?.emotes?.let(list::addAll)
-            val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-            (chat as? LiveChatController)?.addEmotes(sorted)
-            sorted
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy { _otherEmotes.value = it }
-                .addTo(compositeDisposable)
+        viewModelScope.launch {
+            try {
+                subscriberBadges = playerRepository.loadSubscriberBadges(channelId)
+            } catch (e: Exception) {
+                //no subscriber badges
+            } finally {
+                chat?.start()
+            }
+
+            try {
+                val bttv = playerRepository.loadBttvEmotes(channelName)
+                val ffz = playerRepository.loadFfzEmotes(channelName)
+                val list = ChatFragment.defaultBttvAndFfzEmotes().toMutableList()
+                bttv.body()?.emotes?.let(list::addAll)
+                ffz.body()?.emotes?.let(list::addAll)
+                val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+                (chat as? LiveChatController)?.addEmotes(sorted)
+                _otherEmotes.postValue(sorted)
+            } catch (e: Exception) {
+
+            }
+        }
     }
 
     private inner class LiveChatController(
@@ -191,7 +191,7 @@ class ChatViewModel @Inject constructor(
 
         override fun start() {
             stop()
-            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this, { _chatMessages.postValue(ArrayList()) })
+//            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this, { _chatMessages.postValue(ArrayList()) }, viewModelScope)
         }
 
         override fun pause() {

@@ -1,12 +1,14 @@
 package com.github.exact7.xtra.repository
 
+import android.content.Context
 import com.github.exact7.xtra.db.RequestsDao
 import com.github.exact7.xtra.db.VideosDao
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
+import com.github.exact7.xtra.ui.download.DownloadService
+import com.github.exact7.xtra.util.DownloadUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,11 +21,11 @@ class OfflineRepository @Inject constructor(
 
     fun loadAllVideos() = videosDao.getAll()
 
-    fun getVideoByIdAsync(id: Int) = GlobalScope.async {
+    suspend fun getVideoById(id: Int) = withContext(Dispatchers.IO) {
         videosDao.getById(id)
     }
 
-    fun saveVideoAsync(video: OfflineVideo) = GlobalScope.async {
+    suspend fun saveVideo(video: OfflineVideo) = withContext(Dispatchers.IO) {
         videosDao.insert(video)
     }
 
@@ -39,8 +41,14 @@ class OfflineRepository @Inject constructor(
         GlobalScope.launch { videosDao.updatePosition(id, position) }
     }
 
-    suspend fun getRequestsAsync() = withContext(Dispatchers.IO) {
-        requestsDao.getAll()
+    fun resumeDownloads(context: Context, wifiOnly: Boolean) {
+        GlobalScope.launch {
+            requestsDao.getAll().forEach {
+                if (DownloadService.activeRequests.add(it.offlineVideoId)) {
+                    DownloadUtils.download(context, it, wifiOnly)
+                }
+            }
+        }
     }
 
     fun saveRequest(request: Request) {

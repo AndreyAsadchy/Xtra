@@ -2,10 +2,9 @@ package com.github.exact7.xtra.ui.common
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
@@ -21,6 +20,8 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
 
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val mainViewModel by activityViewModels<MainViewModel> { viewModelFactory }
+
     protected var enableNetworkCheck = true
     private var lastState = false
     private var shouldRestore = false
@@ -47,7 +48,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
             if (!isInitialized && (created || (lastState && userVisibleHint))) {
                 init()
             }
-            getMainViewModel().isNetworkAvailable.observe(viewLifecycleOwner, Observer {
+            mainViewModel.isNetworkAvailable.observe(viewLifecycleOwner, Observer {
                 val isOnline = it.peekContent()
                 if (isOnline) {
                     if (!lastState) {
@@ -104,14 +105,6 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
             outState.putBoolean(RESTORE_KEY, shouldRestore)
             outState.putBoolean(CREATED_KEY, created)
         }
-    }
-
-    protected inline fun <reified T : ViewModel> getViewModel(): T {
-        return ViewModelProviders.of(this, viewModelFactory).get(T::class.java)
-    }
-
-    protected fun getMainViewModel(): MainViewModel {
-        return ViewModelProviders.of(requireActivity(), viewModelFactory).get(MainViewModel::class.java)
     }
 
     private fun init() {

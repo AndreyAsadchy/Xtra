@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -20,7 +21,7 @@ import kotlinx.android.synthetic.main.player_stream.*
 
 class StreamPlayerFragment : BasePlayerFragment() {
 
-    override lateinit var viewModel: StreamPlayerViewModel
+    override val viewModel by viewModels<StreamPlayerViewModel> { viewModelFactory }
     private lateinit var chatFragment: ChatFragment
     private lateinit var stream: Stream
     override val channel: Channel
@@ -51,7 +52,6 @@ class StreamPlayerFragment : BasePlayerFragment() {
                 fragment
             }
         }
-        viewModel = getViewModel()
     }
 
     override fun initialize() {

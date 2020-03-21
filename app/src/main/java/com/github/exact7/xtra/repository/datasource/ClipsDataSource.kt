@@ -1,10 +1,10 @@
 package com.github.exact7.xtra.repository.datasource
 
 import androidx.paging.DataSource
-import androidx.paging.PageKeyedDataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
+import kotlinx.coroutines.CoroutineScope
 
 class ClipsDataSource(
         private val channelName: String?,
@@ -12,20 +12,23 @@ class ClipsDataSource(
         private val languages: String?,
         private val period: Period?,
         private val trending: Boolean?,
-        private val api: KrakenApi) : BasePageKeyedDataSource<Clip>() {
+        private val api: KrakenApi,
+        coroutineScope: CoroutineScope) : BasePageKeyedDataSource<Clip>(coroutineScope) {
 
-    override fun loadInitial(params: PageKeyedDataSource.LoadInitialParams<String>, callback: LoadInitialCallback<String, Clip>) {
-        super.loadInitial(params, callback)
-        api.getClips(channelName, gameName, languages, period, trending, params.requestedLoadSize, null)
-                .subscribe({ callback.onSuccess(it.clips, it.cursor) }, { callback.onFailure(it, params) })
-                .addTo(compositeDisposable)
+    override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Clip>) {
+        loadInitial(params, callback) {
+            api.getClips(channelName, gameName, languages, period, trending, params.requestedLoadSize, null).let {
+                it.clips to it.cursor
+            }
+        }
     }
 
-    override fun loadAfter(params: PageKeyedDataSource.LoadParams<String>, callback: PageKeyedDataSource.LoadCallback<String, Clip>) {
-        super.loadAfter(params, callback)
-        api.getClips(channelName, gameName, languages, period, trending, params.requestedLoadSize, params.key)
-                .subscribe({ callback.onSuccess(it.clips, it.cursor) }, { callback.onFailure(it, params) })
-                .addTo(compositeDisposable)
+    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Clip>) {
+        loadAfter(params, callback) {
+            api.getClips(channelName, gameName, languages, period, trending, params.requestedLoadSize, params.key).let {
+                it.clips to it.cursor
+            }
+        }
     }
 
     class Factory(
@@ -34,9 +37,10 @@ class ClipsDataSource(
             private val languages: String?,
             private val period: Period?,
             private val trending: Boolean?,
-            private val api: KrakenApi) : BaseDataSourceFactory<String, Clip, ClipsDataSource>() {
+            private val api: KrakenApi,
+            private val coroutineScope: CoroutineScope) : BaseDataSourceFactory<String, Clip, ClipsDataSource>() {
 
         override fun create(): DataSource<String, Clip> =
-                ClipsDataSource(channelName, gameName, languages, period, trending, api).also(sourceLiveData::postValue)
+                ClipsDataSource(channelName, gameName, languages, period, trending, api, coroutineScope).also(sourceLiveData::postValue)
     }
 }

@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.Emote
@@ -24,6 +24,8 @@ class EmotesFragment : Fragment() {
     private lateinit var listener: (Emote) -> Unit
     private lateinit var layoutManager: GridAutofitLayoutManager
 
+    private val viewModel by viewModels<ChatViewModel>()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = (requireParentFragment() as ChatFragment)::appendEmote
@@ -37,7 +39,6 @@ class EmotesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
         val args = requireArguments()
-        val viewModel = ViewModelProviders.of(requireParentFragment()).get(ChatViewModel::class.java)
         val emotesAdapter = EmotesAdapter(listener, args.getBoolean(KEY_ANIMATE_GIFS))
         with(view as RecyclerView) {
             itemAnimator = null

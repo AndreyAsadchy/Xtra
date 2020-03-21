@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.view_chat.view.*
 
 class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDialog.OnButtonClickListener {
 
-    private lateinit var viewModel: ChatViewModel
+    private val viewModel by viewModels<ChatViewModel> { viewModelFactory }
     private lateinit var chatView: ChatView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,7 +34,6 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
     }
 
     override fun initialize() {
-        viewModel = getViewModel()
         val args = requireArguments()
         val channel = args.getParcelable<Channel>(KEY_CHANNEL)!!
         val user = User.get(requireContext())
@@ -95,21 +95,15 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
     }
 
     override fun onNetworkRestored() {
-        if (this::viewModel.isInitialized) {
-            viewModel.start()
-        }
+        viewModel.start()
     }
 
     override fun onMovedToBackground() {
-        if (this::viewModel.isInitialized) {
-            viewModel.stop()
-        }
+        viewModel.stop()
     }
 
     override fun onMovedToForeground() {
-        if (this::viewModel.isInitialized) {
-            viewModel.start()
-        }
+        viewModel.start()
     }
 
     companion object {

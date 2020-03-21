@@ -107,7 +107,7 @@ class DownloadService : IntentService(TAG) {
     @SuppressLint("CheckResult")
     override fun onHandleIntent(intent: Intent?) {
         request = intent!!.getParcelableExtra(KEY_REQUEST)
-        offlineVideo = runBlocking { offlineRepository.getVideoByIdAsync(request.offlineVideoId).await() }
+        offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) }
                 ?: return //Download was canceled
         Log.d(TAG, "Starting download. Id: ${offlineVideo.id}")
         fetch = fetchProvider.get(offlineVideo.id, intent.getBooleanExtra(KEY_WIFI, false))
@@ -178,19 +178,13 @@ class DownloadService : IntentService(TAG) {
                     }
                 }
             })
-            playerRepository.loadVideoPlaylist(request.videoId!!)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .map { response ->
-                        val playlist = response.body()!!.string()
-                        URL("https://.*\\.m3u8".toRegex().find(playlist)!!.value).openStream().use {
-                            PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
-                        }
-                    }
-                    .subscribeBy(onSuccess = {
-                        playlist = it
-                        enqueueNext()
-                    })
+            GlobalScope.launch {
+                val response = playerRepository.loadVideoPlaylist(request.videoId!!)
+                playlist = URL("https://.*\\.m3u8".toRegex().find(response.body()!!.string())!!.value).openStream().use {
+                    PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                }
+                enqueueNext()
+            }
         } else {
             fetch.addListener(object : AbstractFetchListener() {
                 override fun onCompleted(download: Download) {

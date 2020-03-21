@@ -5,6 +5,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
@@ -26,7 +27,7 @@ class ChannelVideosViewModel @Inject constructor(
         get() = _sortText
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Video>> = Transformations.map(filter) {
-        repository.loadChannelVideos(it.channelId, BroadcastType.ALL, it.sort, compositeDisposable)
+        repository.loadChannelVideos(it.channelId, BroadcastType.ALL, it.sort, viewModelScope)
     }
     var selectedIndex = 0
         private set

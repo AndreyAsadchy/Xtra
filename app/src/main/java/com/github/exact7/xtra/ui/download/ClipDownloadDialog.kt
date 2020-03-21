@@ -9,9 +9,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import kotlinx.android.synthetic.main.dialog_clip_download.*
@@ -31,7 +31,7 @@ class ClipDownloadDialog : BaseDownloadDialog() {
     }
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: ClipDownloadViewModel
+    private val viewModel by viewModels<ClipDownloadViewModel> { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  =
             inflater.inflate(R.layout.dialog_clip_download, container, false)
@@ -39,7 +39,6 @@ class ClipDownloadDialog : BaseDownloadDialog() {
     @Suppress("UNCHECKED_CAST")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ClipDownloadViewModel::class.java)
         with(requireArguments()) {
             viewModel.init(getParcelable(KEY_CLIP)!!, getSerializable(KEY_QUALITIES) as Map<String, String>?)
         }

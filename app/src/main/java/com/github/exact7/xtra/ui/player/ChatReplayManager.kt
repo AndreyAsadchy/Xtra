@@ -3,7 +3,7 @@ package com.github.exact7.xtra.ui.player
 import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -19,11 +19,11 @@ class ChatReplayManager @Inject constructor(
         private val startTime: Double,
         private val currentPosition: () -> Double,
         private val messageListener: OnChatMessageReceivedListener,
-        private val clearMessages: () -> Unit) {
+        private val clearMessages: () -> Unit,
+        private val coroutineScope: CoroutineScope) {
 
+    private lateinit var job: Job
     private val timer: Timer
-    private var job: Job? = null
-    private var disposable: Disposable? = null
     private var cursor: String? = null
     private val list = LinkedList<VideoChatMessage>()
     private var isLoading = false
@@ -34,6 +34,9 @@ class ChatReplayManager @Inject constructor(
         timer = fixedRateTimer(period = 1000L, action = {
             val position = currentPosition()
             if (position - lastCheckedPosition !in 0.0..20.0) {
+                job.cancel()
+                list.clear()
+                clearMessages()
                 load(startTime + position)
             }
             lastCheckedPosition = position
@@ -41,69 +44,62 @@ class ChatReplayManager @Inject constructor(
     }
 
     fun stop() {
-        cancel()
+        job.cancel()
         timer.cancel()
     }
 
     private fun load(offset: Double) {
-        if (disposable != null) {
-            cancel()
-            list.clear()
-            clearMessages()
-        }
-        disposable = repository.loadVideoChatLog(videoId, offset)
-                .doOnSubscribe { isLoading = true }
-                .doOnSuccess { isLoading = false }
-                .subscribe({
-                    list.addAll(it.messages)
-                    cursor = it.next
-                    job = GlobalScope.launch {
-                        while (isActive) {
-                            val message: VideoChatMessage? = try {
-                                list.poll()
-                            } catch (e: NoSuchElementException) { //wtf?
-                                null
-                            }
-                            if (message != null) {
-                                val messageOffset = message.contentOffsetSeconds
-                                var position: Double
-                                while ((currentPosition() + startTime).also { p -> position = p } < messageOffset) {
-                                    delay(max((messageOffset - position) * 1000.0, 0.0).toLong())
-                                }
-                                if (position - messageOffset < 20.0) {
-                                    messageListener.onMessage(message)
-                                    if (list.size == 15) {
-                                        loadNext()
-                                    }
-                                }
-                            } else {
-                                if (isLoading) {
-                                    delay(1000L)
-                                } else if (cursor == null) {
-                                    break
-                                }
+        job = coroutineScope.launch {
+            try {
+                isLoading = true
+                val log = repository.loadVideoChatLog(videoId, offset)
+                isLoading = false
+                list.addAll(log.messages)
+                cursor = log.next
+                while (isActive) {
+                    val message: VideoChatMessage? = try {
+                        list.poll()
+                    } catch (e: NoSuchElementException) { //wtf?
+                        null
+                    }
+                    if (message != null) {
+                        val messageOffset = message.contentOffsetSeconds
+                        var position: Double
+                        while ((currentPosition() + startTime).also { p -> position = p } < messageOffset) {
+                            delay(max((messageOffset - position) * 1000.0, 0.0).toLong())
+                        }
+                        if (position - messageOffset < 20.0) {
+                            messageListener.onMessage(message)
+                            if (list.size == 15) {
+                                loadNext()
                             }
                         }
+                    } else if (isLoading) {
+                        delay(1000L)
+                    } else if (cursor == null) {
+                        break
                     }
-                }, {
-
-                })
+                }
+            } catch (e: Exception) {
+                isLoading = false
+            }
+        }
     }
 
     private fun loadNext() {
         cursor?.let { c ->
-            disposable = repository.loadVideoChatAfter(videoId, c)
-                    .doOnSubscribe { isLoading = true }
-                    .doOnSuccess { isLoading = false }
-                    .subscribeBy(onSuccess = {
-                        list.addAll(it.messages)
-                        cursor = it.next
-                    })
-        }
-    }
+            job = coroutineScope.launch {
+                try {
+                    isLoading = true
+                    val log = repository.loadVideoChatAfter(videoId, c)
+                    list.addAll(log.messages)
+                    cursor = log.next
+                } catch (e: Exception) {
 
-    private fun cancel() {
-        disposable?.dispose()
-        job?.cancel()
+                } finally {
+                    isLoading = false
+                }
+            }
+        }
     }
 }

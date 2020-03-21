@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
@@ -23,7 +24,7 @@ class ClipsViewModel @Inject constructor(
         get() = _sortText
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Clip>> = Transformations.map(filter) {
-        repository.loadClips(it.channelName, it.game?.name, it.languages, it.period, it.trending, compositeDisposable)
+        repository.loadClips(it.channelName, it.game?.name, it.languages, it.period, it.trending, viewModelScope)
     }
     var selectedIndex = 2
         private set

@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.videos.channel
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.Channel
@@ -15,10 +16,9 @@ import kotlinx.android.synthetic.main.sort_bar.*
 
 class ChannelVideosFragment : BaseVideosFragment<ChannelVideosViewModel>(), RadioButtonDialogFragment.OnSortOptionChanged {
 
-    override fun createViewModel(): ChannelVideosViewModel = getViewModel()
-
-    override fun createAdapter(): BaseVideosAdapter {
-        return ChannelVideosAdapter(requireActivity() as MainActivity) {
+    override val viewModel by viewModels<ChannelVideosViewModel> { viewModelFactory }
+    override val adapter: BaseVideosAdapter by lazy {
+        ChannelVideosAdapter(requireActivity() as MainActivity) {
             lastSelectedItem = it
             showDownloadDialog()
         }

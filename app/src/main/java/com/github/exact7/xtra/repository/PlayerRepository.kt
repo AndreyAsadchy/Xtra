@@ -98,17 +98,15 @@ class PlayerRepository @Inject constructor(
         response.videos.associateBy({ if (it.frameRate != 60) "${it.quality}p" else "${it.quality}p${it.frameRate}" }, { it.url })
     }
 
-    fun loadSubscriberBadges(channelId: String): Deferred<SubscriberBadgesResponse> {
+    suspend fun loadSubscriberBadges(channelId: String): SubscriberBadgesResponse {
         return misc.getSubscriberBadges(channelId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
     }
 
-    fun loadBttvEmotes(channel: String): Deferred<Response<BttvEmotesResponse>> {
+    suspend fun loadBttvEmotes(channel: String): Response<BttvEmotesResponse> {
         return misc.getBttvEmotes(channel)
     }
 
-    fun loadFfzEmotes(channel: String): Deferred<Response<FfzRoomResponse>> {
+    suspend fun loadFfzEmotes(channel: String): Response<FfzRoomResponse> {
         return misc.getFfzEmotes(channel)
     }
 

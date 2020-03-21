@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.videos.top
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Period
@@ -11,7 +12,7 @@ import kotlinx.android.synthetic.main.sort_bar.*
 
 class TopVideosFragment : BaseVideosFragment<TopVideosViewModel>(), RadioButtonDialogFragment.OnSortOptionChanged {
 
-    override fun createViewModel(): TopVideosViewModel = getViewModel()
+    override val viewModel by viewModels<TopVideosViewModel> { viewModelFactory }
 
     override fun initialize() {
         super.initialize()

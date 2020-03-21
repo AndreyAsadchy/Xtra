@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.clips.followed
 
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
@@ -14,11 +15,10 @@ import kotlinx.android.synthetic.main.sort_bar.*
 
 class FollowedClipsFragment : BaseClipsFragment<FollowedClipsViewModel>() {
 
-    override fun createViewModel(): FollowedClipsViewModel = getViewModel()
-
-    override fun createAdapter(): BasePagedListAdapter<Clip> {
+    override val viewModel by viewModels<FollowedClipsViewModel> { viewModelFactory }
+    override val adapter: BasePagedListAdapter<Clip> by lazy {
         val activity = requireActivity() as MainActivity
-        return ClipsAdapter(activity, activity) {
+        ClipsAdapter(activity, activity) {
             lastSelectedItem = it
             showDownloadDialog()
         }
