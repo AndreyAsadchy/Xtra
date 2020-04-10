@@ -38,15 +38,14 @@ abstract class PagedListFragment<T, VM : PagedListViewModel<T>, Adapter : BasePa
     }
 
     override fun initialize() {
-        viewModel.list.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-            nothing_here.isVisible = it.isEmpty()
-        })
+        viewModel.list.observe(viewLifecycleOwner, Observer(adapter::submitList))
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             val isLoading = it == LoadingState.LOADING
             val isListEmpty = adapter.currentList.isNullOrEmpty()
             if (isLoading) {
                 nothing_here.gone()
+            } else {
+                nothing_here.isVisible = isListEmpty
             }
             progressBar.isVisible = isLoading && isListEmpty
             if (swipeRefresh.isEnabled) {

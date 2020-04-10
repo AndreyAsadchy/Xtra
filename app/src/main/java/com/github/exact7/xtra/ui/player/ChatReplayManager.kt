@@ -4,6 +4,7 @@ import com.github.exact7.xtra.model.chat.VideoChatMessage
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -49,7 +50,7 @@ class ChatReplayManager @Inject constructor(
     }
 
     private fun load(offset: Double) {
-        job = coroutineScope.launch {
+        job = coroutineScope.launch(Dispatchers.IO) {
             try {
                 isLoading = true
                 val log = repository.loadVideoChatLog(videoId, offset)
@@ -70,7 +71,7 @@ class ChatReplayManager @Inject constructor(
                         }
                         if (position - messageOffset < 20.0) {
                             messageListener.onMessage(message)
-                            if (list.size == 15) {
+                            if (list.size == 25) {
                                 loadNext()
                             }
                         }
@@ -88,7 +89,7 @@ class ChatReplayManager @Inject constructor(
 
     private fun loadNext() {
         cursor?.let { c ->
-            job = coroutineScope.launch {
+            job = coroutineScope.launch(Dispatchers.IO) {
                 try {
                     isLoading = true
                     val log = repository.loadVideoChatAfter(videoId, c)

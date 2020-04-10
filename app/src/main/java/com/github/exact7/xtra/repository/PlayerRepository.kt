@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.repository
 
+import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -16,7 +17,7 @@ import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
-import com.github.exact7.xtra.model.chat.FfzRoomResponse
+import com.github.exact7.xtra.model.chat.FfzEmotesResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.util.TwitchApiHelper.TWITCH_CLIENT_ID
@@ -26,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import retrofit2.Response
 import java.util.*
 import javax.inject.Inject
@@ -46,7 +48,7 @@ class PlayerRepository @Inject constructor(
         private val recentEmotes: RecentEmotesDao,
         private val videoPositions: VideoPositionsDao) {
 
-    suspend fun loadStreamPlaylist(channelName: String) = withContext(Dispatchers.IO) {
+    suspend fun loadStreamPlaylist(channelName: String): Uri = withContext(Dispatchers.IO) {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
         val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn && it.newToken) it.token else UNDEFINED })
         val options = HashMap<String, String>()
@@ -65,7 +67,7 @@ class PlayerRepository @Inject constructor(
         playlist.raw().request().url().toString().toUri()
     }
 
-    suspend fun loadVideoPlaylist(videoId: String) = withContext(Dispatchers.IO) {
+    suspend fun loadVideoPlaylist(videoId: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
         Log.d(TAG, "Getting video playlist for video $id")
         val accessToken = api.getVideoAccessToken(TWITCH_CLIENT_ID, id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn && it.newToken) it.token else UNDEFINED })
@@ -79,7 +81,7 @@ class PlayerRepository @Inject constructor(
         usher.getVideoPlaylist(id, options)
     }
 
-    suspend fun loadClipUrls(slug: String) = withContext(Dispatchers.IO) {
+    suspend fun loadClipUrls(slug: String): Map<String, String> = withContext(Dispatchers.IO) {
         val array = JsonArray(1)
         val videoAccessTokenOperation = JsonObject().apply {
             addProperty("operationName", "VideoAccessToken_Clip")
@@ -98,16 +100,24 @@ class PlayerRepository @Inject constructor(
         response.videos.associateBy({ if (it.frameRate != 60) "${it.quality}p" else "${it.quality}p${it.frameRate}" }, { it.url })
     }
 
-    suspend fun loadSubscriberBadges(channelId: String): SubscriberBadgesResponse {
-        return misc.getSubscriberBadges(channelId)
+    suspend fun loadSubscriberBadges(channelId: String): SubscriberBadgesResponse = withContext(Dispatchers.IO) {
+        misc.getSubscriberBadges(channelId)
     }
 
-    suspend fun loadBttvEmotes(channel: String): Response<BttvEmotesResponse> {
-        return misc.getBttvEmotes(channel)
+    suspend fun loadGlobalBttvEmotes(): Response<BttvEmotesResponse> = withContext(Dispatchers.IO) {
+        misc.getGlobalBttvEmotes()
     }
 
-    suspend fun loadFfzEmotes(channel: String): Response<FfzRoomResponse> {
-        return misc.getFfzEmotes(channel)
+    suspend fun loadGlobalFfzEmotes(): Response<FfzEmotesResponse> = withContext(Dispatchers.IO) {
+        misc.getGlobalFfzEmotes()
+    }
+
+    suspend fun loadBttvEmotes(channel: String): Response<BttvEmotesResponse> = withContext(Dispatchers.IO) {
+        misc.getBttvEmotes(channel)
+    }
+
+    suspend fun loadFfzEmotes(channel: String): Response<FfzEmotesResponse> = withContext(Dispatchers.IO) {
+        misc.getFfzEmotes(channel)
     }
 
     fun loadEmotes() = emotes.getAll()

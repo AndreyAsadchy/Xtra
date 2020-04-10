@@ -10,8 +10,8 @@ import com.github.exact7.xtra.api.IdApi
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
+import com.github.exact7.xtra.model.chat.FfzEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzRoomDeserializer
-import com.github.exact7.xtra.model.chat.FfzRoomResponse
 import com.github.exact7.xtra.model.chat.SubscriberBadgeDeserializer
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.gql.clip.ClipDataDeserializer
@@ -134,7 +134,7 @@ class XtraModule {
         return GsonConverterFactory.create(GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .registerTypeAdapter(SubscriberBadgesResponse::class.java, SubscriberBadgeDeserializer())
                 .registerTypeAdapter(UserEmotesResponse::class.java, UserEmotesDeserializer())
-                .registerTypeAdapter(FfzRoomResponse::class.java, FfzRoomDeserializer())
+                .registerTypeAdapter(FfzEmotesResponse::class.java, FfzRoomDeserializer())
                 .registerTypeAdapter(ClipDataResponse::class.java, ClipDataDeserializer())
                 .create())
     }

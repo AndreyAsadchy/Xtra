@@ -7,8 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.webkit.CookieManager
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -40,7 +38,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
     @Inject
     lateinit var repository: AuthRepository
 
-    //        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
+//    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
     private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://twitch.tv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,7 +123,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                         webViewContainer.gone()
                         welcomeContainer.gone()
                         progressBar.visible()
-                        val token = matcher.group(1)
+                        val token = matcher.group(1)!!
                         lifecycleScope.launch {
                             val response = repository.validate(token)
                             TwitchApiHelper.checkedValidation = true
@@ -137,12 +135,11 @@ class LoginActivity : AppCompatActivity(), Injectable {
                     return super.shouldOverrideUrlLoading(view, url)
                 }
 
-                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-                    view?.apply {
-                        val html = "<html><body><div align=\"center\" >No internet connection</div></body>"
-                        loadUrl("about:blank")
-                        loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
-                    }
+
+                override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
+                    val html = "<html><body><div align=\"center\">Error $errorCode: $description</div></body>"
+                    loadUrl("about:blank")
+                    loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
                 }
             }
             loadUrl(authUrl)

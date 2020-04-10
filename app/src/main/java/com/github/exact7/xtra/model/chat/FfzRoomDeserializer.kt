@@ -6,10 +6,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import java.lang.reflect.Type
 
-class FfzRoomDeserializer : JsonDeserializer<FfzRoomResponse> {
+class FfzRoomDeserializer : JsonDeserializer<FfzEmotesResponse> {
 
     @Throws(JsonParseException::class)
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): FfzRoomResponse {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): FfzEmotesResponse {
         val emotes = mutableListOf<FfzEmote>()
         for (setEntry in json.asJsonObject.getAsJsonObject("sets").entrySet()) {
             val emotesArray = setEntry.value.asJsonObject.getAsJsonArray("emoticons")
@@ -19,6 +19,6 @@ class FfzRoomDeserializer : JsonDeserializer<FfzRoomResponse> {
                 emotes.add(FfzEmote(emote.get("name").asString, "https:" + (urls.get("2")?.asString ?: urls.get("1").asString)))
             }
         }
-        return FfzRoomResponse(emotes)
+        return FfzEmotesResponse(emotes)
     }
 }

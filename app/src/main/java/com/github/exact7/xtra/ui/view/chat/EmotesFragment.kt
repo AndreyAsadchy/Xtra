@@ -24,7 +24,7 @@ class EmotesFragment : Fragment() {
     private lateinit var listener: (Emote) -> Unit
     private lateinit var layoutManager: GridAutofitLayoutManager
 
-    private val viewModel by viewModels<ChatViewModel>()
+    private val viewModel by viewModels<ChatViewModel>(ownerProducer = { requireParentFragment() })
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

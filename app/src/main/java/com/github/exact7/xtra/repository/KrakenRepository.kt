@@ -28,6 +28,8 @@ import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,7 +51,9 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override suspend fun loadStream(channelId: String) = StreamWrapper(api.getStream(channelId).streams.firstOrNull())
+    override suspend fun loadStream(channelId: String): StreamWrapper = withContext(Dispatchers.IO) {
+        StreamWrapper(api.getStream(channelId).streams.firstOrNull())
+    }
 
     override fun loadStreams(game: String?, languages: String?, streamType: StreamType, coroutineScope: CoroutineScope): Listing<Stream> {
         val factory = StreamsDataSource.Factory(game, languages, streamType, api, coroutineScope)
@@ -95,7 +99,9 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override suspend fun loadVideo(videoId: String) = api.getVideo(videoId)
+    override suspend fun loadVideo(videoId: String): Video = withContext(Dispatchers.IO) {
+        api.getVideo(videoId)
+    }
 
     override fun loadVideos(game: String?, period: Period, broadcastType: BroadcastType, language: String?, sort: Sort, coroutineScope: CoroutineScope): Listing<Video> {
         val factory = VideosDataSource.Factory(game, period, broadcastType, language, sort, api, coroutineScope)
@@ -130,17 +136,17 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override suspend fun loadUserById(id: Int): User {
+    override suspend fun loadUserById(id: Int): User = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading user by id $id")
-        return api.getUserById(id)
+        api.getUserById(id)
     }
 
-    override suspend fun loadUserByLogin(login: String): User {
+    override suspend fun loadUserByLogin(login: String): User = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading user by login $login")
-        return api.getUsersByLogin(login).users.first()
+        api.getUsersByLogin(login).users.first()
     }
 
-    override suspend fun loadUserEmotes(token: String, userId: String) {
+    override suspend fun loadUserEmotes(token: String, userId: String) = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading user emotes")
         val emotes = api.getUserEmotes("OAuth $token", userId).emotes.toMutableList()
         var modified = 0
@@ -184,33 +190,33 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override suspend fun loadVideoChatLog(videoId: String, offsetSeconds: Double): VideoMessagesResponse {
+    override suspend fun loadVideoChatLog(videoId: String, offsetSeconds: Double): VideoMessagesResponse = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading chat log for video $videoId. Offset in seconds: $offsetSeconds")
-        return api.getVideoChatLog(videoId.substring(1), offsetSeconds, 75)
+        api.getVideoChatLog(videoId.substring(1), offsetSeconds, 100)
     }
 
-    override suspend fun loadVideoChatAfter(videoId: String, cursor: String): VideoMessagesResponse {
+    override suspend fun loadVideoChatAfter(videoId: String, cursor: String): VideoMessagesResponse = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading chat log for video $videoId. Cursor: $cursor")
-        return api.getVideoChatLogAfter(videoId.substring(1), cursor, 100)
+        api.getVideoChatLogAfter(videoId.substring(1), cursor, 100)
     }
 
-    override suspend fun loadUserFollows(userId: String, channelId: String): Boolean {
+    override suspend fun loadUserFollows(userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading if user is following channel $channelId")
-        return api.getUserFollows(userId, channelId).body()?.let { it.string().length > 300 } == true
+        api.getUserFollows(userId, channelId).body()?.let { it.string().length > 300 } == true
     }
 
-    override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean {
+    override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
         Log.d(TAG, "Following channel $channelId")
-        return api.followChannel("OAuth $userToken", userId, channelId).body() != null
+        api.followChannel("OAuth $userToken", userId, channelId).body() != null
     }
 
-    override suspend fun unfollowChannel(userToken: String, userId: String, channelId: String): Boolean {
+    override suspend fun unfollowChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
         Log.d(TAG, "Unfollowing channel $channelId")
-        return api.unfollowChannel("OAuth $userToken", userId, channelId).code() == 204
+        api.unfollowChannel("OAuth $userToken", userId, channelId).code() == 204
     }
 
-    override suspend fun loadGames(query: String): List<Game> {
+    override suspend fun loadGames(query: String): List<Game> = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading games containing: $query")
-        return api.getGames(query).games ?: emptyList()
+        api.getGames(query).games ?: emptyList()
     }
 }

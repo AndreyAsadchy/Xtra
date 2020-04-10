@@ -6,9 +6,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.User
+import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.Chatter
 import com.github.exact7.xtra.model.chat.Emote
+import com.github.exact7.xtra.model.chat.FfzEmote
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.kraken.Channel
@@ -28,7 +30,6 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.set
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
@@ -104,11 +105,33 @@ class ChatViewModel @Inject constructor(
             }
 
             try {
-                val bttv = playerRepository.loadBttvEmotes(channelName)
-                val ffz = playerRepository.loadFfzEmotes(channelName)
-                val list = ChatFragment.defaultBttvAndFfzEmotes().toMutableList()
-                bttv.body()?.emotes?.let(list::addAll)
-                ffz.body()?.emotes?.let(list::addAll)
+                val list = mutableListOf<Emote>()
+                globalBttvEmotes.also {
+                    if (it != null) {
+                        list.addAll(it)
+                    } else {
+                        val emotes = playerRepository.loadGlobalBttvEmotes().body()?.emotes
+                        if (emotes != null) {
+                            globalBttvEmotes = emotes
+                            list.addAll(emotes)
+                        }
+                    }
+                }
+                globalFfzEmotes.also {
+                    if (it != null) {
+                        list.addAll(it)
+                    } else {
+                        val emotes = playerRepository.loadGlobalFfzEmotes().body()?.emotes
+                        if (emotes != null) {
+                            globalFfzEmotes = emotes
+                            list.addAll(emotes)
+                        }
+                    }
+                }
+                val channelBttv = playerRepository.loadBttvEmotes(channelName)
+                val channelFfz = playerRepository.loadFfzEmotes(channelName)
+                channelBttv.body()?.emotes?.let(list::addAll)
+                channelFfz.body()?.emotes?.let(list::addAll)
                 val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
                 (chat as? LiveChatController)?.addEmotes(sorted)
                 _otherEmotes.postValue(sorted)
@@ -124,7 +147,7 @@ class ChatViewModel @Inject constructor(
             displayName: String) : ChatController() {
 
         private var chat: LiveChatThread? = null
-        private val allEmotesMap: MutableMap<String, Emote> = ChatFragment.defaultBttvAndFfzEmotes().associateByTo(HashMap()) { it.name }
+        private val allEmotesMap = mutableMapOf<String, Emote>()
         private var localEmotesObserver: Observer<List<TwitchEmote>>? = null
 
         val chatters = ConcurrentHashMap<String, Chatter>()
@@ -149,7 +172,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun start() {
-            pause() //TODO test
+            pause()
             chat = TwitchApiHelper.startChat(channelName, user.name.nullIfEmpty(), user.token.nullIfEmpty(), subscriberBadges, this)
         }
 
@@ -191,7 +214,7 @@ class ChatViewModel @Inject constructor(
 
         override fun start() {
             stop()
-//            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this, { _chatMessages.postValue(ArrayList()) }, viewModelScope)
+            chatReplayManager = ChatReplayManager(repository, videoId, startTime, getCurrentPosition, this, { _chatMessages.postValue(ArrayList()) }, viewModelScope)
         }
 
         override fun pause() {
@@ -216,5 +239,10 @@ class ChatViewModel @Inject constructor(
             _chatMessages.value!!.add(message)
             _newMessage.postValue(message)
         }
+    }
+
+    companion object {
+        private var globalBttvEmotes: List<BttvEmote>? = null
+        private var globalFfzEmotes: List<FfzEmote>? = null
     }
 }
