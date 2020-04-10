@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.player.lowlatency.HlsManifest
@@ -18,8 +19,7 @@ import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import java.util.LinkedHashMap
-import java.util.LinkedList
+import java.util.*
 import java.util.regex.Pattern
 
 private const val VIDEO_RENDERER = 0
@@ -99,7 +99,7 @@ abstract class HlsPlayerViewModel(
                 tags.forEach { tag ->
                     val matcher = pattern.matcher(tag)
                     if (matcher.find()) {
-                        val quality = matcher.group(1)
+                        val quality = matcher.group(1)!!
                         val url = it.variants[trackIndex++].url.toString()
                         urls[if (!quality.startsWith("audio", true)) quality else audioOnly] = url
                     }
@@ -119,7 +119,7 @@ abstract class HlsPlayerViewModel(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) { //TODO REFACTOR
-            follow = FollowLiveData(repository, user, channelInfo.first)
+            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
         }
     }
 

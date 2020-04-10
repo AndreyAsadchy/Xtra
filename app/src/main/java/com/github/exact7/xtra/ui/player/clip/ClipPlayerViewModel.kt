@@ -103,7 +103,7 @@ class ClipPlayerViewModel @Inject constructor(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) {
-            follow = FollowLiveData(repository, user, channelInfo.first)
+            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
         }
     }
 

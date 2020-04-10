@@ -25,9 +25,9 @@ interface FollowFragment { //TODO REFACTOR
                 }
                 followButton.setOnClickListener {
                     if (!following) {
-                        follow.value = true
+                        follow.setValue(true)
                     } else {
-                        FragmentUtils.showUnfollowDialog(context, channelName) { follow.value = false }
+                        FragmentUtils.showUnfollowDialog(context, channelName) { follow.setValue(false) }
                     }
                 }
                 followButton.setImageResource(if (following) R.drawable.baseline_favorite_black_24 else R.drawable.baseline_favorite_border_black_24)
