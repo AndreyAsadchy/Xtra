@@ -1,9 +1,7 @@
 package com.github.exact7.xtra.ui.player.stream
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -27,6 +25,11 @@ class StreamPlayerFragment : BasePlayerFragment() {
     override val channel: Channel
         get() = stream.channel
 
+    override val layoutId: Int
+        get() = R.layout.fragment_player_stream
+    override val chatContainerId: Int
+        get() = R.id.chatFragmentContainer
+
     override val shouldEnterPictureInPicture: Boolean
         get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
@@ -35,10 +38,6 @@ class StreamPlayerFragment : BasePlayerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         stream = requireArguments().getParcelable(KEY_STREAM)!!
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_player_stream, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,17 +93,11 @@ class StreamPlayerFragment : BasePlayerFragment() {
     }
 
     override fun onMovedToForeground() {
-        println("FOR $wasInPictureInPicture")
-        if (!wasInPictureInPicture) {
-            viewModel.onResume()
-        }
+        viewModel.onResume()
     }
 
     override fun onMovedToBackground() {
-        println("BG $wasInPictureInPicture")
-        if (!wasInPictureInPicture) {
-            viewModel.onPause()
-        }
+        viewModel.onPause()
     }
 
     override fun onNetworkRestored() {

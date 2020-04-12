@@ -1,9 +1,6 @@
 package com.github.exact7.xtra.ui.player.offline
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -23,6 +20,11 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override val channel: Channel
         get() = null!!
 
+    override val layoutId: Int
+        get() = R.layout.fragment_player_offline
+    override val chatContainerId: Int
+        get() = R.id.dummyView
+
     override val shouldEnterPictureInPicture: Boolean
         get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
@@ -31,10 +33,6 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableNetworkCheck = false
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_player_offline, container, false)
     }
 
     override fun initialize() {

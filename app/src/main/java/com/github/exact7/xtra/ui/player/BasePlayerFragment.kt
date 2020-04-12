@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -50,22 +51,24 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: PlayerView
     private lateinit var chatLayout: ViewGroup
-    private var secondView: ViewGroup? = null
+    private lateinit var fullscreenToggle: ImageButton
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
 
+    protected abstract val layoutId: Int
+    protected abstract val chatContainerId: Int
+
     protected abstract val viewModel: PlayerViewModel
 
-    protected var isPortrait: Boolean = false
+    protected var isPortrait = false
         private set
-    private var isInPictureInPicture = false
-    var wasInPictureInPicture = false
     private var orientationBeforePictureInPicture = 0
     private var isKeyboardShown = false
 
     protected abstract val shouldEnterPictureInPicture: Boolean
     open val controllerAutoShow: Boolean = true
     open val controllerShowTimeoutMs: Int = 3000
+    private var resizeMode = 0
 
     private lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
@@ -73,7 +76,8 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     var playerWidth = 0
     var playerHeight = 0
-    private var chatWidth = 0
+    private var playerHeightPortrait = 0
+    private var chatWidthLandscape = 0
 
     private var systemUiFlags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -83,13 +87,18 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            wasInPictureInPicture = it.getBoolean(KEY_WAS_IN_PIP)
-        }
-        prefs = requireContext().prefs()
-        userPrefs = requireActivity().getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+        val activity = requireActivity()
+        prefs = activity.prefs()
+        userPrefs = activity.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             systemUiFlags = systemUiFlags or (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
+        isPortrait = activity.isInPortraitOrientation
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(layoutId, container, false).also {
+            (it as LinearLayout).orientation = if (isPortrait) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
         }
     }
 
@@ -97,63 +106,37 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         super.onViewCreated(view, savedInstanceState)
         view.keepScreenOn = true
         val activity = requireActivity() as MainActivity
-        isPortrait = activity.isInPortraitOrientation
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
         playerView = view.findViewById(R.id.playerView)
-        view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
-        var resizeMode = if (isPortrait) {
-            view.findViewById<ImageButton>(R.id.fullscreenEnter).setOnClickListener { activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE }
-            showStatusBar()
-            playerView.updateLayoutParams { height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) }
-            prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FILL)
-        } else {
-            activity.window.decorView.setOnSystemUiVisibilityChangeListener {
-                if (!isKeyboardShown && slidingLayout.isMaximized) {
-                    hideStatusBar()
-                }
-            }
-            slidingLayout.post {
-                if (slidingLayout.isMaximized) {
-                    hideStatusBar()
-                } else {
-                    showStatusBar()
-                }
-            }
-            view.findViewById<ImageButton>(R.id.fullscreenExit).setOnClickListener {
-                activity.apply {
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                }
-            }
-            prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-        }
-        playerView.resizeMode = resizeMode
-        playerView.controllerAutoShow = controllerAutoShow
-        view.findViewById<ImageButton>(R.id.aspectRatio).setOnClickListener {
-            resizeMode = (resizeMode + 1).let { if (it < 5) it else 0 }
-            playerView.resizeMode = resizeMode
-            prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
-        }
+        chatLayout = view.findViewById(chatContainerId)
         playerView.postDelayed(750L) {
             playerWidth = playerView.width
             playerHeight = playerView.height
         }
-        if (this !is OfflinePlayerFragment) {
-            chatLayout = view.findViewById(if (this !is ClipPlayerFragment) R.id.chatFragmentContainer else R.id.clipChatContainer)
-            secondView = chatLayout
-            if (!isPortrait) {
-                chatWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
-                chatLayout.updateLayoutParams { width = chatWidth }
-                hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
-                    setOnClickListener { hideChat() }
+        playerHeightPortrait = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0)
+        chatWidthLandscape = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
+        hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
+            setOnClickListener { hideChat() }
+        }
+        showChat = view.findViewById<ImageButton>(R.id.showChat).apply {
+            setOnClickListener { showChat() }
+        }
+        fullscreenToggle = view.findViewById<ImageButton>(R.id.fullscreenToggle).apply {
+            setOnClickListener {
+                activity.apply {
+                    if (isPortrait) {
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    } else {
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                    }
                 }
-                showChat = view.findViewById<ImageButton>(R.id.showChat).apply {
-                    setOnClickListener { showChat() }
-                }
-                setPreferredChatVisibility()
             }
+        }
+        initLayout()
+        if (this !is OfflinePlayerFragment) {
             view.findViewById<ImageButton>(R.id.settings).disable()
             view.findViewById<TextView>(R.id.channel).apply {
                 text = channel.displayName
@@ -162,11 +145,15 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                     slidingLayout.minimize()
                 }
             }
-        } else {
-            if (isPortrait) {
-                secondView = view.findViewById(R.id.dummyView)
-            }
         }
+
+        playerView.controllerAutoShow = controllerAutoShow
+        view.findViewById<ImageButton>(R.id.aspectRatio).setOnClickListener {
+            resizeMode = (resizeMode + 1).let { if (it < 5) it else 0 }
+            playerView.resizeMode = resizeMode
+            prefs.edit { putInt(if (isPortrait) C.ASPECT_RATIO_PORTRAIT else C.ASPECT_RATIO_LANDSCAPE, resizeMode) }
+        }
+        view.findViewById<ImageButton>(R.id.minimize).setOnClickListener { minimize() }
         if (this is StreamPlayerFragment) {
             if (User.get(activity) !is NotLoggedIn) {
                 slidingLayout.viewTreeObserver.addOnGlobalLayoutListener {
@@ -181,9 +168,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                     } else {
                         if (isKeyboardShown) {
                             isKeyboardShown = false
-                            secondView?.clearFocus()
+                            chatLayout.clearFocus()
                             if (!isPortrait) {
-                                chatLayout.updateLayoutParams { width = chatWidth }
+                                chatLayout.updateLayoutParams { width = chatWidthLandscape }
                                 if (slidingLayout.isMaximized) {
                                     hideStatusBar()
                                 }
@@ -217,65 +204,22 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        println("RESUME $wasInPictureInPicture")
-        if (wasInPictureInPicture && !isInPictureInPicture && orientationBeforePictureInPicture != resources.configuration.orientation.also { wasInPictureInPicture = false }) {
-            println("REC2")
-//            requireActivity().recreate()
-        }
-    }
-
     override fun onPause() {
         super.onPause()
         if (requireActivity().isChangingConfigurations) {
-            secondView?.clearFocus()
+            chatLayout.clearFocus()
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val activity = requireActivity()
-        println("RES $isResumed")
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && (!wasInPictureInPicture || orientationBeforePictureInPicture != newConfig.orientation))) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || (!activity.isInPictureInPictureMode && !wasInPictureInPicture)) {
-            if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) { //TODO player controller, chat view emotes columns count
-                slidingLayout.orientation = LinearLayout.VERTICAL
-                slidingLayout.init()
-                playerView.updateLayoutParams<LinearLayout.LayoutParams> {
-                    height = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0)
-                    width = LinearLayout.LayoutParams.MATCH_PARENT
-                    weight = 0f
-                }
-                chatLayout.updateLayoutParams<LinearLayout.LayoutParams> {
-                    width = LinearLayout.LayoutParams.MATCH_PARENT
-                    height = LinearLayout.LayoutParams.MATCH_PARENT
-                    weight = 1f
-                }
-            } else {
-                slidingLayout.orientation = LinearLayout.HORIZONTAL
-                slidingLayout.init()
-                chatWidth = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
-                playerView.updateLayoutParams<LinearLayout.LayoutParams> {
-                    height = LinearLayout.LayoutParams.MATCH_PARENT
-                    width = LinearLayout.LayoutParams.MATCH_PARENT
-                    weight = 1f
-                }
-                chatLayout.updateLayoutParams<LinearLayout.LayoutParams> {
-                    width = chatWidth
-                    height = LinearLayout.LayoutParams.MATCH_PARENT
-                    weight = 0f
-                }
-            }
-            println("REC")
-//            activity.recreate()
-//            activity.supportFragmentManager.beginTransaction().detach(this).attach(this).commit()
+        isPortrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !requireActivity().isInPictureInPictureMode) {
+            initLayout()
         }
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        isInPictureInPicture = isInPictureInPictureMode
-        println("PIP $isInPictureInPictureMode")
         if (isInPictureInPictureMode) {
             playerView.apply {
                 useController = false
@@ -284,27 +228,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
                     height = ViewGroup.LayoutParams.MATCH_PARENT
                 }
             }
-            secondView?.gone()
+            chatLayout.gone()
         } else {
-            wasInPictureInPicture = true
-            if (isPortrait) {
-                secondView?.visible()
-            } else if (this !is OfflinePlayerFragment) {
-                setPreferredChatVisibility()
-            }
-            playerView.apply {
-                useController = true
-                updateLayoutParams {
-                    width = playerWidth
-                    height = playerHeight
-                }
-            }
+            playerView.useController = true
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(KEY_WAS_IN_PIP, wasInPictureInPicture)
-        super.onSaveInstanceState(outState)
     }
 
     override fun initialize() {
@@ -398,12 +325,64 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     fun enterPictureInPicture(): Boolean {
         return if (slidingLayout.isMaximized && prefs.getBoolean(C.PICTURE_IN_PICTURE, true) && shouldEnterPictureInPicture) {
-//            wasInPictureInPicture = true
             orientationBeforePictureInPicture = resources.configuration.orientation
             true
         } else {
             false
         }
+    }
+
+    private fun initLayout() {
+        if (isPortrait) {
+            requireActivity().window.decorView.setOnSystemUiVisibilityChangeListener(null)
+            playerView.updateLayoutParams<LinearLayout.LayoutParams> {
+                height = playerHeightPortrait
+                width = LinearLayout.LayoutParams.MATCH_PARENT
+                weight = 0f
+            }
+            chatLayout.updateLayoutParams<LinearLayout.LayoutParams> {
+                width = LinearLayout.LayoutParams.MATCH_PARENT
+                height = LinearLayout.LayoutParams.MATCH_PARENT
+                weight = 1f
+            }
+            chatLayout.visible()
+            fullscreenToggle.setImageResource(R.drawable.baseline_fullscreen_black_24)
+            hideChat.gone()
+            showChat.gone()
+            showStatusBar()
+            resizeMode = prefs.getInt(C.ASPECT_RATIO_PORTRAIT, AspectRatioFrameLayout.RESIZE_MODE_FILL)
+        } else {
+            requireActivity().window.decorView.setOnSystemUiVisibilityChangeListener {
+                if (!isKeyboardShown && slidingLayout.isMaximized) {
+                    hideStatusBar()
+                }
+            }
+            playerView.updateLayoutParams<LinearLayout.LayoutParams> {
+                height = LinearLayout.LayoutParams.MATCH_PARENT
+                width = LinearLayout.LayoutParams.MATCH_PARENT
+                weight = 1f
+            }
+            if (this !is OfflinePlayerFragment) {
+                chatLayout.updateLayoutParams<LinearLayout.LayoutParams> {
+                    width = chatWidthLandscape
+                    height = LinearLayout.LayoutParams.MATCH_PARENT
+                    weight = 0f
+                }
+                setPreferredChatVisibility()
+            } else {
+                chatLayout.gone()
+            }
+            fullscreenToggle.setImageResource(R.drawable.baseline_fullscreen_exit_black_24)
+            slidingLayout.post {
+                if (slidingLayout.isMaximized) {
+                    hideStatusBar()
+                } else {
+                    showStatusBar()
+                }
+            }
+            resizeMode = prefs.getInt(C.ASPECT_RATIO_LANDSCAPE, AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+        }
+        playerView.resizeMode = resizeMode
     }
 
     private fun setPreferredChatVisibility() {
@@ -438,7 +417,6 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
 
     private companion object {
         const val KEY_CHAT_OPENED = "ChatOpened"
-        const val KEY_WAS_IN_PIP = "wasInPip"
 
         const val REQUEST_FOLLOW = 0
     }

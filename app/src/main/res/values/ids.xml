@@ -8,8 +8,7 @@
     <item name="follow" type="id" />
     <item name="topRightPanel" type="id" />
     <item name="channel" type="id" />
-    <item name="fullscreenExit" type="id" />
-    <item name="fullscreenEnter" type="id" />
+    <item name="fullscreenToggle" type="id" />
     <item name="download" type="id" />
     <item name="aspectRatio" type="id" />
     <item name="sleepTimer" type="id" />

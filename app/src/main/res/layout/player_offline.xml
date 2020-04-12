@@ -37,24 +37,33 @@
     </LinearLayout>
 
     <TextView
-        style="@style/Player.Position"
-        />
-
-    <TextView
-        android:layout_toLeftOf="@id/fullscreenEnter"
-        android:layout_toStartOf="@id/fullscreenEnter"
-        style="@style/Player.Duration"
-        />
+        style="@style/Player.Position"/>
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
-        style="@style/Player.Progress"
+        style="@style/Player.Progress"/>
+
+    <TextView
+        style="@style/Player.Duration"
         />
 
-    <ImageButton
-        android:id="@+id/fullscreenEnter"
-        android:layout_above="@id/exo_progress"
-        style="@style/Player.FullscreenEnter"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="5dp"
+        android:layout_above="@id/exo_progress" >
+
+        <ImageButton
+            style="@style/Player.ShowChat" />
+
+        <ImageButton
+            style="@style/Player.HideChat" />
+
+        <ImageButton
+            style="@style/Player.FullscreenToggle"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -204,16 +204,9 @@
         <item name="layout_scrollFlags">scroll|enterAlways</item>
     </style>
 
-    <style name="ChatViewPortrait">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:background">?android:colorBackground</item>
-    </style>
-
-    <style name="ChatViewLandscape">
+    <style name="ChatView">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">0dp</item>
         <item name="android:background">?android:colorBackground</item>
     </style>
 

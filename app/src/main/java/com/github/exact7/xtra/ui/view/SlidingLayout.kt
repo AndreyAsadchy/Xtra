@@ -102,8 +102,9 @@ class SlidingLayout : LinearLayout {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+        orientation = if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) VERTICAL else HORIZONTAL
         init()
     }
 
@@ -223,7 +224,7 @@ class SlidingLayout : LinearLayout {
         listeners.forEach { it.onMinimize() }
     }
 
-    fun init() {
+    private fun init() {
         dragView.post {
             topBound = paddingTop
             if (isPortrait) { //portrait

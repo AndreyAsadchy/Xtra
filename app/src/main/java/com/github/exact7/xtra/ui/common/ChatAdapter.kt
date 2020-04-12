@@ -111,7 +111,6 @@ class ChatAdapter(
         builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
         val originalMessage = "$userName: ${chatMessage.message}"
-        println(originalMessage)
         try {
             chatMessage.emotes?.let { emotes ->
                 val copy = emotes.map {
@@ -143,8 +142,7 @@ class ChatAdapter(
             var builderIndex = 0
             var emotesFound = 0
             var wasMentioned = false
-            for (i in 0 until split.size) {
-                val value = split[i]
+            for (value in split) {
                 val length = value.length
                 val endIndex = builderIndex + length
                 val emote = emotes[value]

@@ -1,9 +1,7 @@
 package com.github.exact7.xtra.ui.player.video
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -34,6 +32,11 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     override val channel: Channel
         get() = video.channel
 
+    override val layoutId: Int
+        get() = R.layout.fragment_player_video
+    override val chatContainerId: Int
+        get() = R.id.chatFragmentContainer
+
     override val shouldEnterPictureInPicture: Boolean
         get() = viewModel.playerMode.value == PlayerMode.NORMAL
 
@@ -42,10 +45,6 @@ class VideoPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayP
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         video = requireArguments().getParcelable(KEY_VIDEO)!!
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_player_video, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

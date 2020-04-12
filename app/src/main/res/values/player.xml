@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Player">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
         <item name="show_buffering">always</item>
         <item name="android:background">@android:color/black</item>
         <item name="android:animateLayoutChanges">true</item>
         <item name="surface_type">surface_view</item>
-    </style>
-
-    <style name="Player.Portrait" parent="Player">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="resize_mode">fixed_height</item>
-    </style>
-
-    <style name="Player.Landscape" parent="Player">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="resize_mode">fit</item>
     </style>
 
     <style name="Player.Image">
@@ -129,18 +118,8 @@
         <item name="android:layout_toStartOf">@id/exo_duration</item>
     </style>
 
-    <style name="Player.FullscreenEnter" parent="Player.SmallImage">
-        <item name="android:id">@id/fullscreenEnter</item>
-        <item name="android:src">@drawable/baseline_fullscreen_black_24</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginRight">10dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
-    </style>
-
-    <style name="Player.FullscreenExit" parent="Player.SmallImage">
-        <item name="android:id">@id/fullscreenExit</item>
-        <item name="android:src">@drawable/baseline_fullscreen_exit_black_24</item>
+    <style name="Player.FullscreenToggle" parent="Player.SmallImage">
+        <item name="android:id">@id/fullscreenToggle</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">10dp</item>

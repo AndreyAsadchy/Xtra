@@ -43,9 +43,34 @@
 
     </LinearLayout>
 
-    <ImageButton
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        style="@style/Player.FullscreenEnter"/>
+        android:layout_marginBottom="5dp">
+
+        <ImageButton
+            style="@style/Player.ShowChat" />
+
+        <ImageButton
+            style="@style/Player.HideChat" />
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/player_hide_chat"-->
+        <!--android:visibility="gone"-->
+        <!--android:src="@drawable/baseline_speaker_notes_off_black_24" />-->
+
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/player_show_chat"-->
+        <!--android:visibility="gone"-->
+        <!--android:src="@drawable/baseline_chat_black_24" />-->
+
+        <ImageButton
+            style="@style/Player.FullscreenToggle"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

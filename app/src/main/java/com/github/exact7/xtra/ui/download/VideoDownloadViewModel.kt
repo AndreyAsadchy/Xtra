@@ -63,15 +63,17 @@ class VideoDownloadViewModel @Inject constructor(
                             relativeTimes.add(time)
                             time += duration
                         }
-                        setVideoInfo(VideoDownloadInfo(video, map, relativeTimes, durations, totalDuration, mediaPlaylist.targetDuration * 1000L, 0))
+                        _videoInfo.postValue(VideoDownloadInfo(video, map, relativeTimes, durations, totalDuration, mediaPlaylist.targetDuration * 1000L, 0))
                     } else {
                         throw IllegalAccessException()
                     }
                 } catch (e: Exception) {
                     if (e is IllegalAccessException) {
-                        val context = getApplication<Application>()
-                        Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
-                        _videoInfo.value = null
+                        viewModelScope.launch(Dispatchers.Main) {
+                            val context = getApplication<Application>()
+                            Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+                            _videoInfo.value = null
+                        }
                     }
                 }
             }

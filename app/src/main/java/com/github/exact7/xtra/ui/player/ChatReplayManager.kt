@@ -23,11 +23,12 @@ class ChatReplayManager @Inject constructor(
         private val clearMessages: () -> Unit,
         private val coroutineScope: CoroutineScope) {
 
-    private lateinit var job: Job
     private val timer: Timer
     private var cursor: String? = null
     private val list = LinkedList<VideoChatMessage>()
     private var isLoading = false
+    private lateinit var offsetJob: Job
+    private var nextJob: Job? = null
 
     init {
         load(startTime)
@@ -35,7 +36,7 @@ class ChatReplayManager @Inject constructor(
         timer = fixedRateTimer(period = 1000L, action = {
             val position = currentPosition()
             if (position - lastCheckedPosition !in 0.0..20.0) {
-                job.cancel()
+                offsetJob.cancel()
                 list.clear()
                 clearMessages()
                 load(startTime + position)
@@ -45,12 +46,13 @@ class ChatReplayManager @Inject constructor(
     }
 
     fun stop() {
-        job.cancel()
+        offsetJob.cancel()
+        nextJob?.cancel()
         timer.cancel()
     }
 
     private fun load(offset: Double) {
-        job = coroutineScope.launch(Dispatchers.IO) {
+        offsetJob = coroutineScope.launch(Dispatchers.IO) {
             try {
                 isLoading = true
                 val log = repository.loadVideoChatLog(videoId, offset)
@@ -89,7 +91,7 @@ class ChatReplayManager @Inject constructor(
 
     private fun loadNext() {
         cursor?.let { c ->
-            job = coroutineScope.launch(Dispatchers.IO) {
+            nextJob = coroutineScope.launch(Dispatchers.IO) {
                 try {
                     isLoading = true
                     val log = repository.loadVideoChatAfter(videoId, c)
