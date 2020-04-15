@@ -109,6 +109,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         slidingLayout = view as SlidingLayout
         slidingLayout.addListener(activity)
         slidingLayout.addListener(this)
+        slidingLayout.maximizedSecondViewVisibility = if (userPrefs.getBoolean(KEY_CHAT_OPENED, true)) View.VISIBLE else View.GONE //TODO
         playerView = view.findViewById(R.id.playerView)
         chatLayout = view.findViewById(chatContainerId)
         playerView.postDelayed(750L) {

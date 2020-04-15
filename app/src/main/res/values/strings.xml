@@ -132,7 +132,11 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>January 16th, 1.4.5</b>
+        <b>April 15th, 1.4.6-beta1</b>
+\n- <b>Added a more detailed error message for those who are having trouble with logging in. Please let me know what the problem is</b>
+\n- Removed outdated global BTTV and FFZ emotes, now they will be updating automatically
+\n- Behind the scenes improvements and bug fixes
+        \n\n<b>January 16th, 1.4.5</b>
 \n- <b>Fixed login error \"Error loading web browser\"</b>
 \n- Fixed when emotes sometimes were cutting text or not showing at all
 \n- Improved rendering of some emotes
