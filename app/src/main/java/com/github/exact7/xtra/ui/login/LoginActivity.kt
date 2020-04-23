@@ -49,10 +49,10 @@ class LoginActivity : AppCompatActivity(), Injectable {
         super.onCreate(savedInstanceState)
         applyTheme()
         setContentView(R.layout.activity_login)
-        installPlayServicesIfNeeded()
         val user = User.get(this)
         if (user is NotLoggedIn) {
             if (intent.getBooleanExtra(C.FIRST_LAUNCH, false)) {
+                installPlayServicesIfNeeded()
                 welcomeContainer.visible()
                 login.setOnClickListener { initWebView() }
                 skip.setOnClickListener { finish() }
