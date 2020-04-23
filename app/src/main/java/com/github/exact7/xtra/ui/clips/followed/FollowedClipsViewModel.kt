@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -23,7 +22,7 @@ class FollowedClipsViewModel @Inject constructor(
         get() = _sortText
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Clip>> = Transformations.map(filter) {
-        repository.loadFollowedClips(it.user.token, it.trending, viewModelScope)
+        repository.loadFollowedClips(it.user.token, it.trending)
     }
     var selectedIndex = 1
         private set

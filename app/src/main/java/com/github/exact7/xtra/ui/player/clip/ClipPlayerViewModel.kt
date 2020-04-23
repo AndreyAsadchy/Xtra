@@ -2,7 +2,6 @@ package com.github.exact7.xtra.ui.player.clip
 
 import android.app.Application
 import android.content.Context
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -19,6 +18,7 @@ import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import com.github.exact7.xtra.ui.player.PlayerHelper
 import com.github.exact7.xtra.ui.player.PlayerViewModel
 import com.github.exact7.xtra.util.C
+import com.github.exact7.xtra.util.shortToast
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import kotlinx.coroutines.launch
@@ -110,7 +110,7 @@ class ClipPlayerViewModel @Inject constructor(
     override fun onPlayerError(error: ExoPlaybackException) {
         if (error.type == ExoPlaybackException.TYPE_UNEXPECTED && error.unexpectedException is IllegalStateException) {
             val context = getApplication<Application>()
-            Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
+            context.shortToast(R.string.player_error)
             if (qualityIndex < helper.urls.size - 1) {
                 changeQuality(++qualityIndex)
             }

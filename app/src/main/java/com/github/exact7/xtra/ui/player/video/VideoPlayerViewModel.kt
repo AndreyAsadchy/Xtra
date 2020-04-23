@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.player.video
 
 import android.app.Application
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
@@ -15,6 +14,7 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.AudioPlayerService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
+import com.github.exact7.xtra.util.toast
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,7 +57,7 @@ class VideoPlayerViewModel @Inject constructor(
                         }
                     } else if (response.code() == 403) {
                         val context = getApplication<Application>()
-                        Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+                        context.toast(R.string.video_subscribers_only)
                     }
                 }
             } catch (e: Exception) {

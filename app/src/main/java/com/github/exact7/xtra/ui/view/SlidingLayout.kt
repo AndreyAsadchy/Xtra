@@ -5,11 +5,14 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.postDelayed
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
@@ -161,6 +164,27 @@ class SlidingLayout : LinearLayout {
         if (viewDragHelper.continueSettling(true)) {
             postInvalidateOnAnimation()
         }
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        secondView?.let {
+            if (!isPortrait && isMaximized) {
+                maximizedSecondViewVisibility = it.visibility
+            }
+        }
+        return bundleOf("superState" to super.onSaveInstanceState(), "isMaximized" to isMaximized, "secondViewVisibility" to maximizedSecondViewVisibility)
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state.let {
+            if (it is Bundle) {
+                isMaximized = it.getBoolean("isMaximized")
+                maximizedSecondViewVisibility = it.getInt("secondViewVisibility")
+                it.getParcelable("superState")
+            } else {
+                it
+            }
+        })
     }
 
     fun maximize() {

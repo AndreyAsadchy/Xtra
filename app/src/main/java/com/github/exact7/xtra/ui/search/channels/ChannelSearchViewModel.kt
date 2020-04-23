@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.search.channels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.repository.Listing
 import com.github.exact7.xtra.repository.TwitchService
@@ -15,7 +14,7 @@ class ChannelSearchViewModel @Inject constructor(
 
     private val query = MutableLiveData<String>()
     override val result: LiveData<Listing<Channel>> = Transformations.map(query) {
-        repository.loadChannels(it, viewModelScope)
+        repository.loadChannels(it)
     }
 
     fun setQuery(query: String) {

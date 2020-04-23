@@ -128,7 +128,10 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
-        <b>April 15th, 1.4.6-beta1</b>
+        <b>April 24th, 1.4.6-beta2</b>
+\n- Added a new workaround for the issue with logging in. Click the \"Having trouble logging in\" button
+\n- Bug fixes
+        \n\n<b>April 18th, 1.4.6-beta1</b>
 \n- <b>Added a more detailed error message for those who are having trouble with logging in. Please let me know what the problem is</b>
 \n- Removed outdated global BTTV and FFZ emotes, now they will be updating automatically
 \n- Behind the scenes improvements and bug fixes
@@ -143,32 +146,6 @@
 \n- Fixed clips not working
 \n- Fixed audio only setting using too much data
 \n- Stability improvements for picture-in-picture and more
-        \n\n<b>November 26th, 1.4.3</b>
-\n- Fixed subscribers-only VODs not working. <b>YOU NEED TO RELOGIN INTO YOUR ACCOUNT</b>
-\n- <b>For Android 4:</b> Fixed streams not working
-        \n\n<b>November 14th, 1.4.2.3</b>
-\n- Fixed everything except for subscribers-only VODs
-        \n\n<b>November 12th, 1.4.2.2</b>
-\n- Fixed VODs not working. Subscribers-only VODs might not be working for now. Apologies for the inconvenience, lately the API is changing back and forth. FeelsWeirdMan
-        \n\n<b>November 12th, 1.4.2.1</b>
-\n- Fixed streams and videos not working, again
-        \n\n<b>November 9th, 1.4.2</b>
-\n- Fixed streams and videos not working (Until Twitch changes something again)
-\n- If you are having issues with logging in, there is a step-by-step solution located at the bottom of the login screen
-        \n\n<b>October 6th, 1.4.1</b>
-\n- Videos now remember where you left off
-\n- Added sleep timer
-\n- Fixed donations getting refunded after a few days
-\n- Fixed 60 fps not working on some devices
-\n- Other bug fixes and improvements
-        \n\n<b>September 15th, 1.4.0</b>
-        \n- Added suggestions of usernames (type \"@\") and emotes (type \":\") in the chat
-\n- Added ability when watching a clip to continue watching it in the full video
-\n- Added ability to support the development of the app, located in the \"Menu\" tab
-\n- Added ability to disable animated GIF emotes
-\n- Fixed video position resetting after Internet connection was lost
-\n- Improved highlighting of a message when user was mentioned in the chat
-\n- Other bug fixes and improvements
     </string>
     <string name="chat_settings">إعدادات الدردشة</string>
     <string name="sleep_timer">مؤقت النوم</string>
@@ -182,6 +159,11 @@
     <string name="timer_canceled">تم إلغاء الموقت</string>
     <string name="authorization">Authorization</string>
     <string name="trouble_logging_in">Having trouble logging in?</string>
-    <string name="login_problem_solution">You can log in using an external browser. After you press \"Authorize\", a page with an error should appear. Next, return to the app and try logging in again, it will be working now</string>
+    <string name="login_problem_solution">You can log in using an external browser. After logging in, Twitch\'s homepage should load. Copy the url, return here and click the \"Enter url\" button. Paste the url and click \"Log in\"</string>
     <string name="no_browser_found">No browser app found</string>
+    <string name="browser_workaround">Your system browser is no longer supported. Please click the button below for a workaround</string>
+    <string name="error">Error: %s</string>
+    <string name="to_enter_url">Enter url</string>
+    <string name="enter_url">Enter url</string>
+    <string name="invalid_url">Invalid url</string>
 </resources>

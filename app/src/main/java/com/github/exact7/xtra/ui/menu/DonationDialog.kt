@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.util.toast
 import kotlinx.android.synthetic.main.dialog_donation.*
 
 class DonationDialog : DialogFragment() {
@@ -29,7 +29,7 @@ class DonationDialog : DialogFragment() {
         }
         viewModel.state.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Toast.makeText(activity, getString(R.string.thank_you_so_much), Toast.LENGTH_LONG).show()
+                activity.toast(R.string.thank_you_so_much)
                 dismiss()
             }
         })

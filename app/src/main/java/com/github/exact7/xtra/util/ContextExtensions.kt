@@ -7,6 +7,8 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Build
 import android.util.TypedValue
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.preference.PreferenceManager
 import com.github.exact7.xtra.R
 
@@ -48,3 +50,19 @@ val Context.isInLandscapeOrientation
 
 val Context.isActivityResumed
     get() = this !is Activity || !((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN && isDestroyed) || isFinishing)
+
+fun Context.toast(@StringRes resId: Int) {
+    Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
+}
+
+fun Context.shortToast(@StringRes resId: Int) {
+    Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.toast(text: CharSequence) {
+    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+}
+
+fun Context.shortToast(text: CharSequence) {
+    Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+}

@@ -86,7 +86,7 @@ abstract class BaseNetworkFragment : Fragment(), Injectable {
         super.setUserVisibleHint(isVisibleToUser)
         if (enableNetworkCheck) {
             if (!isInitialized) {
-                if (isVisibleToUser && isResumed && lastState) {
+                if (isVisibleToUser && lastState) {
                     init()
                 }
             } else if (shouldRestore && lastState) {

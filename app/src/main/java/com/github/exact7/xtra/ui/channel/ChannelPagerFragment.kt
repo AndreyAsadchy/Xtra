@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.channel
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -97,5 +98,12 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
 
     override fun onNetworkRestored() {
         viewModel.retry()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            appBar.setExpanded(false, false)
+        }
     }
 }

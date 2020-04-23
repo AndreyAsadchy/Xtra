@@ -105,7 +105,9 @@ abstract class HlsPlayerViewModel(
                     }
                 }
                 helper.urls = urls.apply {
-                    put(audioOnly, remove(audioOnly)!!) //move audio option to bottom
+                    remove(audioOnly)?.let { url ->
+                        put(audioOnly, url) //move audio option to bottom
+                    }
                 }
                 qualities = LinkedList(urls.keys).apply {
                     addFirst(context.getString(R.string.auto))

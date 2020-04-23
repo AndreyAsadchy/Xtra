@@ -18,7 +18,7 @@ class AuthRepository @Inject constructor(
         private val api: IdApi,
         private val emotesDao: EmotesDao) {
 
-    suspend fun validate(token: String): ValidationResponse = withContext(Dispatchers.IO) {
+    suspend fun validate(token: String): ValidationResponse? = withContext(Dispatchers.IO) {
         api.validateToken("OAuth $token")
     }
 

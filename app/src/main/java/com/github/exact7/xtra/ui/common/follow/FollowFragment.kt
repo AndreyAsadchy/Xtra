@@ -1,12 +1,12 @@
 package com.github.exact7.xtra.ui.common.follow
 
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.util.FragmentUtils
+import com.github.exact7.xtra.util.shortToast
 import com.github.exact7.xtra.util.visible
 
 interface FollowFragment { //TODO REFACTOR
@@ -19,7 +19,7 @@ interface FollowFragment { //TODO REFACTOR
             val channelName = channelInfo.second
             follow.observe(fragment.viewLifecycleOwner, Observer { following ->
                 if (initialized) {
-                    Toast.makeText(context, context.getString(if (following) R.string.now_following else R.string.unfollowed, channelName), Toast.LENGTH_SHORT).show()
+                    context.shortToast(context.getString(if (following) R.string.now_following else R.string.unfollowed, channelName))
                 } else {
                     initialized = true
                 }

@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.streams.common
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
@@ -17,7 +16,7 @@ class StreamsViewModel @Inject constructor(
 
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Stream>> = Transformations.map(filter) {
-        repository.loadStreams(it?.game?.name, it.languages, it.streamType, viewModelScope)
+        repository.loadStreams(it?.game?.name, it.languages, it.streamType)
     }
 
     fun loadStreams(game: Game? = null, languages: String? = null) {

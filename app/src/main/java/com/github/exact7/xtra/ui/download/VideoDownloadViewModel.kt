@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.download
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +12,7 @@ import com.github.exact7.xtra.model.offline.Request
 import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.util.DownloadUtils
+import com.github.exact7.xtra.util.toast
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.ParsingMode
@@ -69,9 +69,9 @@ class VideoDownloadViewModel @Inject constructor(
                     }
                 } catch (e: Exception) {
                     if (e is IllegalAccessException) {
-                        viewModelScope.launch(Dispatchers.Main) {
+                        launch(Dispatchers.Main) {
                             val context = getApplication<Application>()
-                            Toast.makeText(context, context.getString(R.string.video_subscribers_only), Toast.LENGTH_LONG).show()
+                            context.toast(R.string.video_subscribers_only)
                             _videoInfo.value = null
                         }
                     }

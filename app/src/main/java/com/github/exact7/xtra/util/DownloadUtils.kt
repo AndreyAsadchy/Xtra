@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.exact7.xtra.GlideApp
@@ -66,7 +65,7 @@ object DownloadUtils {
                     .setMessage(R.string.storage_permission_message)
                     .setTitle(R.string.storage_permission_title)
                     .setPositiveButton(android.R.string.ok) { _, _ -> requestPermissions() }
-                    .setNegativeButton(android.R.string.cancel) { _, _ -> Toast.makeText(activity, activity.getString(R.string.permission_denied), Toast.LENGTH_LONG).show() }
+                    .setNegativeButton(android.R.string.cancel) { _, _ -> activity.toast(R.string.permission_denied) }
                     .show()
         } else {
             requestPermissions()

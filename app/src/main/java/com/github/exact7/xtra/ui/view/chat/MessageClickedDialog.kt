@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,6 +14,7 @@ import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.ui.common.ExpandingBottomSheetDialogFragment
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.shortToast
 import kotlinx.android.synthetic.main.dialog_chat_message_click.*
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class MessageClickedDialog : ExpandingBottomSheetDialogFragment(), Injectable {
             })
         }
         viewModel.errors.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context, getString(R.string.error_loading_user), Toast.LENGTH_SHORT).show()
+            requireContext().shortToast(R.string.error_loading_user)
         })
     }
 

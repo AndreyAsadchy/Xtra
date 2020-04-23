@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface IdApi {
 
     @GET("validate")
-    suspend fun validateToken(@Header("Authorization") token: String): ValidationResponse
+    suspend fun validateToken(@Header("Authorization") token: String): ValidationResponse?
 
     @POST("revoke")
     suspend fun revokeToken(@Query("client_id") clientId: String, @Query("token") token: String)

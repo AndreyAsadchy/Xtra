@@ -3,7 +3,6 @@ package com.github.exact7.xtra.ui.main
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +19,7 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.Event
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.prefs
+import com.github.exact7.xtra.util.toast
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -92,7 +92,7 @@ class MainViewModel @Inject constructor(
                     if (e is HttpException && e.code() == 401) {
                         with(activity) {
                             User.set(activity, null)
-                            Toast.makeText(this, getString(R.string.token_expired), Toast.LENGTH_LONG).show()
+                            toast(R.string.token_expired)
                             if (!isPlayerMaximized) {
                                 startActivityForResult(Intent(this, LoginActivity::class.java), 2)
                             }

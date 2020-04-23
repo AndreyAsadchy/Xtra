@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.di
 
 import android.app.Application
+import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
 import com.github.exact7.xtra.BuildConfig
@@ -36,6 +37,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.security.KeyStore
+import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
@@ -173,6 +175,12 @@ class XtraModule {
             readTimeout(5, TimeUnit.MINUTES)
         }
         return builder.build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesExecutor(): Executor {
+        return AsyncTask.THREAD_POOL_EXECUTOR
     }
 
     @Singleton

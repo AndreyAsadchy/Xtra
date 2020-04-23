@@ -5,7 +5,7 @@ import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
-import kotlinx.coroutines.CoroutineScope
+import java.util.concurrent.Executor
 
 class FollowedVideosDataSource(
         userToken: String,
@@ -13,19 +13,19 @@ class FollowedVideosDataSource(
         private val language: String?,
         private val sort: Sort,
         private val api: KrakenApi,
-        coroutineScope: CoroutineScope) : BasePositionalDataSource<Video>(coroutineScope) {
+        retryExecutor: Executor) : BasePositionalDataSource<Video>(retryExecutor) {
 
     private val userToken: String = "OAuth $userToken"
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Video>) {
         loadInitial(params, callback) {
-            api.getFollowedVideos(userToken, broadcastTypes, language, sort, params.requestedLoadSize, 0).videos
+            api.getFollowedVideos(userToken, broadcastTypes, language, sort, params.requestedLoadSize, 0).execute().body()!!.videos
         }
     }
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Video>) {
         loadRange(params, callback) {
-            api.getFollowedVideos(userToken, broadcastTypes, language, sort, params.loadSize, params.startPosition).videos
+            api.getFollowedVideos(userToken, broadcastTypes, language, sort, params.loadSize, params.startPosition).execute().body()!!.videos
         }
     }
 
@@ -35,9 +35,9 @@ class FollowedVideosDataSource(
             private val language: String?,
             private val sort: Sort,
             private val api: KrakenApi,
-            private val coroutineScope: CoroutineScope) : BaseDataSourceFactory<Int, Video, FollowedVideosDataSource>() {
+            private val retryExecutor: Executor) : BaseDataSourceFactory<Int, Video, FollowedVideosDataSource>() {
 
         override fun create(): DataSource<Int, Video> =
-                FollowedVideosDataSource(userToken, broadcastTypes, language, sort, api, coroutineScope).also(sourceLiveData::postValue)
+                FollowedVideosDataSource(userToken, broadcastTypes, language, sort, api, retryExecutor).also(sourceLiveData::postValue)
     }
 }

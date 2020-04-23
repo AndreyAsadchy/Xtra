@@ -13,7 +13,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -60,11 +59,12 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.installPlayServicesIfNeeded
 import com.github.exact7.xtra.util.isNetworkAvailable
 import com.github.exact7.xtra.util.prefs
+import com.github.exact7.xtra.util.shortToast
+import com.github.exact7.xtra.util.toast
 import com.github.exact7.xtra.util.visible
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.security.ProviderInstaller
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     viewModel.validate(this)
                 }
                 if (flag) {
-                    Toast.makeText(this, getString(if (online) R.string.connection_restored else R.string.no_connection), Toast.LENGTH_SHORT).show()
+                    shortToast(if (online) R.string.connection_restored else R.string.no_connection)
                 } else {
                     flag = true
                 }
@@ -170,22 +170,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
         registerReceiver(networkReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         if (notInitialized) {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-                ProviderInstaller.installIfNeededAsync(this, object : ProviderInstaller.ProviderInstallListener {
-                    override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
-                        GoogleApiAvailability.getInstance().apply {
-                            if (isUserResolvableError(errorCode)) {
-                                //Prompt the user to install/update/enable Google Play services.
-                                showErrorDialogFragment(this@MainActivity, errorCode, 0)
-                            } else {
-                                Toast.makeText(this@MainActivity, getString(R.string.play_services_not_available), Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }
-
-                    override fun onProviderInstalled() {}
-                })
-            }
+            installPlayServicesIfNeeded()
             handleIntent(intent)
             val lastUpdateVersion = prefs.getString("lastUpdateVersion", null)
             if (lastUpdateVersion == BuildConfig.VERSION_NAME) {
@@ -225,34 +210,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                                 putString(C.LANDSCAPE_COLUMN_COUNT, resources.getString(R.string.landscapeColumns))
                             }
                             putInt(C.PORTRAIT_PLAYER_HEIGHT, height)
-                        }
-                    }
-                }
-                if (lastUpdateVersion == null && notFirstLaunch) { //for very old versions
-                    val all = prefs.all
-                    if (all[C.THEME] is Boolean) { //TODO remove after updated to 1.3.0
-                        prefs.edit {
-                            remove(C.THEME)
-                            putString(C.THEME, if (all[C.THEME] == true) "0" else "2")
-                        }
-                    }
-                    if (all["chatWidth"] is String) { //TODO remove after updated to 1.1.9
-                        prefs.edit {
-                            remove("chatWidth")
-                            putInt("chatWidth", 25)
-                            putInt(C.LANDSCAPE_CHAT_WIDTH, DisplayUtils.calculateLandscapeWidthByPercent(this@MainActivity, 25))
-                        }
-                    }
-                    if (all[C.DOWNLOAD_STORAGE] is Boolean) { //TODO remove after updated to 1.1.12
-                        prefs.edit {
-                            remove(C.DOWNLOAD_STORAGE)
-                            putInt(C.DOWNLOAD_STORAGE, if (all[C.DOWNLOAD_STORAGE] == true) 0 else 1)
-                        }
-                    }
-                    if (all[C.THEME] is Boolean) { //TODO remove after updated to 1.3.0
-                        prefs.edit {
-                            remove(C.THEME)
-                            putString(C.THEME, if (all[C.THEME] == true) "0" else "2")
                         }
                     }
                 }
@@ -349,7 +306,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                         (fragment.currentFragment as HasDownloadDialog).showDownloadDialog()
                     }
                 } else {
-                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
+                    toast(R.string.permission_denied)
                 }
             }
         }

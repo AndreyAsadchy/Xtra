@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -17,6 +16,8 @@ import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.exact7.xtra.util.isNetworkAvailable
+import com.github.exact7.xtra.util.shortToast
+import com.github.exact7.xtra.util.toast
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
@@ -171,9 +172,9 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                     return
                 }
                 if (isStreamEnded) {
-                    Toast.makeText(context, context.getString(R.string.stream_ended), Toast.LENGTH_LONG).show()
+                    context.toast(R.string.stream_ended)
                 } else {
-                    Toast.makeText(context, context.getString(R.string.player_error), Toast.LENGTH_SHORT).show()
+                    context.shortToast(R.string.player_error)
                     viewModelScope.launch {
                         delay(1500L)
                         try {

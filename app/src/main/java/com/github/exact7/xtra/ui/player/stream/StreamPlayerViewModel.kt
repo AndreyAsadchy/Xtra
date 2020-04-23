@@ -1,7 +1,6 @@
 package com.github.exact7.xtra.ui.player.stream
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -16,6 +15,7 @@ import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
+import com.github.exact7.xtra.util.toast
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,7 +44,7 @@ class StreamPlayerViewModel @Inject constructor(
                     play()
                 } catch (e: Exception) {
                     val context = getApplication<Application>()
-                    Toast.makeText(context, context.getString(R.string.error_stream), Toast.LENGTH_LONG).show()
+                    context.toast(R.string.error_stream)
                 }
             }
         }

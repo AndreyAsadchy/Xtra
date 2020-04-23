@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
@@ -37,9 +36,11 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
 import com.github.exact7.xtra.util.disable
 import com.github.exact7.xtra.util.gone
+import com.github.exact7.xtra.util.hideKeyboard
 import com.github.exact7.xtra.util.isInPortraitOrientation
 import com.github.exact7.xtra.util.isKeyboardShown
 import com.github.exact7.xtra.util.prefs
+import com.github.exact7.xtra.util.toast
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
@@ -205,17 +206,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (requireActivity().isChangingConfigurations) {
-            chatLayout.clearFocus()
-        }
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         isPortrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !requireActivity().isInPictureInPictureMode) {
+            chatLayout.hideKeyboard()
             initLayout()
         }
     }
@@ -295,13 +290,13 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     override fun onSleepTimerChanged(durationMs: Long, hours: Int, minutes: Int) {
         val context = requireContext()
         if (durationMs > 0L) {
-            Toast.makeText(context, when {
+            context.toast(when {
                 hours == 0 -> getString(R.string.playback_will_stop, resources.getQuantityString(R.plurals.minutes, minutes, minutes))
                 minutes == 0 -> getString(R.string.playback_will_stop, resources.getQuantityString(R.plurals.hours, hours, hours))
                 else -> getString(R.string.playback_will_stop_hours_minutes, resources.getQuantityString(R.plurals.hours, hours, hours), resources.getQuantityString(R.plurals.minutes, minutes, minutes))
-            }, Toast.LENGTH_LONG).show()
+            })
         } else if (viewModel.timerTimeLeft > 0L) {
-            Toast.makeText(context, getString(R.string.timer_canceled), Toast.LENGTH_LONG).show()
+            context.toast(R.string.timer_canceled)
         }
         viewModel.setTimer(durationMs)
     }

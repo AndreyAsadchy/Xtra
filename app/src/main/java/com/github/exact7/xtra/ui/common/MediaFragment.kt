@@ -18,7 +18,7 @@ abstract class MediaFragment : Fragment(), Scrollable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        previousItem = savedInstanceState?.getInt("previousItem") ?: -1
+        previousItem = savedInstanceState?.getInt("previousItem", -1) ?: -1
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,7 +29,7 @@ abstract class MediaFragment : Fragment(), Scrollable {
         super.onViewCreated(view, savedInstanceState)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                currentFragment = if (position != previousItem && isResumed) {
+                currentFragment = if (position != previousItem) {
                     val newFragment = onSpinnerItemSelected(position)
                     childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, newFragment).commit()
                     previousItem = position

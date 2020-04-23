@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.NotLoggedIn
@@ -17,10 +15,7 @@ import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.settings.SettingsActivity
 import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.applyTheme
-import com.github.exact7.xtra.util.isInLandscapeOrientation
 import com.github.exact7.xtra.util.prefs
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 
 class MenuFragment : Fragment() {
@@ -54,23 +49,18 @@ class MenuFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val activity = requireActivity() as MainActivity
-        if (activity.currentTheme == activity.prefs().getString(C.THEME, "0")) {
+        if (activity.currentTheme == activity.prefs().getString(C.THEME, "0")) { //TODO change to listener?
             data?.let {
-                if (!it.getBooleanExtra("shouldRecreate", false) && !it.getBooleanExtra("changedPlayerForward", false) && !it.getBooleanExtra("changedPlayerRewind", false) && !it.getBooleanExtra("changedAnimatedEmotes", false)) {
-                    it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1).let { value ->
-                        if (value > -1 && activity.isInLandscapeOrientation) {
-                            activity.playerContainer?.findViewById<FrameLayout>(R.id.chatFragmentContainer)?.updateLayoutParams { width = value }
-                        }
-                    }
-                } else {
+                if (it.getBooleanExtra("shouldRecreate", false) ||
+                        (it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1) != -1 && activity.playerFragment != null) ||
+                        it.getBooleanExtra("changedPlayerForward", false) ||
+                        it.getBooleanExtra("changedPlayerRewind", false) ||
+                        it.getBooleanExtra("changedAnimatedEmotes", false)) {
                     activity.recreate()
                 }
             }
         } else {
-            activity.apply {
-                applyTheme()
-                recreate()
-            }
+            activity.recreate()
         }
     }
 }

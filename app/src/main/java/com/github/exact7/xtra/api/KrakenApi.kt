@@ -16,6 +16,7 @@ import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.model.kraken.video.VideosResponse
 import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -27,7 +28,7 @@ import retrofit2.http.Query
 interface KrakenApi {
 
     @GET("games/top")
-    suspend fun getTopGames(@Query("limit") limit: Int, @Query("offset") offset: Int): GamesResponse
+    fun getTopGames(@Query("limit") limit: Int, @Query("offset") offset: Int): Call<GamesResponse>
 
     @GET("search/games")
     suspend fun getGames(@Query("query") query: String): GamesSearchResponse
@@ -36,28 +37,28 @@ interface KrakenApi {
     suspend fun getStream(@Query("channel") channelId: String): StreamsResponse
 
     @GET("streams/")
-    suspend fun getStreams(@Query("game") game: String?, @Query("language") languages: String?, @Query("stream_type") streamType: StreamType?, @Query("limit") limit: Int, @Query("offset") offset: Int): StreamsResponse
+    fun getStreams(@Query("game") game: String?, @Query("language") languages: String?, @Query("stream_type") streamType: StreamType?, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<StreamsResponse>
 
     @GET("streams/followed")
-    suspend fun getFollowedStreams(@Header("Authorization") token: String, @Query("stream_type") streamType: StreamType?, @Query("limit") limit: Int, @Query("offset") offset: Int): StreamsResponse
+    fun getFollowedStreams(@Header("Authorization") token: String, @Query("stream_type") streamType: StreamType?, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<StreamsResponse>
 
     @GET("clips/top")
-    suspend fun getClips(@Query("channel") channel: String?, @Query("game") gameName: String?, @Query("language") languages: String?, @Query("period") period: Period?, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): ClipsResponse
+    fun getClips(@Query("channel") channel: String?, @Query("game") gameName: String?, @Query("language") languages: String?, @Query("period") period: Period?, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): Call<ClipsResponse>
 
     @GET("clips/followed")
-    suspend fun getFollowedClips(@Header("Authorization") token: String, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): ClipsResponse
+    fun getFollowedClips(@Header("Authorization") token: String, @Query("trending") trending: Boolean?, @Query("limit") limit: Int, @Query("cursor") cursor: String?): Call<ClipsResponse>
 
     @GET("videos/{id}")
     suspend fun getVideo(@Path("id") videoId: String): Video
 
     @GET("videos/top")
-    suspend fun getTopVideos(@Query("game") game: String?, @Query("period") period: com.github.exact7.xtra.model.kraken.video.Period?, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): VideosResponse
+    fun getTopVideos(@Query("game") game: String?, @Query("period") period: com.github.exact7.xtra.model.kraken.video.Period?, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<VideosResponse>
 
     @GET("videos/followed")
-    suspend fun getFollowedVideos(@Header("Authorization") token: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): VideosResponse
+    fun getFollowedVideos(@Header("Authorization") token: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("language") language: String?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<VideosResponse>
 
     @GET("channels/{id}/videos")
-    suspend fun getChannelVideos(@Path("id") channelId: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): VideosResponse
+    fun getChannelVideos(@Path("id") channelId: String, @Query("broadcast_type") broadcastType: BroadcastType?, @Query("sort") sort: Sort?, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<VideosResponse>
 
     @GET("users/{id}")
     suspend fun getUserById(@Path("id") id: Int): User
@@ -69,7 +70,7 @@ interface KrakenApi {
     suspend fun getUserEmotes(@Header("Authorization") token: String, @Path("id") userId: String): UserEmotesResponse
 
     @GET("search/channels")
-    suspend fun getChannels(@Query("query") query: String, @Query("limit") limit: Int, @Query("offset") offset: Int): ChannelsSearchResponse
+    fun getChannels(@Query("query") query: String, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<ChannelsSearchResponse>
 
     @GET("https://api.twitch.tv/v5/videos/{id}/comments")
     suspend fun getVideoChatLog(@Path("id") videoId: String, @Query("content_offset_seconds") offsetSeconds: Double, @Query("limit") limit: Int): VideoMessagesResponse

@@ -4,24 +4,24 @@ import androidx.paging.DataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
-import kotlinx.coroutines.CoroutineScope
+import java.util.concurrent.Executor
 
 class StreamsDataSource private constructor(
         private val game: String?,
         private val languages: String?,
         private val streamType: StreamType,
         private val api: KrakenApi,
-        coroutineScope: CoroutineScope) : BasePositionalDataSource<Stream>(coroutineScope) {
+        retryExecutor: Executor) : BasePositionalDataSource<Stream>(retryExecutor) {
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Stream>) {
         loadInitial(params, callback) {
-            api.getStreams(game, languages, streamType, params.requestedLoadSize, 0).streams
+            api.getStreams(game, languages, streamType, params.requestedLoadSize, 0).execute().body()!!.streams
         }
     }
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Stream>) {
         loadRange(params, callback) {
-            api.getStreams(game, languages, streamType, params.loadSize, params.startPosition).streams
+            api.getStreams(game, languages, streamType, params.loadSize, params.startPosition).execute().body()!!.streams
         }
     }
 
@@ -30,9 +30,9 @@ class StreamsDataSource private constructor(
             private val languages: String?,
             private val streamType: StreamType,
             private val api: KrakenApi,
-            private val coroutineScope: CoroutineScope) : BaseDataSourceFactory<Int, Stream, StreamsDataSource>() {
+            private val retryExecutor: Executor) : BaseDataSourceFactory<Int, Stream, StreamsDataSource>() {
 
         override fun create(): DataSource<Int, Stream> =
-                StreamsDataSource(game, languages, streamType, api, coroutineScope).also(sourceLiveData::postValue)
+                StreamsDataSource(game, languages, streamType, api, retryExecutor).also(sourceLiveData::postValue)
     }
 }
