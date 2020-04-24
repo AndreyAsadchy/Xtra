@@ -21,7 +21,7 @@ data class OfflineVideo(
         @ColumnInfo(name = "channel_logo")
         val channelLogo: String,
         val thumbnail: String,
-        val game: String,
+        val game: String, //TODO write a proper migration to null?
         val duration: Long,
         @ColumnInfo(name = "upload_date")
         val uploadDate: Long,

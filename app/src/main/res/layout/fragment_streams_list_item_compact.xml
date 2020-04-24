@@ -2,42 +2,23 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Card" >
+    style="@style/Card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/thumbnail"
-            style="@style/Thumbnail"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic" />
-
-        <TextView
-            android:id="@+id/viewers"
-            style="@style/ThumbnailItem"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
-            app:layout_constraintLeft_toRightOf="@id/streamTypeImage"
-            app:layout_constraintStart_toEndOf="@id/streamTypeImage"
-            tools:text="133769 viewers" />
-
-        <ImageView
             android:id="@+id/streamTypeImage"
             android:layout_width="17dp"
             android:layout_height="15dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/viewers"
+            app:layout_constraintEnd_toStartOf="@id/viewers"
+            app:layout_constraintRight_toLeftOf="@id/viewers"
+            app:layout_constraintTop_toTopOf="@id/viewers"
             tools:src="@drawable/baseline_fiber_manual_record_black_24"
             tools:tint="@android:color/holo_red_dark" />
 
@@ -47,10 +28,20 @@
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/thumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/viewers"
+            style="@style/ThumbnailItem"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/username"
+            tools:text="13.3K" />
 
         <TextView
             android:id="@+id/username"
@@ -58,18 +49,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="7dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textAlignment="viewStart"
-            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@id/streamTypeImage"
             app:layout_constraintLeft_toRightOf="@id/userImage"
-            app:layout_constraintStart_toEndOf="@id/userImage"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/thumbnail"
+            app:layout_constraintStart_toEndOf="@id/userImage"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="@sample/streams.json/streams/channel/name" />
 
         <TextView
@@ -78,15 +71,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="1dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="1dp"
-            android:textAlignment="viewStart"
+            android:ellipsize="end"
             android:gravity="start"
-            app:layout_constraintLeft_toRightOf="@id/userImage"
-            app:layout_constraintStart_toEndOf="@id/userImage"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/userImage"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/userImage"
             app:layout_constraintTop_toBottomOf="@id/username"
             tools:text="@sample/streams.json/streams/channel/status" />
 
@@ -96,17 +91,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="1dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="1dp"
-            android:paddingBottom="10dp"
-            android:textColor="?attr/secondaryTextColor"
-            android:textAlignment="viewStart"
+            android:ellipsize="end"
             android:gravity="start"
-            app:layout_constraintLeft_toRightOf="@id/userImage"
-            app:layout_constraintStart_toEndOf="@id/userImage"
+            android:maxLines="1"
+            android:paddingBottom="10dp"
+            android:textAlignment="viewStart"
+            android:textColor="?attr/secondaryTextColor"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/userImage"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/userImage"
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="@sample/games.json/top/game/name" />
 

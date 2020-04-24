@@ -37,7 +37,7 @@ class VideosAdapter(
             setOnLongClickListener { showDownloadDialog(item); true }
             thumbnail.loadImage(item.preview.large)
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
-            views.text = TwitchApiHelper.formatCount(context, item.views)
+            views.text = TwitchApiHelper.formatViewsCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.length.toLong())
             position.let {
                 if (it != null) {

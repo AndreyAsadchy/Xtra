@@ -35,15 +35,11 @@ class GameVideosSortDialog : ExpandingBottomSheetDialogFragment() {
         }
     }
 
-    private var listener: OnFilter? = null
+    private lateinit var listener: OnFilter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (parentFragment is OnFilter) {
-            listener = parentFragment as OnFilter
-        } else {
-            throw RuntimeException(parentFragment.toString() + " must implement OnFilter")
-        }
+        listener = parentFragment as OnFilter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,8 +48,9 @@ class GameVideosSortDialog : ExpandingBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val originalSortId = if (arguments?.getSerializable(SORT) as Sort == Sort.TIME) R.id.time else R.id.views
-        val originalPeriodId = when (arguments?.getSerializable(PERIOD) as Period) {
+        val args = requireArguments()
+        val originalSortId = if (args.getSerializable(SORT) as Sort == Sort.TIME) R.id.time else R.id.views
+        val originalPeriodId = when (args.getSerializable(PERIOD) as Period) {
             DAY -> R.id.today
             WEEK -> R.id.week
             MONTH -> R.id.month
@@ -67,7 +64,7 @@ class GameVideosSortDialog : ExpandingBottomSheetDialogFragment() {
             if (checkedPeriodId != originalPeriodId || checkedSortId != originalSortId) {
                 val sortBtn = view.findViewById<RadioButton>(checkedSortId)
                 val periodBtn = view.findViewById<RadioButton>(checkedPeriodId)
-                listener!!.onChange(
+                listener.onChange(
                         if (checkedSortId == R.id.time) Sort.TIME else Sort.VIEWS,
                         sortBtn.text,
                         when (checkedPeriodId) {

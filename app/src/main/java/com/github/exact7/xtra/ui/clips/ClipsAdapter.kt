@@ -35,7 +35,7 @@ class ClipsAdapter(
             setOnLongClickListener { showDownloadDialog(item); true }
             thumbnail.loadImage(item.thumbnails.medium)
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
-            views.text = TwitchApiHelper.formatCount(context, item.views)
+            views.text = TwitchApiHelper.formatViewsCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.duration.toLong())
             userImage.apply {
                 loadImage(item.broadcaster.logo, circle = true)

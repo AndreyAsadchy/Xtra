@@ -26,7 +26,7 @@ class GamesAdapter(
             setOnClickListener { listener.openGame(item.game) }
             gameImage.loadImage(item.game.box.medium)
             gameName.text = item.game.name
-            viewers.text = TwitchApiHelper.formatCount(context, item.viewers, true)
+            viewers.text = TwitchApiHelper.formatViewersCount(context, item.viewers)
         }
     }
 }

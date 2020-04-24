@@ -6,7 +6,7 @@ interface Downloadable {
     val thumbnail: String
     val channelName: String
     val channelLogo: String
-    val game: String
+    val game: String?
     val uploadDate: String
 }
 
@@ -17,7 +17,7 @@ internal class Wrapper(downloadable: Downloadable) : Downloadable {
     override val thumbnail: String
     override val channelName: String
     override val channelLogo: String
-    override val game: String
+    override val game: String?
     override val uploadDate: String
 
     init {

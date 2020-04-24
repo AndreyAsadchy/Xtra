@@ -58,22 +58,41 @@ object TwitchApiHelper {
         return offset
     }
 
-    fun formatCount(context: Context, count: Int, viewers: Boolean = false): String {
+    fun formatViewsCount(context: Context, count: Int): String {
         return if (count > 1000) {
-            val divider: Int
-            val suffix = if (count.toString().length < 7) {
-                divider = 1000
-                "K"
-            } else {
-                divider = 1_000_000
-                "M"
-            }
-            val truncated = count / (divider / 10)
-            val hasDecimal = truncated / 10.0 != (truncated / 10).toDouble()
-            val formatted = if (hasDecimal) "${truncated / 10.0}$suffix" else "${truncated / 10}$suffix"
-            context.getString(if (viewers) R.string.viewers else R.string.views, formatted)
+            context.getString(R.string.views, formatCountIfMoreThanAThousand(count))
         } else {
-            context.resources.getQuantityString(if (viewers) R.plurals.viewers else R.plurals.views, count, count)
+            context.resources.getQuantityString(R.plurals.views, count, count)
         }
+    }
+
+    fun formatViewersCount(context: Context, count: Int): String {
+        return if (count > 1000) {
+            context.getString(R.string.viewers, formatCountIfMoreThanAThousand(count))
+        } else {
+            context.resources.getQuantityString(R.plurals.viewers, count, count)
+        }
+    }
+
+    fun formatCount(count: Int): String {
+        return if (count > 1000) {
+            formatCountIfMoreThanAThousand(count)
+        } else {
+            count.toString()
+        }
+    }
+
+    private fun formatCountIfMoreThanAThousand(count: Int): String {
+        val divider: Int
+        val suffix = if (count.toString().length < 7) {
+            divider = 1000
+            "K"
+        } else {
+            divider = 1_000_000
+            "M"
+        }
+        val truncated = count / (divider / 10)
+        val hasDecimal = truncated / 10.0 != (truncated / 10).toDouble()
+        return if (hasDecimal) "${truncated / 10.0}$suffix" else "${truncated / 10}$suffix"
     }
 }

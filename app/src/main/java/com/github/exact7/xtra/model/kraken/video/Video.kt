@@ -34,7 +34,7 @@ data class Video(
         override val id: String,
         @SerializedName("recorded_at")
         val recordedAt: String,
-        override val game: String,
+        override val game: String?,
         val communities: List<String>?,
         val length: Int,
         val preview: Preview,

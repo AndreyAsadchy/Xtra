@@ -20,7 +20,7 @@ data class Clip(
         @SerializedName("broadcast_id")
         val broadcastId: String,
         val vod: Vod?,
-        override val game: String,
+        override val game: String?,
         val language: String,
         override val title: String,
         val views: Int,
