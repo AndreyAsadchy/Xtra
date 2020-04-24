@@ -25,12 +25,16 @@ class FollowLiveData(
 
     override fun setValue(value: Boolean) {
         viewModelScope.launch {
-            if (value) {
-                val followed = repository.followChannel(user.token, user.id, channelId)
-                super.setValue(followed)
-            } else {
-                val unfollowed = repository.unfollowChannel(user.token, user.id, channelId)
-                super.setValue(!unfollowed)
+            try {
+                if (value) {
+                    val followed = repository.followChannel(user.token, user.id, channelId)
+                    super.setValue(followed)
+                } else {
+                    val unfollowed = repository.unfollowChannel(user.token, user.id, channelId)
+                    super.setValue(!unfollowed)
+                }
+            } catch (e: Exception) {
+
             }
         }
     }

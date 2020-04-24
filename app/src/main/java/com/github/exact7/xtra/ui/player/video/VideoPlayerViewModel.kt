@@ -46,8 +46,8 @@ class VideoPlayerViewModel @Inject constructor(
     fun setVideo(video: Video, offset: Double) {
         if (!this::video.isInitialized) {
             this.video = video
-            try {
-                viewModelScope.launch {
+            viewModelScope.launch {
+                try {
                     val response = playerRepository.loadVideoPlaylist(video.id)
                     if (response.isSuccessful) {
                         mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(response.raw().request().url().toString().toUri())
@@ -59,9 +59,9 @@ class VideoPlayerViewModel @Inject constructor(
                         val context = getApplication<Application>()
                         context.toast(R.string.video_subscribers_only)
                     }
-                }
-            } catch (e: Exception) {
+                } catch (e: Exception) {
 
+                }
             }
         }
     }

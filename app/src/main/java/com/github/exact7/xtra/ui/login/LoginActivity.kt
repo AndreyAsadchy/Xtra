@@ -33,6 +33,7 @@ import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -65,7 +66,11 @@ class LoginActivity : AppCompatActivity(), Injectable {
             repository.deleteAllEmotes()
             if (!user.newToken) {
                 GlobalScope.launch {
-                    repository.revoke(user.token)
+                    try {
+                        repository.revoke(user.token)
+                    } catch (e: Exception) {
+
+                    }
                     User.set(this@LoginActivity, null)
                 }
             } else {
@@ -162,13 +167,17 @@ class LoginActivity : AppCompatActivity(), Injectable {
             progressBar.visible()
             val token = matcher.group(1)!!
             lifecycleScope.launch {
-                val response = repository.validate(token)
-                if (response != null) {
-                    TwitchApiHelper.checkedValidation = true
-                    User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
-                    setResult(RESULT_OK)
-                    finish()
-                } else {
+                try {
+                    val response = repository.validate(token)
+                    if (response != null) {
+                        TwitchApiHelper.checkedValidation = true
+                        User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
+                        setResult(RESULT_OK)
+                        finish()
+                    } else {
+                        throw IOException()
+                    }
+                } catch (e: Exception) {
                     clearCookies()
                     webViewContainer.visible()
                     progressBar.gone()

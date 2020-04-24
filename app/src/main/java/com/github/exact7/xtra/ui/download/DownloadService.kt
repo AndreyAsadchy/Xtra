@@ -179,11 +179,15 @@ class DownloadService : IntentService(TAG) {
                 }
             })
             GlobalScope.launch {
-                val response = playerRepository.loadVideoPlaylist(request.videoId!!)
-                playlist = URL("https://.*\\.m3u8".toRegex().find(response.body()!!.string())!!.value).openStream().use {
-                    PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                try {
+                    val response = playerRepository.loadVideoPlaylist(request.videoId!!)
+                    playlist = URL("https://.*\\.m3u8".toRegex().find(response.body()!!.string())!!.value).openStream().use {
+                        PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                    }
+                    enqueueNext()
+                } catch (e: Exception) {
+
                 }
-                enqueueNext()
             }
         } else {
             fetch.addListener(object : AbstractFetchListener() {
