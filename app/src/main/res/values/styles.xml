@@ -15,7 +15,7 @@
         <item name="colorButtonNormal">@color/secondaryDark</item>
         <item name="android:dialogTheme">@style/DialogDark</item>
         <item name="alertDialogTheme">@style/DialogDark</item>
-        <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
 
     <style name="BaseLightTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -33,7 +33,7 @@
         <item name="colorButtonNormal">@color/secondaryLight</item>
         <item name="android:dialogTheme">@style/DialogLight</item>
         <item name="alertDialogTheme">@style/DialogLight</item>
-        <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
 
     <style name="BaseAmoledTheme" parent="Theme.AppCompat.NoActionBar" >
@@ -51,7 +51,7 @@
         <item name="colorButtonNormal">@color/secondaryAmoled</item>
         <item name="android:dialogTheme">@style/DialogAmoled</item>
         <item name="alertDialogTheme">@style/DialogAmoled</item>
-        <item name="android:radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
 
     <style name="AmoledTheme" parent="BaseAmoledTheme" />
@@ -97,21 +97,21 @@
         <item name="android:colorBackground">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorButtonNormal">@color/secondaryDark</item>
-        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
 
     <style name="BottomSheetLight" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="android:colorBackground">@color/primaryLight</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorButtonNormal">@color/secondaryLight</item>
-        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
 
     <style name="BottomSheetAmoled" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="android:colorBackground">@android:color/black</item>
         <item name="colorAccent">@android:color/white</item>
         <item name="colorButtonNormal">@color/secondaryAmoled</item>
-        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
 
     <style name="DialogDark" parent="Theme.MaterialComponents.Dialog">
@@ -135,7 +135,7 @@
     <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">?attr/textColor</item>
     </style>
-    
+
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
@@ -209,12 +209,18 @@
         <item name="android:background">?android:colorBackground</item>
     </style>
 
-    <style name="VideoProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="VideoProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">3dp</item>
         <item name="android:max">100</item>
         <item name="android:scaleY">1.5</item>
         <item name="android:layoutDirection" tools:ignore="NewApi">ltr</item>
+    </style>
+
+    <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
     </style>
 
 </resources>

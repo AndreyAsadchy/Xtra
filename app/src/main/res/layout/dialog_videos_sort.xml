@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp">
+    android:padding="5dp">
 
     <RadioGroup
         android:id="@+id/sort"
@@ -20,14 +20,12 @@
 
         <RadioButton
             android:id="@+id/time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/upload_date"/>
 
         <RadioButton
             android:id="@+id/views"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/view_count"/>
     </RadioGroup>
 
@@ -46,26 +44,22 @@
 
         <RadioButton
             android:id="@+id/today"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/today"/>
 
         <RadioButton
             android:id="@+id/week"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/this_week"/>
 
         <RadioButton
             android:id="@+id/month"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/this_month"/>
 
         <RadioButton
             android:id="@+id/all"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/all_time"/>
 
     </RadioGroup>

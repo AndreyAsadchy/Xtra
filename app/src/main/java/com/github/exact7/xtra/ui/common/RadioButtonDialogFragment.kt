@@ -43,7 +43,8 @@ class RadioButtonDialogFragment : ExpandingBottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val context = requireContext()
         val arguments = requireArguments()
-        val radioGroup = RadioGroup(context).apply { layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT) }
+        val layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        val radioGroup = RadioGroup(context).also { it.layoutParams = layoutParams }
         val checkedId = arguments.getInt(CHECKED)
         val clickListener = View.OnClickListener { v ->
             val clickedId = v.id
@@ -60,7 +61,7 @@ class RadioButtonDialogFragment : ExpandingBottomSheetDialogFragment() {
                 tag = tags?.getOrNull(index)
                 setOnClickListener(clickListener)
             }
-            radioGroup.addView(button, MATCH_PARENT, WRAP_CONTENT)
+            radioGroup.addView(button, layoutParams)
         }
         radioGroup.check(checkedId)
         return radioGroup

@@ -3,12 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp">
+    android:padding="5dp">
 
     <RadioGroup
         android:id="@+id/sort"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="match_parent"
@@ -20,20 +20,17 @@
 
         <RadioButton
             android:id="@+id/time_followed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/time_followed"/>
 
         <RadioButton
             android:id="@+id/alphabetically"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/alphabetically"/>
 
         <RadioButton
             android:id="@+id/last_broadcast"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/last_broadcast"/>
     </RadioGroup>
 
@@ -52,14 +49,12 @@
 
         <RadioButton
             android:id="@+id/newest_first"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/descending"/>
 
         <RadioButton
             android:id="@+id/oldest_first"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButton"
             android:text="@string/ascending"/>
 
     </RadioGroup>
