@@ -13,6 +13,7 @@ import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.player.BasePlayerFragment
 import com.github.exact7.xtra.ui.player.PlayerMode
 import com.github.exact7.xtra.util.FragmentUtils
+import com.github.exact7.xtra.util.TwitchApiHelper
 import com.github.exact7.xtra.util.disable
 import com.github.exact7.xtra.util.enable
 import kotlinx.android.synthetic.main.player_stream.*
@@ -59,6 +60,9 @@ class StreamPlayerFragment : BasePlayerFragment() {
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {
             if (it) settings.enable() else settings.disable()
+        })
+        viewModel.stream.observe(viewLifecycleOwner, Observer {
+            viewers.text = TwitchApiHelper.formatCount(it.viewers)
         })
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex)

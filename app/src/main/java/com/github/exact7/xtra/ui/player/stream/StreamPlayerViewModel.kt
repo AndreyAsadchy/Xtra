@@ -1,6 +1,8 @@
 package com.github.exact7.xtra.ui.player.stream
 
 import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -17,6 +19,8 @@ import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
 import com.github.exact7.xtra.util.toast
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,13 +29,18 @@ class StreamPlayerViewModel @Inject constructor(
         private val playerRepository: PlayerRepository,
         repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
-    private lateinit var stream: Stream
+    private val _stream = MutableLiveData<Stream>()
+    val stream: LiveData<Stream>
+        get() = _stream
     override val channelInfo: Pair<String, String>
-        get() = stream.channel.id to stream.channel.displayName
+        get() {
+            val s = _stream.value!!
+            return s.channel.id to s.channel.displayName
+        }
 
     fun startStream(stream: Stream) {
-        if (!this::stream.isInitialized) {
-            this.stream = stream
+        if (_stream.value == null) {
+            _stream.value = stream
             viewModelScope.launch {
                 try {
                     val uri = playerRepository.loadStreamPlaylist(stream.channel.name)
@@ -42,6 +51,13 @@ class StreamPlayerViewModel @Inject constructor(
                             .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
                             .createMediaSource(uri)
                     play()
+                    launch {
+                        while (isActive) {
+                            val s = repository.loadStream(stream.channel.id).stream ?: break
+                            _stream.postValue(s)
+                            delay(300000L)
+                        }
+                    }
                 } catch (e: Exception) {
                     val context = getApplication<Application>()
                     context.toast(R.string.error_stream)
@@ -57,7 +73,8 @@ class StreamPlayerViewModel @Inject constructor(
             index < qualities.size - 2 -> setVideoQuality(index)
             index < qualities.size - 1 -> {
                 (player.currentManifest as? HlsManifest)?.let {
-                    startBackgroundAudio(helper.urls.values.last(), stream.channel.status, stream.channel.displayName, stream.channel.logo, false, AudioPlayerService.TYPE_STREAM, null)
+                    val s = _stream.value!!
+                    startBackgroundAudio(helper.urls.values.last(), s.channel.status, s.channel.displayName, s.channel.logo, false, AudioPlayerService.TYPE_STREAM, null)
                     _playerMode.value = AUDIO_ONLY
                 }
             }

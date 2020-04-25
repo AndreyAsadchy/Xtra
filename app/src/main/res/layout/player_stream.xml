@@ -44,20 +44,26 @@
 
     </LinearLayout>
 
-    <ImageView
-        style="@style/Player.Viewers"
-        android:layout_marginStart="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"/>
-
-    <TextView
-        android:id="@+id/viewersCount"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="7dp"
         android:layout_alignParentBottom="true"
-        tools:text="13.3K"/>
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        tools:ignore="RelativeOverlap">
+
+        <ImageView
+            style="@style/Player.Viewers" />
+
+        <TextView
+            android:id="@+id/viewers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            tools:text="13.3K" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
