@@ -6,6 +6,13 @@
         <item>@string/clips</item>
     </string-array>
 
+    <string-array name="spinnerFollowed">
+        <item>@string/live</item>
+        <item>@string/videos</item>
+        <item>@string/clips</item>
+        <item>@string/channels</item>
+    </string-array>
+
     <string-array name="themeEntries">
         <item>@string/dark</item>
         <item>@string/amoled</item>

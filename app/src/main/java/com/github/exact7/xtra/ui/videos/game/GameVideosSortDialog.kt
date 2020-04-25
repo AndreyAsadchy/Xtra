@@ -14,6 +14,8 @@ import com.github.exact7.xtra.model.kraken.video.Period.DAY
 import com.github.exact7.xtra.model.kraken.video.Period.MONTH
 import com.github.exact7.xtra.model.kraken.video.Period.WEEK
 import com.github.exact7.xtra.model.kraken.video.Sort
+import com.github.exact7.xtra.model.kraken.video.Sort.TIME
+import com.github.exact7.xtra.model.kraken.video.Sort.VIEWS
 import com.github.exact7.xtra.ui.common.ExpandingBottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_videos_sort.*
 
@@ -49,7 +51,7 @@ class GameVideosSortDialog : ExpandingBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args = requireArguments()
-        val originalSortId = if (args.getSerializable(SORT) as Sort == Sort.TIME) R.id.time else R.id.views
+        val originalSortId = if (args.getSerializable(SORT) as Sort == TIME) R.id.time else R.id.views
         val originalPeriodId = when (args.getSerializable(PERIOD) as Period) {
             DAY -> R.id.today
             WEEK -> R.id.week
@@ -65,14 +67,13 @@ class GameVideosSortDialog : ExpandingBottomSheetDialogFragment() {
                 val sortBtn = view.findViewById<RadioButton>(checkedSortId)
                 val periodBtn = view.findViewById<RadioButton>(checkedPeriodId)
                 listener.onChange(
-                        if (checkedSortId == R.id.time) Sort.TIME else Sort.VIEWS,
+                        if (checkedSortId == R.id.time) TIME else VIEWS,
                         sortBtn.text,
                         when (checkedPeriodId) {
                             R.id.today -> DAY
                             R.id.week -> WEEK
                             R.id.month -> MONTH
-                            R.id.all -> ALL
-                            else -> throw IllegalStateException()
+                            else -> ALL
                         },
                         periodBtn.text)
             }

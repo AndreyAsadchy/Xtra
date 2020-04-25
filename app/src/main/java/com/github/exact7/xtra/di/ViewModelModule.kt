@@ -10,6 +10,7 @@ import com.github.exact7.xtra.ui.common.GenericViewModelFactory
 import com.github.exact7.xtra.ui.download.ClipDownloadViewModel
 import com.github.exact7.xtra.ui.download.VideoDownloadViewModel
 import com.github.exact7.xtra.ui.downloads.DownloadsViewModel
+import com.github.exact7.xtra.ui.follow.channels.FollowedChannelsViewModel
 import com.github.exact7.xtra.ui.games.GamesViewModel
 import com.github.exact7.xtra.ui.main.MainViewModel
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerViewModel
@@ -144,4 +145,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChatViewModel::class)
     abstract fun bindChatViewModel(chatViewModel: ChatViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FollowedChannelsViewModel::class)
+    abstract fun bindFollowedChannelsViewModel(followedChannelsViewModel: FollowedChannelsViewModel): ViewModel
 }

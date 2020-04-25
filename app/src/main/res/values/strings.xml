@@ -170,4 +170,13 @@
     <string name="to_enter_url">Enter url</string>
     <string name="enter_url">Enter url</string>
     <string name="invalid_url">Invalid url</string>
+    <string name="sort_and_order">Sort by: %1$s. Order: %2$s</string>
+    <string name="time_followed">Time followed</string>
+    <string name="alphabetically">Alphabetically</string>
+    <string name="last_broadcast">Last broadcast</string>
+    <string name="order">Order</string>
+    <string name="descending">Descending</string>
+    <string name="ascending">Ascending</string>
+    <string name="compact_streams_title">Compact followed streams</string>
+    <string name="compact_streams_description">Don\'t show stream previews</string>
 </resources>

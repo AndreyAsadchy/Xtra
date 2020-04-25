@@ -1,13 +1,13 @@
 package com.github.exact7.xtra.ui.settings
 
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.preference.ListPreference
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SeekBarPreference
@@ -17,8 +17,6 @@ import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
 import com.github.exact7.xtra.util.applyTheme
-import com.github.exact7.xtra.util.isInLandscapeOrientation
-import com.github.exact7.xtra.util.isInPortraitOrientation
 import com.github.exact7.xtra.util.prefs
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -47,61 +45,73 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
+
+        private var changed = false
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            changed = savedInstanceState?.getBoolean(KEY_CHANGED) == true
+            if (changed) {
+                requireActivity().setResult(Activity.RESULT_OK)
+            }
+        }
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             val activity = requireActivity()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE)!!.isVisible = true
+            }
+
             findPreference<ListPreference>(C.THEME)!!.setOnPreferenceChangeListener { _, _ ->
+                changed = true
                 activity.apply {
                     applyTheme()
                     recreate()
                 }
                 true
             }
-            val resultIntent = Intent()
             findPreference<SeekBarPreference>("chatWidth")!!.setOnPreferenceChangeListener { _, newValue ->
+                setResult()
                 val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(activity, newValue as Int)
                 activity.prefs().edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
-                activity.setResult(Activity.RESULT_OK, resultIntent.putExtra(C.LANDSCAPE_CHAT_WIDTH, chatWidth))
                 true
             }
-            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT)!!.setOnPreferenceChangeListener { _, _ ->
-                activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("shouldRecreate", activity.isInPortraitOrientation))
+
+            val changeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                setResult()
                 true
             }
-            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT)!!.setOnPreferenceChangeListener { _, _ ->
-                activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("shouldRecreate", activity.isInLandscapeOrientation))
-                true
+
+            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
+            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
+            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.onPreferenceChangeListener = changeListener
+            findPreference<SwitchPreferenceCompat>(C.COMPACT_STREAMS)!!.onPreferenceChangeListener = changeListener
+            findPreference<ListPreference>("playerForward")!!.onPreferenceChangeListener = changeListener
+            findPreference<ListPreference>("playerRewind")!!.onPreferenceChangeListener = changeListener
+        }
+
+        override fun onSaveInstanceState(outState: Bundle) {
+            outState.putBoolean(KEY_CHANGED, changed)
+            super.onSaveInstanceState(outState)
+        }
+
+        private fun setResult() {
+            if (!changed) {
+                changed = true
+                requireActivity().setResult(Activity.RESULT_OK)
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
-                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE)!!.isVisible = true
-            }
-            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.apply {
-                val originalValue = isChecked
-                setOnPreferenceChangeListener { _, newValue ->
-                    activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedAnimatedEmotes", newValue != originalValue))
-                    true
-                }
-            }
-            findPreference<ListPreference>("playerForward")!!.apply {
-                val originalValue = value
-                setOnPreferenceChangeListener { _, newValue ->
-                    activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedPlayerForward", newValue != originalValue))
-                    true
-                }
-            }
-            findPreference<ListPreference>("playerRewind")!!.apply {
-                val originalValue = value
-                setOnPreferenceChangeListener { _, newValue ->
-                    activity.setResult(Activity.RESULT_OK, resultIntent.putExtra("changedPlayerRewind", newValue != originalValue))
-                    true
-                }
-            }
+        }
+
+        companion object {
+            const val KEY_CHANGED = "changed"
         }
     }
 
-    class SettingsSubScreenFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey)
-        }
-    }
+//    class SettingsSubScreenFragment : PreferenceFragmentCompat() {
+//        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+//            setPreferencesFromResource(R.xml.root_preferences, rootKey)
+//        }
+//    }
 }

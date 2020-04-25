@@ -4,6 +4,8 @@ import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.clip.Period
+import com.github.exact7.xtra.model.kraken.follows.Follow
+import com.github.exact7.xtra.model.kraken.follows.Order
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.game.GameWrapper
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -19,7 +21,7 @@ interface TwitchService {
     fun loadTopGames(): Listing<GameWrapper>
     suspend fun loadStream(channelId: String): StreamWrapper
     fun loadStreams(game: String?, languages: String?, streamType: StreamType): Listing<Stream>
-    fun loadFollowedStreams(userToken: String, streamType: StreamType): Listing<Stream>
+    fun loadFollowedStreams(userToken: String, streamType: StreamType, thumbnailsEnabled: Boolean): Listing<Stream>
     fun loadClips(channelName: String?, gameName: String?, languages: String?, period: Period?, trending: Boolean): Listing<Clip>
     fun loadFollowedClips(userToken: String, trending: Boolean): Listing<Clip>
     suspend fun loadVideo(videoId: String): Video
@@ -36,4 +38,5 @@ interface TwitchService {
     suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean
     suspend fun unfollowChannel(userToken: String, userId: String, channelId: String): Boolean
     suspend fun loadGames(query: String): List<Game>
+    fun loadFollowedChannels(userId: String, sort: com.github.exact7.xtra.model.kraken.follows.Sort, order: Order): Listing<Follow>
 }

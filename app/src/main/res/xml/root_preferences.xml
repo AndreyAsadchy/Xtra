@@ -67,15 +67,6 @@
         app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:defaultValue="3"
-        android:key="downloadNetworkPreference"
-        android:entries="@array/networkDownloadPreferencesEntries"
-        android:entryValues="@array/networkDownloadPreferencesValues"
-        android:summary="%s"
-        android:title="@string/download_preference"
-        app:iconSpaceReserved="false" />
-
-    <ListPreference
         android:defaultValue="5000"
         android:key="playerRewind"
         android:entries="@array/playerSeekEntries"
@@ -109,9 +100,25 @@
         app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="compactStreams"
+        android:title="@string/compact_streams_title"
+        android:summary="@string/compact_streams_description"
+        app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="showChangelogs"
         android:title="@string/show_changelogs"
+        app:iconSpaceReserved="false" />
+
+    <ListPreference
+        android:defaultValue="3"
+        android:key="downloadNetworkPreference"
+        android:entries="@array/networkDownloadPreferencesEntries"
+        android:entryValues="@array/networkDownloadPreferencesValues"
+        android:summary="%s"
+        android:title="@string/download_preference"
         app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

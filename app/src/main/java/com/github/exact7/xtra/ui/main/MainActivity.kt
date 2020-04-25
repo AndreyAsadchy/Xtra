@@ -105,8 +105,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     }
     private val isSearchOpened
         get() = fragNavController.currentFrag is SearchFragment
-    var currentTheme = "0"
-        private set
     private lateinit var prefs: SharedPreferences
 
     //Lifecycle methods
@@ -116,7 +114,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         prefs = prefs()
         val notFirstLaunch = !prefs.getBoolean(C.FIRST_LAUNCH, true)
         if (notFirstLaunch) {
-            currentTheme = applyTheme()
+            applyTheme()
         } else {
             prefs.edit {
                 putBoolean(C.FIRST_LAUNCH, false)
@@ -125,6 +123,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 putInt(C.LANDSCAPE_CHAT_WIDTH, DisplayUtils.calculateLandscapeWidthByPercent(this@MainActivity, 25))
             }
             PreferenceManager.setDefaultValues(this@MainActivity, R.xml.root_preferences, false)
+
+            var currentTheme = "0"
             AlertDialog.Builder(this)
                     .setSingleChoiceItems(arrayOf(getString(R.string.dark), getString(R.string.amoled), getString(R.string.light)), 0) { _, which -> currentTheme = which.toString() }
                     .setPositiveButton(android.R.string.ok) { _, _ ->

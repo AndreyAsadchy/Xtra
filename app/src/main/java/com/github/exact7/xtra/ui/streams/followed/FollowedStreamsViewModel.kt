@@ -13,14 +13,15 @@ import javax.inject.Inject
 
 class FollowedStreamsViewModel @Inject constructor(val repository: TwitchService) : PagedListViewModel<Stream>() {
 
-    private val user = MutableLiveData<User>()
-    override val result: LiveData<Listing<Stream>> = Transformations.map(user) {
-        repository.loadFollowedStreams(it.token, StreamType.ALL)
+    private val filter = MutableLiveData<Pair<User, Boolean>>()
+    override val result: LiveData<Listing<Stream>> = Transformations.map(filter) {
+        repository.loadFollowedStreams(it.first.token, StreamType.ALL, it.second)
     }
 
-    fun setUser(user: User) {
-        if (this.user.value == null) {
-            this.user.value  = user
+    fun init(user: User, thumbnailsEnabled: Boolean) {
+        val value = filter.value
+        if (value == null || value.second != thumbnailsEnabled) {
+            filter.value = user to thumbnailsEnabled
         }
     }
 }

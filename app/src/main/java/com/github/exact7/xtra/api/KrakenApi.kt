@@ -4,6 +4,8 @@ import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.ChannelsSearchResponse
 import com.github.exact7.xtra.model.kraken.clip.ClipsResponse
 import com.github.exact7.xtra.model.kraken.clip.Period
+import com.github.exact7.xtra.model.kraken.follows.FollowedChannelsResponse
+import com.github.exact7.xtra.model.kraken.follows.Order
 import com.github.exact7.xtra.model.kraken.game.GamesResponse
 import com.github.exact7.xtra.model.kraken.game.GamesSearchResponse
 import com.github.exact7.xtra.model.kraken.stream.StreamType
@@ -86,4 +88,7 @@ interface KrakenApi {
 
     @DELETE("users/{id}/follows/channels/{channelId}")
     suspend fun unfollowChannel(@Header("Authorization") token: String, @Path("id") userId: String, @Path("channelId") channelId: String): Response<ResponseBody>
+
+    @GET("users/{id}/follows/channels")
+    fun getFollowedChannels(@Path("id") userId: String, @Query("sortby") sort: com.github.exact7.xtra.model.kraken.follows.Sort, @Query("direction") order: Order, @Query("limit") limit: Int, @Query("offset") offset: Int): Call<FollowedChannelsResponse>
 }

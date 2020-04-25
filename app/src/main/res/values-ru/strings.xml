@@ -117,7 +117,7 @@
     <string name="chat">Чат</string>
     <string name="recent_emotes">Недавние</string>
     <string name="notification_playback_channel_title">Воспроизведение</string>
-    <string name="channels">Пользователи</string>
+    <string name="channels">Каналы</string>
     <string name="video">Видео</string>
     <string name="watch_video">Смотреть полное видео</string>
     <string name="new_update">Новое обновление</string>
@@ -166,4 +166,13 @@
     <string name="to_enter_url">Ввести ссылку</string>
     <string name="enter_url">Введите ссылку</string>
     <string name="invalid_url">Некорректная ссылка</string>
+    <string name="sort_and_order">Сортировать: %1$s. Порядок: %2$s</string>
+    <string name="time_followed">Дата подписки</string>
+    <string name="alphabetically">По алфавиту</string>
+    <string name="last_broadcast">Последняя трансляция</string>
+    <string name="order">Порядок</string>
+    <string name="descending">По убыванию</string>
+    <string name="ascending">По возрастанию</string>
+    <string name="compact_streams_title">Компактный интерфейс трансляций на экране подписок</string>
+    <string name="compact_streams_description">Не показывать предварительный просмотр</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.menu
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -14,8 +15,6 @@ import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.ui.login.LoginActivity
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.settings.SettingsActivity
-import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.prefs
 import kotlinx.android.synthetic.main.fragment_menu.*
 
 class MenuFragment : Fragment() {
@@ -48,19 +47,8 @@ class MenuFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val activity = requireActivity() as MainActivity
-        if (activity.currentTheme == activity.prefs().getString(C.THEME, "0")) { //TODO change to listener?
-            data?.let {
-                if (it.getBooleanExtra("shouldRecreate", false) ||
-                        (it.getIntExtra(C.LANDSCAPE_CHAT_WIDTH, -1) != -1 && activity.playerFragment != null) ||
-                        it.getBooleanExtra("changedPlayerForward", false) ||
-                        it.getBooleanExtra("changedPlayerRewind", false) ||
-                        it.getBooleanExtra("changedAnimatedEmotes", false)) {
-                    activity.recreate()
-                }
-            }
-        } else {
-            activity.recreate()
+        if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
+            requireActivity().recreate()
         }
     }
 }

@@ -7,6 +7,8 @@ import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
 import com.github.exact7.xtra.model.kraken.channel.Channel
 import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.model.kraken.follows.Follow
+import com.github.exact7.xtra.model.kraken.follows.Order
 import com.github.exact7.xtra.model.kraken.game.Game
 import com.github.exact7.xtra.model.kraken.game.GameWrapper
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -21,6 +23,7 @@ import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.repository.datasource.ChannelVideosDataSource
 import com.github.exact7.xtra.repository.datasource.ChannelsSearchDataSource
 import com.github.exact7.xtra.repository.datasource.ClipsDataSource
+import com.github.exact7.xtra.repository.datasource.FollowedChannelsDataSource
 import com.github.exact7.xtra.repository.datasource.FollowedClipsDataSource
 import com.github.exact7.xtra.repository.datasource.FollowedStreamsDataSource
 import com.github.exact7.xtra.repository.datasource.FollowedVideosDataSource
@@ -67,14 +70,19 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override fun loadFollowedStreams(userToken: String, streamType: StreamType): Listing<Stream> {
+    override fun loadFollowedStreams(userToken: String, streamType: StreamType, thumbnailsEnabled: Boolean): Listing<Stream> {
         val factory = FollowedStreamsDataSource.Factory(userToken, streamType, api, networkExecutor)
-        val config = PagedList.Config.Builder()
-                .setPageSize(10)
-                .setInitialLoadSizeHint(15)
-                .setPrefetchDistance(3)
-                .setEnablePlaceholders(false)
-                .build()
+        val builder = PagedList.Config.Builder().setEnablePlaceholders(false)
+        if (thumbnailsEnabled) {
+            builder.setPageSize(10)
+                    .setInitialLoadSizeHint(15)
+                    .setPrefetchDistance(3)
+        } else {
+            builder.setPageSize(30)
+                    .setInitialLoadSizeHint(30)
+                    .setPrefetchDistance(10)
+        }
+        val config = builder.build()
         return Listing.create(factory, config)
     }
 
@@ -219,5 +227,16 @@ class KrakenRepository @Inject constructor(
     override suspend fun loadGames(query: String): List<Game> = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading games containing: $query")
         api.getGames(query).games ?: emptyList()
+    }
+
+    override fun loadFollowedChannels(userId: String, sort: com.github.exact7.xtra.model.kraken.follows.Sort, order: Order): Listing<Follow> {
+        val factory = FollowedChannelsDataSource.Factory(userId, sort, order, api, networkExecutor)
+        val config = PagedList.Config.Builder()
+                .setPageSize(40)
+                .setInitialLoadSizeHint(40)
+                .setPrefetchDistance(10)
+                .setEnablePlaceholders(false)
+                .build()
+        return Listing.create(factory, config)
     }
 }

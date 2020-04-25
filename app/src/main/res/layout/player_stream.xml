@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <View
         style="@style/Player.Shadow" />
@@ -42,6 +43,21 @@
             />
 
     </LinearLayout>
+
+    <ImageView
+        style="@style/Player.Viewers"
+        android:layout_marginStart="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        android:id="@+id/viewersCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        tools:text="13.3K"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

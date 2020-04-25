@@ -195,4 +195,8 @@
         <item name="android:alpha">0.4</item>
     </style>
 
+    <style name="Player.Viewers" parent="Player.SmallImage">
+        <item name="android:src">@drawable/baseline_person_black_24</item>
+    </style>
+
 </resources>
