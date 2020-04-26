@@ -8,12 +8,12 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Channel(
         val mature: Boolean,
-        val status: String,
+        val status: String?,
         @SerializedName("broadcaster_language")
         val broadcasterLanguage: String,
         @SerializedName("display_name")
         override val displayName: String,
-        val game: String,
+        val game: String?,
         val language: String,
         @SerializedName("_id")
         override val id: String,
@@ -35,7 +35,7 @@ data class Channel(
         val followers: Int,
         @SerializedName("broadcaster_type")
         val broadcasterType: String,
-        val description: String,
+        val description: String?,
         @SerializedName("private_video")
         val privateVideo: Boolean,
         @SerializedName("privacy_options_enabled")

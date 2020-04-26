@@ -30,7 +30,6 @@ abstract class BasePageKeyedDataSource<T>(private val retryExecutor: Executor) :
             retry = null
         } catch (e: Exception) {
             Log.e(tag, "Error loading data", e)
-            e.printStackTrace()
             retry = { loadInitial(params, callback) }
             loadingState.postValue(LoadingState.FAILED)
         }
@@ -47,7 +46,6 @@ abstract class BasePageKeyedDataSource<T>(private val retryExecutor: Executor) :
             retry = null
         } catch (e: Exception) {
             Log.e(tag, "Error loading data", e)
-            e.printStackTrace()
             retry = { loadAfter(params, callback) }
             pagingState.postValue(LoadingState.FAILED)
         }

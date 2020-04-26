@@ -199,7 +199,7 @@ class AudioPlayerService : Service() {
     }
 
     private inner class DescriptionAdapter(
-            private val text: String,
+            private val text: String?,
             private val title: String,
             private val imageUrl: String) : PlayerNotificationManager.MediaDescriptionAdapter {
 

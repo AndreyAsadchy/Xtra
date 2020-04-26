@@ -166,8 +166,7 @@ class XtraModule {
                             .build()
                     connectionSpecs(arrayListOf(cs))
                 } catch (e: Exception) {
-                    e.printStackTrace()
-                    Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2 compatibility")
+                    Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2 compatibility", e)
                 }
             }
             connectTimeout(5, TimeUnit.MINUTES)

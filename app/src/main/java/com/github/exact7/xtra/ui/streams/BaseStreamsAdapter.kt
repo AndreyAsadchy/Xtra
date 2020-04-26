@@ -49,7 +49,7 @@ abstract class BaseStreamsAdapter(
                 setOnClickListener(channelListener)
                 text = item.channel.displayName
             }
-            title.text = item.channel.status.trim()
+            title.text = item.channel.status?.trim()
             gameName.text = item.game
         }
     }

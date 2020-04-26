@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.model.kraken.follows
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -21,7 +22,7 @@ data class Follow(
         @SerializedName("display_name")
         override val displayName: String,
         val followers: Int,
-        val game: String,
+        val game: String?,
         @SerializedName("_id")
         override val id: String,
         val language: String,
@@ -30,14 +31,14 @@ data class Follow(
         override val name: String,
         val partner: Boolean,
         @SerializedName("profile_banner")
-        val profileBanner: String,
+        val profileBanner: String?,
         @SerializedName("profile_banner_background_color")
         val profileBannerBackgroundColor: String?,
-        val status: String,
+        val status: String?,
         @SerializedName("updated_at")
         val updatedAt: String,
         val url: String,
         @SerializedName("video_banner")
-        val videoBanner: String,
-        val views: Int) : com.github.exact7.xtra.model.kraken.Channel
+        val videoBanner: String?,
+        val views: Int) : com.github.exact7.xtra.model.kraken.Channel, Parcelable
 }

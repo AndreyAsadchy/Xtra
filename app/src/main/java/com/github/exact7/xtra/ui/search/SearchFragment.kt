@@ -5,17 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.ui.Utils
 import com.github.exact7.xtra.ui.common.pagers.MediaPagerFragment
 import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchFragment : MediaPagerFragment() {
 
@@ -53,11 +51,9 @@ class SearchFragment : MediaPagerFragment() {
             override fun onQueryTextChange(newText: String): Boolean {
                 job?.cancel()
                 if (newText.isNotEmpty()) {
-                    job = GlobalScope.launch {
+                    job = lifecycleScope.launch {
                         delay(750)
-                        withContext(Dispatchers.Main) {
-                            (currentFragment as? Searchable)?.search(newText)
-                        }
+                        (currentFragment as? Searchable)?.search(newText)
                     }
                 } else {
                     (currentFragment as? Searchable)?.search(newText) //might be null on rotation, so as?
