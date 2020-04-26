@@ -128,13 +128,15 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
-        <b>April 24th, 1.4.6-beta2</b>
-\n- Added a new workaround for the issue with logging in. Click the \"Having trouble logging in\" button
-\n- Bug fixes
-        \n\n<b>April 18th, 1.4.6-beta1</b>
-\n- <b>Added a more detailed error message for those who are having trouble with logging in. Please let me know what the problem is</b>
+        <b>April 26th, 1.4.6</b>
+\n- Fixed the problem with logging in on some newer devices. For older ones added a new workaround, click the \"Having trouble logging in\" button
+\n- Added ability to see the channels that you follow. Click the dropdown menu and select \"Channels\"
+\n- Added double tap to show/hide chat
+\n- Added viewer count to the stream
+\n- Added compact layout for followed streams which doesn't show previews. Can be enabled in the settings
 \n- Removed outdated global BTTV and FFZ emotes, now they will be updating automatically
-\n- Behind the scenes improvements and bug fixes
+\n- Fixed sleep timer not working correctly in audio only mode
+\n- Other bug fixes and stability improvements
         \n\n<b>January 16th, 1.4.5</b>
 \n- <b>Fixed login error \"Error loading web browser\"</b>
 \n- Fixed when emotes sometimes were cutting text or not showing at all
