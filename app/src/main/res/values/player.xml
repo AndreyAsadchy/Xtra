@@ -196,9 +196,9 @@
     </style>
 
     <style name="Player.Viewers" parent="Player.Image">
-        <item name="android:layout_width">34dp</item>
-        <item name="android:layout_height">34dp</item>
-        <item name="android:src">@drawable/baseline_person_black_24</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:src">@drawable/baseline_person_black_36</item>
     </style>
 
 </resources>

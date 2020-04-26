@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
@@ -31,6 +32,7 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.ui.player.clip.ClipPlayerFragment
 import com.github.exact7.xtra.ui.player.offline.OfflinePlayerFragment
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerFragment
+import com.github.exact7.xtra.ui.view.CustomPlayerView
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.LifecycleListener
@@ -43,14 +45,13 @@ import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.toast
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 
 
 @Suppress("PLUGIN_WARNING")
 abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment, SleepTimerDialog.OnSleepTimerStartedListener, AlertDialogFragment.OnDialogResultListener {
 
     private lateinit var slidingLayout: SlidingLayout
-    private lateinit var playerView: PlayerView
+    private lateinit var playerView: CustomPlayerView
     private lateinit var chatLayout: ViewGroup
     private lateinit var fullscreenToggle: ImageButton
     private lateinit var showChat: ImageButton
@@ -117,6 +118,16 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             playerWidth = playerView.width
             playerHeight = playerView.height
         }
+        val isNotOfflinePlayer = this !is OfflinePlayerFragment
+        playerView.setOnDoubleTapListener {
+            if (!isPortrait && slidingLayout.isMaximized && isNotOfflinePlayer) {
+                if (chatLayout.isVisible) {
+                    hideChat()
+                } else {
+                    showChat()
+                }
+            }
+        }
         playerHeightPortrait = prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0)
         chatWidthLandscape = prefs.getInt(C.LANDSCAPE_CHAT_WIDTH, 0)
         hideChat = view.findViewById<ImageButton>(R.id.hideChat).apply {
@@ -138,7 +149,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
         }
         initLayout()
-        if (this !is OfflinePlayerFragment) {
+        if (isNotOfflinePlayer) {
             view.findViewById<ImageButton>(R.id.settings).disable()
             view.findViewById<TextView>(R.id.channel).apply {
                 text = channel.displayName
@@ -200,7 +211,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
             }
             view.findViewById<ImageButton>(com.google.android.exoplayer2.ui.R.id.exo_rew).setImageResource(rewindImage)
             view.findViewById<ImageButton>(com.google.android.exoplayer2.ui.R.id.exo_ffwd).setImageResource(forwardImage)
-            if (this !is OfflinePlayerFragment) {
+            if (isNotOfflinePlayer) {
                 view.findViewById<ImageButton>(R.id.download).disable()
             }
         }
@@ -390,6 +401,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         showChat.visible()
         chatLayout.gone()
         userPrefs.edit { putBoolean(KEY_CHAT_OPENED, false) }
+        slidingLayout.maximizedSecondViewVisibility = View.GONE
     }
 
     private fun showChat() {
@@ -397,6 +409,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         showChat.gone()
         chatLayout.visible()
         userPrefs.edit { putBoolean(KEY_CHAT_OPENED, true) }
+        slidingLayout.maximizedSecondViewVisibility = View.VISIBLE
     }
 
     private fun showStatusBar() {

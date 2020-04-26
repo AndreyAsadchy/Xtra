@@ -16,8 +16,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.postDelayed
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.ui.isClick
 import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.isClick
 import com.github.exact7.xtra.util.isKeyboardShown
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
@@ -127,15 +127,14 @@ class SlidingLayout : LinearLayout {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         try {
             if (isAnimating) return true
-            val x = event.x.toInt()
-            val y = event.y.toInt()
-            val isDragViewHit = isViewHit(dragView, x, y)
-            val isSecondViewHit = secondView?.let { isViewHit(it, x, y) } == true
-            val isClick = event.isClick(downTouchLocation)
             if (timeBar?.isPressed == true) {
                 dragView.dispatchTouchEvent(event)
                 return true
             }
+            val x = event.x.toInt()
+            val y = event.y.toInt()
+            val isDragViewHit = isViewHit(dragView, x, y)
+            val isClick = event.isClick(downTouchLocation)
             viewDragHelper.processTouchEvent(event)
             if (isDragViewHit) {
                 if (isMaximized) {
@@ -148,7 +147,7 @@ class SlidingLayout : LinearLayout {
             if (isClick) {
                 performClick()
             }
-            return isDragViewHit || isSecondViewHit
+            return isDragViewHit || secondView?.let { isViewHit(it, x, y) } == true
         } catch (e: Exception) {
 
         }
