@@ -17,7 +17,7 @@ class GamesDataSource(
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<GameWrapper>) {
         loadRange(params, callback) {
-            api.getTopGames(params.loadSize, params.startPosition + 1).games
+            api.getTopGames(params.loadSize, params.startPosition).games
         }
     }
 
