@@ -13,7 +13,6 @@ import com.github.exact7.xtra.ui.common.RadioButtonDialogFragment
 import com.github.exact7.xtra.ui.common.Scrollable
 import com.github.exact7.xtra.ui.download.ClipDownloadDialog
 import com.github.exact7.xtra.ui.download.HasDownloadDialog
-import com.github.exact7.xtra.util.C
 import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 
 abstract class BaseClipsFragment<VM : PagedListViewModel<Clip>> : PagedListFragment<Clip, VM, BasePagedListAdapter<Clip>>(), Scrollable, RadioButtonDialogFragment.OnSortOptionChanged, HasDownloadDialog {
@@ -23,11 +22,6 @@ abstract class BaseClipsFragment<VM : PagedListViewModel<Clip>> : PagedListFragm
     }
 
     var lastSelectedItem: Clip? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lastSelectedItem = savedInstanceState?.getParcelable(C.KEY_LAST_SELECTED_ITEM)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_clips, container, false)

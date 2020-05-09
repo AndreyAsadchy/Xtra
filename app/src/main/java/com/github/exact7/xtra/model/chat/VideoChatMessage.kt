@@ -1,11 +1,7 @@
 package com.github.exact7.xtra.model.chat
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class VideoChatMessage(
         @SerializedName("_id")
         override val id: String,
@@ -27,7 +23,7 @@ data class VideoChatMessage(
         @SerializedName("message")
         val messageObj: Message,
         @SerializedName("more_replies")
-        val moreReplies: Boolean) : ChatMessage, Parcelable {
+        val moreReplies: Boolean) : ChatMessage {
 
     override val userName: String
         get() = commenter.name
@@ -38,19 +34,20 @@ data class VideoChatMessage(
     override val color: String?
         get() = messageObj.userColor
 
+    override val isAction: Boolean
+        get() = messageObj.isAction
+
     override val emotes: List<TwitchEmote>?
         get() = messageObj.emoticons
 
     override val badges: List<Badge>?
         get() = messageObj.userBadges
 
-    @IgnoredOnParcel
     override var subscriberBadge: SubscriberBadge? = null
 
     override val displayName: String
         get() = commenter.displayName
 
-    @Parcelize
     data class Commenter(
             @SerializedName("display_name")
             val displayName: String,
@@ -63,9 +60,8 @@ data class VideoChatMessage(
             val createdAt: String,
             @SerializedName("updated_at")
             val updatedAt: String,
-            val logo: String) : Parcelable
+            val logo: String)
 
-    @Parcelize
     data class Message(
             val body: String,
             val emoticons: List<TwitchEmote>?,
@@ -75,16 +71,15 @@ data class VideoChatMessage(
             @SerializedName("user_badges")
             val userBadges: List<Badge>?,
             @SerializedName("user_color")
-            val userColor: String) : Parcelable {
+            val userColor: String) {
 
-        @Parcelize
-        data class Fragment(val text: String, val emoticon: Emoticon) : Parcelable {
-            @Parcelize
+        data class Fragment(val text: String, val emoticon: Emoticon) {
+
             data class Emoticon(
                     @SerializedName("emoticon_id")
                     val emoticonId: String,
                     @SerializedName("emoticon_set_id")
-                    val emoticonSetId: String) : Parcelable
+                    val emoticonSetId: String)
         }
     }
 }

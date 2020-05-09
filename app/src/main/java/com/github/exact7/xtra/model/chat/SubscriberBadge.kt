@@ -1,10 +1,7 @@
 package com.github.exact7.xtra.model.chat
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class SubscriberBadge(
     @SerializedName("image_url_1x")
     val imageUrl1x: String,
@@ -17,4 +14,4 @@ data class SubscriberBadge(
     @SerializedName("click_action")
     val clickAction: String,
     @SerializedName("click_url")
-    val clickUrl: String) : Parcelable
+    val clickUrl: String)

@@ -33,6 +33,7 @@ class ChatViewPreference(context: Context, attrs: AttributeSet?) : Preference(co
             override val displayName: String = "user1"
             override val message: String = "Hello 4Head Kappa OMEGALUL FeelsGoodMan"
             override val color: String? = null
+            override val isAction: Boolean = false
             override val emotes: List<TwitchEmote>? = listOf(TwitchEmote("354", 6, 10), TwitchEmote("25", 12, 16))
             override val badges: List<Badge>? = null
             override var subscriberBadge: SubscriberBadge? = null
@@ -42,6 +43,7 @@ class ChatViewPreference(context: Context, attrs: AttributeSet?) : Preference(co
             override val displayName: String = "user1"
             override val message: String = "Hello 4Head Kappa OMEGALUL FeelsGoodMan"
             override val color: String? = null
+            override val isAction: Boolean = false
             override val emotes: List<TwitchEmote>? = listOf(TwitchEmote("354", 6, 10), TwitchEmote("25", 12, 16))
             override val badges: List<Badge>? = null
             override var subscriberBadge: SubscriberBadge? = null

@@ -5,7 +5,12 @@ import com.github.exact7.xtra.model.chat.LiveChatMessage
 import com.github.exact7.xtra.model.chat.SubscriberBadge
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.chat.TwitchEmote
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.dropLastWhile
+import kotlin.collections.forEach
 import kotlin.collections.set
 
 private const val TAG = "MessageListenerImpl"
@@ -13,7 +18,7 @@ private const val TAG = "MessageListenerImpl"
 class MessageListenerImpl(
         private val subscriberBadges: SubscriberBadgesResponse?,
         private val callback: OnChatMessageReceivedListener) : LiveChatThread.OnMessageReceivedListener {
-
+    
     override fun onMessage(message: String) {
         val parts = message.split(" ".toRegex(), 2)
         val prefix = parts[0]
@@ -21,8 +26,17 @@ class MessageListenerImpl(
 
         val messageInfo = parts[1] //:<user>!<user>@<user>.tmi.twitch.tv PRIVMSG #<channelName> :<message>
         val userName = messageInfo.substring(1, messageInfo.indexOf("!"))
-        val userMessage = messageInfo.substring(messageInfo.indexOf(":", 44) + 1) //from <message>
-
+        val userMessage: String
+        val isAction: Boolean
+        messageInfo.substring(messageInfo.indexOf(":", 44) + 1).let { //from <message>
+            if (!it.startsWith(ACTION)) {
+                userMessage = it
+                isAction = false
+            } else {
+                userMessage = it.substring(8, it.lastIndex)
+                isAction = true
+            }
+        }
         var emotesList: MutableList<TwitchEmote>? = null
         val emotes = prefixes["emotes"]
         if (emotes != null) {
@@ -57,6 +71,7 @@ class MessageListenerImpl(
                 userName,
                 userMessage,
                 prefixes["color"],
+                isAction,
                 emotesList,
                 badgesList,
                 subscriberBadge,
@@ -91,5 +106,9 @@ class MessageListenerImpl(
             map[kv[0]] = if (kv.size == 2) kv[1] else null
         }
         return map
+    }
+    
+    companion object {
+        const val ACTION = "\u0001ACTION"
     }
 }

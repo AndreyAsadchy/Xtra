@@ -19,7 +19,6 @@ object C {
     const val ASPECT_RATIO_PORTRAIT = "aspectRatioPortrait"
     const val ASPECT_RATIO_LANDSCAPE = "aspectRatioLandscape"
     const val DOWNLOAD_NETWORK_PREFERENCE = "downloadNetworkPreference"
-    const val KEY_LAST_SELECTED_ITEM = "lastSelectedItem"
     const val TWITCH_EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
     const val ANIMATED_EMOTES = "animatedGifEmotes"
     const val SHOW_CHANGELOGS = "showChangelogs"//TODO separate keys for preferences

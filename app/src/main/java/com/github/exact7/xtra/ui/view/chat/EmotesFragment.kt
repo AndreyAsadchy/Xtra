@@ -62,6 +62,6 @@ class EmotesFragment : Fragment() {
         private const val KEY_POSITION = "position"
         private const val KEY_ANIMATE_GIFS = "animateGifs"
 
-        fun newInstance(position: Int, animateGifs: Boolean) = EmotesFragment().apply { arguments = bundleOf("position" to position, KEY_ANIMATE_GIFS to animateGifs) }
+        fun newInstance(position: Int, animateGifs: Boolean) = EmotesFragment().apply { arguments = bundleOf(KEY_POSITION to position, KEY_ANIMATE_GIFS to animateGifs) }
     }
 }

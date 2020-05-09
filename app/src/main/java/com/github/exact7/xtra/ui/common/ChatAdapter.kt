@@ -97,7 +97,21 @@ class ChatAdapter(
             }
         }
         val userName = chatMessage.displayName
-        builder.append(userName).append(": ").append(chatMessage.message)
+        val userNameLength = userName.length
+        val userNameEndIndex = index + userNameLength
+        val originalMessage: String
+        val userNameWithPostfixLength: Int
+        builder.append(userName)
+        if (!chatMessage.isAction) {
+            builder.append(": ")
+            originalMessage = "$userName: ${chatMessage.message}"
+            userNameWithPostfixLength = userNameLength + 2
+        } else {
+            builder.append(" ")
+            originalMessage = "$userName ${chatMessage.message}"
+            userNameWithPostfixLength = userNameLength + 1
+        }
+        builder.append(chatMessage.message)
         val color = chatMessage.color.let { userColor ->
             if (userColor == null) {
                 userColors[userName] ?: getRandomColor().also { userColors[userName] = it }
@@ -106,10 +120,8 @@ class ChatAdapter(
                         ?: Color.parseColor(userColor).also { savedColors[userColor] = it }
             }
         }
-        val userNameLength = userName.length
-        builder.setSpan(ForegroundColorSpan(color), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
-        builder.setSpan(StyleSpan(Typeface.BOLD), index, index + userNameLength, SPAN_EXCLUSIVE_EXCLUSIVE)
-        val originalMessage = "$userName: ${chatMessage.message}"
+        builder.setSpan(ForegroundColorSpan(color), index, userNameEndIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
+        builder.setSpan(StyleSpan(Typeface.BOLD), index, userNameEndIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
         try {
             chatMessage.emotes?.let { emotes ->
                 val copy = emotes.map {
@@ -121,7 +133,7 @@ class ChatAdapter(
                     }
                     TwitchEmote(it.name, realBegin, realEnd)
                 }
-                index += userNameLength + 2
+                index += userNameWithPostfixLength
                 for (e in copy) {
                     val begin = index + e.begin
                     builder.replace(begin, index + e.end + 1, ".")
@@ -146,18 +158,18 @@ class ChatAdapter(
                 val endIndex = builderIndex + length
                 val emote = emotes[value]
                 builderIndex += if (emote == null) {
-                    if (Patterns.WEB_URL.matcher(value).matches()) {
-                        val url = if (value.startsWith("http")) value else "https://$value"
-                        builder.setSpan(URLSpan(url), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    } else {
+                    if (!Patterns.WEB_URL.matcher(value).matches()) {
                         if (value.startsWith('@')) {
                             builder.setSpan(StyleSpan(Typeface.BOLD), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         username?.let {
-                            if (!wasMentioned && value.contains(it, true) && !value.endsWith(':')) {
+                            if (!wasMentioned && value.contains(it, true) && chatMessage.userName != it) {
                                 wasMentioned = true
                             }
                         }
+                    } else {
+                        val url = if (value.startsWith("http")) value else "https://$value"
+                        builder.setSpan(URLSpan(url), builderIndex, endIndex, SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                     length + 1
                 } else {
@@ -175,6 +187,9 @@ class ChatAdapter(
                     emotesFound++
                     2
                 }
+            }
+            if (chatMessage.isAction) {
+                builder.setSpan(ForegroundColorSpan(color), userNameEndIndex + 1, builder.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             if (wasMentioned) {
                 builder.setSpan(ForegroundColorSpan(Color.WHITE), 0, builder.length, SPAN_INCLUSIVE_INCLUSIVE)

@@ -24,7 +24,8 @@ class VideosAdapter(
             override fun areContentsTheSame(oldItem: Video, newItem: Video): Boolean =
                     oldItem.views == newItem.views &&
                             oldItem.preview == newItem.preview &&
-                            oldItem.title == newItem.title
+                            oldItem.title == newItem.title &&
+                            oldItem.length == newItem.length
         }) {
 
     override val layoutId: Int = R.layout.fragment_videos_list_item
