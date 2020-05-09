@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.kraken.follows.Follow
@@ -23,7 +24,7 @@ class FollowedChannelsViewModel @Inject constructor(
         get() = _sortText
     private val filter = MutableLiveData<Filter>()
     override val result: LiveData<Listing<Follow>> = Transformations.map(filter) {
-        repository.loadFollowedChannels(it.user.id, it.sort, it.order)
+        repository.loadFollowedChannels(it.user.id, it.sort, it.order, viewModelScope)
     }
     val sort: Sort
         get() = filter.value!!.sort

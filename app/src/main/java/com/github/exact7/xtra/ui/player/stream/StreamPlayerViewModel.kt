@@ -53,9 +53,13 @@ class StreamPlayerViewModel @Inject constructor(
                     play()
                     launch {
                         while (isActive) {
-                            val s = repository.loadStream(stream.channel.id).stream ?: break
-                            _stream.postValue(s)
-                            delay(300000L)
+                            try {
+                                val s = repository.loadStream(stream.channel.id).stream ?: break
+                                _stream.postValue(s)
+                                delay(300000L)
+                            } catch (e: Exception) {
+                                delay(60000L)
+                            }
                         }
                     }
                 } catch (e: Exception) {

@@ -6,7 +6,7 @@ import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Period
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
-import java.util.concurrent.Executor
+import kotlinx.coroutines.CoroutineScope
 
 class VideosDataSource private constructor(
         private val game: String?,
@@ -15,17 +15,17 @@ class VideosDataSource private constructor(
         private val language: String?,
         private val sort: Sort,
         private val api: KrakenApi,
-        retryExecutor: Executor) : BasePositionalDataSource<Video>(retryExecutor) {
+        coroutineScope: CoroutineScope) : BasePositionalDataSource<Video>(coroutineScope) {
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Video>) {
         loadInitial(params, callback) {
-            api.getTopVideos(game, period, broadcastTypes, language, sort, params.requestedLoadSize, 0).execute().body()!!.videos
+            api.getTopVideos(game, period, broadcastTypes, language, sort, params.requestedLoadSize, 0).videos
         }
     }
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Video>) {
         loadRange(params, callback) {
-            api.getTopVideos(game, period, broadcastTypes, language, sort, params.loadSize, params.startPosition).execute().body()!!.videos
+            api.getTopVideos(game, period, broadcastTypes, language, sort, params.loadSize, params.startPosition).videos
         }
     }
 
@@ -36,9 +36,9 @@ class VideosDataSource private constructor(
             private val language: String?,
             private val sort: Sort,
             private val api: KrakenApi,
-            private val retryExecutor: Executor) : BaseDataSourceFactory<Int, Video, VideosDataSource>() {
+            private val coroutineScope: CoroutineScope) : BaseDataSourceFactory<Int, Video, VideosDataSource>() {
 
         override fun create(): DataSource<Int, Video> =
-                VideosDataSource(game, period, broadcastTypes, language, sort, api, retryExecutor).also(sourceLiveData::postValue)
+                VideosDataSource(game, period, broadcastTypes, language, sort, api, coroutineScope).also(sourceLiveData::postValue)
     }
 }

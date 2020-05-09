@@ -4,19 +4,19 @@ import androidx.paging.DataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.util.TwitchApiHelper
-import java.util.concurrent.Executor
+import kotlinx.coroutines.CoroutineScope
 
 class FollowedClipsDataSource(
         userToken: String,
         private val trending: Boolean?,
         private val api: KrakenApi,
-        retryExecutor: Executor) : BasePageKeyedDataSource<Clip>(retryExecutor) {
+        coroutineScope: CoroutineScope) : BasePageKeyedDataSource<Clip>(coroutineScope) {
 
     private val userToken: String = TwitchApiHelper.addTokenPrefix(userToken)
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Clip>) {
         loadInitial(params, callback) {
-            api.getFollowedClips(userToken, trending, params.requestedLoadSize, null).execute().body()!!.let {
+            api.getFollowedClips(userToken, trending, params.requestedLoadSize, null).let {
                 it.clips to it.cursor
             }
         }
@@ -24,7 +24,7 @@ class FollowedClipsDataSource(
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, Clip>) {
         loadAfter(params, callback) {
-            api.getFollowedClips(userToken, trending, params.requestedLoadSize, params.key).execute().body()!!.let {
+            api.getFollowedClips(userToken, trending, params.requestedLoadSize, params.key).let {
                 it.clips to it.cursor
             }
         }
@@ -34,9 +34,9 @@ class FollowedClipsDataSource(
             private val userToken: String,
             private val trending: Boolean?,
             private val api: KrakenApi,
-            private val retryExecutor: Executor) : BaseDataSourceFactory<String, Clip, FollowedClipsDataSource>() {
+            private val coroutineScope: CoroutineScope) : BaseDataSourceFactory<String, Clip, FollowedClipsDataSource>() {
 
         override fun create(): DataSource<String, Clip> =
-                FollowedClipsDataSource(userToken, trending, api, retryExecutor).also(sourceLiveData::postValue)
+                FollowedClipsDataSource(userToken, trending, api, coroutineScope).also(sourceLiveData::postValue)
     }
 }

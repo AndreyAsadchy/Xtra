@@ -5,25 +5,25 @@ import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
 import com.github.exact7.xtra.util.TwitchApiHelper
-import java.util.concurrent.Executor
+import kotlinx.coroutines.CoroutineScope
 
 class FollowedStreamsDataSource(
         userToken: String,
         private val streamType: StreamType,
         private val api: KrakenApi,
-        retryExecutor: Executor) : BasePositionalDataSource<Stream>(retryExecutor) {
+        coroutineScope: CoroutineScope) : BasePositionalDataSource<Stream>(coroutineScope) {
 
     private val userToken: String = TwitchApiHelper.addTokenPrefix(userToken)
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Stream>) {
         loadInitial(params, callback) {
-            api.getFollowedStreams(userToken, streamType, params.requestedLoadSize, 0).execute().body()!!.streams
+            api.getFollowedStreams(userToken, streamType, params.requestedLoadSize, 0).streams
         }
     }
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Stream>) {
         loadRange(params, callback) {
-            api.getFollowedStreams(userToken, streamType, params.loadSize, params.startPosition).execute().body()!!.streams
+            api.getFollowedStreams(userToken, streamType, params.loadSize, params.startPosition).streams
         }
     }
 
@@ -31,9 +31,9 @@ class FollowedStreamsDataSource(
             private val userToken: String,
             private val streamType: StreamType,
             private val api: KrakenApi,
-            private val retryExecutor: Executor) : BaseDataSourceFactory<Int, Stream, FollowedStreamsDataSource>() {
+            private val coroutineScope: CoroutineScope) : BaseDataSourceFactory<Int, Stream, FollowedStreamsDataSource>() {
 
         override fun create(): DataSource<Int, Stream> =
-                FollowedStreamsDataSource(userToken, streamType, api, retryExecutor).also(sourceLiveData::postValue)
+                FollowedStreamsDataSource(userToken, streamType, api, coroutineScope).also(sourceLiveData::postValue)
     }
 }

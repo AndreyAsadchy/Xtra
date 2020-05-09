@@ -34,9 +34,9 @@ import com.github.exact7.xtra.repository.datasource.VideosDataSource
 import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executor
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,11 +46,10 @@ private const val TAG = "KrakenRepository"
 class KrakenRepository @Inject constructor(
         private val api: KrakenApi,
         private val graphQL: GraphQLApi,
-        private val emotesDao: EmotesDao,
-        private val networkExecutor: Executor) : TwitchService {
+        private val emotesDao: EmotesDao) : TwitchService {
 
-    override fun loadTopGames(): Listing<GameWrapper> {
-        val factory = GamesDataSource.Factory(api, networkExecutor)
+    override fun loadTopGames(coroutineScope: CoroutineScope): Listing<GameWrapper> {
+        val factory = GamesDataSource.Factory(api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(30)
                 .setInitialLoadSizeHint(30)
@@ -64,8 +63,8 @@ class KrakenRepository @Inject constructor(
         StreamWrapper(api.getStream(channelId).streams.firstOrNull())
     }
 
-    override fun loadStreams(game: String?, languages: String?, streamType: StreamType): Listing<Stream> {
-        val factory = StreamsDataSource.Factory(game, languages, streamType, api, networkExecutor)
+    override fun loadStreams(game: String?, languages: String?, streamType: StreamType, coroutineScope: CoroutineScope): Listing<Stream> {
+        val factory = StreamsDataSource.Factory(game, languages, streamType, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
                 .setInitialLoadSizeHint(15)
@@ -75,8 +74,8 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override fun loadFollowedStreams(userToken: String, streamType: StreamType, thumbnailsEnabled: Boolean): Listing<Stream> {
-        val factory = FollowedStreamsDataSource.Factory(userToken, streamType, api, networkExecutor)
+    override fun loadFollowedStreams(userToken: String, streamType: StreamType, thumbnailsEnabled: Boolean, coroutineScope: CoroutineScope): Listing<Stream> {
+        val factory = FollowedStreamsDataSource.Factory(userToken, streamType, api, coroutineScope)
         val builder = PagedList.Config.Builder().setEnablePlaceholders(false)
         if (thumbnailsEnabled) {
             builder.setPageSize(10)
@@ -91,8 +90,8 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override fun loadClips(channelName: String?, gameName: String?, languages: String?, period: com.github.exact7.xtra.model.kraken.clip.Period?, trending: Boolean): Listing<Clip> {
-        val factory = ClipsDataSource.Factory(channelName, gameName, languages, period, trending, api, networkExecutor)
+    override fun loadClips(channelName: String?, gameName: String?, languages: String?, period: com.github.exact7.xtra.model.kraken.clip.Period?, trending: Boolean, coroutineScope: CoroutineScope): Listing<Clip> {
+        val factory = ClipsDataSource.Factory(channelName, gameName, languages, period, trending, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
                 .setInitialLoadSizeHint(15)
@@ -102,8 +101,8 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override fun loadFollowedClips(userToken: String, trending: Boolean): Listing<Clip> {
-        val factory = FollowedClipsDataSource.Factory(userToken, trending, api, networkExecutor)
+    override fun loadFollowedClips(userToken: String, trending: Boolean, coroutineScope: CoroutineScope): Listing<Clip> {
+        val factory = FollowedClipsDataSource.Factory(userToken, trending, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
                 .setInitialLoadSizeHint(15)
@@ -117,8 +116,8 @@ class KrakenRepository @Inject constructor(
         api.getVideo(videoId)
     }
 
-    override fun loadVideos(game: String?, period: Period, broadcastType: BroadcastType, language: String?, sort: Sort): Listing<Video> {
-        val factory = VideosDataSource.Factory(game, period, broadcastType, language, sort, api, networkExecutor)
+    override fun loadVideos(game: String?, period: Period, broadcastType: BroadcastType, language: String?, sort: Sort, coroutineScope: CoroutineScope): Listing<Video> {
+        val factory = VideosDataSource.Factory(game, period, broadcastType, language, sort, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
                 .setInitialLoadSizeHint(15)
@@ -128,8 +127,8 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override fun loadFollowedVideos(userToken: String, broadcastType: BroadcastType, language: String?, sort: Sort): Listing<Video> {
-        val factory = FollowedVideosDataSource.Factory(userToken, broadcastType, language, sort, api, networkExecutor)
+    override fun loadFollowedVideos(userToken: String, broadcastType: BroadcastType, language: String?, sort: Sort, coroutineScope: CoroutineScope): Listing<Video> {
+        val factory = FollowedVideosDataSource.Factory(userToken, broadcastType, language, sort, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
                 .setInitialLoadSizeHint(15)
@@ -139,8 +138,8 @@ class KrakenRepository @Inject constructor(
         return Listing.create(factory, config)
     }
 
-    override fun loadChannelVideos(channelId: String, broadcastType: BroadcastType, sort: Sort): Listing<Video> {
-        val factory = ChannelVideosDataSource.Factory(channelId, broadcastType, sort, api, networkExecutor)
+    override fun loadChannelVideos(channelId: String, broadcastType: BroadcastType, sort: Sort, coroutineScope: CoroutineScope): Listing<Video> {
+        val factory = ChannelVideosDataSource.Factory(channelId, broadcastType, sort, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(10)
                 .setInitialLoadSizeHint(15)
@@ -192,9 +191,9 @@ class KrakenRepository @Inject constructor(
         emotesDao.deleteAllAndInsert(emotes)
     }
 
-    override fun loadChannels(query: String): Listing<Channel> {
+    override fun loadChannels(query: String, coroutineScope: CoroutineScope): Listing<Channel> {
         Log.d(TAG, "Loading channels containing: $query")
-        val factory = ChannelsSearchDataSource.Factory(query, api, networkExecutor)
+        val factory = ChannelsSearchDataSource.Factory(query, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(15)
                 .setInitialLoadSizeHint(15)
@@ -219,7 +218,7 @@ class KrakenRepository @Inject constructor(
         api.getUserFollows(userId, channelId).body()?.let { it.string().length > 300 } == true
     }
 
-//    override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
+    //    override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
 //        Log.d(TAG, "Following channel $channelId")
 //        api.followChannel(TwitchApiHelper.addTokenPrefix(userToken), userId, channelId).body() != null
 //    }
@@ -255,8 +254,8 @@ class KrakenRepository @Inject constructor(
         api.getGames(query).games ?: emptyList()
     }
 
-    override fun loadFollowedChannels(userId: String, sort: com.github.exact7.xtra.model.kraken.follows.Sort, order: Order): Listing<Follow> {
-        val factory = FollowedChannelsDataSource.Factory(userId, sort, order, api, networkExecutor)
+    override fun loadFollowedChannels(userId: String, sort: com.github.exact7.xtra.model.kraken.follows.Sort, order: Order, coroutineScope: CoroutineScope): Listing<Follow> {
+        val factory = FollowedChannelsDataSource.Factory(userId, sort, order, api, coroutineScope)
         val config = PagedList.Config.Builder()
                 .setPageSize(40)
                 .setInitialLoadSizeHint(40)
