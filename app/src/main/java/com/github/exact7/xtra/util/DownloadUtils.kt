@@ -43,9 +43,17 @@ object DownloadUtils {
         }
         val glide = GlideApp.with(context)
         return with(downloadable) {
-            val thumbnail = glide.downloadOnly().load(thumbnail).submit().get().absolutePath
-            val logo = glide.downloadOnly().load(channelLogo).submit().get().absolutePath
-            OfflineVideo(offlinePath, url, startPosition, title, channelName, logo, thumbnail, game ?: "", duration, TwitchApiHelper.parseIso8601Date(uploadDate), System.currentTimeMillis(), 0L, 0, if (segmentTo != null && segmentFrom != null) segmentTo - segmentFrom + 1 else 100)
+            var downloadedThumbnail: String
+            var downloadedLogo: String
+            try {
+                downloadedThumbnail = glide.downloadOnly().load(thumbnail).submit().get().absolutePath
+                downloadedLogo = glide.downloadOnly().load(channelLogo).submit().get().absolutePath
+            } catch (e: Exception) {
+                downloadedThumbnail = thumbnail
+                downloadedLogo = channelLogo
+            }
+            OfflineVideo(offlinePath, url, startPosition, title, channelName, downloadedLogo, downloadedThumbnail, game
+                    ?: "", duration, TwitchApiHelper.parseIso8601Date(uploadDate), System.currentTimeMillis(), 0L, 0, if (segmentTo != null && segmentFrom != null) segmentTo - segmentFrom + 1 else 100)
         }
     }
 

@@ -19,6 +19,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistParserFactory
 import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistTracker
@@ -157,7 +158,7 @@ class AudioPlayerService : Service() {
                     connection.let {
                         //TODO TEMP FIX, REWORK SERVICE BINDING NORMALLY
                         if (it != null) {
-                            applicationContext.unbindService(it)
+                            XtraApp.INSTANCE.unbindService(it)
                         } else {
                             playerNotificationManager.setPlayer(null)
                         }
@@ -203,6 +204,8 @@ class AudioPlayerService : Service() {
             private val title: String,
             private val imageUrl: String) : PlayerNotificationManager.MediaDescriptionAdapter {
 
+        private var largeIcon: Bitmap? = null
+
         override fun createCurrentContentIntent(player: Player): PendingIntent? {
             val clickIntent = Intent(this@AudioPlayerService, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -216,17 +219,24 @@ class AudioPlayerService : Service() {
         override fun getCurrentContentTitle(player: Player): String = title
 
         override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
-            GlideApp.with(this@AudioPlayerService)
-                    .asBitmap()
-                    .load(imageUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            callback.onBitmap(resource)
-                        }
+            if (largeIcon == null) {
+                try {
+                    GlideApp.with(this@AudioPlayerService)
+                            .asBitmap()
+                            .load(imageUrl)
+                            .into(object : CustomTarget<Bitmap>() {
+                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    callback.onBitmap(resource)
+                                    largeIcon = resource
+                                }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
-            return null
+                                override fun onLoadCleared(placeholder: Drawable?) {}
+                            })
+                } catch (e: Exception) {
+
+                }
+            }
+            return largeIcon
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
+import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
 import com.github.exact7.xtra.ui.common.OnQualityChangeListener
 import com.github.exact7.xtra.ui.player.stream.StreamPlayerViewModel
@@ -21,7 +22,6 @@ import com.github.exact7.xtra.util.toast
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -39,14 +39,14 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     protected val tag: String = javaClass.simpleName
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
-    protected val trackSelector = DefaultTrackSelector()
-    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
-            context,
-            trackSelector,
-            DefaultLoadControl.Builder()
+    protected val trackSelector = DefaultTrackSelector(context)
+    val player = SimpleExoPlayer.Builder(context)
+            .setTrackSelector(trackSelector)
+            .setLoadControl(DefaultLoadControl.Builder()
                     .setBufferDurationsMs(15000, 50000, 2000, 5000)
                     .createDefaultLoadControl())
-            .apply { addListener(this@PlayerViewModel) }
+            .build()
+            .also { it.addListener(this) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
     protected val _currentPlayer = MutableLiveData<ExoPlayer>().apply { value = player }
@@ -106,7 +106,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     }
 
     protected fun startBackgroundAudio(playlistUrl: String, channelName: String, title: String?, imageUrl: String, usePlayPause: Boolean, type: Int, videoId: Number?) {
-        val context = getApplication<Application>()
+        val context = XtraApp.INSTANCE //TODO
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             putExtra(AudioPlayerService.KEY_PLAYLIST_URL, playlistUrl)
             putExtra(AudioPlayerService.KEY_CHANNEL_NAME, channelName)
@@ -134,8 +134,8 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     protected fun stopBackgroundAudio() {
         AudioPlayerService.connection?.let {
-            val context = getApplication<Application>()
-            context.unbindService(it)
+//            val context = getApplication<Application>()
+            XtraApp.INSTANCE.unbindService(it) //TODO
         }
     }
 
@@ -175,6 +175,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                     context.toast(R.string.stream_ended)
                 } else {
                     context.shortToast(R.string.player_error)
+                    player.stop()
                     viewModelScope.launch {
                         delay(1500L)
                         try {

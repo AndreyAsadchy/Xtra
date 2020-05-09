@@ -35,7 +35,7 @@ abstract class MediaFragment : Fragment(), Scrollable {
         spinner.adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, spinnerItems)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                currentFragment = if (position != previousItem) {
+                currentFragment = if (position != previousItem && isResumed) {
                     val newFragment = onSpinnerItemSelected(position)
                     childFragmentManager.beginTransaction().replace(R.id.fragmentContainer, newFragment).commit()
                     previousItem = position

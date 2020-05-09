@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.ChatMessage
@@ -185,7 +184,7 @@ class ChatAdapter(
             }
             loadImages(holder, images, originalMessage, builder)
         } catch (e: Exception) {
-            Crashlytics.logException(e)
+//            Crashlytics.logException(e)
         }
         holder.bind(originalMessage, builder)
     }
@@ -214,7 +213,7 @@ class ChatAdapter(
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: IndexOutOfBoundsException) {
-                                    Crashlytics.logException(e)
+//                                    Crashlytics.logException(e)
                                 }
                                 holder.bind(originalMessage, builder)
                             }
@@ -251,7 +250,7 @@ class ChatAdapter(
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: IndexOutOfBoundsException) {
-                                    Crashlytics.logException(e)
+//                                    Crashlytics.logException(e)
                                 }
                                 holder.bind(originalMessage, builder)
                             }
