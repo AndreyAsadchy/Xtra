@@ -4,6 +4,7 @@ import androidx.paging.DataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.stream.Stream
 import com.github.exact7.xtra.model.kraken.stream.StreamType
+import com.github.exact7.xtra.util.TwitchApiHelper
 import java.util.concurrent.Executor
 
 class FollowedStreamsDataSource(
@@ -12,7 +13,7 @@ class FollowedStreamsDataSource(
         private val api: KrakenApi,
         retryExecutor: Executor) : BasePositionalDataSource<Stream>(retryExecutor) {
 
-    private val userToken: String = "OAuth $userToken"
+    private val userToken: String = TwitchApiHelper.addTokenPrefix(userToken)
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Stream>) {
         loadInitial(params, callback) {

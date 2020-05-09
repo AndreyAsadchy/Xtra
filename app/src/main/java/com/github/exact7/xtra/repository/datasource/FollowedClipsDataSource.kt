@@ -3,6 +3,7 @@ package com.github.exact7.xtra.repository.datasource
 import androidx.paging.DataSource
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.clip.Clip
+import com.github.exact7.xtra.util.TwitchApiHelper
 import java.util.concurrent.Executor
 
 class FollowedClipsDataSource(
@@ -11,7 +12,7 @@ class FollowedClipsDataSource(
         private val api: KrakenApi,
         retryExecutor: Executor) : BasePageKeyedDataSource<Clip>(retryExecutor) {
 
-    private val userToken: String = "OAuth $userToken"
+    private val userToken: String = TwitchApiHelper.addTokenPrefix(userToken)
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, Clip>) {
         loadInitial(params, callback) {

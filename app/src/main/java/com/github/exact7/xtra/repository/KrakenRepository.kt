@@ -2,6 +2,7 @@ package com.github.exact7.xtra.repository
 
 import android.util.Log
 import androidx.paging.PagedList
+import com.github.exact7.xtra.api.GraphQLApi
 import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.model.chat.VideoMessagesResponse
@@ -30,6 +31,9 @@ import com.github.exact7.xtra.repository.datasource.FollowedVideosDataSource
 import com.github.exact7.xtra.repository.datasource.GamesDataSource
 import com.github.exact7.xtra.repository.datasource.StreamsDataSource
 import com.github.exact7.xtra.repository.datasource.VideosDataSource
+import com.github.exact7.xtra.util.TwitchApiHelper
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
@@ -41,6 +45,7 @@ private const val TAG = "KrakenRepository"
 @Singleton
 class KrakenRepository @Inject constructor(
         private val api: KrakenApi,
+        private val graphQL: GraphQLApi,
         private val emotesDao: EmotesDao,
         private val networkExecutor: Executor) : TwitchService {
 
@@ -157,7 +162,7 @@ class KrakenRepository @Inject constructor(
 
     override suspend fun loadUserEmotes(token: String, userId: String) = withContext(Dispatchers.IO) {
         Log.d(TAG, "Loading user emotes")
-        val emotes = api.getUserEmotes("OAuth $token", userId).emotes.toMutableList()
+        val emotes = api.getUserEmotes(TwitchApiHelper.addTokenPrefix(token), userId).emotes.toMutableList()
         var modified = 0
         for (i in 0 until emotes.size) {
             val emote = emotes[i]
@@ -214,14 +219,35 @@ class KrakenRepository @Inject constructor(
         api.getUserFollows(userId, channelId).body()?.let { it.string().length > 300 } == true
     }
 
+//    override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
+//        Log.d(TAG, "Following channel $channelId")
+//        api.followChannel(TwitchApiHelper.addTokenPrefix(userToken), userId, channelId).body() != null
+//    }
     override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
         Log.d(TAG, "Following channel $channelId")
-        api.followChannel("OAuth $userToken", userId, channelId).body() != null
+        val array = JsonArray(1)
+        val followOperation = JsonObject().apply {
+            addProperty("operationName", "FollowButton_FollowUser")
+            add("variables", JsonObject().apply {
+                add("input", JsonObject().apply {
+                    addProperty("disableNotifications", false)
+                    addProperty("targetID", channelId)
+                })
+            })
+            add("extensions", JsonObject().apply {
+                add("persistedQuery", JsonObject().apply {
+                    addProperty("version", 1)
+                    addProperty("sha256Hash", "3efee1acda90efdff9fef6e6b4a29213be3ee490781c5b54469717b6131ffdfe")
+                })
+            })
+        }
+        array.add(followOperation)
+        graphQL.followChannel(TwitchApiHelper.addTokenPrefix(userToken), array).code() == 200
     }
 
     override suspend fun unfollowChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
         Log.d(TAG, "Unfollowing channel $channelId")
-        api.unfollowChannel("OAuth $userToken", userId, channelId).code() == 204
+        api.unfollowChannel(TwitchApiHelper.addTokenPrefix(userToken), userId, channelId).code() == 204
     }
 
     override suspend fun loadGames(query: String): List<Game> = withContext(Dispatchers.IO) {

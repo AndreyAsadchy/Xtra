@@ -19,7 +19,7 @@ class AuthRepository @Inject constructor(
         private val emotesDao: EmotesDao) {
 
     suspend fun validate(token: String): ValidationResponse? = withContext(Dispatchers.IO) {
-        api.validateToken("OAuth $token")
+        api.validateToken(TwitchApiHelper.addTokenPrefix(token))
     }
 
     suspend fun revoke(token: String) = withContext(Dispatchers.IO) {

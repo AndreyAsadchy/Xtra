@@ -5,6 +5,7 @@ import com.github.exact7.xtra.api.KrakenApi
 import com.github.exact7.xtra.model.kraken.video.BroadcastType
 import com.github.exact7.xtra.model.kraken.video.Sort
 import com.github.exact7.xtra.model.kraken.video.Video
+import com.github.exact7.xtra.util.TwitchApiHelper
 import java.util.concurrent.Executor
 
 class FollowedVideosDataSource(
@@ -15,7 +16,7 @@ class FollowedVideosDataSource(
         private val api: KrakenApi,
         retryExecutor: Executor) : BasePositionalDataSource<Video>(retryExecutor) {
 
-    private val userToken: String = "OAuth $userToken"
+    private val userToken: String = TwitchApiHelper.addTokenPrefix(userToken)
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Video>) {
         loadInitial(params, callback) {
