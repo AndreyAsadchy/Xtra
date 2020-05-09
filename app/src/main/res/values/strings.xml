@@ -134,7 +134,7 @@
     <string name="changelog">
         <b>May 10th, 1.5.1</b>
 \n- Fixed an error when trying to follow a channel
-\n- Other bug fixes and stability improvements
+\n- Bug fixes and improvements
         \n\n<b>April 26th, 1.5.0</b>
 \n- Fixed the problem with logging in on some newer devices. For older ones added a new workaround, click the \"Having trouble logging in\" button
 \n- Added ability to see the channels that you follow. Click the dropdown menu and select \"Channels\"
