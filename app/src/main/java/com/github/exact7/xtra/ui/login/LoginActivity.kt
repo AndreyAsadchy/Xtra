@@ -42,8 +42,8 @@ class LoginActivity : AppCompatActivity(), Injectable {
     @Inject
     lateinit var repository: AuthRepository
 
-    //    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=http://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
-    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://twitch.tv"
+//        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=https://twitch.tv&scope=chat_login user_follows_edit user_subscriptions user_read"
+    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://www.twitch.tv"
     private val tokenPattern = Pattern.compile("token=(.+?)(?=&)")
 
     override fun onCreate(savedInstanceState: Bundle?) {
