@@ -54,7 +54,7 @@
 
         <TextView
             android:id="@+id/username"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
@@ -65,6 +65,8 @@
             android:textStyle="bold"
             android:textAlignment="viewStart"
             android:gravity="start"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toRightOf="@id/userImage"
             app:layout_constraintStart_toEndOf="@id/userImage"
             app:layout_constraintEnd_toEndOf="parent"

@@ -46,7 +46,7 @@
 
         <TextView
             android:id="@+id/username"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
@@ -55,11 +55,13 @@
             android:layout_marginRight="10dp"
             android:ellipsize="end"
             android:gravity="start"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textAlignment="viewStart"
             android:textSize="15sp"
             android:textStyle="bold"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/streamTypeImage"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toRightOf="@id/userImage"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toEndOf="@id/userImage"
