@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.customview.widget.ViewDragHelper
 import com.github.exact7.xtra.R
@@ -92,7 +93,7 @@ class SlidingLayout : LinearLayout {
             dragView.layout(dragViewLeft, dragViewTop, if (isMaximized) dragView.measuredWidth + dragViewLeft else width, height + dragViewTop)
         }
         secondView?.let {
-            if (isMaximized) {
+            if (isMaximized && it.isVisible) {
                 if (isPortrait) {
                     it.layout(l, height + dragViewTop, r, b + dragViewTop)
                 } else {
