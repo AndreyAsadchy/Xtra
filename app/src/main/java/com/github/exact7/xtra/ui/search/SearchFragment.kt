@@ -13,7 +13,6 @@ import com.github.exact7.xtra.ui.main.MainActivity
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class SearchFragment : MediaPagerFragment() {
 
@@ -51,7 +50,7 @@ class SearchFragment : MediaPagerFragment() {
             override fun onQueryTextChange(newText: String): Boolean {
                 job?.cancel()
                 if (newText.isNotEmpty()) {
-                    job = lifecycleScope.launch {
+                    job = lifecycleScope.launchWhenResumed {
                         delay(750)
                         (currentFragment as? Searchable)?.search(newText)
                     }
