@@ -65,6 +65,7 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
             private val originalScrollFlags = layoutParams.scrollFlags
 
             override fun onPageSelected(position: Int) {
+//                layoutParams.scrollFlags = if (position != 3) {
                 layoutParams.scrollFlags = if (position != 2) {
                     originalScrollFlags
                 } else {

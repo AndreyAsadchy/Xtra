@@ -16,4 +16,7 @@ interface GraphQLApi {
 
     @POST(".")
     suspend fun followChannel(@Header("Authorization") token: String, @Body json: JsonArray): Response<ResponseBody>
+
+    @POST(".")
+    suspend fun getChannelPanel(@Body json: JsonArray): Response<ResponseBody>
 }

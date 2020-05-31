@@ -11,7 +11,7 @@ import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.kraken.video.Video
-import com.github.exact7.xtra.repository.PlayerRepository
+import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
@@ -28,7 +28,7 @@ private const val TAG = "ClipPlayerViewModel"
 
 class ClipPlayerViewModel @Inject constructor(
         context: Application,
-        private val playerRepository: PlayerRepository,
+        private val graphQLRepositoy: GraphQLRepositoy,
         private val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
     private lateinit var clip: Clip
@@ -71,7 +71,7 @@ class ClipPlayerViewModel @Inject constructor(
             this.clip = clip
             viewModelScope.launch {
                 try {
-                    val urls = playerRepository.loadClipUrls(clip.slug)
+                    val urls = graphQLRepositoy.loadClipUrls(clip.slug)
                     val preferredQuality = prefs.getString(TAG, null)
                     if (preferredQuality != null) {
                         var url: String? = null
@@ -103,7 +103,7 @@ class ClipPlayerViewModel @Inject constructor(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) {
-            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
+            follow = FollowLiveData(repository, graphQLRepositoy, user, channelInfo.first, viewModelScope)
         }
     }
 

@@ -9,6 +9,7 @@ import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
+import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.AudioPlayerService
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class VideoPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
+        repository: TwitchService,
+        graphQLRepositoy: GraphQLRepositoy) : HlsPlayerViewModel(context, repository, graphQLRepositoy) {
 
     private lateinit var video: Video
     val videoInfo: VideoDownloadInfo?

@@ -180,4 +180,5 @@
     <string name="ascending">По возрастанию</string>
     <string name="compact_streams_title">Компактный интерфейс трансляций на экране подписок</string>
     <string name="compact_streams_description">Не показывать предварительный просмотр</string>
+    <string name="info">Инфо</string>
 </resources>

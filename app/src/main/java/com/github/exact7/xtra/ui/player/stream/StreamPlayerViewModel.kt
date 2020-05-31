@@ -10,6 +10,7 @@ import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistParserFactory
 import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistTracker
 import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
+import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.AudioPlayerService
@@ -27,7 +28,8 @@ import javax.inject.Inject
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
+        repository: TwitchService,
+        graphQLRepositoy: GraphQLRepositoy) : HlsPlayerViewModel(context, repository, graphQLRepositoy) {
 
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>

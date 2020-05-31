@@ -20,6 +20,7 @@ class ChannelPagerAdapter(
         val id = when (position) {
             0 -> R.string.videos
             1 -> R.string.clips
+//            2 -> R.string.info
             else -> R.string.chat
         }
         return context.getString(id)
@@ -29,10 +30,12 @@ class ChannelPagerAdapter(
         val fragment: Fragment = when (position) {
             0 -> ChannelVideosFragment()
             1 -> ClipsFragment()
+//            2 -> ChannelInfoFragment()
             else -> return ChatFragment.newInstance(args.getParcelable(C.CHANNEL)!!)
         }
         return fragment.apply { arguments = args }
     }
 
+//    override fun getCount(): Int = 4
     override fun getCount(): Int = 3
 }

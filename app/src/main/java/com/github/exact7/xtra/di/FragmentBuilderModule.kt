@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.di
 
 import com.github.exact7.xtra.ui.channel.ChannelPagerFragment
+import com.github.exact7.xtra.ui.channel.info.ChannelInfoFragment
 import com.github.exact7.xtra.ui.chat.ChatFragment
 import com.github.exact7.xtra.ui.clips.common.ClipsFragment
 import com.github.exact7.xtra.ui.clips.followed.FollowedClipsFragment
@@ -97,4 +98,7 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeFollowedChannelsFragment(): FollowedChannelsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeChannelInfoFragment(): ChannelInfoFragment
 }

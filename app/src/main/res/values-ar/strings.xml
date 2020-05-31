@@ -180,4 +180,5 @@
     <string name="ascending">Ascending</string>
     <string name="compact_streams_title">Compact followed streams</string>
     <string name="compact_streams_description">Don\'t show stream previews</string>
+    <string name="info">Info</string>
 </resources>

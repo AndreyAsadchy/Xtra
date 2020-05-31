@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.player.lowlatency.HlsManifest
+import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
@@ -27,7 +28,8 @@ private const val TAG = "HlsPlayerViewModel"
 
 abstract class HlsPlayerViewModel(
         context: Application,
-        val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
+        val repository: TwitchService,
+        val graphQLRepositoy: GraphQLRepositoy) : PlayerViewModel(context), FollowViewModel {
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()
@@ -121,7 +123,7 @@ abstract class HlsPlayerViewModel(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) { //TODO REFACTOR
-            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
+            follow = FollowLiveData(repository, graphQLRepositoy, user, channelInfo.first, viewModelScope)
         }
     }
 

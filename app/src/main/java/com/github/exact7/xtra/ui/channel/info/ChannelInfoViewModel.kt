@@ -1,4 +1,4 @@
-package com.github.exact7.xtra.ui.channel
+package com.github.exact7.xtra.ui.channel.info
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +14,7 @@ import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ChannelPagerViewModel @Inject constructor(
+class ChannelInfoViewModel @Inject constructor(
         private val repository: TwitchService,
         private val graphQLRepositoy: GraphQLRepositoy) : ViewModel(), FollowViewModel {
 

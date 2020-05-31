@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.model.offline.Request
+import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.OfflineRepository
-import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.util.DownloadUtils
 import com.github.exact7.xtra.util.TwitchApiHelper
 import kotlinx.coroutines.GlobalScope
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class ClipDownloadViewModel @Inject constructor(
         application: Application,
-        private val playerRepository: PlayerRepository,
+        private val graphQLRepositoy: GraphQLRepositoy,
         private val offlineRepository: OfflineRepository
 ) : AndroidViewModel(application) {
 
@@ -34,7 +34,7 @@ class ClipDownloadViewModel @Inject constructor(
             if (qualities == null) {
                 viewModelScope.launch {
                     try {
-                        val urls = playerRepository.loadClipUrls(clip.slug)
+                        val urls = graphQLRepositoy.loadClipUrls(clip.slug)
                         _qualities.postValue(urls)
                     } catch (e: Exception) {
 
