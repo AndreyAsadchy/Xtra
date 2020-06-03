@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -294,8 +293,12 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
             } else if (line.startsWith(TAG_STREAM_INF)) {
                 noClosedCaptions |= line.contains(ATTR_CLOSED_CAPTIONS_NONE);
                 int bitrate = parseIntAttr(line, REGEX_BANDWIDTH);
-                // TODO: Plumb this into Format.
-                int averageBitrate = parseOptionalIntAttr(line, REGEX_AVERAGE_BANDWIDTH, -1);
+                String averageBandwidthString =
+                        parseOptionalStringAttr(line, REGEX_AVERAGE_BANDWIDTH, variableDefinitions);
+                if (averageBandwidthString != null) {
+                    // If available, the average bandwidth attribute is used as the variant's bitrate.
+                    bitrate = Integer.parseInt(averageBandwidthString);
+                }
                 String codecs = parseOptionalStringAttr(line, REGEX_CODECS, variableDefinitions);
                 String resolutionString =
                         parseOptionalStringAttr(line, REGEX_RESOLUTION, variableDefinitions);
@@ -326,9 +329,6 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                         parseOptionalStringAttr(line, REGEX_SUBTITLES, variableDefinitions);
                 String closedCaptionsGroupId =
                         parseOptionalStringAttr(line, REGEX_CLOSED_CAPTIONS, variableDefinitions);
-                if (!iterator.hasNext()) {
-                    throw new ParserException("#EXT-X-STREAM-INF tag must be followed by another line");
-                }
                 line =
                         replaceVariableReferences(
                                 iterator.next(), variableDefinitions); // #EXT-X-STREAM-INF's URI.
@@ -372,9 +372,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                 Assertions.checkState(variant.format.metadata == null);
                 HlsTrackMetadataEntry hlsMetadataEntry =
                         new HlsTrackMetadataEntry(
-                                /* groupId= */ null,
-                                /* name= */ null,
-                                Assertions.checkNotNull(urlToVariantInfos.get(variant.url)));
+                                /* groupId= */ null, /* name= */ null, urlToVariantInfos.get(variant.url));
                 deduplicatedVariants.add(
                         variant.copyWithFormat(
                                 variant.format.copyWithMetadata(new Metadata(hlsMetadataEntry))));
@@ -470,23 +468,13 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                     }
                     break;
                 case TYPE_SUBTITLES:
-                    codecs = null;
-                    sampleMimeType = null;
-                    variant = getVariantWithSubtitleGroup(variants, groupId);
-                    if (variant != null) {
-                        codecs = Util.getCodecsOfType(variant.format.codecs, C.TRACK_TYPE_TEXT);
-                        sampleMimeType = MimeTypes.getMediaMimeType(codecs);
-                    }
-                    if (sampleMimeType == null) {
-                        sampleMimeType = MimeTypes.TEXT_VTT;
-                    }
                     format =
                             Format.createTextContainerFormat(
                                     /* id= */ formatId,
                                     /* label= */ name,
                                     /* containerMimeType= */ MimeTypes.APPLICATION_M3U8,
-                                    sampleMimeType,
-                                    codecs,
+                                    /* sampleMimeType= */ MimeTypes.TEXT_VTT,
+                                    /* codecs= */ null,
                                     /* bitrate= */ Format.NO_VALUE,
                                     selectionFlags,
                                     roleFlags,
@@ -547,7 +535,6 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                 sessionKeyDrmInitData);
     }
 
-    @Nullable
     private static Variant getVariantWithAudioGroup(ArrayList<Variant> variants, String groupId) {
         for (int i = 0; i < variants.size(); i++) {
             Variant variant = variants.get(i);
@@ -558,22 +545,10 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         return null;
     }
 
-    @Nullable
     private static Variant getVariantWithVideoGroup(ArrayList<Variant> variants, String groupId) {
         for (int i = 0; i < variants.size(); i++) {
             Variant variant = variants.get(i);
             if (groupId.equals(variant.videoGroupId)) {
-                return variant;
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    private static Variant getVariantWithSubtitleGroup(ArrayList<Variant> variants, String groupId) {
-        for (int i = 0; i < variants.size(); i++) {
-            Variant variant = variants.get(i);
-            if (groupId.equals(variant.subtitleGroupId)) {
                 return variant;
             }
         }
@@ -880,14 +855,6 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         return Integer.parseInt(parseStringAttr(line, pattern, Collections.emptyMap()));
     }
 
-    private static int parseOptionalIntAttr(String line, Pattern pattern, int defaultValue) {
-        Matcher matcher = pattern.matcher(line);
-        if (matcher.find()) {
-            return Integer.parseInt(matcher.group(1));
-        }
-        return defaultValue;
-    }
-
     private static long parseLongAttr(String line, Pattern pattern) throws ParserException {
         return Long.parseLong(parseStringAttr(line, pattern, Collections.emptyMap()));
     }
@@ -960,7 +927,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
         private final BufferedReader reader;
         private final Queue<String> extraLines;
 
-        @Nullable private String next;
+        private String next;
 
         public LineIterator(Queue<String> extraLines, BufferedReader reader) {
             this.extraLines = extraLines;
@@ -972,7 +939,7 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
                 return true;
             }
             if (!extraLines.isEmpty()) {
-                next = Assertions.checkNotNull(extraLines.poll());
+                next = extraLines.poll();
                 return true;
             }
             while ((next = reader.readLine()) != null) {
@@ -984,15 +951,13 @@ public final class HlsPlaylistParser implements ParsingLoadable.Parser<HlsPlayli
             return false;
         }
 
-        /** Return the next line, or throw {@link NoSuchElementException} if none. */
         public String next() throws IOException {
+            String result = null;
             if (hasNext()) {
-                String result = next;
+                result = next;
                 next = null;
-                return result;
-            } else {
-                throw new NoSuchElementException();
             }
+            return result;
         }
 
     }

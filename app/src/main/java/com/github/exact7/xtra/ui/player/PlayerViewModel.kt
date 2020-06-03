@@ -22,6 +22,7 @@ import com.github.exact7.xtra.util.toast
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -39,14 +40,14 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     protected val tag: String = javaClass.simpleName
 
     protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
-    protected val trackSelector = DefaultTrackSelector(context)
-    val player = SimpleExoPlayer.Builder(context)
-            .setTrackSelector(trackSelector)
-            .setLoadControl(DefaultLoadControl.Builder()
+    protected val trackSelector = DefaultTrackSelector()
+    val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
+            context,
+            trackSelector,
+            DefaultLoadControl.Builder()
                     .setBufferDurationsMs(15000, 50000, 2000, 5000)
                     .createDefaultLoadControl())
-            .build()
-            .also { it.addListener(this) }
+            .apply { addListener(this@PlayerViewModel) }
     protected lateinit var mediaSource: MediaSource //TODO maybe redo these viewmodels to custom players
 
     protected val _currentPlayer = MutableLiveData<ExoPlayer>().apply { value = player }
