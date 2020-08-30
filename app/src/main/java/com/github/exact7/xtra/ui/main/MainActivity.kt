@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by viewModels<MainViewModel> { viewModelFactory }
@@ -119,7 +120,6 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             prefs.edit {
                 putBoolean(C.FIRST_LAUNCH, false)
                 putLong("firstLaunchDate", System.currentTimeMillis())
-                putInt(C.PORTRAIT_PLAYER_HEIGHT, DisplayUtils.calculatePortraitHeightByPercent(this@MainActivity, resources.getInteger(R.integer.portraitPlayerHeight)))
                 putInt(C.LANDSCAPE_CHAT_WIDTH, DisplayUtils.calculateLandscapeWidthByPercent(this@MainActivity, 25))
             }
             PreferenceManager.setDefaultValues(this@MainActivity, R.xml.root_preferences, false)
@@ -202,14 +202,10 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     NewUpdateChangelogDialog().show(supportFragmentManager, null)
                 }
                 if (resources.getBoolean(R.bool.isTablet)) { //TODO remove after updated to 1.4.5
-                    val height = DisplayUtils.calculatePortraitHeightByPercent(this, resources.getInteger(R.integer.portraitPlayerHeight))
-                    if (prefs.getInt(C.PORTRAIT_PLAYER_HEIGHT, 0) != height) {
+                    if (prefs.getString(C.PORTRAIT_COLUMN_COUNT, null) == null) {
                         prefs.edit {
-                            if (prefs.getString(C.PORTRAIT_COLUMN_COUNT, null) == null) {
-                                putString(C.PORTRAIT_COLUMN_COUNT, resources.getString(R.string.portraitColumns))
-                                putString(C.LANDSCAPE_COLUMN_COUNT, resources.getString(R.string.landscapeColumns))
-                            }
-                            putInt(C.PORTRAIT_PLAYER_HEIGHT, height)
+                            putString(C.PORTRAIT_COLUMN_COUNT, resources.getString(R.string.portraitColumns))
+                            putString(C.LANDSCAPE_COLUMN_COUNT, resources.getString(R.string.landscapeColumns))
                         }
                     }
                 }
@@ -339,7 +335,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         }
     }
 
-    //Navigation listeners
+//Navigation listeners
 
     override fun openGame(game: Game) {
         fragNavController.pushFragment(GameFragment.newInstance(game))

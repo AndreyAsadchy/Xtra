@@ -8,5 +8,4 @@
     <bool name="isTablet">false</bool>
     <string translatable="false" name="portraitColumns">1</string>
     <string translatable="false" name="landscapeColumns">2</string>
-    <integer name="portraitPlayerHeight">33</integer>
 </resources>

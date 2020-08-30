@@ -186,6 +186,7 @@ class ChatViewModel @Inject constructor(
         }
 
         override fun onMessage(message: ChatMessage) {
+            return
             super.onMessage(message)
             if (!chatters.containsKey(message.displayName)) {
                 val chatter = Chatter(message.displayName)

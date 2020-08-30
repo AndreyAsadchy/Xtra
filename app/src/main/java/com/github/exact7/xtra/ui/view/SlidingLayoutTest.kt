@@ -11,7 +11,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -26,7 +25,7 @@ import com.google.android.exoplayer2.ui.DefaultTimeBar
 private const val BOTTOM_MARGIN = 75f //before scaling
 private const val ANIMATION_DURATION = 250L
 
-class SlidingLayout : LinearLayout {
+class SlidingLayout1 : LinearLayout {
 
     private val viewDragHelper = ViewDragHelper.create(this, 1f, SlidingCallback())
     private lateinit var dragView: View
@@ -84,12 +83,12 @@ class SlidingLayout : LinearLayout {
         super.onFinishInflate()
         dragView = getChildAt(0)
         secondView = getChildAt(1)
-        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-                init()
-            }
-        })
+//        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                init()
+//            }
+//        })
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -110,18 +109,9 @@ class SlidingLayout : LinearLayout {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        orientation = if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) VERTICAL else HORIZONTAL
-        if (!isMaximized) {
-            if (!isPortrait) {
-                secondView?.gone()
-            }
-        }
-        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-                init()
-            }
-        })
+//        orientation = if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) VERTICAL else HORIZONTAL
+        println("CHANGE OR")
+//        init()
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -151,7 +141,7 @@ class SlidingLayout : LinearLayout {
             val y = event.y.toInt()
             val isDragViewHit = isViewHit(dragView, x, y)
             val isClick = event.isClick(downTouchLocation)
-            if (y > 100 || !isMaximized) {
+            if (y > 200) {
                 viewDragHelper.processTouchEvent(event)
             }
             if (isDragViewHit) {
@@ -241,7 +231,12 @@ class SlidingLayout : LinearLayout {
         listeners.forEach { it.onMinimize() }
     }
 
-    private fun init() {
+    fun init() {
+//        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                println("INIT")
+//        dragView.post {
         topBound = paddingTop
         if (isPortrait) { //portrait
             minScaleX = 0.5f
@@ -265,8 +260,10 @@ class SlidingLayout : LinearLayout {
         }
 
         if (!isPortrait || !isMaximized || !isKeyboardShown) {
+            println("FIRST")
             initialize()
         } else {
+            println("SECOND")
             postDelayed(750L) {
                 //delay to avoid issue after rotating from landscape with opened keyboard to portrait
                 initialize()
@@ -277,9 +274,16 @@ class SlidingLayout : LinearLayout {
             scaleY = minScaleY
         }
         timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
-        post {
-            requestLayout()
+//        }
+//        secondView?.post {
+        if (!isMaximized) {
+            if (!isPortrait) {
+                secondView?.gone()
+            }
         }
+//        }
+//            }
+//        })
     }
 
     private fun isViewHit(view: View, x: Int, y: Int): Boolean {
