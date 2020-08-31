@@ -132,7 +132,12 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>May 31st, 1.5.2</b>
+        <b>August 31st, 1.5.3</b>
+\n- Fixed wrong video player and thumbnails size which caused them to be stretched. You can still adjust the aspect ratio for landscape mode in the top right corner of video player's controls
+\n- Fixed clips not playing without changing quality
+\n- Adjusted video player's dragging area to avoid accidental drags when trying to swipe down status bar
+\n- More improvements behind the scenes
+        \n\n<b>May 31st, 1.5.2</b>
 \n- Fixed login not working
 \n- Fixed chat sometimes freezing
 \n- Bug fixes and improvements
@@ -189,4 +194,9 @@
     <string name="compact_streams_title">Compact followed streams</string>
     <string name="compact_streams_description">Don\'t show stream previews</string>
     <string name="info">Info</string>
+    <string name="animated_emotes_warning_settings">Increased battery and CPU usage</string>
+    <string name="enable_animated_emotes_title">Enable animated emotes?</string>
+    <string name="enable_animated_emotes_description">Large number of animated GIF emotes in chat leads to an increased battery and CPU usage. You can change this later in the settings</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
 </resources>

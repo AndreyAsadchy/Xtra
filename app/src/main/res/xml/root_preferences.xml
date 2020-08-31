@@ -94,9 +94,10 @@
         tools:isPreferenceVisible="true" />
 
     <SwitchPreferenceCompat
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="animatedGifEmotes"
         android:title="@string/animated_emotes"
+        android:summary="@string/animated_emotes_warning_settings"
         app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat

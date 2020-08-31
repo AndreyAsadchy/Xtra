@@ -83,7 +83,7 @@ class ChatView : ConstraintLayout {
 
     fun init(fragment: Fragment) {
         this.fragment = fragment
-        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getBoolean(C.ANIMATED_EMOTES, true))
+        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getBoolean(C.ANIMATED_EMOTES, false))
         recyclerView.let {
             it.adapter = adapter
             it.itemAnimator = null
