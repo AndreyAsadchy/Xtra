@@ -80,6 +80,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         get() = playerView.width
     val playerHeight: Int
         get() = playerView.height
+
     private var chatWidthLandscape = 0
 
     private var systemUiFlags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE

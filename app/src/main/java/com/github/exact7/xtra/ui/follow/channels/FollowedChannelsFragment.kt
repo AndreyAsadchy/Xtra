@@ -24,7 +24,7 @@ class FollowedChannelsFragment : PagedListFragment<Follow, FollowedChannelsViewM
     override val viewModel by viewModels<FollowedChannelsViewModel> { viewModelFactory }
     override val adapter: BasePagedListAdapter<Follow> by lazy {
         val activity = requireActivity() as MainActivity
-        FollowedChannelsAdapter(activity)
+        FollowedChannelsAdapter(this, activity)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

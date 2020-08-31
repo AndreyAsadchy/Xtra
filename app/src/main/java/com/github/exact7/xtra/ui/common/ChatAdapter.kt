@@ -16,7 +16,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -32,6 +34,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 
 class ChatAdapter(
+        private val fragment: Fragment,
         private val emoteSize: Int,
         private val badgeSize: Int,
         private val animateGifs: Boolean) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
@@ -208,10 +211,9 @@ class ChatAdapter(
     override fun getItemCount(): Int = messages?.size ?: 0
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, originalMessage: CharSequence, builder: SpannableStringBuilder) {
-        val context = holder.itemView.context
         images.forEach { (url, start, end, isEmote, isPng) ->
             if (isPng || !animateGifs) {
-                GlideApp.with(context)
+                GlideApp.with(fragment)
                         .load(url)
                         .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
@@ -238,9 +240,10 @@ class ChatAdapter(
                             }
                         })
             } else {
-                GlideApp.with(context)
+                GlideApp.with(fragment)
                         .asGif()
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(object : CustomTarget<GifDrawable>() {
                             override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
                                 val textView = holder.itemView as TextView

@@ -86,11 +86,11 @@ class ClipPlayerViewModel @Inject constructor(
                             if (it != null) {
                                 play(it)
                             } else {
-                                play(urls.keys.first())
+                                play(urls.values.first())
                             }
                         }
                     } else {
-                        play(urls.keys.first())
+                        play(urls.values.first())
                     }
                     helper.urls = urls
                     helper.loaded.value = true

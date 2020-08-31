@@ -13,6 +13,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -35,19 +36,21 @@ fun View.gone() {
 fun View.toggleVisibility() = if (isVisible) gone() else visible()
 
 @SuppressLint("CheckResult")
-fun ImageView.loadImage(url: String?, changes: Boolean = false, circle: Boolean = false, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.AUTOMATIC) {
+fun ImageView.loadImage(fragment: Fragment, url: String?, changes: Boolean = false, circle: Boolean = false) {
     if (context.isActivityResumed) { //not enough on some devices?
         try {
-            val request = GlideApp.with(context)
+            val request = GlideApp.with(fragment)
                     .load(url)
-                    .diskCacheStrategy(diskCacheStrategy)
                     .transition(DrawableTransitionOptions.withCrossFade())
-            if (changes) {
+            if (!changes) {
+                request.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            } else {
                 //update every 5 minutes
                 val minutes = System.currentTimeMillis() / 60000L
                 val lastMinute = minutes % 10
                 val key = if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5)
                 request.signature(ObjectKey(key))
+                request.diskCacheStrategy(DiskCacheStrategy.NONE)
             }
             if (circle) {
                 request.circleCrop()

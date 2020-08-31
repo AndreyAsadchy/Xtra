@@ -3,6 +3,7 @@ package com.github.exact7.xtra.ui.videos
 import android.text.format.DateUtils
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
@@ -14,6 +15,7 @@ import com.github.exact7.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_videos_list_item.view.*
 
 class VideosAdapter(
+        private val fragment: Fragment,
         private val clickListener: BaseVideosFragment.OnVideoSelectedListener,
         private val channelClickListener: OnChannelSelectedListener,
         private val showDownloadDialog: (Video) -> Unit) : BaseVideosAdapter(
@@ -36,7 +38,7 @@ class VideosAdapter(
             val position = positions?.get(item.id.substring(1).toLong())
             setOnClickListener { clickListener.startVideo(item, position?.toDouble()) }
             setOnLongClickListener { showDownloadDialog(item); true }
-            thumbnail.loadImage(item.preview.large)
+            thumbnail.loadImage(fragment, item.preview.large)
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
             views.text = TwitchApiHelper.formatViewsCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.length.toLong())
@@ -51,7 +53,7 @@ class VideosAdapter(
             }
             userImage.apply {
                 setOnClickListener(channelListener)
-                loadImage(item.channel.logo, circle = true)
+                loadImage(fragment, item.channel.logo, circle = true)
             }
             username.apply {
                 setOnClickListener(channelListener)

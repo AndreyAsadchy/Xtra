@@ -9,34 +9,34 @@
         <item name="surface_type">surface_view</item>
     </style>
 
-    <style name="Player.Image">
+    <style name="PlayerImage">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:tint">@android:color/white</item>
     </style>
 
-    <style name="Player.SmallImage" parent="Player.Image">
+    <style name="PlayerSmallImage" parent="PlayerImage">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
     </style>
 
-    <style name="Player.LargeImage" parent="Player.Image">
+    <style name="PlayerLargeImage" parent="PlayerImage">
         <item name="android:layout_width">100dp</item>
         <item name="android:layout_height">100dp</item>
     </style>
 
-    <style name="Player.Play" parent="Player.LargeImage">
+    <style name="PlayerPlay" parent="PlayerLargeImage">
         <item name="android:id">@id/exo_play</item>
         <item name="android:src">@drawable/baseline_play_arrow_black_48</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <style name="Player.Pause" parent="Player.LargeImage">
+    <style name="PlayerPause" parent="PlayerLargeImage">
         <item name="android:id">@id/exo_pause</item>
         <item name="android:src">@drawable/baseline_pause_black_48</item>
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <style name="Player.TopRightPanel">
+    <style name="PlayerTopRightPanel">
         <item name="android:id">@id/topRightPanel</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -48,7 +48,7 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="Player.Minimize" parent="Player.SmallImage">
+    <style name="PlayerMinimize" parent="PlayerSmallImage">
         <item name="android:id">@id/minimize</item>
         <item name="android:src">@drawable/baseline_expand_more_black_48</item>
         <item name="android:layout_marginTop">9dp</item>
@@ -56,35 +56,35 @@
         <item name="android:layout_marginStart">10dp</item>
     </style>
 
-    <style name="Player.Settings" parent="Player.SmallImage">
+    <style name="PlayerSettings" parent="PlayerSmallImage">
         <item name="android:id">@id/settings</item>
         <item name="android:src">@drawable/baseline_settings_black_24</item>
     </style>
 
-    <style name="Player.Download" parent="Player.SmallImage">
+    <style name="PlayerDownload" parent="PlayerSmallImage">
         <item name="android:id">@id/download</item>
         <item name="android:src">@drawable/ic_file_download_black_24dp</item>
     </style>
 
-    <style name="Player.Follow" parent="Player.SmallImage">
+    <style name="PlayerFollow" parent="PlayerSmallImage">
         <item name="android:id">@id/follow</item>
         <item name="android:src">@drawable/baseline_favorite_border_black_24</item>
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="Player.Sleep" parent="Player.SmallImage">
+    <style name="PlayerSleep" parent="PlayerSmallImage">
         <item name="android:id">@id/sleepTimer</item>
         <item name="android:src">@drawable/baseline_alarm_black_24</item>
     </style>
 
-    <style name="Player.Text">
+    <style name="PlayerText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="Player.Position" parent="Player.Text">
+    <style name="PlayerPosition" parent="PlayerText">
         <item name="android:id">@id/exo_position</item>
         <item name="android:layout_width">55sp</item>
         <item name="android:gravity">center</item>
@@ -94,7 +94,7 @@
         <item name="android:layout_alignParentBottom">true</item>
     </style>
 
-    <style name="Player.Duration" parent="Player.Text">
+    <style name="PlayerDuration" parent="PlayerText">
         <item name="android:id">@id/exo_duration</item>
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginEnd">10dp</item>
@@ -104,7 +104,7 @@
         <item name="android:layout_alignParentRight">true</item>
     </style>
 
-    <style name="Player.Progress">
+    <style name="PlayerProgress">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@android:color/transparent</item>
@@ -118,7 +118,7 @@
         <item name="android:layout_toStartOf">@id/exo_duration</item>
     </style>
 
-    <style name="Player.FullscreenToggle" parent="Player.SmallImage">
+    <style name="PlayerFullscreenToggle" parent="PlayerSmallImage">
         <item name="android:id">@id/fullscreenToggle</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -126,7 +126,7 @@
         <item name="android:layout_marginEnd">10dp</item>
     </style>
 
-    <style name="Player.Resume" parent="Player.LargeImage">
+    <style name="PlayerResume" parent="PlayerLargeImage">
         <item name="android:src">@drawable/baseline_fast_forward_black_48</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentEnd">true</item>
@@ -135,14 +135,14 @@
         <item name="android:layout_marginRight">15dp</item>
     </style>
 
-    <style name="Player.Rewind" parent="Player.LargeImage">
+    <style name="PlayerRewind" parent="PlayerLargeImage">
         <item name="android:id">@id/exo_rew</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">30dp</item>
         <item name="android:layout_marginStart">30dp</item>
     </style>
 
-    <style name="Player.Forward" parent="Player.LargeImage">
+    <style name="PlayerForward" parent="PlayerLargeImage">
         <item name="android:id">@id/exo_ffwd</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentEnd">true</item>
@@ -151,7 +151,7 @@
         <item name="android:layout_marginRight">30dp</item>
     </style>
 
-    <style name="Player.Channel" parent="Player.Text">
+    <style name="PlayerChannel" parent="PlayerText">
         <item name="android:id">@id/channel</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">35dp</item>
@@ -169,33 +169,33 @@
         <item name="autoSizeTextType">uniform</item>
     </style>
 
-    <style name="Player.HideChat" parent="Player.SmallImage">
+    <style name="PlayerHideChat" parent="PlayerSmallImage">
         <item name="android:id">@id/hideChat</item>
         <item name="android:src">@drawable/baseline_speaker_notes_off_black_24</item>
         <item name="android:layout_marginEnd">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
     </style>
 
-    <style name="Player.ShowChat" parent="Player.SmallImage">
+    <style name="PlayerShowChat" parent="PlayerSmallImage">
         <item name="android:id">@id/showChat</item>
         <item name="android:src">@drawable/baseline_speaker_notes_black_24</item>
         <item name="android:layout_marginEnd">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
     </style>
 
-    <style name="Player.Ratio" parent="Player.SmallImage">
+    <style name="PlayerRatio" parent="PlayerSmallImage">
         <item name="android:id">@id/aspectRatio</item>
         <item name="android:src">@drawable/baseline_aspect_ratio_black_24</item>
     </style>
 
-    <style name="Player.Shadow">
+    <style name="PlayerShadow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@android:color/black</item>
         <item name="android:alpha">0.4</item>
     </style>
 
-    <style name="Player.Viewers" parent="Player.Image">
+    <style name="PlayerViewers" parent="PlayerImage">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:src">@drawable/baseline_person_black_36</item>

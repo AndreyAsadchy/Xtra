@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.streams
 
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.stream.Stream
@@ -12,6 +13,7 @@ import com.github.exact7.xtra.util.setTint
 import kotlinx.android.synthetic.main.fragment_streams_list_item.view.*
 
 abstract class BaseStreamsAdapter(
+        protected val fragment: Fragment,
         private val clickListener: BaseStreamsFragment.OnStreamSelectedListener,
         private val channelClickListener: OnChannelSelectedListener) : BasePagedListAdapter<Stream>(
         object : DiffUtil.ItemCallback<Stream>() {
@@ -43,7 +45,7 @@ abstract class BaseStreamsAdapter(
             }
             userImage.apply {
                 setOnClickListener(channelListener)
-                loadImage(item.channel.logo, circle = true)
+                loadImage(fragment, item.channel.logo, circle = true)
             }
             username.apply {
                 setOnClickListener(channelListener)

@@ -15,7 +15,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,7 +30,6 @@ import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.convertDpToPixels
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.hideKeyboard
-import com.github.exact7.xtra.util.loadBitmap
 import com.github.exact7.xtra.util.loadImage
 import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.showKeyboard
@@ -52,8 +50,7 @@ class ChatView : ConstraintLayout {
         fun send(message: CharSequence)
     }
 
-    private val animateGifs = context.prefs().getBoolean(C.ANIMATED_EMOTES, true)
-    private val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), animateGifs)
+    private lateinit var adapter: ChatAdapter
 
     private var isChatTouched = false
 
@@ -63,7 +60,7 @@ class ChatView : ConstraintLayout {
     private var autoCompleteList: MutableList<Any>? = null
     private var autoCompleteAdapter: AutoCompleteAdapter? = null
 
-    private lateinit var fragmentManager: FragmentManager
+    private lateinit var fragment: Fragment
     private var messagingEnabled = false
 
     private var messageCallback: MessageSenderCallback? = null
@@ -84,8 +81,9 @@ class ChatView : ConstraintLayout {
         View.inflate(context, R.layout.view_chat, this)
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
+    fun init(fragment: Fragment) {
+        this.fragment = fragment
+        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getBoolean(C.ANIMATED_EMOTES, true))
         recyclerView.let {
             it.adapter = adapter
             it.itemAnimator = null
@@ -98,7 +96,6 @@ class ChatView : ConstraintLayout {
                 }
             })
         }
-
         btnDown.setOnClickListener {
             post {
                 recyclerView.scrollToPosition(adapter.messages!!.lastIndex)
@@ -143,7 +140,7 @@ class ChatView : ConstraintLayout {
             is RecentEmote -> hasRecentEmotes = true
         }
         if (messagingEnabled && ++emotesAddedCount == 3) { //TODO refactor to not wait
-            autoCompleteAdapter = AutoCompleteAdapter(context, autoCompleteList!!, animateGifs).apply {
+            autoCompleteAdapter = AutoCompleteAdapter(context, fragment, autoCompleteList!!).apply {
                 setNotifyOnChange(false)
                 editText.setAdapter(this)
 
@@ -202,11 +199,10 @@ class ChatView : ConstraintLayout {
         editText.setText(text)
     }
 
-    fun enableChatInteraction(enableMessaging: Boolean, fragmentManager: FragmentManager) {
-        this.fragmentManager = fragmentManager
+    fun enableChatInteraction(enableMessaging: Boolean) {
         adapter.setOnClickListener { original, formatted ->
             editText.hideKeyboard()
-            MessageClickedDialog.newInstance(enableMessaging, original, formatted).show(fragmentManager, null)
+            MessageClickedDialog.newInstance(enableMessaging, original, formatted).show(fragment.childFragmentManager, null)
         }
         if (enableMessaging) {
             editText.addTextChangedListener(onTextChanged = { text, _, _, _ ->
@@ -237,10 +233,10 @@ class ChatView : ConstraintLayout {
             }
             send.setOnClickListener { sendMessage() }
             messageView.visible()
-            viewPager.adapter = object : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            viewPager.adapter = object : FragmentStatePagerAdapter(fragment.childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
                 override fun getItem(position: Int): Fragment {
-                    return EmotesFragment.newInstance(position, animateGifs)
+                    return EmotesFragment.newInstance(position)
                 }
 
                 override fun getCount(): Int = 3
@@ -333,7 +329,10 @@ class ChatView : ConstraintLayout {
         }
     }
 
-    class AutoCompleteAdapter(context: Context, list: List<Any>, private val animateGifs: Boolean) : ArrayAdapter<Any>(context, 0, list) {
+    class AutoCompleteAdapter(
+            context: Context,
+            private val fragment: Fragment,
+            list: List<Any>) : ArrayAdapter<Any>(context, 0, list) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val viewHolder: ViewHolder
@@ -349,11 +348,7 @@ class ChatView : ConstraintLayout {
                     }
                     viewHolder.containerView.apply {
                         item as Emote
-                        if (animateGifs) {
-                            image.loadImage(item.url)
-                        } else {
-                            image.loadBitmap(item.url)
-                        }
+                        image.loadImage(fragment, item.url)
                         name.text = item.name
                     }
                 }

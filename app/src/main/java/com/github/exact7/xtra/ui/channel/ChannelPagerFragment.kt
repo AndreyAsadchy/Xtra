@@ -54,7 +54,7 @@ class ChannelPagerFragment : MediaPagerFragment(), FollowFragment {
             appBar.setExpanded(false, false)
         }
         collapsingToolbar.title = channel.displayName
-        logo.loadImage(channel.logo, circle = true)
+        logo.loadImage(this, channel.logo, circle = true)
         toolbar.apply {
             navigationIcon = Utils.getNavigationIcon(activity)
             setNavigationOnClickListener { activity.popFragment() }

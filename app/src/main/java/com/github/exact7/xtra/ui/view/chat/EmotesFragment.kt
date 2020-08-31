@@ -39,7 +39,7 @@ class EmotesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
         val args = requireArguments()
-        val emotesAdapter = EmotesAdapter(listener, args.getBoolean(KEY_ANIMATE_GIFS))
+        val emotesAdapter = EmotesAdapter(this, listener)
         with(view as RecyclerView) {
             itemAnimator = null
             adapter = emotesAdapter
@@ -60,8 +60,7 @@ class EmotesFragment : Fragment() {
 
     companion object {
         private const val KEY_POSITION = "position"
-        private const val KEY_ANIMATE_GIFS = "animateGifs"
 
-        fun newInstance(position: Int, animateGifs: Boolean) = EmotesFragment().apply { arguments = bundleOf(KEY_POSITION to position, KEY_ANIMATE_GIFS to animateGifs) }
+        fun newInstance(position: Int) = EmotesFragment().apply { arguments = bundleOf(KEY_POSITION to position) }
     }
 }

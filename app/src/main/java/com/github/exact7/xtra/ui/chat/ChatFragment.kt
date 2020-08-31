@@ -39,6 +39,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
         val isLive = args.getBoolean(KEY_IS_LIVE)
         val enableChat = if (isLive) {
             viewModel.startLive(user, channel)
+            chatView.init(this)
             chatView.setCallback(viewModel)
             if (userIsLoggedIn) {
                 chatView.setUsername(user.name)
@@ -52,6 +53,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
         } else {
             args.getString(KEY_VIDEO_ID).let {
                 if (it != null) {
+                    chatView.init(this)
                     val getCurrentPosition = (parentFragment as ChatReplayPlayerFragment)::getCurrentPosition
                     viewModel.startReplay(channel, it, args.getDouble(KEY_START_TIME), getCurrentPosition)
                     true
@@ -62,7 +64,7 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
             }
         }
         if (enableChat) {
-            chatView.enableChatInteraction(isLive && userIsLoggedIn, childFragmentManager)
+            chatView.enableChatInteraction(isLive && userIsLoggedIn)
             viewModel.chatMessages.observe(viewLifecycleOwner, Observer(chatView::submitList))
             viewModel.newMessage.observe(viewLifecycleOwner, Observer { chatView.notifyMessageAdded() })
             viewModel.otherEmotes.observe(viewLifecycleOwner, Observer(chatView::addEmotes))

@@ -18,7 +18,7 @@ class ChannelVideosFragment : BaseVideosFragment<ChannelVideosViewModel>(), Radi
 
     override val viewModel by viewModels<ChannelVideosViewModel> { viewModelFactory }
     override val adapter: BaseVideosAdapter by lazy {
-        ChannelVideosAdapter(requireActivity() as MainActivity) {
+        ChannelVideosAdapter(this, requireActivity() as MainActivity) {
             lastSelectedItem = it
             showDownloadDialog()
         }

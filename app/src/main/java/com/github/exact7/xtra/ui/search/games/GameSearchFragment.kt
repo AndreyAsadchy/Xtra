@@ -30,7 +30,7 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as MainActivity
-        recyclerView.adapter = GameSearchAdapter(activity).also { adapter = it }
+        recyclerView.adapter = GameSearchAdapter(this, activity).also { adapter = it }
         swipeRefresh.isEnabled = false
     }
 

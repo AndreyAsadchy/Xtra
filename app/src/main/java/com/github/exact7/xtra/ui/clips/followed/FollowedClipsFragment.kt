@@ -18,7 +18,7 @@ class FollowedClipsFragment : BaseClipsFragment<FollowedClipsViewModel>() {
     override val viewModel by viewModels<FollowedClipsViewModel> { viewModelFactory }
     override val adapter: BasePagedListAdapter<Clip> by lazy {
         val activity = requireActivity() as MainActivity
-        ClipsAdapter(activity, activity) {
+        ClipsAdapter(this, activity, activity) {
             lastSelectedItem = it
             showDownloadDialog()
         }

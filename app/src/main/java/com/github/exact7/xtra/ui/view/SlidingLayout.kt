@@ -11,7 +11,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -84,12 +83,7 @@ class SlidingLayout : LinearLayout {
         super.onFinishInflate()
         dragView = getChildAt(0)
         secondView = getChildAt(1)
-        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-                init()
-            }
-        })
+        init()
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -111,17 +105,7 @@ class SlidingLayout : LinearLayout {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         orientation = if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) VERTICAL else HORIZONTAL
-        if (!isMaximized) {
-            if (!isPortrait) {
-                secondView?.gone()
-            }
-        }
-        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-                init()
-            }
-        })
+        init()
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -242,43 +226,49 @@ class SlidingLayout : LinearLayout {
     }
 
     private fun init() {
-        topBound = paddingTop
-        if (isPortrait) { //portrait
-            minScaleX = 0.5f
-            minScaleY = 0.5f
-        } else { //landscape
-            minScaleX = 0.3f
-            minScaleY = 0.325f
-        }
-        bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
-
-        fun initialize() {
-            minimizeThreshold = height / 5
-            pivotX = width * 0.95f
-            if (isPortrait) {
-                bottomBound = height / 2
-                pivotY = height * 2 - dragView.height - bottomMargin
-            } else {
-                bottomBound = (height / 1.5f).toInt()
-                pivotY = height - bottomMargin
+        dragView.post {
+            topBound = paddingTop
+            if (isPortrait) { //portrait
+                minScaleX = 0.5f
+                minScaleY = 0.5f
+            } else { //landscape
+                minScaleX = 0.3f
+                minScaleY = 0.325f
             }
-        }
+            bottomMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BOTTOM_MARGIN / (1f - minScaleY), resources.displayMetrics)
 
-        if (!isPortrait || !isMaximized || !isKeyboardShown) {
-            initialize()
-        } else {
-            postDelayed(750L) {
-                //delay to avoid issue after rotating from landscape with opened keyboard to portrait
+            fun initialize() {
+                minimizeThreshold = height / 5
+                pivotX = width * 0.95f
+                if (isPortrait) {
+                    bottomBound = height / 2
+                    pivotY = height * 2 - dragView.height - bottomMargin
+                } else {
+                    bottomBound = (height / 1.5f).toInt()
+                    pivotY = height - bottomMargin
+                }
+            }
+
+            if (!isPortrait || !isMaximized || !isKeyboardShown) {
                 initialize()
+            } else {
+                postDelayed(750L) {
+                    //delay to avoid issue after rotating from landscape with opened keyboard to portrait
+                    initialize()
+                }
             }
+            if (!isMaximized) {
+                scaleX = minScaleX
+                scaleY = minScaleY
+            }
+            timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
         }
-        if (!isMaximized) {
-            scaleX = minScaleX
-            scaleY = minScaleY
-        }
-        timeBar = dragView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
-        post {
-            requestLayout()
+        secondView?.post {
+            if (!isMaximized) {
+                if (!isPortrait) {
+                    secondView?.gone()
+                }
+            }
         }
     }
 

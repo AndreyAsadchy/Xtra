@@ -5,41 +5,41 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <View
-        style="@style/Player.Shadow" />
+        style="@style/PlayerShadow" />
 
     <ImageButton
-        style="@style/Player.Play"/>
+        style="@style/PlayerPlay"/>
 
     <ImageButton
-        style="@style/Player.Pause"/>
+        style="@style/PlayerPause"/>
 
     <ImageButton
-        style="@style/Player.Minimize"/>
+        style="@style/PlayerMinimize"/>
 
     <TextView
-        style="@style/Player.Channel"/>
+        style="@style/PlayerChannel"/>
 
     <ImageButton
         android:id="@+id/resume"
-        style="@style/Player.Resume"/>
+        style="@style/PlayerResume"/>
 
     <LinearLayout
-        style="@style/Player.TopRightPanel">
+        style="@style/PlayerTopRightPanel">
 
         <ImageButton
-            style="@style/Player.Follow"
+            style="@style/PlayerFollow"
             />
 
         <ImageButton
-            style="@style/Player.Sleep"
+            style="@style/PlayerSleep"
             />
 
         <ImageButton
-            style="@style/Player.Ratio"
+            style="@style/PlayerRatio"
             />
 
         <ImageButton
-            style="@style/Player.Settings"
+            style="@style/PlayerSettings"
             />
 
     </LinearLayout>
@@ -54,11 +54,11 @@
         tools:ignore="RelativeOverlap">
 
         <ImageView
-            style="@style/Player.Viewers" />
+            style="@style/PlayerViewers" />
 
         <TextView
             android:id="@+id/viewers"
-            style="@style/Player.Text"
+            style="@style/PlayerText"
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
             tools:text="13.3K" />
@@ -73,10 +73,10 @@
         android:layout_marginBottom="5dp">
 
         <ImageButton
-            style="@style/Player.ShowChat" />
+            style="@style/PlayerShowChat" />
 
         <ImageButton
-            style="@style/Player.HideChat" />
+            style="@style/PlayerHideChat" />
 
         <!--<ImageButton-->
         <!--android:id="@+id/player_hide_chat"-->
@@ -90,7 +90,7 @@
         <!--android:src="@drawable/baseline_chat_black_24" />-->
 
         <ImageButton
-            style="@style/Player.FullscreenToggle"/>
+            style="@style/PlayerFullscreenToggle"/>
 
     </LinearLayout>
 

@@ -37,7 +37,7 @@ class DownloadsFragment : Fragment(), Injectable, Scrollable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val activity = requireActivity() as MainActivity
-        val adapter = DownloadsAdapter(activity) {
+        val adapter = DownloadsAdapter(this, activity) {
             val delete = getString(R.string.delete)
             AlertDialog.Builder(activity)
                     .setTitle(delete)

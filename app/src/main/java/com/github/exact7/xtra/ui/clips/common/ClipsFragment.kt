@@ -26,9 +26,9 @@ class ClipsFragment : BaseClipsFragment<ClipsViewModel>() {
             showDownloadDialog()
         }
         if (arguments?.getParcelable<Channel?>(C.CHANNEL) != null) {
-            ChannelClipsAdapter(activity, showDialog)
+            ChannelClipsAdapter(this, activity, showDialog)
         } else {
-            ClipsAdapter(activity, activity, showDialog)
+            ClipsAdapter(this, activity, activity, showDialog)
         }
     }
 

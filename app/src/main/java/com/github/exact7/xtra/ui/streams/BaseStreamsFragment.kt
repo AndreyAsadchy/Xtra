@@ -21,7 +21,7 @@ abstract class BaseStreamsFragment<VM : PagedListViewModel<Stream>> : PagedListF
 
     override val adapter: BasePagedListAdapter<Stream> by lazy {
         val activity = requireActivity() as MainActivity
-        StreamsAdapter(activity, activity)
+        StreamsAdapter(this, activity, activity)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

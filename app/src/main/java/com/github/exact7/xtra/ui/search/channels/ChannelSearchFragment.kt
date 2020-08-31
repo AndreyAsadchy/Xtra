@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.common_recycler_view_layout.*
 class ChannelSearchFragment : PagedListFragment<Channel, ChannelSearchViewModel, BasePagedListAdapter<Channel>>(), Searchable {
 
     override val viewModel by viewModels<ChannelSearchViewModel> { viewModelFactory }
-    override val adapter: BasePagedListAdapter<Channel> by lazy { ChannelSearchAdapter(requireActivity() as MainActivity) }
+    override val adapter: BasePagedListAdapter<Channel> by lazy { ChannelSearchAdapter(this, requireActivity() as MainActivity) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.common_recycler_view_layout, container, false)

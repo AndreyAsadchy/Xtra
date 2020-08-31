@@ -155,8 +155,8 @@
 
     <style name="Thumbnail">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/thumbnail_height</item>
-        <item name="android:scaleType">centerCrop</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="layout_constraintDimensionRatio">H,16:9</item>
     </style>
 
     <style name="ThumbnailItem" parent="Outline">

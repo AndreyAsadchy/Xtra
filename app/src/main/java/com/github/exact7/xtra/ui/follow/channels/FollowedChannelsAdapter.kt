@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.follow.channels
 
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.follows.Follow
@@ -10,6 +11,7 @@ import com.github.exact7.xtra.util.loadImage
 import kotlinx.android.synthetic.main.fragment_search_channels_list_item.view.*
 
 class FollowedChannelsAdapter(
+        private val fragment: Fragment,
         private val listener: OnChannelSelectedListener) : BasePagedListAdapter<Follow>(
         object : DiffUtil.ItemCallback<Follow>() {
             override fun areItemsTheSame(oldItem: Follow, newItem: Follow): Boolean =
@@ -23,7 +25,7 @@ class FollowedChannelsAdapter(
     override fun bind(item: Follow, view: View) {
         with(view) {
             setOnClickListener { listener.viewChannel(item.channel) }
-            logo.loadImage(item.channel.logo)
+            logo.loadImage(fragment, item.channel.logo)
             name.text = item.channel.displayName
         }
     }

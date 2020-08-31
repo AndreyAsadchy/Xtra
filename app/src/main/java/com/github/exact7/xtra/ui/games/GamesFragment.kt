@@ -22,7 +22,7 @@ class GamesFragment : PagedListFragment<GameWrapper, GamesViewModel, BasePagedLi
     }
 
     override val viewModel by viewModels<GamesViewModel> { viewModelFactory }
-    override val adapter: BasePagedListAdapter<GameWrapper> by lazy { GamesAdapter(requireActivity() as MainActivity) }
+    override val adapter: BasePagedListAdapter<GameWrapper> by lazy { GamesAdapter(this, requireActivity() as MainActivity) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_games, container, false)

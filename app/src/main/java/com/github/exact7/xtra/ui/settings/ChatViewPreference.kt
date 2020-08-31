@@ -11,8 +11,6 @@ import com.github.exact7.xtra.model.chat.Badge
 import com.github.exact7.xtra.model.chat.ChatMessage
 import com.github.exact7.xtra.model.chat.SubscriberBadge
 import com.github.exact7.xtra.model.chat.TwitchEmote
-import com.github.exact7.xtra.ui.common.ChatAdapter
-import com.github.exact7.xtra.util.convertDpToPixels
 
 class ChatViewPreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs) {
 
@@ -26,7 +24,7 @@ class ChatViewPreference(context: Context, attrs: AttributeSet?) : Preference(co
         holder.itemView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         val recyclerView = holder.itemView.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), true)
+//        val adapter = ChatAdapter(context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), true)
         val messages = mutableListOf(object : ChatMessage {
             override val id: String = "1"
             override val userName: String = "user1"
@@ -48,7 +46,7 @@ class ChatViewPreference(context: Context, attrs: AttributeSet?) : Preference(co
             override val badges: List<Badge>? = null
             override var subscriberBadge: SubscriberBadge? = null
         })
-        adapter.messages = messages
-        recyclerView.adapter = adapter
+//        adapter.messages = messages
+//        recyclerView.adapter = adapter
     }
 }

@@ -3,6 +3,7 @@ package com.github.exact7.xtra.ui.clips.common
 import android.text.format.DateUtils
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
@@ -13,6 +14,7 @@ import com.github.exact7.xtra.util.loadImage
 import kotlinx.android.synthetic.main.fragment_channel_clips_list_item.view.*
 
 class ChannelClipsAdapter(
+        private val fragment: Fragment,
         private val clickListener: BaseClipsFragment.OnClipSelectedListener,
         private val showDownloadDialog: (Clip) -> Unit) : BasePagedListAdapter<Clip>(
         object : DiffUtil.ItemCallback<Clip>() {
@@ -31,7 +33,7 @@ class ChannelClipsAdapter(
         with(view) {
             setOnClickListener { clickListener.startClip(item) }
             setOnLongClickListener { showDownloadDialog(item); true }
-            thumbnail.loadImage(item.thumbnails.medium)
+            thumbnail.loadImage(fragment, item.thumbnails.medium)
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
             views.text = TwitchApiHelper.formatViewsCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.duration.toLong())
