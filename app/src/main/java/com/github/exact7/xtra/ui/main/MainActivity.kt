@@ -196,20 +196,20 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                                 .show()
                     }
                 }
+                if (prefs.getBoolean("showAnimatedEmotesWarning", true)) {
+                    prefs.edit { putBoolean("showAnimatedEmotesWarning", false) }
+                    AlertDialog.Builder(this)
+                            .setTitle(getString(R.string.enable_animated_emotes_title))
+                            .setMessage(getString(R.string.enable_animated_emotes_description))
+                            .setPositiveButton(getString(R.string.enable)) { _, _ -> prefs.edit { putBoolean(C.ANIMATED_EMOTES, true) } }
+                            .setNegativeButton(getString(R.string.disable)) { _, _ -> prefs.edit { putBoolean(C.ANIMATED_EMOTES, false) } }
+                            .show()
+                }
             } else {
                 prefs.edit { putString("lastUpdateVersion", BuildConfig.VERSION_NAME) }
                 if (notFirstLaunch) {
                     if (prefs.getBoolean(C.SHOW_CHANGELOGS, true)) {
                         NewUpdateChangelogDialog().show(supportFragmentManager, null)
-                    }
-                    if (prefs.getBoolean("showAnimatedEmotesWarning", true)) {
-                        prefs.edit { putBoolean("showAnimatedEmotesWarning", false) }
-                        AlertDialog.Builder(this)
-                                .setTitle(getString(R.string.enable_animated_emotes_title))
-                                .setMessage(getString(R.string.enable_animated_emotes_description))
-                                .setPositiveButton(getString(R.string.enable)) { _, _ -> prefs.edit { putBoolean(C.ANIMATED_EMOTES, true) } }
-                                .setNegativeButton(getString(R.string.disable)) { _, _ -> prefs.edit { putBoolean(C.ANIMATED_EMOTES, false) } }
-                                .show()
                     }
                 }
                 if (resources.getBoolean(R.bool.isTablet)) { //TODO remove after updated to 1.4.5
