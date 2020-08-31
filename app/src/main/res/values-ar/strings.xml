@@ -129,9 +129,9 @@
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
         <b>August 31st, 1.5.3</b>
-\n- Fixed wrong video player and thumbnails size which caused them to be stretched. You can still adjust the aspect ratio for landscape mode in the top right corner of video player's controls
+\n- Fixed wrong video player and thumbnails size which caused them to be stretched. You can still adjust the aspect ratio for landscape mode in the top right corner of video player\'s controls
 \n- Fixed clips not playing without changing quality
-\n- Adjusted video player's dragging area to avoid accidental drags when trying to swipe down status bar
+\n- Adjusted video player\'s dragging area to avoid accidental drags when trying to swipe down status bar
 \n- More improvements behind the scenes
         \n\n<b>May 31st, 1.5.2</b>
 \n- Fixed login not working
