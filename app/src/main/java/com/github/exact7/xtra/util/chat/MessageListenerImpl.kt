@@ -7,10 +7,6 @@ import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.chat.TwitchEmote
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.Map
-import kotlin.collections.MutableList
-import kotlin.collections.dropLastWhile
-import kotlin.collections.forEach
 import kotlin.collections.set
 
 private const val TAG = "MessageListenerImpl"
@@ -83,18 +79,21 @@ class MessageListenerImpl(
     }
 
     override fun onNotice(message: String) {
-
+//        println("NOTICE $message")
     }
 
     override fun onUserNotice(message: String) {
+//        println("USER NOTICE $message")
 
     }
 
     override fun onRoomState(message: String) {
+//        println("ROOMSTATE $message")
 
     }
 
     override fun onJoin(message: String) {
+//        println("JOIN $message")
 
     }
 

@@ -3,6 +3,7 @@ package com.github.exact7.xtra.ui.common
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE
@@ -16,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.text.getSpans
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -62,8 +64,8 @@ class ChatAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val builder = SpannableStringBuilder()
         val chatMessage = messages?.get(position) ?: return
+        val builder = SpannableStringBuilder()
         val images = ArrayList<Image>()
         var index = 0
         var badgesCount = 0
@@ -197,15 +199,15 @@ class ChatAdapter(
             }
             if (wasMentioned) {
                 builder.setSpan(ForegroundColorSpan(Color.WHITE), 0, builder.length, SPAN_INCLUSIVE_INCLUSIVE)
-                (holder.itemView as TextView).setBackgroundColor(Color.RED)
+                holder.textView.setBackgroundColor(Color.RED)
             } else {
-                holder.itemView.background = null
+                holder.textView.background = null
             }
-            loadImages(holder, images, originalMessage, builder)
         } catch (e: Exception) {
 //            Crashlytics.logException(e)
         }
         holder.bind(originalMessage, builder)
+        loadImages(holder, images, originalMessage, builder)
     }
 
     override fun getItemCount(): Int = messages?.size ?: 0
@@ -246,22 +248,21 @@ class ChatAdapter(
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(object : CustomTarget<GifDrawable>() {
                             override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
-                                val textView = holder.itemView as TextView
                                 resource.apply {
                                     val size = calculateEmoteSize(this)
                                     setBounds(0, 0, size.first, size.second)
                                     setLoopCount(GifDrawable.LOOP_FOREVER)
                                     callback = object : Drawable.Callback {
                                         override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-                                            textView.removeCallbacks(what)
+                                            holder.textView.removeCallbacks(what)
                                         }
 
                                         override fun invalidateDrawable(who: Drawable) {
-                                            textView.invalidate()
+                                            holder.textView.invalidate()
                                         }
 
                                         override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-                                            textView.postDelayed(what, `when`)
+                                            holder.textView.postDelayed(what, `when`)
                                         }
                                     }
                                     start()
@@ -293,6 +294,30 @@ class ChatAdapter(
         messageClickListener = listener
     }
 
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        (holder.textView.text as? Spannable)?.getSpans<ImageSpan>()?.forEach {
+            (it.drawable as? GifDrawable)?.start()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        (holder.textView.text as? Spannable)?.getSpans<ImageSpan>()?.forEach {
+            (it.drawable as? GifDrawable)?.stop()
+        }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        val childCount = recyclerView.childCount
+        for (i in 0 until childCount) {
+            ((recyclerView.getChildAt(i) as TextView).text as? Spannable)?.getSpans<ImageSpan>()?.forEach {
+                (it.drawable as? GifDrawable)?.stop()
+            }
+        }
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
+
     private fun getRandomColor(): Int = twitchColors[random.nextInt(twitchColors.size)]
 
     private fun calculateEmoteSize(resource: Drawable): Pair<Int, Int> {
@@ -318,8 +343,10 @@ class ChatAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        val textView = itemView as TextView
+
         fun bind(originalMessage: CharSequence, formattedMessage: SpannableStringBuilder) {
-            (itemView as TextView).apply {
+            textView.apply {
                 text = formattedMessage
                 movementMethod = LinkMovementMethod.getInstance()
                 setOnClickListener { messageClickListener?.invoke(originalMessage, formattedMessage) }

@@ -267,6 +267,11 @@ class ChatView : ConstraintLayout {
         }
     }
 
+    override fun onDetachedFromWindow() {
+        recyclerView.adapter = null
+        super.onDetachedFromWindow()
+    }
+
     private fun sendMessage(): Boolean {
         editText.hideKeyboard()
         editText.clearFocus()

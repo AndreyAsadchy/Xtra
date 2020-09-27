@@ -57,8 +57,8 @@ class PlayerRepository @Inject constructor(
         options["fast_bread"] = "true" //low latency
 
         //not working anyway
-        options["server_ads"] = "false"
-        options["show_ads"] = "false"
+//        options["server_ads"] = "false"
+//        options["show_ads"] = "false"
         val playlist = usher.getStreamPlaylist(channelName, options)
         playlist.raw().request().url().toString().toUri()
     }
