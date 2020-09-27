@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import com.github.exact7.xtra.R
@@ -274,7 +275,9 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         playerView.useController = false
         if (!isPortrait) {
             showStatusBar()
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            slidingLayout.postDelayed(500L) {
+                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
         }
     }
 
