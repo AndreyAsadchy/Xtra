@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 16
-        versionCode 84
+        versionCode 85
         versionName "1.5.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 29
@@ -92,8 +92,8 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     //UI
-    implementation 'com.google.android.material:material:1.2.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha03' //https://github.com/material-components/material-components-android/issues/1641
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
@@ -113,7 +113,7 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') { //TODO
         transitive = true
     }
 
