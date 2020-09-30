@@ -22,4 +22,5 @@ object C {
     const val SHOW_CHANGELOGS = "showChangelogs"//TODO separate keys for preferences
     const val NEW_TOKEN = "newToken"
     const val COMPACT_STREAMS = "compactStreams"
+    const val IGNORE_NOTCH = "ignoreNotch"
 }

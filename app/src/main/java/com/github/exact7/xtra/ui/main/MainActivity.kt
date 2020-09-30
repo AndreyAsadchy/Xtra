@@ -13,6 +13,7 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -111,8 +112,15 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
     //Lifecycle methods
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         prefs = prefs()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode = if (prefs.getBoolean(C.IGNORE_NOTCH, true)) {
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            } else {
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+            }
+        }
+        super.onCreate(savedInstanceState)
         val notFirstLaunch = !prefs.getBoolean(C.FIRST_LAUNCH, true)
         if (notFirstLaunch) {
             applyTheme()

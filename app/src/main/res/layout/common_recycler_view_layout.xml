@@ -18,7 +18,7 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.github.exact7.xtra.ui.view.CustomSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             tools:listitem="@layout/fragment_downloads_list_item" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.github.exact7.xtra.ui.view.CustomSwipeRefreshLayout>
 
     <TextView
         android:id="@+id/nothing_here"

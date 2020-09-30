@@ -58,10 +58,30 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
+
             val activity = requireActivity()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
-                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE)!!.isVisible = true
+            val changeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                setResult()
+                true
+            }
+            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
+            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
+            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.onPreferenceChangeListener = changeListener
+            findPreference<SwitchPreferenceCompat>(C.COMPACT_STREAMS)!!.onPreferenceChangeListener = changeListener
+            findPreference<ListPreference>("playerForward")!!.onPreferenceChangeListener = changeListener
+            findPreference<ListPreference>("playerRewind")!!.onPreferenceChangeListener = changeListener
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !activity.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+                findPreference<SwitchPreferenceCompat>(C.PICTURE_IN_PICTURE)!!.isVisible = false
+            }
+
+            findPreference<SwitchPreferenceCompat>(C.IGNORE_NOTCH)!!.apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    onPreferenceChangeListener = changeListener
+                } else {
+                    isVisible = false
+                }
             }
 
             findPreference<ListPreference>(C.THEME)!!.setOnPreferenceChangeListener { _, _ ->
@@ -72,24 +92,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
                 true
             }
+
             findPreference<SeekBarPreference>("chatWidth")!!.setOnPreferenceChangeListener { _, newValue ->
                 setResult()
                 val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(activity, newValue as Int)
                 activity.prefs().edit { putInt(C.LANDSCAPE_CHAT_WIDTH, chatWidth) }
                 true
             }
-
-            val changeListener = Preference.OnPreferenceChangeListener { _, _ ->
-                setResult()
-                true
-            }
-
-            findPreference<ListPreference>(C.PORTRAIT_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
-            findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
-            findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.onPreferenceChangeListener = changeListener
-            findPreference<SwitchPreferenceCompat>(C.COMPACT_STREAMS)!!.onPreferenceChangeListener = changeListener
-            findPreference<ListPreference>("playerForward")!!.onPreferenceChangeListener = changeListener
-            findPreference<ListPreference>("playerRewind")!!.onPreferenceChangeListener = changeListener
         }
 
         override fun onSaveInstanceState(outState: Bundle) {

@@ -132,7 +132,10 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>September 27th, 1.5.4</b>
+        <b>September 30th, 1.5.5</b>
+\n- <b>Added a setting to enable/disable displaying video beyond the camera notch/hole-punch (Android 9+). Enabled by default</b>
+\n- Recent emotes now show only those BTTV/FFZ emotes which are enabled on the current channel
+        \n\n<b>September 27th, 1.5.4</b>
 \n- Improved adblock, removed \"Commercial break in progress\" screen
 \n- Improved GIF emotes performance
 \n- Camera notch no longer blocks video
@@ -203,4 +206,6 @@
     <string name="enable_animated_emotes_description">Large number of animated GIF emotes in chat leads to an increased battery and CPU usage. You can change this later in the settings</string>
     <string name="enable">Enable</string>
     <string name="disable">Disable</string>
+    <string name="ignore_notch">Ignore camera notch</string>
+    <string name="display_beyond_notch">Display video beyond the notch/hole-punch</string>
 </resources>

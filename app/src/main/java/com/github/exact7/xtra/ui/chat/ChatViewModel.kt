@@ -1,6 +1,7 @@
 package com.github.exact7.xtra.ui.chat
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
@@ -37,7 +38,19 @@ class ChatViewModel @Inject constructor(
         private val repository: TwitchService,
         private val playerRepository: PlayerRepository) : BaseViewModel(), ChatView.MessageSenderCallback {
 
-    val recentEmotes by lazy { playerRepository.loadRecentEmotes() }
+    val recentEmotes: LiveData<List<Emote>> by lazy {
+        MediatorLiveData<List<Emote>>().apply {
+            addSource(twitchEmotes) { twitch ->
+                removeSource(twitchEmotes)
+                addSource(_otherEmotes) { other ->
+                    removeSource(_otherEmotes)
+                    addSource(playerRepository.loadRecentEmotes()) { recent ->
+                        value = recent.filter { (twitch.contains<Emote>(it) || other.contains(it)) }
+                    }
+                }
+            }
+        }
+    }
     val twitchEmotes by lazy { playerRepository.loadEmotes() }
     private val _otherEmotes = MutableLiveData<List<Emote>>()
     val otherEmotes: LiveData<List<Emote>>

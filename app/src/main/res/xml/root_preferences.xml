@@ -1,6 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
         android:entries="@array/themeEntries"
@@ -89,9 +88,7 @@
         android:key="pictureInPicture"
         android:summary="@string/continue_playback"
         android:title="@string/picture_in_picture"
-        app:iconSpaceReserved="false"
-        app:isPreferenceVisible="false"
-        tools:isPreferenceVisible="true" />
+        app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat
         android:defaultValue="false"
@@ -106,6 +103,13 @@
         android:title="@string/compact_streams_title"
         android:summary="@string/compact_streams_description"
         app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="ignoreNotch"
+        android:title="@string/ignore_notch"
+        android:summary="@string/display_beyond_notch"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
         android:defaultValue="true"
