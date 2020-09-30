@@ -14,9 +14,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.di.Injectable
 import com.github.exact7.xtra.model.LoggedIn
@@ -45,6 +45,8 @@ import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.toast
 import com.github.exact7.xtra.util.visible
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Suppress("PLUGIN_WARNING")
@@ -274,8 +276,10 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         playerView.useController = false
         if (!isPortrait) {
             showStatusBar()
-            slidingLayout.postDelayed(500L) {
-                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            val activity = requireActivity()
+            activity.lifecycleScope.launch {
+                delay(500L)
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             }
         }
     }
