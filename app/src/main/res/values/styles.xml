@@ -159,19 +159,12 @@
         <item name="layout_constraintDimensionRatio">H,16:9</item>
     </style>
 
-    <style name="ThumbnailItem" parent="Outline">
+    <style name="ThumbnailItem">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="VideoDuration" parent="ThumbnailItem">
-        <item name="android:paddingLeft">3dp</item>
-        <item name="android:paddingRight">3dp</item>
-        <item name="android:paddingTop">1dp</item>
-        <item name="android:paddingBottom">1dp</item>
-        <item name="android:background">@android:color/black</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:background">@drawable/thumbnail_item_background</item>
     </style>
 
     <style name="VideoTitle">

@@ -3,6 +3,7 @@ package com.github.exact7.xtra.ui.main
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -85,18 +86,19 @@ class MainViewModel @Inject constructor(
         if (user is NotValidated) {
             viewModelScope.launch {
                 try {
-                    authRepository.validate(user.token)
-                    User.validated()
-                    repository.loadUserEmotes(user.token, user.id)
+                    val response = authRepository.validate(user.token)
+                    if (response?.clientId == TwitchApiHelper.CLIENT_ID) { //stop using twitch client id for everything
+                        User.validated()
+                        repository.loadUserEmotes(user.token, user.id)
+                    } else {
+                        throw IllegalStateException("401")
+                    }
                 } catch (e: Exception) {
-                    if (e is HttpException && e.code() == 401) {
-                        with(activity) {
-                            User.set(activity, null)
-                            toast(R.string.token_expired)
-                            if (!isPlayerMaximized) {
-                                startActivityForResult(Intent(this, LoginActivity::class.java), 2)
-                            }
-                        }
+                    if ((e is IllegalStateException && e.message == "401") || (e is HttpException && e.code() == 401)) {
+                        User.set(activity, null)
+                        activity.toast(R.string.token_expired)
+                        activity.startActivityForResult(Intent(activity, LoginActivity::class.java), 2)
+                        activity.prefs().edit { putString(C.LAST_UPDATE_VERSION, null) }
                     }
                 }
             }

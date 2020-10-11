@@ -56,7 +56,7 @@ class GameSearchFragment : BaseNetworkFragment(), Searchable {
                 viewModel.setQuery(query)
             } else {
                 adapter.submitList(null)
-                nothing_here.gone()
+                nothing_here?.gone()
             }
         }
     }

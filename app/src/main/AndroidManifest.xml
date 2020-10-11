@@ -44,7 +44,6 @@
         <service android:name=".ui.player.AudioPlayerService" />
 
         <meta-data android:name="android.max_aspect" android:value="ratio_float" />
-        <meta-data android:name="io.fabric.ApiKey" android:value="c369e4413442968597c972a9b9116e4b458b163a" />
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
         <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.google.android.exoplayer2.ext.cast.DefaultCastOptionsProvider" />

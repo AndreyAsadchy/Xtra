@@ -20,7 +20,7 @@ object C {
     const val TWITCH_EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
     const val ANIMATED_EMOTES = "animatedGifEmotes"
     const val SHOW_CHANGELOGS = "showChangelogs"//TODO separate keys for preferences
-    const val NEW_TOKEN = "newToken"
     const val COMPACT_STREAMS = "compactStreams"
     const val IGNORE_NOTCH = "ignoreNotch"
+    const val LAST_UPDATE_VERSION = "lastUpdateVersion"
 }

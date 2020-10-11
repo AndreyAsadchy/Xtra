@@ -18,8 +18,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.GlideApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -36,28 +36,26 @@ fun View.gone() {
 fun View.toggleVisibility() = if (isVisible) gone() else visible()
 
 @SuppressLint("CheckResult")
-fun ImageView.loadImage(fragment: Fragment, url: String?, changes: Boolean = false, circle: Boolean = false) {
+fun ImageView.loadImage(fragment: Fragment, url: String?, changes: Boolean = false, circle: Boolean = false, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.RESOURCE) {
     if (context.isActivityResumed) { //not enough on some devices?
         try {
             val request = GlideApp.with(fragment)
                     .load(url)
+                    .diskCacheStrategy(diskCacheStrategy)
                     .transition(DrawableTransitionOptions.withCrossFade())
-            if (!changes) {
-                request.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            } else {
+            if (changes) {
                 //update every 5 minutes
                 val minutes = System.currentTimeMillis() / 60000L
                 val lastMinute = minutes % 10
                 val key = if (lastMinute < 5) minutes - lastMinute else minutes - (lastMinute - 5)
                 request.signature(ObjectKey(key))
-                request.diskCacheStrategy(DiskCacheStrategy.NONE)
             }
             if (circle) {
                 request.circleCrop()
             }
             request.into(this)
         } catch (e: IllegalArgumentException) {
-            Crashlytics.logException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
         return
     }
@@ -72,7 +70,7 @@ fun ImageView.loadBitmap(url: String) {
                     .transition(BitmapTransitionOptions.withCrossFade())
                     .into(this)
         } catch (e: IllegalArgumentException) {
-            Crashlytics.logException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 }

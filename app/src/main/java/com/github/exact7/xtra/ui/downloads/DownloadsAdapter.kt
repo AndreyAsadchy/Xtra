@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.ui.common.BaseListAdapter
@@ -34,7 +35,7 @@ class DownloadsAdapter(
         with(view) {
             setOnClickListener { clickListener.startOfflineVideo(item) }
             setOnLongClickListener { deleteVideo(item); true }
-            thumbnail.loadImage(fragment, item.thumbnail)
+            thumbnail.loadImage(fragment, item.thumbnail, diskCacheStrategy = DiskCacheStrategy.AUTOMATIC)
             date.text = context.getString(R.string.uploaded_date, TwitchApiHelper.formatTime(context, item.uploadDate))
             downloadDate.text = context.getString(R.string.downloaded_date, TwitchApiHelper.formatTime(context, item.downloadDate))
             duration.text = DateUtils.formatElapsedTime(item.duration / 1000L)
@@ -51,8 +52,8 @@ class DownloadsAdapter(
             }
             progressBar.progress = (item.lastWatchPosition.toFloat() / item.duration * 100).toInt()
             item.sourceStartPosition?.let {
-                sourceStart.text = DateUtils.formatElapsedTime(it / 1000L)
-                sourceEnd.text = DateUtils.formatElapsedTime((it + item.duration) / 1000L)
+                sourceStart.text = context.getString(R.string.source_vod_start, DateUtils.formatElapsedTime(it / 1000L))
+                sourceEnd.text = context.getString(R.string.source_vod_end, DateUtils.formatElapsedTime((it + item.duration) / 1000L))
             }
             status.apply {
                 if (item.status == OfflineVideo.STATUS_DOWNLOADED) {

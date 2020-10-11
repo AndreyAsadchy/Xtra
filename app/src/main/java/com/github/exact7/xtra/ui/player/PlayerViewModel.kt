@@ -10,7 +10,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.ui.common.BaseAndroidViewModel
@@ -30,6 +29,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -97,6 +97,13 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     open fun onPause() {
         player.stop()
+    }
+
+    open fun restartPlayer() {
+        playbackPosition = currentPlayer.value!!.currentPosition
+        player.stop()
+        play()
+        player.seekTo(playbackPosition)
     }
 
     protected fun play() {
@@ -176,15 +183,10 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
                     context.toast(R.string.stream_ended)
                 } else {
                     context.shortToast(R.string.player_error)
-                    player.stop()
                     viewModelScope.launch {
                         delay(1500L)
                         try {
-                            if (this@PlayerViewModel is StreamPlayerViewModel) {
-                                play()
-                            } else {
-                                onResume()
-                            }
+                            restartPlayer()
                         } catch (e: Exception) {
 //                            Crashlytics.log(Log.ERROR, tag, "onPlayerError: Retry error. ${e.message}")
 //                            Crashlytics.logException(e)
@@ -195,7 +197,7 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 //                Crashlytics.log(Log.ERROR, tag, "onPlayerError ${e.message}")
 //                Crashlytics.logException(e)
             }
-            Crashlytics.logException(error)
+            FirebaseCrashlytics.getInstance().recordException(error)
         }
     }
 

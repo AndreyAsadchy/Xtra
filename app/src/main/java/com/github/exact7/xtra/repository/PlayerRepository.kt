@@ -5,15 +5,12 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.github.exact7.xtra.XtraApp
 import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
 import com.github.exact7.xtra.db.RecentEmotesDao
 import com.github.exact7.xtra.db.VideoPositionsDao
-import com.github.exact7.xtra.model.LoggedIn
-import com.github.exact7.xtra.model.User
 import com.github.exact7.xtra.model.VideoPosition
 import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzEmotesResponse
@@ -53,7 +50,7 @@ class PlayerRepository @Inject constructor(
         val serverSessionId = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
         val cookie = "unique_id=$uniqueId; unique_id_durable=$uniqueId; twitch.lohp.countryCode=BY; api_token=twilight.$apiToken; server_session_id=$serverSessionId"
 
-        val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, cookie, channelName, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn && it.newToken) it.token else UNDEFINED })
+        val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, cookie, channelName, UNDEFINED)
         val options = HashMap<String, String>()
         options["token"] = accessToken.token
         options["sig"] = accessToken.sig
@@ -73,7 +70,7 @@ class PlayerRepository @Inject constructor(
     suspend fun loadVideoPlaylist(videoId: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
         Log.d(TAG, "Getting video playlist for video $id")
-        val accessToken = api.getVideoAccessToken(TWITCH_CLIENT_ID, id, User.get(XtraApp.INSTANCE).let { if (it is LoggedIn && it.newToken) it.token else UNDEFINED })
+        val accessToken = api.getVideoAccessToken(TWITCH_CLIENT_ID, id, UNDEFINED)
         val options = HashMap<String, String>()
         options["token"] = accessToken.token
         options["sig"] = accessToken.sig

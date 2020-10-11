@@ -4,14 +4,12 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDex
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.di.AppInjector
 import com.github.exact7.xtra.util.AppLifecycleObserver
 import com.github.exact7.xtra.util.LifecycleListener
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import io.fabric.sdk.android.Fabric
 import javax.inject.Inject
 
 
@@ -28,7 +26,6 @@ class XtraApp : Application(), HasAndroidInjector {
         super.onCreate()
         INSTANCE = this
         AppInjector.init(this)
-        Fabric.with(this, Crashlytics())
 //        RxJavaPlugins.setErrorHandler { //TODO
 //            if (it !is UnknownHostException) {
 //                Crashlytics.logException(it)

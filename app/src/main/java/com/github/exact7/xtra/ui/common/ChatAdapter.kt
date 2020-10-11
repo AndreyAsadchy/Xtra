@@ -94,6 +94,7 @@ class ChatAdapter(
                 "partner" -> "https://static-cdn.jtvnw.net/badges/v1/d12a2e27-16f6-41d0-ab77-b780518f00a3/2"
                 "clip-champ" -> "https://static-cdn.jtvnw.net/badges/v1/f38976e0-ffc9-11e7-86d6-7f98b26a9d79/2"
                 "vip" -> "https://static-cdn.jtvnw.net/badges/v1/b817aba4-fad8-49e2-b88a-7cc744dfa6ec/2"
+                "glhf-pledge" -> "https://static-cdn.jtvnw.net/badges/v1/3158e758-3cb4-43c5-94b3-7639810451c5/2"
                 else -> null
             }
             url?.let {
@@ -217,6 +218,7 @@ class ChatAdapter(
             if (isPng || !animateGifs) {
                 GlideApp.with(fragment)
                         .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(object : CustomTarget<Drawable>() {
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                                 val width: Int

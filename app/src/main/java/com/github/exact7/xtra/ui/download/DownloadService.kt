@@ -15,7 +15,6 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.crashlytics.android.Crashlytics
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.offline.OfflineVideo
 import com.github.exact7.xtra.model.offline.Request
@@ -23,6 +22,7 @@ import com.github.exact7.xtra.repository.OfflineRepository
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.ui.main.MainActivity
 import com.github.exact7.xtra.util.FetchProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.iheartradio.m3u8.Encoding
 import com.iheartradio.m3u8.Format
 import com.iheartradio.m3u8.ParsingMode
@@ -241,8 +241,9 @@ class DownloadService : IntentService(TAG) {
                     requests.add(FetchRequest(url + track.uri, path + track.uri).apply { groupId = offlineVideoId })
                 }
             } catch (e: IndexOutOfBoundsException) {
-                Crashlytics.log("DownloadService.enqueueNext: Playlist tracks size: ${playlist.tracks.size}. Segment to: $segmentTo. Current + ENQUEUE_SIZE: ${current + ENQUEUE_SIZE}.")
-                Crashlytics.logException(e)
+                val instance = FirebaseCrashlytics.getInstance()
+                instance.log("DownloadService.enqueueNext: Playlist tracks size: ${playlist.tracks.size}. Segment to: $segmentTo. Current + ENQUEUE_SIZE: ${current + ENQUEUE_SIZE}.")
+                instance.recordException(e)
                 offlineRepository.updateVideo(offlineVideo.apply { segmentTo = tracks.lastIndex })
             }
         }
@@ -278,8 +279,9 @@ class DownloadService : IntentService(TAG) {
                     }
                     return
                 } catch (e: IndexOutOfBoundsException) {
-                    Crashlytics.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
-                    Crashlytics.logException(e)
+                    val instance = FirebaseCrashlytics.getInstance()
+                    instance.log("DownloadService.onDownloadCompleted: Playlist tracks size: ${playlist.tracks.size}. Segment from $segmentFrom. Segment to: $segmentTo.")
+                    instance.recordException(e)
                 }
                 val mediaPlaylist = MediaPlaylist.Builder()
                         .withTargetDuration(playlist.targetDuration)
@@ -334,7 +336,7 @@ class DownloadService : IntentService(TAG) {
                             activeRequests.remove(offlineVideo.id)
                             fetch.deleteAll()
                         } catch (e: Exception) {
-                            Crashlytics.logException(e)
+                            FirebaseCrashlytics.getInstance().recordException(e)
                         }
                     }
                 }

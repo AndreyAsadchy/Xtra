@@ -58,7 +58,7 @@ class XtraModule {
                 .baseUrl("https://api.twitch.tv/kraken/")
                 .client(client.newBuilder().addInterceptor { chain ->
                     val request = chain.request().newBuilder()
-                            .addHeader("Client-ID", TwitchApiHelper.TWITCH_CLIENT_ID)
+                            .addHeader("Client-ID", TwitchApiHelper.CLIENT_ID)
                             .addHeader("Accept", "application/vnd.twitchtv.v5+json")
                             .build()
                     chain.proceed(request)

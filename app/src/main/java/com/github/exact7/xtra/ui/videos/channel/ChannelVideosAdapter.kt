@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.video.Video
 import com.github.exact7.xtra.ui.videos.BaseVideosAdapter
@@ -37,7 +38,7 @@ class ChannelVideosAdapter(
             val position = positions?.get(item.id.substring(1).toLong())
             setOnClickListener { clickListener.startVideo(item, position?.toDouble()) }
             setOnLongClickListener { showDownloadDialog(item); true }
-            thumbnail.loadImage(fragment, item.preview.large)
+            thumbnail.loadImage(fragment, item.preview.large, diskCacheStrategy = DiskCacheStrategy.NONE)
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
             views.text = TwitchApiHelper.formatViewsCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.length.toLong())

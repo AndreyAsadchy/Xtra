@@ -10,7 +10,6 @@ import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistParserFactory
 import com.github.exact7.xtra.player.lowlatency.DefaultHlsPlaylistTracker
 import com.github.exact7.xtra.player.lowlatency.HlsManifest
 import com.github.exact7.xtra.player.lowlatency.HlsMediaSource
-import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.PlayerRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.AudioPlayerService
@@ -28,8 +27,7 @@ import javax.inject.Inject
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository,
-        repository: TwitchService,
-        graphQLRepositoy: GraphQLRepositoy) : HlsPlayerViewModel(context, repository, graphQLRepositoy) {
+        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
 
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
@@ -43,30 +41,16 @@ class StreamPlayerViewModel @Inject constructor(
     fun startStream(stream: Stream) {
         if (_stream.value == null) {
             _stream.value = stream
+            loadStream(stream)
             viewModelScope.launch {
-                try {
-                    val uri = playerRepository.loadStreamPlaylist(stream.channel.name)
-                    mediaSource = HlsMediaSource.Factory(dataSourceFactory)
-                            .setAllowChunklessPreparation(true)
-                            .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
-                            .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
-                            .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
-                            .createMediaSource(uri)
-                    play()
-                    launch {
-                        while (isActive) {
-                            try {
-                                val s = repository.loadStream(stream.channel.id).stream ?: break
-                                _stream.postValue(s)
-                                delay(300000L)
-                            } catch (e: Exception) {
-                                delay(60000L)
-                            }
-                        }
+                while (isActive) {
+                    try {
+                        val s = repository.loadStream(stream.channel.id).stream ?: break
+                        _stream.postValue(s)
+                        delay(300000L)
+                    } catch (e: Exception) {
+                        delay(60000L)
                     }
-                } catch (e: Exception) {
-                    val context = getApplication<Application>()
-                    context.toast(R.string.error_stream)
                 }
             }
         }
@@ -95,12 +79,38 @@ class StreamPlayerViewModel @Inject constructor(
         }
     }
 
-    fun restartPlayer() {
+    override fun onResume() {
+        isResumed = true
         if (playerMode.value == NORMAL) {
-            player.stop()
-            play()
+            loadStream(stream.value!!)
+        } else if (playerMode.value == AUDIO_ONLY) {
+            hideBackgroundAudio()
+        }
+    }
+
+    override fun restartPlayer() {
+        if (playerMode.value == NORMAL) {
+            loadStream(stream.value!!)
         } else if (playerMode.value == AUDIO_ONLY) {
             binder?.restartPlayer()
+        }
+    }
+
+    private fun loadStream(stream: Stream) {
+        viewModelScope.launch {
+            try {
+                val uri = playerRepository.loadStreamPlaylist(stream.channel.name)
+                mediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                        .setAllowChunklessPreparation(true)
+                        .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
+                        .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
+                        .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
+                        .createMediaSource(uri)
+                play()
+            } catch (e: Exception) {
+                val context = getApplication<Application>()
+                context.toast(R.string.error_stream)
+            }
         }
     }
 }

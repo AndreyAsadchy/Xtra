@@ -10,11 +10,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.exact7.xtra.GlideApp
@@ -48,6 +50,8 @@ class AudioPlayerService : Service() {
 
     @Inject
     lateinit var offlineRepository: OfflineRepository
+
+    private lateinit var playlistUrl: Uri
 
     private lateinit var player: ExoPlayer
     private lateinit var mediaSource: MediaSource
@@ -91,12 +95,8 @@ class AudioPlayerService : Service() {
                 manager.createNotificationChannel(channel)
             }
         }
-        mediaSource = HlsMediaSource.Factory(DefaultDataSourceFactory(this, Util.getUserAgent(this, getString(R.string.app_name))))
-                .setAllowChunklessPreparation(true)
-                .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
-                .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
-                .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
-                .createMediaSource(intent.getStringExtra(KEY_PLAYLIST_URL).toUri())
+        playlistUrl = intent.getStringExtra(KEY_PLAYLIST_URL)!!.toUri()
+        createMediaSource()
         var currentPlaybackPosition = intent.getLongExtra(KEY_CURRENT_POSITION, 0L)
         val usePlayPause = intent.getBooleanExtra(KEY_USE_PLAY_PAUSE, false)
         type = intent.getIntExtra(KEY_TYPE, -1)
@@ -158,7 +158,11 @@ class AudioPlayerService : Service() {
                     connection.let {
                         //TODO TEMP FIX, REWORK SERVICE BINDING NORMALLY
                         if (it != null) {
-                            XtraApp.INSTANCE.unbindService(it)
+                            try {
+                                XtraApp.INSTANCE.unbindService(it)
+                            } catch (e: Exception) {
+                                playerNotificationManager.setPlayer(null)
+                            }
                         } else {
                             playerNotificationManager.setPlayer(null)
                         }
@@ -168,6 +172,15 @@ class AudioPlayerService : Service() {
             })
         }
         return AudioBinder()
+    }
+
+    private fun createMediaSource() {
+        mediaSource = HlsMediaSource.Factory(DefaultDataSourceFactory(this, Util.getUserAgent(this, getString(R.string.app_name))))
+                .setAllowChunklessPreparation(true)
+                .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
+                .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
+                .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
+                .createMediaSource(playlistUrl)
     }
 
     inner class AudioBinder : Binder() {
@@ -185,6 +198,7 @@ class AudioPlayerService : Service() {
 
         fun restartPlayer() {
             player.stop()
+            createMediaSource()
             player.prepare(mediaSource)
         }
     }
@@ -224,6 +238,7 @@ class AudioPlayerService : Service() {
                     GlideApp.with(this@AudioPlayerService)
                             .asBitmap()
                             .load(imageUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .into(object : CustomTarget<Bitmap>() {
                                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                     callback.onBitmap(resource)

@@ -103,7 +103,7 @@ class ClipPlayerViewModel @Inject constructor(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) {
-            follow = FollowLiveData(repository, graphQLRepositoy, user, channelInfo.first, viewModelScope)
+            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
         }
     }
 
@@ -138,5 +138,4 @@ class ClipPlayerViewModel @Inject constructor(
         play()
         player.seekTo(playbackPosition)
     }
-
 }

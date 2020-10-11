@@ -67,8 +67,8 @@
     <string name="landscape_chat_width">Ширина чата в полноэкранном режиме</string>
     <string name="percentage_of_screen">% от ширины экрана</string>
     <string name="unknown_error">Неизвестная ошибка</string>
-    <string name="portrait_column_count">Количество столбцов в книжной ориентации</string>
-    <string name="landscape_column_count">Количество столбцов в альбомной ориентации</string>
+    <string name="portrait_column_count">Столбцов в книжной ориентации</string>
+    <string name="landscape_column_count">Столбцов в альбомной ориентации</string>
     <string name="download_via_wifi">Загрузка через Wi-Fi</string>
     <string name="always">Всегда</string>
     <string name="just_once">Только сейчас</string>
@@ -96,12 +96,12 @@
     <string name="no">Нет</string>
     <string name="search">Поиск</string>
     <string name="chat_replay_unavailable">Повтор чата недоступен</string>
-    <string name="video_subscribers_only">Видео доступно только для подписчиков</string>
+    <string name="video_subscribers_only">Видео доступно только для подписчиков и не может быть открыто в приложении из-за ограничений со стороны Twitch</string>
     <string name="player_error">Ошибка воспроизведения. Переподключение</string>
     <string name="picture_in_picture">Картинка в картинке</string>
     <string name="continue_playback">Продолжить воспроизведение вне приложения</string>
-    <string name="source_vod_start">Начало:</string>
-    <string name="source_vod_end">Конец:</string>
+    <string name="source_vod_start">Начало: %s</string>
+    <string name="source_vod_end">Конец: %s</string>
     <string name="stream_ended">Трансляция завершилась</string>
     <string name="viewers">%s зрителей</string>
     <string name="views">%s просмотров</string>
@@ -128,7 +128,13 @@
     <string name="thank_you_so_much">Огромное спасибо!!! ❤❤❤</string>
     <string name="animated_emotes">Анимированные смайлики</string>
     <string name="changelog">
-        <b>30 сентября, 1.5.5</b>
+        <b>11 октября, 1.5.6</b>
+\n- <b>Анимированные эмоуты больше не перегревают телефон и батарею. Их можно включить в настройках</b>
+\n- Изменения с авторизацией в Twitch. Если вы раньше не могли войти в аккаунт, попробуйте сейчас
+\n- Исправлено что стримы иногда не загружались, например при возвращении в приложение через некоторое время
+\n- Улучшена читабельность текста на картинках
+\n- Исправления ошибок и другие улучшения
+        \n\n<b>30 сентября, 1.5.5</b>
 \n- <b>Добавлена возможность включать/выключать отображение видео под вырезом для камеры (Android 9+). Включено по умолчанию</b>
 \n- Недавно использованные эмоуты теперь отображают только те BTTV/FFZ эмоуты, которые включены на текущем канале
         \n\n<b>27 сентября, 1.5.4</b>
@@ -180,7 +186,7 @@
     <string name="timer_canceled">Таймер остановлен</string>
     <string name="authorization">Авторизация</string>
     <string name="trouble_logging_in">Проблемы со входом в аккаунт?</string>
-    <string name="login_problem_solution">Вы можете выполнить авторизацию через сторонний браузер. После авторизации, должна загрузиться главная страница Twitch. Скопируйте ссылку, вернитесь в приложение и нажмите на кнопку \"Ввести ссылку\". Вставьте ссылку и нажмите \"Войти\"</string>
+    <string name="login_problem_solution">Вы можете выполнить авторизацию через сторонний браузер. После авторизации должна появится страница с ошибкой. Скопируйте ссылку, вернитесь в приложение и нажмите на кнопку \"Ввести ссылку\". Вставьте ссылку и нажмите \"Войти\"</string>
     <string name="no_browser_found">Не удалось найти установленный браузер</string>
     <string name="browser_workaround">Ваш системный браузер устарел. Пожалуйста, нажмите на кнопку ниже чтобы войти используя сторонний браузер</string>
     <string name="error">Ошибка: %s</string>
@@ -197,9 +203,6 @@
     <string name="compact_streams_title">Компактный интерфейс трансляций на экране подписок</string>
     <string name="compact_streams_description">Не показывать предварительный просмотр</string>
     <string name="info">Инфо</string>
-    <string name="animated_emotes_warning_settings">Повышенное потребление батареи и процессора</string>
-    <string name="enable_animated_emotes_title">Включить анимированные смайлы?</string>
-    <string name="enable_animated_emotes_description">Большое количество анимированных GIF картинок в чате ведет к повышенному потреблению батареи и процессора. Вы можете изменить данную опцию позже в настройках</string>
     <string name="enable">Включить</string>
     <string name="disable">Отключить</string>
     <string name="ignore_notch">Игнорировать вырез</string>

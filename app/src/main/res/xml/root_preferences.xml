@@ -91,10 +91,9 @@
         app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="animatedGifEmotes"
         android:title="@string/animated_emotes"
-        android:summary="@string/animated_emotes_warning_settings"
         app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat

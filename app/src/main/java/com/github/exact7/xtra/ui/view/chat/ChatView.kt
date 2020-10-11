@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.chat.BttvEmote
 import com.github.exact7.xtra.model.chat.ChatMessage
@@ -83,7 +84,7 @@ class ChatView : ConstraintLayout {
 
     fun init(fragment: Fragment) {
         this.fragment = fragment
-        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getBoolean(C.ANIMATED_EMOTES, false))
+        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getBoolean(C.ANIMATED_EMOTES, true))
         recyclerView.let {
             it.adapter = adapter
             it.itemAnimator = null
@@ -353,7 +354,7 @@ class ChatView : ConstraintLayout {
                     }
                     viewHolder.containerView.apply {
                         item as Emote
-                        image.loadImage(fragment, item.url)
+                        image.loadImage(fragment, item.url, diskCacheStrategy = DiskCacheStrategy.DATA)
                         name.text = item.name
                     }
                 }

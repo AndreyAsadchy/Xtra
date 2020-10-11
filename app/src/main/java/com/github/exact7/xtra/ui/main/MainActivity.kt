@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (notInitialized) {
             installPlayServicesIfNeeded()
             handleIntent(intent)
-            val lastUpdateVersion = prefs.getString("lastUpdateVersion", null)
+            val lastUpdateVersion = prefs.getString(C.LAST_UPDATE_VERSION, null)
             if (lastUpdateVersion == BuildConfig.VERSION_NAME) {
                 if (prefs.getBoolean("showRateAppDialog", true)) {
                     val launchCount = prefs.getInt("launchCount", 0) + 1
@@ -204,17 +204,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                                 .show()
                     }
                 }
-                if (prefs.getBoolean("showAnimatedEmotesWarning", true)) {
-                    prefs.edit { putBoolean("showAnimatedEmotesWarning", false) }
-                    AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.enable_animated_emotes_title))
-                            .setMessage(getString(R.string.enable_animated_emotes_description))
-                            .setPositiveButton(getString(R.string.enable)) { _, _ -> prefs.edit { putBoolean(C.ANIMATED_EMOTES, true) } }
-                            .setNegativeButton(getString(R.string.disable)) { _, _ -> prefs.edit { putBoolean(C.ANIMATED_EMOTES, false) } }
-                            .show()
-                }
             } else {
-                prefs.edit { putString("lastUpdateVersion", BuildConfig.VERSION_NAME) }
+                prefs.edit { putString(C.LAST_UPDATE_VERSION, BuildConfig.VERSION_NAME) }
                 if (notFirstLaunch) {
                     if (prefs.getBoolean(C.SHOW_CHANGELOGS, true)) {
                         NewUpdateChangelogDialog().show(supportFragmentManager, null)

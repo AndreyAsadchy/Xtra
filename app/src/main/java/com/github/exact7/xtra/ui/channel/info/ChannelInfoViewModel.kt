@@ -7,16 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.model.kraken.Channel
 import com.github.exact7.xtra.model.kraken.stream.StreamWrapper
-import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ChannelInfoViewModel @Inject constructor(
-        private val repository: TwitchService,
-        private val graphQLRepositoy: GraphQLRepositoy) : ViewModel(), FollowViewModel {
+class ChannelInfoViewModel @Inject constructor(private val repository: TwitchService) : ViewModel(), FollowViewModel {
 
     private val _channel = MutableLiveData<Channel>()
     val channel: LiveData<Channel>
@@ -35,7 +32,7 @@ class ChannelInfoViewModel @Inject constructor(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) {
-            follow = FollowLiveData(repository, graphQLRepositoy, user, channelInfo.first, viewModelScope)
+            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
         }
     }
 

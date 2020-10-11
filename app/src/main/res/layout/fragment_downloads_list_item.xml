@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/duration"
-            style="@style/VideoDuration"
+            style="@style/ThumbnailItem"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
@@ -133,17 +133,6 @@
             app:layout_constraintTop_toBottomOf="@id/thumbnail" />
 
         <TextView
-            style="@style/ThumbnailItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
-            android:text="@string/source_vod_start"
-            app:layout_constraintEnd_toStartOf="@id/sourceStart"
-            app:layout_constraintRight_toLeftOf="@id/sourceStart"
-            app:layout_constraintTop_toTopOf="@id/sourceStart" />
-
-        <TextView
             android:id="@+id/sourceStart"
             style="@style/ThumbnailItem"
             android:layout_marginTop="10dp"
@@ -153,17 +142,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="13:37:69" />
-
-        <TextView
-            style="@style/ThumbnailItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
-            android:text="@string/source_vod_end"
-            app:layout_constraintEnd_toStartOf="@id/sourceEnd"
-            app:layout_constraintRight_toLeftOf="@id/sourceEnd"
-            app:layout_constraintTop_toTopOf="@id/sourceEnd" />
 
         <TextView
             android:id="@+id/sourceEnd"

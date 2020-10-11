@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.kraken.clip.Clip
 import com.github.exact7.xtra.ui.common.BasePagedListAdapter
@@ -35,7 +36,7 @@ class ClipsAdapter(
         with(view) {
             setOnClickListener { clickListener.startClip(item) }
             setOnLongClickListener { showDownloadDialog(item); true }
-            thumbnail.loadImage(fragment, item.thumbnails.medium)
+            thumbnail.loadImage(fragment, item.thumbnails.medium, diskCacheStrategy = DiskCacheStrategy.NONE)
             date.text = TwitchApiHelper.formatTime(context, item.createdAt)
             views.text = TwitchApiHelper.formatViewsCount(context, item.views)
             duration.text = DateUtils.formatElapsedTime(item.duration.toLong())

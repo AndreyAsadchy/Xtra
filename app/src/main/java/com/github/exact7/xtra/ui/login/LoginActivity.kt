@@ -42,8 +42,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
     @Inject
     lateinit var repository: AuthRepository
 
-//        private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=https://twitch.tv&scope=chat_login user_follows_edit user_subscriptions user_read"
-    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.TWITCH_CLIENT_ID}&redirect_uri=https://www.twitch.tv"
+    private val authUrl = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${TwitchApiHelper.CLIENT_ID}&redirect_uri=https://localhost&scope=chat_login user_follows_edit user_subscriptions user_read"
     private val tokenPattern = Pattern.compile("token=(.+?)(?=&)")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,19 +61,15 @@ class LoginActivity : AppCompatActivity(), Injectable {
             }
         } else {
             TwitchApiHelper.checkedValidation = false
+            User.set(this, null)
             initWebView()
             repository.deleteAllEmotes()
-            if (!user.newToken) {
-                GlobalScope.launch {
-                    try {
-                        repository.revoke(user.token)
-                    } catch (e: Exception) {
+            GlobalScope.launch {
+                try {
+                    repository.revoke(user.token)
+                } catch (e: Exception) {
 
-                    }
-                    User.set(this@LoginActivity, null)
                 }
-            } else {
-                User.set(this, null)
             }
         }
     }
@@ -171,7 +166,7 @@ class LoginActivity : AppCompatActivity(), Injectable {
                     val response = repository.validate(token)
                     if (response != null) {
                         TwitchApiHelper.checkedValidation = true
-                        User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token, true))
+                        User.set(this@LoginActivity, LoggedIn(response.userId, response.username, token))
                         setResult(RESULT_OK)
                         finish()
                     } else {

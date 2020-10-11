@@ -214,7 +214,7 @@ class KrakenRepository @Inject constructor(
         api.getUserFollows(userId, channelId).body()?.let { it.string().length > 300 } == true
     }
 
-        override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun followChannel(userToken: String, userId: String, channelId: String): Boolean = withContext(Dispatchers.IO) {
         Log.d(TAG, "Following channel $channelId")
         api.followChannel(TwitchApiHelper.addTokenPrefix(userToken), userId, channelId).body() != null
     }

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.exact7.xtra.R
 import com.github.exact7.xtra.model.LoggedIn
 import com.github.exact7.xtra.player.lowlatency.HlsManifest
-import com.github.exact7.xtra.repository.GraphQLRepositoy
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.common.follow.FollowLiveData
 import com.github.exact7.xtra.ui.common.follow.FollowViewModel
@@ -28,8 +27,7 @@ private const val TAG = "HlsPlayerViewModel"
 
 abstract class HlsPlayerViewModel(
         context: Application,
-        val repository: TwitchService,
-        val graphQLRepositoy: GraphQLRepositoy) : PlayerViewModel(context), FollowViewModel {
+        val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
     private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()
@@ -52,13 +50,16 @@ abstract class HlsPlayerViewModel(
             qualities[index]
         }
         prefs.edit { putString(TAG, quality) }
-        if (_playerMode.value != NORMAL) {
-            if (playerMode.value == AUDIO_ONLY) {
-                stopBackgroundAudio()
-                _currentPlayer.value = player
-                play()
-            }
+        val mode = _playerMode.value
+        if (mode != NORMAL) {
             _playerMode.value = NORMAL
+            if (mode == AUDIO_ONLY) {
+                stopBackgroundAudio()
+                restartPlayer()
+                _currentPlayer.value = player
+            } else {
+                restartPlayer()
+            }
         }
     }
 
@@ -123,16 +124,7 @@ abstract class HlsPlayerViewModel(
 
     override fun setUser(user: LoggedIn) {
         if (!this::follow.isInitialized) { //TODO REFACTOR
-            follow = FollowLiveData(repository, graphQLRepositoy, user, channelInfo.first, viewModelScope)
-        }
-    }
-
-    override fun onResume() {
-        isResumed = true
-        if (playerMode.value == NORMAL) {
-            super.onResume()
-        } else if (playerMode.value == AUDIO_ONLY) {
-            hideBackgroundAudio()
+            follow = FollowLiveData(repository, user, channelInfo.first, viewModelScope)
         }
     }
 

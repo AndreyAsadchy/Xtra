@@ -14,32 +14,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:scaleType="centerCrop"/>
 
-        <TextView
-            android:id="@+id/viewers"
-            style="@style/ThumbnailItem"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
-            app:layout_constraintLeft_toRightOf="@id/streamTypeImage"
-            app:layout_constraintStart_toEndOf="@id/streamTypeImage"
-            tools:text="133769 viewers" />
-
-        <ImageView
-            android:id="@+id/streamTypeImage"
-            android:layout_width="17dp"
-            android:layout_height="15dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginBottom="6dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@id/thumbnail"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/thumbnail_item_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            tools:src="@drawable/baseline_fiber_manual_record_black_24"
-            tools:tint="@android:color/holo_red_dark" />
+            app:layout_constraintBottom_toBottomOf="@id/thumbnail">
+
+            <ImageView
+                android:id="@+id/streamTypeImage"
+                android:layout_width="15sp"
+                android:layout_height="15sp"
+                android:layout_marginTop="0.5dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_vertical"
+                tools:src="@drawable/baseline_fiber_manual_record_black_24"
+                tools:tint="@android:color/holo_red_dark" />
+
+            <TextView
+                android:id="@+id/viewers"
+                style="@style/ThumbnailItem"
+                android:background="@null"
+                android:layout_marginStart="2dp"
+                android:layout_marginLeft="2dp"
+                tools:text="133769 viewers" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/userImage"
