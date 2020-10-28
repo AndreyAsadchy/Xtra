@@ -128,7 +128,9 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
-        <b>October 11th, 1.5.6</b>
+        <b>October 28th, 1.5.6.1</b>
+\n- Updated adblock
+        \n\n<b>October 11th, 1.5.6</b>
 \n- <b>Animated emotes no longer cause overheating and high battery drain, so you can safely enable them in the settings</b>
 \n- Some changes to logging in to Twitch. If you couldn\'t login before, try again now
 \n- Fixed streams sometimes not loading, e.g. when returning to app after a while

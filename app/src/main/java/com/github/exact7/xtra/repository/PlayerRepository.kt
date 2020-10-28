@@ -44,13 +44,13 @@ class PlayerRepository @Inject constructor(
     suspend fun loadStreamPlaylist(channelName: String): Uri = withContext(Dispatchers.IO) {
         Log.d(TAG, "Getting stream playlist for channel $channelName")
 
-        //blocks ads, "commercial break in progress"
+        //removes "commercial break in progress"
         val uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 16)
         val apiToken = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
         val serverSessionId = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
         val cookie = "unique_id=$uniqueId; unique_id_durable=$uniqueId; twitch.lohp.countryCode=BY; api_token=twilight.$apiToken; server_session_id=$serverSessionId"
 
-        val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, cookie, channelName, UNDEFINED)
+        val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, cookie, channelName, UNDEFINED, "frontpage" /* blocks ads */)
         val options = HashMap<String, String>()
         options["token"] = accessToken.token
         options["sig"] = accessToken.sig

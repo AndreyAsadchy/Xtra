@@ -82,7 +82,7 @@ class StreamPlayerViewModel @Inject constructor(
     override fun onResume() {
         isResumed = true
         if (playerMode.value == NORMAL) {
-            loadStream(stream.value!!)
+            loadStream(stream.value ?: return)
         } else if (playerMode.value == AUDIO_ONLY) {
             hideBackgroundAudio()
         }
@@ -90,7 +90,7 @@ class StreamPlayerViewModel @Inject constructor(
 
     override fun restartPlayer() {
         if (playerMode.value == NORMAL) {
-            loadStream(stream.value!!)
+            loadStream(stream.value ?: return)
         } else if (playerMode.value == AUDIO_ONLY) {
             binder?.restartPlayer()
         }
