@@ -132,7 +132,9 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>October 28th, 1.5.6.1</b>
+        <b>November 5th, 1.5.6.2</b>
+\n- Updated adblock
+        \n\n<b>October 28th, 1.5.6.1</b>
 \n- Updated adblock
         \n\n<b>October 11th, 1.5.6</b>
 \n- <b>Animated emotes no longer cause overheating and high battery drain, so you can safely enable them in the settings</b>
