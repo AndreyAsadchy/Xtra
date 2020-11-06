@@ -58,6 +58,7 @@ import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
 import com.github.exact7.xtra.util.C
 import com.github.exact7.xtra.util.DisplayUtils
+import com.github.exact7.xtra.util.RemoteConfigParams
 import com.github.exact7.xtra.util.applyTheme
 import com.github.exact7.xtra.util.gone
 import com.github.exact7.xtra.util.installPlayServicesIfNeeded
@@ -66,6 +67,9 @@ import com.github.exact7.xtra.util.prefs
 import com.github.exact7.xtra.util.shortToast
 import com.github.exact7.xtra.util.toast
 import com.github.exact7.xtra.util.visible
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.ncapdevi.fragnav.FragNavController
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -180,6 +184,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
         if (notInitialized) {
             installPlayServicesIfNeeded()
             handleIntent(intent)
+            val remoteConfig = Firebase.remoteConfig
             val lastUpdateVersion = prefs.getString(C.LAST_UPDATE_VERSION, null)
             if (lastUpdateVersion == BuildConfig.VERSION_NAME) {
                 if (prefs.getBoolean("showRateAppDialog", true)) {
@@ -205,6 +210,13 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     }
                 }
             } else {
+                remoteConfig.setDefaultsAsync(mapOf(
+                        RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY to RemoteConfigParams.TWITCH_PLAYER_TYPE_DEFAULT))
+                remoteConfig.setConfigSettingsAsync(remoteConfigSettings {
+                    minimumFetchIntervalInSeconds = RemoteConfigParams.FETCH_INTERVAL_SECONDS
+                    fetchTimeoutInSeconds = RemoteConfigParams.FETCH_TIMEOUT_SECONDS
+                })
+
                 prefs.edit { putString(C.LAST_UPDATE_VERSION, BuildConfig.VERSION_NAME) }
                 if (notFirstLaunch) {
                     if (prefs.getBoolean(C.SHOW_CHANGELOGS, true)) {
@@ -220,6 +232,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                     }
                 }
             }
+            remoteConfig.fetchAndActivate()
         }
         restorePlayerFragment()
     }

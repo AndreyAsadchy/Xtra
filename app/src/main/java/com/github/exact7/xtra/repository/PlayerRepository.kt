@@ -41,8 +41,8 @@ class PlayerRepository @Inject constructor(
         private val recentEmotes: RecentEmotesDao,
         private val videoPositions: VideoPositionsDao) {
 
-    suspend fun loadStreamPlaylist(channelName: String): Uri = withContext(Dispatchers.IO) {
-        Log.d(TAG, "Getting stream playlist for channel $channelName")
+    suspend fun loadStreamPlaylist(channelName: String, playerType: String): Uri = withContext(Dispatchers.IO) {
+        Log.d(TAG, "Getting stream playlist for channel $channelName. Player type: $playerType")
 
         //removes "commercial break in progress"
         val uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 16)
@@ -50,7 +50,7 @@ class PlayerRepository @Inject constructor(
         val serverSessionId = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
         val cookie = "unique_id=$uniqueId; unique_id_durable=$uniqueId; twitch.lohp.countryCode=BY; api_token=twilight.$apiToken; server_session_id=$serverSessionId"
 
-        val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, cookie, channelName, UNDEFINED, "animated_thumbnails" /* blocks ads */)
+        val accessToken = api.getStreamAccessToken(TWITCH_CLIENT_ID, cookie, channelName, UNDEFINED, playerType)
         val options = HashMap<String, String>()
         options["token"] = accessToken.token
         options["sig"] = accessToken.sig

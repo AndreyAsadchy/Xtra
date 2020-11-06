@@ -32,7 +32,7 @@ class FollowedChannelsViewModel @Inject constructor(
         get() = filter.value!!.order
 
     init {
-        _sortText.value = context.getString(R.string.sort_and_order, context.getString(R.string.time_followed), context.getString(R.string.descending))
+        _sortText.value = context.getString(R.string.sort_and_order, context.getString(R.string.last_broadcast), context.getString(R.string.descending))
     }
 
     fun setUser(user: User) {
@@ -48,6 +48,6 @@ class FollowedChannelsViewModel @Inject constructor(
 
     private data class Filter(
             val user: User,
-            val sort: Sort = Sort.FOLLOWED_AT,
+            val sort: Sort = Sort.LAST_BROADCAST, //FOLLOWED_AT is broken https://github.com/twitchdev/issues/issues/237
             val order: Order = Order.DESC)
 }

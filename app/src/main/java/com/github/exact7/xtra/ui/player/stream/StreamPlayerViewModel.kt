@@ -17,8 +17,11 @@ import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.exact7.xtra.ui.player.PlayerMode.DISABLED
 import com.github.exact7.xtra.ui.player.PlayerMode.NORMAL
+import com.github.exact7.xtra.util.RemoteConfigParams
 import com.github.exact7.xtra.util.toast
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -97,20 +100,27 @@ class StreamPlayerViewModel @Inject constructor(
     }
 
     private fun loadStream(stream: Stream) {
-        viewModelScope.launch {
-            try {
-                val uri = playerRepository.loadStreamPlaylist(stream.channel.name)
-                mediaSource = HlsMediaSource.Factory(dataSourceFactory)
-                        .setAllowChunklessPreparation(true)
-                        .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
-                        .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
-                        .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
-                        .createMediaSource(uri)
-                play()
-            } catch (e: Exception) {
-                val context = getApplication<Application>()
-                context.toast(R.string.error_stream)
-            }
-        }
+        val remoteConfig = Firebase.remoteConfig
+        remoteConfig.fetchAndActivate()
+                .addOnCompleteListener {
+                    viewModelScope.launch {
+                        try {
+                            //for bypassing ads
+                            val playerType = remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY)
+
+                            val uri = playerRepository.loadStreamPlaylist(stream.channel.name, playerType)
+                            mediaSource = HlsMediaSource.Factory(dataSourceFactory)
+                                    .setAllowChunklessPreparation(true)
+                                    .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
+                                    .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
+                                    .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
+                                    .createMediaSource(uri)
+                            play()
+                        } catch (e: Exception) {
+                            val context = getApplication<Application>()
+                            context.toast(R.string.error_stream)
+                        }
+                    }
+                }
     }
 }
