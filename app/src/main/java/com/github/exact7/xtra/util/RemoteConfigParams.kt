@@ -6,4 +6,6 @@ object RemoteConfigParams {
 
     const val TWITCH_PLAYER_TYPE_KEY = "twitchPlayerType"
     const val TWITCH_PLAYER_TYPE_DEFAULT = "site"
+    const val TWITCH_PLAYER_USER_AGENT_KEY = "twitchPlayerUserAgent"
+    const val TWITCH_PLAYER_USER_AGENT_DEFAULT = "null"
 }

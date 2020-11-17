@@ -56,17 +56,7 @@ import com.github.exact7.xtra.ui.streams.BaseStreamsFragment
 import com.github.exact7.xtra.ui.top.TopFragment
 import com.github.exact7.xtra.ui.videos.BaseVideosFragment
 import com.github.exact7.xtra.ui.view.SlidingLayout
-import com.github.exact7.xtra.util.C
-import com.github.exact7.xtra.util.DisplayUtils
-import com.github.exact7.xtra.util.RemoteConfigParams
-import com.github.exact7.xtra.util.applyTheme
-import com.github.exact7.xtra.util.gone
-import com.github.exact7.xtra.util.installPlayServicesIfNeeded
-import com.github.exact7.xtra.util.isNetworkAvailable
-import com.github.exact7.xtra.util.prefs
-import com.github.exact7.xtra.util.shortToast
-import com.github.exact7.xtra.util.toast
-import com.github.exact7.xtra.util.visible
+import com.github.exact7.xtra.util.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
@@ -211,7 +201,8 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 }
             } else {
                 remoteConfig.setDefaultsAsync(mapOf(
-                        RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY to RemoteConfigParams.TWITCH_PLAYER_TYPE_DEFAULT))
+                        RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY to RemoteConfigParams.TWITCH_PLAYER_TYPE_DEFAULT,
+                        RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_KEY to RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_DEFAULT))
                 remoteConfig.setConfigSettingsAsync(remoteConfigSettings {
                     minimumFetchIntervalInSeconds = RemoteConfigParams.FETCH_INTERVAL_SECONDS
                     fetchTimeoutInSeconds = RemoteConfigParams.FETCH_TIMEOUT_SECONDS

@@ -1,5 +1,6 @@
 package com.github.exact7.xtra.ui.chat
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,10 +28,9 @@ import com.github.exact7.xtra.util.chat.LiveChatThread
 import com.github.exact7.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.exact7.xtra.util.nullIfEmpty
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.set
 import com.github.exact7.xtra.model.kraken.user.Emote as TwitchEmote
 
@@ -117,40 +117,52 @@ class ChatViewModel @Inject constructor(
                 chat?.start()
             }
 
-            try {
-                val list = mutableListOf<Emote>()
-                globalBttvEmotes.also {
-                    if (it != null) {
-                        list.addAll(it)
-                    } else {
+            val list = mutableListOf<Emote>()
+            globalBttvEmotes.also {
+                if (it != null) {
+                    list.addAll(it)
+                } else {
+                    try {
                         val emotes = playerRepository.loadGlobalBttvEmotes().body()?.emotes
                         if (emotes != null) {
                             globalBttvEmotes = emotes
                             list.addAll(emotes)
                         }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to load global BTTV emotes", e)
                     }
                 }
-                globalFfzEmotes.also {
-                    if (it != null) {
-                        list.addAll(it)
-                    } else {
+            }
+            globalFfzEmotes.also {
+                if (it != null) {
+                    list.addAll(it)
+                } else {
+                    try {
                         val emotes = playerRepository.loadGlobalFfzEmotes().body()?.emotes
                         if (emotes != null) {
                             globalFfzEmotes = emotes
                             list.addAll(emotes)
                         }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to load global FFZ emotes", e)
                     }
                 }
-                val channelBttv = playerRepository.loadBttvEmotes(channelName)
-                val channelFfz = playerRepository.loadFfzEmotes(channelName)
-                channelBttv.body()?.emotes?.let(list::addAll)
-                channelFfz.body()?.emotes?.let(list::addAll)
-                val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-                (chat as? LiveChatController)?.addEmotes(sorted)
-                _otherEmotes.postValue(sorted)
-            } catch (e: Exception) {
-
             }
+            try {
+                val channelBttv = playerRepository.loadBttvEmotes(channelName)
+                channelBttv.body()?.emotes?.let(list::addAll)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load BTTV emotes for channel $channelName", e)
+            }
+            try {
+                val channelFfz = playerRepository.loadFfzEmotes(channelName)
+                channelFfz.body()?.emotes?.let(list::addAll)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load FFZ emotes for channel $channelName", e)
+            }
+            val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+            (chat as? LiveChatController)?.addEmotes(sorted)
+            _otherEmotes.postValue(sorted)
         }
     }
 
@@ -255,6 +267,8 @@ class ChatViewModel @Inject constructor(
     }
 
     companion object {
+        private const val TAG = "ChatViewModel"
+
         private var globalBttvEmotes: List<BttvEmote>? = null
         private var globalFfzEmotes: List<FfzEmote>? = null
     }

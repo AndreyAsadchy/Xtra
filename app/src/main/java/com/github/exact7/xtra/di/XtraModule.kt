@@ -21,8 +21,11 @@ import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
 import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.util.FetchProvider
+import com.github.exact7.xtra.util.RemoteConfigParams
 import com.github.exact7.xtra.util.TlsSocketFactory
 import com.github.exact7.xtra.util.TwitchApiHelper
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.gson.GsonBuilder
 import com.tonyodev.fetch2.FetchConfiguration
 import com.tonyodev.fetch2okhttp.OkHttpDownloader
@@ -84,7 +87,14 @@ class XtraModule {
     fun providesUsherApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): UsherApi {
         return Retrofit.Builder()
                 .baseUrl("https://usher.ttvnw.net/")
-                .client(client)
+                .client(client.newBuilder().addInterceptor { chain ->
+                    val builder = chain.request().newBuilder()
+                    val userAgent = Firebase.remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_KEY)
+                    if (userAgent != RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_DEFAULT) {
+                        builder.addHeader("User-Agent", userAgent)
+                    }
+                    chain.proceed(builder.build())
+                }.build())
                 .addConverterFactory(gsonConverterFactory)
                 .build()
                 .create(UsherApi::class.java)

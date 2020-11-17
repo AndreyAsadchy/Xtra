@@ -132,7 +132,10 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog">
-        <b>November 5th, 1.5.6.2</b>
+        <b>November 17th, 1.5.6.3</b>
+\n- Fixed BTTV/FFZ emotes not working
+\n- Updated adblock
+        \n\n<b>November 5th, 1.5.6.2</b>
 \n- Updated adblock
         \n\n<b>October 28th, 1.5.6.1</b>
 \n- Updated adblock
