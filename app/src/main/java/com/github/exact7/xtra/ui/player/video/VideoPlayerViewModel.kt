@@ -14,7 +14,10 @@ import com.github.exact7.xtra.repository.TwitchService
 import com.github.exact7.xtra.ui.player.AudioPlayerService
 import com.github.exact7.xtra.ui.player.HlsPlayerViewModel
 import com.github.exact7.xtra.ui.player.PlayerMode
+import com.github.exact7.xtra.util.RemoteConfigParams
 import com.github.exact7.xtra.util.toast
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,23 +49,29 @@ class VideoPlayerViewModel @Inject constructor(
     fun setVideo(video: Video, offset: Double) {
         if (!this::video.isInitialized) {
             this.video = video
-            viewModelScope.launch {
-                try {
-                    val response = playerRepository.loadVideoPlaylist(video.id)
-                    if (response.isSuccessful) {
-                        mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(response.raw().request().url().toString().toUri())
-                        play()
-                        if (offset > 0) {
-                            player.seekTo(offset.toLong())
-                        }
-                    } else if (response.code() == 403) {
-                        val context = getApplication<Application>()
-                        context.toast(R.string.video_subscribers_only)
-                    }
-                } catch (e: Exception) {
+            val remoteConfig = Firebase.remoteConfig
+            remoteConfig.fetchAndActivate()
+                    .addOnCompleteListener {
+                        viewModelScope.launch {
+                            try {
+                                val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
+                                val token = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_KEY)
+                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, token)
+                                if (response.isSuccessful) {
+                                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(response.raw().request().url().toString().toUri())
+                                    play()
+                                    if (offset > 0) {
+                                        player.seekTo(offset.toLong())
+                                    }
+                                } else if (response.code() == 403) {
+                                    val context = getApplication<Application>()
+                                    context.toast(R.string.video_subscribers_only)
+                                }
+                            } catch (e: Exception) {
 
-                }
-            }
+                            }
+                        }
+                    }
         }
     }
 

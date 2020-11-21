@@ -8,4 +8,8 @@ object RemoteConfigParams {
     const val TWITCH_PLAYER_TYPE_DEFAULT = "site"
     const val TWITCH_PLAYER_USER_AGENT_KEY = "twitchPlayerUserAgent"
     const val TWITCH_PLAYER_USER_AGENT_DEFAULT = "null"
+    const val TWITCH_TOKEN_KEY = "twitchToken"
+    const val TWITCH_TOKEN_DEFAULT = "undefined"
+    const val TWITCH_CLIENT_ID_KEY = "twitchClientId"
+    const val TWITCH_CLIENT_ID_DEFAULT = "kimne78kx3ncx6brgo4mv6wki5h1ko"
 }

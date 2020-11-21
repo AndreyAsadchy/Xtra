@@ -14,7 +14,6 @@ import java.util.*
 object TwitchApiHelper {
 
     const val CLIENT_ID = "ilfexgv3nnljz3isbm257gzwrzr7bi"
-    const val TWITCH_CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko"
 
     var checkedValidation = false
 

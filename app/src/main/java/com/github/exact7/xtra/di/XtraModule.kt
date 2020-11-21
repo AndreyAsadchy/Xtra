@@ -129,7 +129,7 @@ class XtraModule {
                 .baseUrl("https://gql.twitch.tv/gql/")
                 .client(client.newBuilder().addInterceptor { chain ->
                     val request = chain.request().newBuilder()
-                            .addHeader("Client-ID", TwitchApiHelper.TWITCH_CLIENT_ID)
+                            .addHeader("Client-ID", Firebase.remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY))
                             .build()
                     chain.proceed(request)
                 }.build())
