@@ -16,6 +16,10 @@ import com.github.exact7.xtra.model.chat.SubscriberBadgeDeserializer
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
 import com.github.exact7.xtra.model.gql.clip.ClipDataDeserializer
 import com.github.exact7.xtra.model.gql.clip.ClipDataResponse
+import com.github.exact7.xtra.model.gql.playlist.StreamPlaylistTokenDeserializer
+import com.github.exact7.xtra.model.gql.playlist.StreamPlaylistTokenResponse
+import com.github.exact7.xtra.model.gql.playlist.VideoPlaylistTokenDeserializer
+import com.github.exact7.xtra.model.gql.playlist.VideoPlaylistTokenResponse
 import com.github.exact7.xtra.model.kraken.user.UserEmotesDeserializer
 import com.github.exact7.xtra.model.kraken.user.UserEmotesResponse
 import com.github.exact7.xtra.repository.KrakenRepository
@@ -146,6 +150,8 @@ class XtraModule {
                 .registerTypeAdapter(UserEmotesResponse::class.java, UserEmotesDeserializer())
                 .registerTypeAdapter(FfzEmotesResponse::class.java, FfzRoomDeserializer())
                 .registerTypeAdapter(ClipDataResponse::class.java, ClipDataDeserializer())
+                .registerTypeAdapter(StreamPlaylistTokenResponse::class.java, StreamPlaylistTokenDeserializer())
+                .registerTypeAdapter(VideoPlaylistTokenResponse::class.java, VideoPlaylistTokenDeserializer())
                 .create())
     }
 

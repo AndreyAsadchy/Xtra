@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.github.exact7.xtra.api.ApiService
+import com.github.exact7.xtra.api.GraphQLApi
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
 import com.github.exact7.xtra.db.EmotesDao
@@ -16,6 +17,9 @@ import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzEmotesResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
+import com.github.exact7.xtra.util.TwitchApiHelper
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -35,6 +39,7 @@ class PlayerRepository @Inject constructor(
         private val api: ApiService,
         private val usher: UsherApi,
         private val misc: MiscApi,
+        private val graphQL: GraphQLApi,
         private val emotes: EmotesDao,
         private val recentEmotes: RecentEmotesDao,
         private val videoPositions: VideoPositionsDao) {
@@ -43,15 +48,37 @@ class PlayerRepository @Inject constructor(
         Log.d(TAG, "Getting stream playlist for channel $channelName. Client id: $clientId. Token: $token. Player type: $playerType")
 
         //removes "commercial break in progress"
-        val uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 16)
-        val apiToken = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
-        val serverSessionId = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
-        val cookie = "unique_id=$uniqueId; unique_id_durable=$uniqueId; twitch.lohp.countryCode=BY; api_token=twilight.$apiToken; server_session_id=$serverSessionId"
+//        val uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 16)
+//        val apiToken = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
+//        val serverSessionId = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
+//        val cookie = "unique_id=$uniqueId; unique_id_durable=$uniqueId; twitch.lohp.countryCode=BY; api_token=twilight.$apiToken; server_session_id=$serverSessionId"
 
-        val accessToken = api.getStreamAccessToken(clientId, cookie, channelName, token, playerType)
+//        val accessToken = api.getStreamAccessToken(clientId, cookie, channelName, token, playerType)
+        val array = JsonArray(1)
+        val streamAccessTokenOperation = JsonObject().apply {
+            addProperty("operationName", "PlaybackAccessToken")
+            add("variables", JsonObject().apply {
+                addProperty("isLive", true)
+                addProperty("isVod", false)
+                addProperty("login", channelName)
+                addProperty("playerType", playerType)
+                addProperty("vodID", "")
+            })
+            add("extensions", JsonObject().apply {
+                add("persistedQuery", JsonObject().apply {
+                    addProperty("version", 1)
+                    addProperty("sha256Hash", "0828119ded1c13477966434e15800ff57ddacf13ba1911c129dc2200705b0712")
+                })
+            })
+        }
+        array.add(streamAccessTokenOperation)
+        val accessToken = graphQL.getStreamAccessToken(TwitchApiHelper.addTokenPrefix(token), array)
+
         val options = HashMap<String, String>()
+//        options["token"] = accessToken.token
+//        options["sig"] = accessToken.sig
         options["token"] = accessToken.token
-        options["sig"] = accessToken.sig
+        options["sig"] = accessToken.signature
         options["allow_source"] = "true"
         options["allow_audio_only"] = "true"
         options["type"] = "any"
@@ -68,10 +95,33 @@ class PlayerRepository @Inject constructor(
     suspend fun loadVideoPlaylist(videoId: String, clientId: String, token: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
         Log.d(TAG, "Getting video playlist for video $id. Client id: $clientId. Token: $token")
-        val accessToken = api.getVideoAccessToken(clientId, id, token)
+
+//        val accessToken = api.getVideoAccessToken(clientId, id, token)
+        val array = JsonArray(1)
+        val videoAccessTokenOperation = JsonObject().apply {
+            addProperty("operationName", "PlaybackAccessToken")
+            add("variables", JsonObject().apply {
+                addProperty("isLive", false)
+                addProperty("isVod", true)
+                addProperty("login", "")
+                addProperty("playerType", "channel_home_live")
+                addProperty("vodID", id)
+            })
+            add("extensions", JsonObject().apply {
+                add("persistedQuery", JsonObject().apply {
+                    addProperty("version", 1)
+                    addProperty("sha256Hash", "0828119ded1c13477966434e15800ff57ddacf13ba1911c129dc2200705b0712")
+                })
+            })
+        }
+        array.add(videoAccessTokenOperation)
+        val accessToken = graphQL.getVideoAccessToken(TwitchApiHelper.addTokenPrefix(token), array)
+
         val options = HashMap<String, String>()
+//        options["token"] = accessToken.token
+//        options["sig"] = accessToken.sig
         options["token"] = accessToken.token
-        options["sig"] = accessToken.sig
+        options["sig"] = accessToken.signature
         options["allow_source"] = "true"
         options["allow_audio_only"] = "true"
         options["type"] = "any"

@@ -38,7 +38,7 @@ class LiveChatThread(
         try {
             connect()
             while (true) {
-                val messageIn = readerIn.readLine() ?: break
+                val messageIn = readerIn.readLine() ?: throw IOException()
                 messageIn.run {
                     when {
                         contains("PRIVMSG") -> listener.onMessage(this)
@@ -51,7 +51,7 @@ class LiveChatThread(
                 }
 
                 if (userName != null) {
-                    val messageOut = readerOut!!.readLine() ?: break
+                    val messageOut = readerOut!!.readLine() ?: throw IOException()
                     if (messageOut.startsWith("PING")) {
                         handlePing(writerOut!!)
                     }
@@ -59,7 +59,7 @@ class LiveChatThread(
             }
         } catch (e: IOException) {
             disconnect()
-            if (e.message != "Software caused connection abort") {
+            if (e.message.equals("Socket closed", true) || e.message.equals("Software caused connection abort", true)) {
                 Log.d(TAG, "Disconnecting from $hashChannelName")
             } else {
                 run()

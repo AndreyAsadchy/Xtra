@@ -1,6 +1,8 @@
 package com.github.exact7.xtra.api
 
 import com.github.exact7.xtra.model.gql.clip.ClipDataResponse
+import com.github.exact7.xtra.model.gql.playlist.StreamPlaylistTokenResponse
+import com.github.exact7.xtra.model.gql.playlist.VideoPlaylistTokenResponse
 import com.google.gson.JsonArray
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -19,4 +21,10 @@ interface GraphQLApi {
 
     @POST(".")
     suspend fun getChannelPanel(@Body json: JsonArray): Response<ResponseBody>
+
+    @POST(".")
+    suspend fun getStreamAccessToken(@Header("Authorization") token: String, @Body json: JsonArray): StreamPlaylistTokenResponse
+
+    @POST(".")
+    suspend fun getVideoAccessToken(@Header("Authorization") token: String, @Body json: JsonArray): VideoPlaylistTokenResponse
 }

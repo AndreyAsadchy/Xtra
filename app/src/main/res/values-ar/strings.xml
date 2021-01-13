@@ -128,7 +128,10 @@
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
     <string name="changelog">
-        <b>November 21st, 1.5.6.5</b>
+        <b>January 14th, 1.5.6.6</b>
+\n- Updated API for streams and videos
+\n- Fixed chat sometimes not loading
+        \n\n<b>November 21st, 1.5.6.5</b>
 \n- Updated adblock
         \n\n<b>November 17th, 1.5.6.4</b>
 \n- Fixed BTTV/FFZ emotes not working
