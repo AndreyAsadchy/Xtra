@@ -27,6 +27,7 @@ class LiveChatThread(
     private var writerOut: BufferedWriter? = null
     private val hashChannelName: String = "#$channelName"
     private val messageSenderExecutor: Executor = Executors.newSingleThreadExecutor()
+    private var isActive = true
 
     override fun run() {
 
@@ -35,36 +36,37 @@ class LiveChatThread(
             writer.flush()
         }
 
-        try {
-            connect()
-            while (true) {
-                val messageIn = readerIn.readLine() ?: throw IOException()
-                messageIn.run {
-                    when {
-                        contains("PRIVMSG") -> listener.onMessage(this)
-                        contains("USERNOTICE") -> listener.onUserNotice(this)
-                        contains("NOTICE") -> listener.onNotice(this)
-                        contains("ROOMSTATE") -> listener.onRoomState(this)
-                        contains("JOIN") -> listener.onJoin(this)
-                        startsWith("PING") -> handlePing(writerIn)
+        do {
+            try {
+                connect()
+                while (true) {
+                    val messageIn = readerIn.readLine()!!
+                    messageIn.run {
+                        when {
+                            contains("PRIVMSG") -> listener.onMessage(this)
+                            contains("USERNOTICE") -> listener.onUserNotice(this)
+                            contains("NOTICE") -> listener.onNotice(this)
+                            contains("ROOMSTATE") -> listener.onRoomState(this)
+                            contains("JOIN") -> listener.onJoin(this)
+                            startsWith("PING") -> handlePing(writerIn)
+                        }
                     }
-                }
 
-                if (userName != null) {
-                    val messageOut = readerOut!!.readLine() ?: throw IOException()
-                    if (messageOut.startsWith("PING")) {
-                        handlePing(writerOut!!)
+                    if (userName != null) {
+                        val messageOut = readerOut!!.readLine()!!
+                        if (messageOut.startsWith("PING")) {
+                            handlePing(writerOut!!)
+                        }
                     }
                 }
-            }
-        } catch (e: IOException) {
-            disconnect()
-            if (e.message.equals("Socket closed", true) || e.message.equals("Software caused connection abort", true)) {
+            } catch (e: IOException) {
                 Log.d(TAG, "Disconnecting from $hashChannelName")
-            } else {
-                run()
+                disconnect()
+            } catch (e: Exception) {
+                close()
+                sleep(1000L)
             }
-        }
+        } while (isActive)
     }
 
     private fun connect() {
@@ -96,15 +98,22 @@ class LiveChatThread(
     }
 
     fun disconnect() {
+        if (isActive) {
+            isActive = false
+            close()
+        }
+    }
+
+    private fun close() {
         try {
             socketIn?.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Error while disconnecting socketIn", e)
+            Log.e(TAG, "Error while closing socketIn", e)
         }
         try {
             socketOut?.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Error while disconnecting socketOut", e)
+            Log.e(TAG, "Error while closing socketOut", e)
         }
     }
 

@@ -95,7 +95,9 @@ class ChatFragment : BaseNetworkFragment(), LifecycleListener, MessageClickedDia
     }
 
     override fun onNetworkRestored() {
-        viewModel.start()
+        if (isResumed) {
+            viewModel.start()
+        }
     }
 
     override fun onMovedToBackground() {

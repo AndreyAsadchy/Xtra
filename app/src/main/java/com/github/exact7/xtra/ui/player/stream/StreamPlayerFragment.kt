@@ -105,7 +105,9 @@ class StreamPlayerFragment : BasePlayerFragment() {
     }
 
     override fun onNetworkRestored() {
-        viewModel.onResume()
+        if (isResumed) {
+            viewModel.onResume()
+        }
     }
 
     companion object {

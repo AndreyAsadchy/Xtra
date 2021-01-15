@@ -104,11 +104,15 @@ class ClipPlayerFragment : BasePlayerFragment(), HasDownloadDialog, ChatReplayPl
     }
 
     override fun onNetworkRestored() {
-        viewModel.onResume()
+        if (isResumed) {
+            viewModel.onResume()
+        }
     }
 
     override fun onNetworkLost() {
-        viewModel.onPause()
+        if (isResumed) {
+            viewModel.onPause()
+        }
     }
 
     override fun getCurrentPosition(): Double {
