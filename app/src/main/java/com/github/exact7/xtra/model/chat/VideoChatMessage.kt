@@ -17,7 +17,7 @@ data class VideoChatMessage(
         val contentId: String,
         @SerializedName("content_offset_seconds")
         val contentOffsetSeconds: Double,
-        val commenter: Commenter,
+        val commenter: Commenter?,
         val source: String,
         val state: String,
         @SerializedName("message")
@@ -26,7 +26,7 @@ data class VideoChatMessage(
         val moreReplies: Boolean) : ChatMessage {
 
     override val userName: String
-        get() = commenter.name
+        get() = commenter?.name.orEmpty()
 
     override val message: String
         get() = messageObj.body
@@ -46,7 +46,7 @@ data class VideoChatMessage(
     override var subscriberBadge: SubscriberBadge? = null
 
     override val displayName: String
-        get() = commenter.displayName
+        get() = commenter?.displayName.orEmpty()
 
     data class Commenter(
             @SerializedName("display_name")
