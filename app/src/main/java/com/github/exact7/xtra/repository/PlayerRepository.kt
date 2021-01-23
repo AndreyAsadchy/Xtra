@@ -95,6 +95,7 @@ class PlayerRepository @Inject constructor(
                 return@withContext playlist.raw().request().url().toString().toUri()
             } catch (e: HttpException) {
                 if (e.code() != 401) throw e
+                Log.e(TAG, "Token $token is expired")
             }
         }
         throw Exception("Unable to load stream")
@@ -140,6 +141,7 @@ class PlayerRepository @Inject constructor(
                 return@withContext usher.getVideoPlaylist(id, options)
             } catch (e: HttpException) {
                 if (e.code() != 401) throw e
+                Log.e(TAG, "Token $token is expired")
             }
         }
         throw Exception("Unable to load video")
