@@ -45,8 +45,8 @@ class VideoDownloadViewModel @Inject constructor(
                         viewModelScope.launch(Dispatchers.IO) {
                             try {
                                 val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                                val token = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_KEY)
-                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, token)
+                                val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
+                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, tokenList)
                                 if (response.isSuccessful) {
                                     val playlist = response.body()!!.string()
                                     val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()

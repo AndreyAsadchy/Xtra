@@ -189,8 +189,8 @@ class DownloadService : IntentService(TAG) {
                         GlobalScope.launch {
                             try {
                                 val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                                val token = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_KEY)
-                                val response = playerRepository.loadVideoPlaylist(request.videoId!!, clientId, token)
+                                val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
+                                val response = playerRepository.loadVideoPlaylist(request.videoId!!, clientId, tokenList)
                                 playlist = URL("https://.*\\.m3u8".toRegex().find(response.body()!!.string())!!.value).openStream().use {
                                     PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
                                 }

@@ -26,8 +26,8 @@ android {
     defaultConfig {
         applicationId "com.github.exact7.xtra"
         minSdkVersion 16
-        versionCode 98
-        versionName "1.5.6.6"
+        versionCode 99
+        versionName "1.5.6.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 29
         javaCompileOptions {

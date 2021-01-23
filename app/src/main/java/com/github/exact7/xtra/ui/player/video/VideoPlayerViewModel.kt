@@ -55,8 +55,8 @@ class VideoPlayerViewModel @Inject constructor(
                         viewModelScope.launch {
                             try {
                                 val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                                val token = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_KEY)
-                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, token)
+                                val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
+                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, tokenList)
                                 if (response.isSuccessful) {
                                     mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(response.raw().request().url().toString().toUri())
                                     play()

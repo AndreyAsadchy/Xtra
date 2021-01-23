@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
                 remoteConfig.setDefaultsAsync(mapOf(
                         RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY to RemoteConfigParams.TWITCH_PLAYER_TYPE_DEFAULT,
                         RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_KEY to RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_DEFAULT,
-                        RemoteConfigParams.TWITCH_TOKEN_KEY to RemoteConfigParams.TWITCH_TOKEN_DEFAULT,
+                        RemoteConfigParams.TWITCH_TOKEN_LIST_KEY to RemoteConfigParams.TWITCH_TOKEN_LIST_DEFAULT,
                         RemoteConfigParams.TWITCH_CLIENT_ID_KEY to RemoteConfigParams.TWITCH_CLIENT_ID_DEFAULT))
                 remoteConfig.setConfigSettingsAsync(remoteConfigSettings {
                     minimumFetchIntervalInSeconds = RemoteConfigParams.FETCH_INTERVAL_SECONDS

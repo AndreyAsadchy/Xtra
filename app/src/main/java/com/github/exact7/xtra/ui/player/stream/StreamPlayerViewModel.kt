@@ -106,9 +106,9 @@ class StreamPlayerViewModel @Inject constructor(
                     viewModelScope.launch {
                         try {
                             val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                            val token = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_KEY)
+                            val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
                             val playerType = remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY)
-                            val uri = playerRepository.loadStreamPlaylist(stream.channel.name, clientId, token, playerType)
+                            val uri = playerRepository.loadStreamPlaylist(stream.channel.name, clientId, tokenList, playerType)
                             mediaSource = HlsMediaSource.Factory(dataSourceFactory)
                                     .setAllowChunklessPreparation(true)
                                     .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())

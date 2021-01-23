@@ -25,12 +25,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
+import retrofit2.HttpException
 import retrofit2.Response
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.HashMap
 import kotlin.collections.set
+import kotlin.random.Random
 
 private const val TAG = "PlayerRepository"
 
@@ -44,8 +44,8 @@ class PlayerRepository @Inject constructor(
         private val recentEmotes: RecentEmotesDao,
         private val videoPositions: VideoPositionsDao) {
 
-    suspend fun loadStreamPlaylist(channelName: String, clientId: String, token: String, playerType: String): Uri = withContext(Dispatchers.IO) {
-        Log.d(TAG, "Getting stream playlist for channel $channelName. Client id: $clientId. Token: $token. Player type: $playerType")
+    suspend fun loadStreamPlaylist(channelName: String, clientId: String, tokenList: String, playerType: String): Uri = withContext(Dispatchers.IO) {
+        Log.d(TAG, "Getting stream playlist for channel $channelName. Client id: $clientId. Player type: $playerType")
 
         //removes "commercial break in progress"
 //        val uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 16)
@@ -72,29 +72,37 @@ class PlayerRepository @Inject constructor(
             })
         }
         array.add(streamAccessTokenOperation)
-        val accessToken = graphQL.getStreamAccessToken(TwitchApiHelper.addTokenPrefix(token), array)
 
-        val options = HashMap<String, String>()
-//        options["token"] = accessToken.token
-//        options["sig"] = accessToken.sig
-        options["token"] = accessToken.token
-        options["sig"] = accessToken.signature
-        options["allow_source"] = "true"
-        options["allow_audio_only"] = "true"
-        options["type"] = "any"
-        options["p"] = Random().nextInt(999999).toString()
-        options["fast_bread"] = "true" //low latency
+        val shuffled = tokenList.split(",").shuffled()
+        for (token in shuffled) {
+            try {
+                val accessToken = graphQL.getStreamAccessToken(TwitchApiHelper.addTokenPrefix(token), array)
+                val options = HashMap<String, String>()
+//                options["token"] = accessToken.token
+//                options["sig"] = accessToken.sig
+                options["token"] = accessToken.token
+                options["sig"] = accessToken.signature
+                options["allow_source"] = "true"
+                options["allow_audio_only"] = "true"
+                options["type"] = "any"
+                options["p"] = Random.nextInt(999999).toString()
+                options["fast_bread"] = "true" //low latency
 
-        //not working anyway
-//        options["server_ads"] = "false"
-//        options["show_ads"] = "false"
-        val playlist = usher.getStreamPlaylist(channelName, options)
-        playlist.raw().request().url().toString().toUri()
+                //not working anyway
+//                options["server_ads"] = "false"
+//                options["show_ads"] = "false"
+                val playlist = usher.getStreamPlaylist(channelName, options)
+                return@withContext playlist.raw().request().url().toString().toUri()
+            } catch (e: HttpException) {
+                if (e.code() != 401) throw e
+            }
+        }
+        throw Exception("Unable to load stream")
     }
 
-    suspend fun loadVideoPlaylist(videoId: String, clientId: String, token: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
+    suspend fun loadVideoPlaylist(videoId: String, clientId: String, tokenList: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
-        Log.d(TAG, "Getting video playlist for video $id. Client id: $clientId. Token: $token")
+        Log.d(TAG, "Getting video playlist for video $id. Client id: $clientId")
 
 //        val accessToken = api.getVideoAccessToken(clientId, id, token)
         val array = JsonArray(1)
@@ -115,18 +123,26 @@ class PlayerRepository @Inject constructor(
             })
         }
         array.add(videoAccessTokenOperation)
-        val accessToken = graphQL.getVideoAccessToken(TwitchApiHelper.addTokenPrefix(token), array)
 
-        val options = HashMap<String, String>()
-//        options["token"] = accessToken.token
-//        options["sig"] = accessToken.sig
-        options["token"] = accessToken.token
-        options["sig"] = accessToken.signature
-        options["allow_source"] = "true"
-        options["allow_audio_only"] = "true"
-        options["type"] = "any"
-        options["p"] = Random().nextInt(999999).toString()
-        usher.getVideoPlaylist(id, options)
+        val shuffled = tokenList.split(",").shuffled()
+        for (token in shuffled) {
+            try {
+                val accessToken = graphQL.getVideoAccessToken(TwitchApiHelper.addTokenPrefix(token), array)
+                val options = HashMap<String, String>()
+//                options["token"] = accessToken.token
+//                options["sig"] = accessToken.sig
+                options["token"] = accessToken.token
+                options["sig"] = accessToken.signature
+                options["allow_source"] = "true"
+                options["allow_audio_only"] = "true"
+                options["type"] = "any"
+                options["p"] = Random.nextInt(999999).toString()
+                return@withContext usher.getVideoPlaylist(id, options)
+            } catch (e: HttpException) {
+                if (e.code() != 401) throw e
+            }
+        }
+        throw Exception("Unable to load video")
     }
 
     suspend fun loadSubscriberBadges(channelId: String): SubscriberBadgesResponse = withContext(Dispatchers.IO) {
