@@ -198,7 +198,7 @@ class PlayerRepository @Inject constructor(
 
     private fun getAccessTokenHeaders(): MutableMap<String, String> {
         return HashMap<String, String>().apply {
-            put("X-Device-Id", UUID.randomUUID().toString().replace("-", "").substring(0, 32)) //removes "commercial break in progress"
+            put("X-Device-Id", UUID.randomUUID().toString().replace("-", "").substring(0, 32)) //X-Device-Id or Device-ID removes "commercial break in progress" (length 16 or 32)
             put("Accept", "*/*")
             put("Accept-Encoding", "gzip, deflate, br")
             put("Accept-Language", "ru-RU")
