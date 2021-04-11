@@ -91,14 +91,7 @@ class XtraModule {
     fun providesUsherApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): UsherApi {
         return Retrofit.Builder()
                 .baseUrl("https://usher.ttvnw.net/")
-                .client(client.newBuilder().addInterceptor { chain ->
-                    val builder = chain.request().newBuilder()
-                    val userAgent = Firebase.remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_KEY)
-                    if (userAgent != RemoteConfigParams.TWITCH_PLAYER_USER_AGENT_DEFAULT) {
-                        builder.addHeader("User-Agent", userAgent)
-                    }
-                    chain.proceed(builder.build())
-                }.build())
+                .client(client)
                 .addConverterFactory(gsonConverterFactory)
                 .build()
                 .create(UsherApi::class.java)

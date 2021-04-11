@@ -17,7 +17,6 @@ import com.github.exact7.xtra.model.chat.BttvEmotesResponse
 import com.github.exact7.xtra.model.chat.FfzEmotesResponse
 import com.github.exact7.xtra.model.chat.RecentEmote
 import com.github.exact7.xtra.model.chat.SubscriberBadgesResponse
-import com.github.exact7.xtra.util.TwitchApiHelper
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +24,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
-import retrofit2.HttpException
 import retrofit2.Response
 import java.util.*
 import javax.inject.Inject
@@ -81,15 +79,15 @@ class PlayerRepository @Inject constructor(
             return playlist.raw().request().url().toString().toUri()
         }
 
-        val shuffled = tokenList.split(",").shuffled()
-        for (token in shuffled) {
-            try {
-                return@withContext loadStream(TwitchApiHelper.addTokenPrefix(token))
-            } catch (e: HttpException) {
-                if (e.code() != 401) throw e
-                Log.e(TAG, "Token $token is expired")
-            }
-        }
+//        val shuffled = tokenList.split(",").shuffled()
+//        for (token in shuffled) {
+//            try {
+//                return@withContext loadStream(TwitchApiHelper.addTokenPrefix(token))
+//            } catch (e: HttpException) {
+//                if (e.code() != 401) throw e
+//                Log.e(TAG, "Token $token is expired")
+//            }
+//        }
         loadStream(UNDEFINED)
     }
 
@@ -116,15 +114,15 @@ class PlayerRepository @Inject constructor(
             return usher.getVideoPlaylist(id, playlistQueryOptions)
         }
 
-        val shuffled = tokenList.split(",").shuffled()
-        for (token in shuffled) {
-            try {
-                return@withContext loadVideo(TwitchApiHelper.addTokenPrefix(token))
-            } catch (e: HttpException) {
-                if (e.code() != 401) throw e
-                Log.e(TAG, "Token $token is expired")
-            }
-        }
+//        val shuffled = tokenList.split(",").shuffled()
+//        for (token in shuffled) {
+//            try {
+//                return@withContext loadVideo(TwitchApiHelper.addTokenPrefix(token))
+//            } catch (e: HttpException) {
+//                if (e.code() != 401) throw e
+//                Log.e(TAG, "Token $token is expired")
+//            }
+//        }
         loadVideo(UNDEFINED)
     }
 
