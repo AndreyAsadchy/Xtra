@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.github.exact7.xtra.api.ApiService
 import com.github.exact7.xtra.api.GraphQLApi
 import com.github.exact7.xtra.api.MiscApi
 import com.github.exact7.xtra.api.UsherApi
@@ -37,7 +36,6 @@ private const val UNDEFINED = "undefined"
 
 @Singleton
 class PlayerRepository @Inject constructor(
-        private val api: ApiService,
         private val usher: UsherApi,
         private val misc: MiscApi,
         private val graphQL: GraphQLApi,

@@ -90,4 +90,7 @@ interface KrakenApi {
 
     @GET("users/{id}/follows/channels")
     suspend fun getFollowedChannels(@Path("id") userId: String, @Query("sortby") sort: com.github.exact7.xtra.model.kraken.follows.Sort, @Query("direction") order: Order, @Query("limit") limit: Int, @Query("offset") offset: Int): FollowedChannelsResponse
+
+    @GET("users/{channelId}/follows/games")
+    suspend fun getFollowedGames(@Path("channelId") channelId: String): Response<ResponseBody>
 }
