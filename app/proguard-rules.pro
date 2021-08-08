@@ -19,7 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file title.
 #-renamesourcefileattribute SourceFile
--dontwarn com.github.exact7.xtra.ui.**
+-dontwarn com.github.andreyasadchy.xtra.ui.**
 -keep class com.iheartradio.m3u8.** { *; }
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
@@ -67,7 +67,7 @@
 
 -keepattributes EnclosingMethod
 # Application classes that will be serialized/deserialized over Gson
--keep class com.github.exact7.xtra.model.** { *; }
+-keep class com.github.andreyasadchy.xtra.model.** { *; }
 
 # Prevent proguard from stripping interface information from TypeAdapterFactory,
 # JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)

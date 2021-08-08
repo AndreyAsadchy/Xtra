@@ -76,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="@id/timeFrom"
         tools:visibility="visible"/>
 
-    <com.github.exact7.xtra.ui.view.StrictEditText
+    <com.github.andreyasadchy.xtra.ui.view.StrictEditText
         android:id="@+id/timeFrom"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
         app:layout_constraintBottom_toBottomOf="@id/timeTo"
         tools:visibility="visible"/>
 
-    <com.github.exact7.xtra.ui.view.StrictEditText
+    <com.github.andreyasadchy.xtra.ui.view.StrictEditText
         android:id="@+id/timeTo"
         android:layout_width="100dp"
         android:layout_height="wrap_content"

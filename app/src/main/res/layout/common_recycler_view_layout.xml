@@ -18,19 +18,19 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible"/>
 
-    <com.github.exact7.xtra.ui.view.CustomSwipeRefreshLayout
+    <com.github.andreyasadchy.xtra.ui.view.CustomSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.github.exact7.xtra.ui.view.GridRecyclerView
+        <com.github.andreyasadchy.xtra.ui.view.GridRecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/fragment_downloads_list_item" />
 
-    </com.github.exact7.xtra.ui.view.CustomSwipeRefreshLayout>
+    </com.github.andreyasadchy.xtra.ui.view.CustomSwipeRefreshLayout>
 
     <TextView
         android:id="@+id/nothing_here"

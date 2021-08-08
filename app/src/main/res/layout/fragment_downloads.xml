@@ -18,7 +18,7 @@
             style="@style/Search" />
     </androidx.appcompat.widget.Toolbar>
 
-    <com.github.exact7.xtra.ui.view.GridRecyclerView
+    <com.github.andreyasadchy.xtra.ui.view.GridRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

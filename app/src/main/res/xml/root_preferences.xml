@@ -24,7 +24,7 @@
     <!--        android:title="@string/chat_settings"-->
     <!--        app:iconSpaceReserved="false">-->
 
-    <!--        <com.github.exact7.xtra.ui.settings.ChatViewPreference-->
+    <!--        <com.github.andreyasadchy.xtra.ui.settings.ChatViewPreference-->
     <!--            android:key="chatView"-->
     <!--            android:selectable="false"-->
     <!--            app:iconSpaceReserved="false"/>-->
