@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.crashlytics'
 
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(project.file("keystore.properties")))
+//def keystoreProperties = new Properties()
+//keystoreProperties.load(new FileInputStream(project.file("keystore.properties")))
 
 android {
     signingConfigs {
@@ -15,12 +15,12 @@ android {
             storeFile file('debug-keystore.jks')
             storePassword '123456'
         }
-        release {
-            keyAlias keystoreProperties['KEY_ALIAS']
-            keyPassword keystoreProperties['KEY_PASSWORD']
-            storeFile file(keystoreProperties['KEYSTORE_PATH'])
-            storePassword keystoreProperties['KEYSTORE_PASSWORD']
-        }
+//        release {
+//            keyAlias keystoreProperties['KEY_ALIAS']
+//            keyPassword keystoreProperties['KEY_PASSWORD']
+//            storeFile file(keystoreProperties['KEYSTORE_PATH'])
+//            storePassword keystoreProperties['KEYSTORE_PASSWORD']
+//        }
     }
     compileSdkVersion 29
     defaultConfig {
@@ -50,7 +50,7 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
     }
     compileOptions {
