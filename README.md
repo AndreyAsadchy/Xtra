@@ -7,6 +7,10 @@ Xtra is a Twitch player and browser for Android.
 </br>
 </br>
 
+## Download APK
+
+You can find released APKs [here](https://github.com/AndreyAsadchy/Xtra/releases).
+
 ## Project status
 
 The app was removed from Google Play in April 2021. At the moment I am not interested in working on the project, but anyone is welcomed to make a contribution or leave a suggestion.
@@ -19,4 +23,4 @@ As [Twitch deprecated their V5 API](https://blog.twitch.tv/en/2021/07/15/legacy-
 I have created a [subreddit](https://www.reddit.com/r/XtraForTwitch) where you can discuss the project.
 
 ## License
-Xtra is licensed under the [GNU Affero General Public License v3.0](LICENSE)
+Xtra is licensed under the [GNU Affero General Public License v3.0](LICENSE).
