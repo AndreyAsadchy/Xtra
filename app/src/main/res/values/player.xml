@@ -126,6 +126,14 @@
         <item name="android:layout_marginEnd">10dp</item>
     </style>
 
+    <style name="PlayerRestart" parent="PlayerSmallImage">
+        <item name="android:src">@drawable/baseline_replay_black_24</item>
+        <item name="android:layout_alignParentEnd">false</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+    </style>
+
     <style name="PlayerResume" parent="PlayerLargeImage">
         <item name="android:src">@drawable/baseline_fast_forward_black_48</item>
         <item name="android:layout_centerVertical">true</item>
