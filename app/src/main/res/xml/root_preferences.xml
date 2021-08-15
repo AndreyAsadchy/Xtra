@@ -85,6 +85,13 @@
 
     <SwitchPreferenceCompat
         android:defaultValue="true"
+        android:key="adblock"
+        android:summary="@string/adblock_desc"
+        android:title="@string/adblock"
+        app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
         android:key="pictureInPicture"
         android:summary="@string/continue_playback"
         android:title="@string/picture_in_picture"

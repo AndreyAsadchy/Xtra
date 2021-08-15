@@ -15,6 +15,7 @@ import com.github.andreyasadchy.xtra.ui.player.PlayerMode.AUDIO_ONLY
 import com.github.andreyasadchy.xtra.ui.player.PlayerMode.NORMAL
 import com.github.andreyasadchy.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.andreyasadchy.xtra.util.C
+import com.github.andreyasadchy.xtra.util.prefs
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -29,7 +30,8 @@ abstract class HlsPlayerViewModel(
         context: Application,
         val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
-    private val prefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
+    private val userPrefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
+    val prefs = context.prefs();
     protected val helper = PlayerHelper()
     val loaded: LiveData<Boolean>
         get() = helper.loaded
@@ -41,6 +43,10 @@ abstract class HlsPlayerViewModel(
         qualityIndex = index
     }
 
+    fun useAdBlock() : Boolean{
+        return prefs.getBoolean(C.AD_BLOCKER,true)
+    }
+
     protected fun setVideoQuality(index: Int) {
         val quality = if (index == 0) {
             trackSelector.setParameters(trackSelector.buildUponParameters().clearSelectionOverrides())
@@ -49,7 +55,7 @@ abstract class HlsPlayerViewModel(
             updateVideoQuality()
             qualities[index]
         }
-        prefs.edit { putString(TAG, quality) }
+        userPrefs.edit { putString(TAG, quality) }
         val mode = _playerMode.value
         if (mode != NORMAL) {
             _playerMode.value = NORMAL
@@ -75,7 +81,7 @@ abstract class HlsPlayerViewModel(
         if (trackSelector.currentMappedTrackInfo != null) {
             if (helper.loaded.value != true) {
                 helper.loaded.value = true
-                val index = prefs.getString(TAG, "Auto").let { quality ->
+                val index = userPrefs.getString(TAG, "Auto").let { quality ->
                     if (quality == "Auto") {
                         0
                     } else {

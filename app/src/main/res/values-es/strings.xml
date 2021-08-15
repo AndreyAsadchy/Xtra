@@ -164,4 +164,6 @@
     <string name="disable">Desactivado</string>
     <string name="ignore_notch">Ignorar cámara notch</string>
     <string name="display_beyond_notch">Muestre el video más allá del notch</string>
+    <string name="adblock_desc">Utiliza la api de TTV.LOL para cargar transmisiones sin publicidad</string>
+    <string name="adblock">Usar Adblocker</string>
 </resources>

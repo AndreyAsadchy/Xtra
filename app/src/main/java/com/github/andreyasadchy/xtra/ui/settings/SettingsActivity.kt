@@ -69,6 +69,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             findPreference<ListPreference>(C.LANDSCAPE_COLUMN_COUNT)!!.onPreferenceChangeListener = changeListener
             findPreference<SwitchPreferenceCompat>(C.ANIMATED_EMOTES)!!.onPreferenceChangeListener = changeListener
             findPreference<SwitchPreferenceCompat>(C.COMPACT_STREAMS)!!.onPreferenceChangeListener = changeListener
+            findPreference<SwitchPreferenceCompat>(C.AD_BLOCKER)!!.onPreferenceChangeListener = changeListener
             findPreference<ListPreference>("playerForward")!!.onPreferenceChangeListener = changeListener
             findPreference<ListPreference>("playerRewind")!!.onPreferenceChangeListener = changeListener
 

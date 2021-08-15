@@ -23,4 +23,5 @@ object C {
     const val COMPACT_STREAMS = "compactStreams"
     const val IGNORE_NOTCH = "ignoreNotch"
     const val LAST_UPDATE_VERSION = "lastUpdateVersion"
+    const val AD_BLOCKER = "adblock"
 }

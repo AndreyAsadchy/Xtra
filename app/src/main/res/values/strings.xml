@@ -103,6 +103,8 @@
     <string name="player_error">Player error. Retrying</string>
     <string name="picture_in_picture">Picture-in-Picture</string>
     <string name="continue_playback">Continue playback outside of the app</string>
+    <string name="adblock_desc">Uses the TTV.LOL api to load adfree streams </string>
+    <string name="adblock" translatable="false">Use Adblocker</string>
     <string name="source_vod_start">Start: %s</string>
     <string name="source_vod_end">End: %s</string>
     <string name="stream_ended">The stream has ended</string>

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.github.andreyasadchy.xtra.api.GraphQLApi
 import com.github.andreyasadchy.xtra.api.MiscApi
+import com.github.andreyasadchy.xtra.api.TTVLolApi
 import com.github.andreyasadchy.xtra.api.UsherApi
 import com.github.andreyasadchy.xtra.db.EmotesDao
 import com.github.andreyasadchy.xtra.db.RecentEmotesDao
@@ -41,7 +42,8 @@ class PlayerRepository @Inject constructor(
         private val graphQL: GraphQLApi,
         private val emotes: EmotesDao,
         private val recentEmotes: RecentEmotesDao,
-        private val videoPositions: VideoPositionsDao) {
+        private val videoPositions: VideoPositionsDao,
+        private val ttvLolApi: TTVLolApi) {
 
     suspend fun loadStreamPlaylist(channelName: String, clientId: String, tokenList: String, playerType: String): Uri = withContext(Dispatchers.IO) {
         Log.d(TAG, "Getting stream playlist for channel $channelName. Client id: $clientId. Player type: $playerType")
@@ -60,19 +62,19 @@ class PlayerRepository @Inject constructor(
             accessTokenHeaders["Authorization"] = token
             val accessToken = graphQL.getStreamAccessToken(accessTokenHeaders, accessTokenJson)
             val playlistQueryOptions = HashMap<String, String>()
-//            playlistQueryOptions["token"] = accessToken.token
-//            playlistQueryOptions["sig"] = accessToken.sig
-            playlistQueryOptions["token"] = accessToken.token
-            playlistQueryOptions["sig"] = accessToken.signature
             playlistQueryOptions["allow_source"] = "true"
             playlistQueryOptions["allow_audio_only"] = "true"
             playlistQueryOptions["type"] = "any"
             playlistQueryOptions["p"] = Random.nextInt(999999).toString()
             playlistQueryOptions["fast_bread"] = "true" //low latency
 
-            //not working anyway
+            playlistQueryOptions["token"] = accessToken.token
+            playlistQueryOptions["sig"] = accessToken.signature
 //            playlistQueryOptions["server_ads"] = "false"
 //            playlistQueryOptions["show_ads"] = "false"
+            //redundant call, will be sending the same request twice.
+            //better off to build the url manually and return it
+            //but isn't too much of a big deal
             val playlist = usher.getStreamPlaylist(channelName, playlistQueryOptions)
             return playlist.raw().request().url().toString().toUri()
         }
@@ -89,6 +91,38 @@ class PlayerRepository @Inject constructor(
         loadStream(UNDEFINED)
     }
 
+    suspend fun adFreeStreamUrl(channelName: String) : Uri{
+
+        val playlistQueryOptions = HashMap<String, String>()
+        //Not used by TTV.Lol, but might be needed in the future if twitch makes some changes. So I'm keeping it here in case
+//        val accessTokenJson = getAccessTokenJson(isLive = true, isVod = false, login = channelName, playerType = playerType, vodId = "")
+//        val accessTokenHeaders = getAccessTokenHeaders()
+//        accessTokenHeaders["Authorization"] = UNDEFINED
+//        val accessToken = graphQL.getStreamAccessToken(accessTokenHeaders, accessTokenJson)
+//        playlistQueryOptions["token"] = accessToken.token
+//        playlistQueryOptions["sig"] = accessToken.signature
+        playlistQueryOptions["allow_source"] = "true"
+        playlistQueryOptions["allow_audio_only"] = "true"
+        playlistQueryOptions["type"] = "any"
+        playlistQueryOptions["p"] = Random.nextInt(999999).toString()
+        playlistQueryOptions["fast_bread"] = "true" //low latency
+
+        playlistQueryOptions["player_backend"] = "mediaplayer"
+        playlistQueryOptions["supported_codecs"] = "avc1"
+        playlistQueryOptions["player_version"] = "1.4.0"
+        playlistQueryOptions["warp"] = "true"
+        val pingResponseBody = ttvLolApi.ping();
+        if(!pingResponseBody.isSuccessful){
+            return Uri.EMPTY
+        }
+        val pingResponseContent = pingResponseBody.body()?.string()
+        if(pingResponseContent!!.contentEquals("0")){
+            return Uri.EMPTY
+        }
+        val params = toParam(playlistQueryOptions)
+        return String.format("https://api.ttv.lol/playlist/%s.m3u8%s%s",channelName,"%3F",params).toUri();
+    }
+
     suspend fun loadVideoPlaylist(videoId: String, clientId: String, tokenList: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
         val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
         Log.d(TAG, "Getting video playlist for video $id. Client id: $clientId")
@@ -101,8 +135,6 @@ class PlayerRepository @Inject constructor(
             accessTokenHeaders["Authorization"] = token
             val accessToken = graphQL.getVideoAccessToken(accessTokenHeaders, accessTokenJson)
             val playlistQueryOptions = HashMap<String, String>()
-//            options["token"] = accessToken.token
-//            options["sig"] = accessToken.sig
             playlistQueryOptions["token"] = accessToken.token
             playlistQueryOptions["sig"] = accessToken.signature
             playlistQueryOptions["allow_source"] = "true"
@@ -123,6 +155,7 @@ class PlayerRepository @Inject constructor(
 //        }
         loadVideo(UNDEFINED)
     }
+
 
     suspend fun loadSubscriberBadges(channelId: String): SubscriberBadgesResponse = withContext(Dispatchers.IO) {
         misc.getSubscriberBadges(channelId)
@@ -168,6 +201,14 @@ class PlayerRepository @Inject constructor(
         GlobalScope.launch {
             videoPositions.insert(position)
         }
+    }
+
+    private fun toParam(map : HashMap<String,String>) : String{
+        var str = ""
+        map.mapValues {
+            (k,v) -> str += String.format("%s=%s",k,v).plus("&")
+        }
+        return str.substring(0,str.length-1)
     }
 
     private fun getAccessTokenJson(isLive: Boolean, isVod: Boolean, login: String, playerType: String, vodId: String): JsonArray {

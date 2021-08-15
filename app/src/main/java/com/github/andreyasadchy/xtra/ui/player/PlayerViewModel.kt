@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -39,7 +40,11 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
 
     protected val tag: String = javaClass.simpleName
 
-    protected val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, context.getString(R.string.app_name)))
+    protected val httpDataSourceFactory = DefaultHttpDataSourceFactory(Util.getUserAgent(context, context.getString(R.string.app_name)))
+    protected val dataSourceFactory = DefaultDataSourceFactory(context, null, httpDataSourceFactory)
+
+
+
     protected val trackSelector = DefaultTrackSelector()
     val player: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(
             context,

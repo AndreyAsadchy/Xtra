@@ -223,4 +223,6 @@
     <string name="disable">Отключить</string>
     <string name="ignore_notch">Игнорировать вырез</string>
     <string name="display_beyond_notch">Отображать видео под вырезом для камеры</string>
+    <string name="adblock_desc">Использует API TTV.LOL для загрузки потоков без рекламы</string>
+    <string name="adblock">Используйте Adblocker</string>
 </resources>
