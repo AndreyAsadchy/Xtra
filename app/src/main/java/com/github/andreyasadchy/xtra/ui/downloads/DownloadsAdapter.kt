@@ -1,6 +1,9 @@
 package com.github.andreyasadchy.xtra.ui.downloads
 
+import android.annotation.SuppressLint
+import android.os.Parcel
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
@@ -9,16 +12,19 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.andreyasadchy.xtra.R
 import com.github.andreyasadchy.xtra.model.offline.OfflineVideo
 import com.github.andreyasadchy.xtra.ui.common.BaseListAdapter
+import com.github.andreyasadchy.xtra.ui.common.OnChannelSelectedListener
 import com.github.andreyasadchy.xtra.util.TwitchApiHelper
 import com.github.andreyasadchy.xtra.util.gone
 import com.github.andreyasadchy.xtra.util.loadImage
 import com.github.andreyasadchy.xtra.util.visible
 import kotlinx.android.synthetic.main.fragment_downloads_list_item.view.*
+import kotlinx.coroutines.channels.Channel
 
 class DownloadsAdapter(
         private val fragment: Fragment,
         private val clickListener: DownloadsFragment.OnVideoSelectedListener,
-        private val deleteVideo: (OfflineVideo) -> Unit) : BaseListAdapter<OfflineVideo>(
+        private val deleteVideo: (OfflineVideo) -> Unit
+       ) : BaseListAdapter<OfflineVideo>(
         object : DiffUtil.ItemCallback<OfflineVideo>() {
             override fun areItemsTheSame(oldItem: OfflineVideo, newItem: OfflineVideo): Boolean {
                 return oldItem.id == newItem.id
@@ -33,7 +39,17 @@ class DownloadsAdapter(
 
     override fun bind(item: OfflineVideo, view: View) {
         with(view) {
-            setOnClickListener { clickListener.startOfflineVideo(item) }
+            val onClick = View.OnClickListener{
+                v ->
+                if(v.id == userImage.id || v.id == username.id){
+                    //TODO Open up the channel/profile viewer
+                }else{
+                    clickListener.startOfflineVideo(item)
+                }
+            }
+            userImage.setOnClickListener(onClick)
+            username.setOnClickListener(onClick)
+            setOnClickListener(onClick)
             setOnLongClickListener { deleteVideo(item); true }
             thumbnail.loadImage(fragment, item.thumbnail, diskCacheStrategy = DiskCacheStrategy.AUTOMATIC)
             date.text = context.getString(R.string.uploaded_date, TwitchApiHelper.formatTime(context, item.uploadDate))
