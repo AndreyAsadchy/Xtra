@@ -48,7 +48,7 @@ class GraphQLRepositoy @Inject constructor(private val graphQL: GraphQLApi) {
             add("extensions", JsonObject().apply {
                 add("persistedQuery", JsonObject().apply {
                     addProperty("version", 1)
-                    addProperty("sha256Hash", "9bfcc0177bffc730bd5a5a89005869d2773480cf1738c592143b5173634b7d15")
+                    addProperty("sha256Hash", "36b89d2507fce29e5ca551df756d27c1cfe079e2609642b4390aa4c35796eb11")
                 })
             })
         }

@@ -67,7 +67,7 @@ class StreamPlayerFragment : BasePlayerFragment() {
         settings.setOnClickListener {
             FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex)
         }
-        resume.setOnClickListener {
+        restart.setOnClickListener {
             viewModel.restartPlayer()
         }
     }

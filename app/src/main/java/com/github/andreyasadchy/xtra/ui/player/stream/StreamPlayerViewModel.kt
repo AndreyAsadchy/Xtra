@@ -1,6 +1,7 @@
 package com.github.andreyasadchy.xtra.ui.player.stream
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,9 +15,7 @@ import com.github.andreyasadchy.xtra.repository.PlayerRepository
 import com.github.andreyasadchy.xtra.repository.TwitchService
 import com.github.andreyasadchy.xtra.ui.player.AudioPlayerService
 import com.github.andreyasadchy.xtra.ui.player.HlsPlayerViewModel
-import com.github.andreyasadchy.xtra.ui.player.PlayerMode.AUDIO_ONLY
-import com.github.andreyasadchy.xtra.ui.player.PlayerMode.DISABLED
-import com.github.andreyasadchy.xtra.ui.player.PlayerMode.NORMAL
+import com.github.andreyasadchy.xtra.ui.player.PlayerMode.*
 import com.github.andreyasadchy.xtra.util.RemoteConfigParams
 import com.github.andreyasadchy.xtra.util.toast
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
@@ -27,10 +26,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 class StreamPlayerViewModel @Inject constructor(
         context: Application,
         private val playerRepository: PlayerRepository,
         repository: TwitchService) : HlsPlayerViewModel(context, repository) {
+
 
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
@@ -108,7 +109,21 @@ class StreamPlayerViewModel @Inject constructor(
                             val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
                             val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
                             val playerType = remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY)
-                            val uri = playerRepository.loadStreamPlaylist(stream.channel.name, clientId, tokenList, playerType)
+                            val uri : Uri
+                            if(useAdBlock()){
+                                uri = playerRepository.adFreeStreamUrl(stream.channel.name)
+
+                                if(uri.equals(Uri.EMPTY)){
+                                    val context = getApplication<Application>()
+                                    context.toast("TTV.LOL is offline. Disable Adblock to view streams in the meantime")
+                                    return@launch
+                                }
+
+                                httpDataSourceFactory.defaultRequestProperties.set("X-Donate-To","https://ttv.lol/donate")
+                            }else{
+                                uri = playerRepository.loadStreamPlaylist(stream.channel.name, clientId, tokenList, playerType)
+                            }
+
                             mediaSource = HlsMediaSource.Factory(dataSourceFactory)
                                     .setAllowChunklessPreparation(true)
                                     .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
@@ -121,6 +136,6 @@ class StreamPlayerViewModel @Inject constructor(
                             context.toast(R.string.error_stream)
                         }
                     }
-                }
+        }
     }
 }

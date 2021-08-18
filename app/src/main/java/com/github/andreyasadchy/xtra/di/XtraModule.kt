@@ -4,12 +4,7 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import com.github.andreyasadchy.xtra.BuildConfig
-import com.github.andreyasadchy.xtra.api.ApiService
-import com.github.andreyasadchy.xtra.api.GraphQLApi
-import com.github.andreyasadchy.xtra.api.IdApi
-import com.github.andreyasadchy.xtra.api.KrakenApi
-import com.github.andreyasadchy.xtra.api.MiscApi
-import com.github.andreyasadchy.xtra.api.UsherApi
+import com.github.andreyasadchy.xtra.api.*
 import com.github.andreyasadchy.xtra.model.chat.FfzEmotesResponse
 import com.github.andreyasadchy.xtra.model.chat.FfzRoomDeserializer
 import com.github.andreyasadchy.xtra.model.chat.SubscriberBadgeDeserializer
@@ -117,6 +112,22 @@ class XtraModule {
                 .addConverterFactory(gsonConverterFactory)
                 .build()
                 .create(IdApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providesTTVLolApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): TTVLolApi {
+        return Retrofit.Builder()
+                .baseUrl("https://api.ttv.lol/")
+                .client(client.newBuilder().addInterceptor { chain ->
+                    val request = chain.request().newBuilder()
+                            .addHeader("X-Donate-To", "https://ttv.lol/donate")
+                            .build()
+                    chain.proceed(request)
+                }.build())
+                .addConverterFactory(gsonConverterFactory)
+                .build()
+                .create(TTVLolApi::class.java)
     }
 
     @Singleton

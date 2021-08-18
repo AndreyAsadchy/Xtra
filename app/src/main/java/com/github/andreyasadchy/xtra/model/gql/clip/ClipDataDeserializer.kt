@@ -17,7 +17,7 @@ class ClipDataDeserializer : JsonDeserializer<ClipDataResponse> {
             videos.add(ClipDataResponse.Video(
                     video.getAsJsonPrimitive("frameRate").asInt,
                     video.getAsJsonPrimitive("quality").asString,
-                    video.getAsJsonPrimitive("sourceURL").asString))
+                    video.getAsJsonPrimitive("sourceURL").asString.replace(Regex("https://[^/]+"),"https://clips-media-assets2.twitch.tv")))
         }
         return ClipDataResponse(videos)
     }
