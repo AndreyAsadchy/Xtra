@@ -28,9 +28,9 @@ import java.net.URL
 import javax.inject.Inject
 
 class VideoDownloadViewModel @Inject constructor(
-        application: Application,
-        private val playerRepository: PlayerRepository,
-        private val offlineRepository: OfflineRepository
+    application: Application,
+    private val playerRepository: PlayerRepository,
+    private val offlineRepository: OfflineRepository
 ) : AndroidViewModel(application) {
 
     private val _videoInfo = MutableLiveData<VideoDownloadInfo?>()
@@ -39,53 +39,47 @@ class VideoDownloadViewModel @Inject constructor(
 
     fun setVideo(video: Video) {
         if (_videoInfo.value == null) {
-            val remoteConfig = Firebase.remoteConfig
-            remoteConfig.fetchAndActivate()
-                    .addOnCompleteListener {
-                        viewModelScope.launch(Dispatchers.IO) {
-                            try {
-                                val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                                val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
-                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, tokenList)
-                                if (response.isSuccessful) {
-                                    val playlist = response.body()!!.string()
-                                    val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
-                                    val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
-                                    val audioIndex = qualities.indexOfFirst { it.equals("Audio Only", true) }
-                                    qualities.removeAt(audioIndex)
-                                    qualities.add(getApplication<Application>().getString(R.string.audio_only))
-                                    urls.add(urls.removeAt(audioIndex))
-                                    val map = qualities.zip(urls).toMap()
-                                    val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
-                                        PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
-                                    }
-                                    var totalDuration = 0L
-                                    val size = mediaPlaylist.tracks.size
-                                    val relativeTimes = ArrayList<Long>(size)
-                                    val durations = ArrayList<Long>(size)
-                                    var time = 0L
-                                    mediaPlaylist.tracks.forEach {
-                                        val duration = (it.trackInfo.duration * 1000f).toLong()
-                                        durations.add(duration)
-                                        totalDuration += duration
-                                        relativeTimes.add(time)
-                                        time += duration
-                                    }
-                                    _videoInfo.postValue(VideoDownloadInfo(video, map, relativeTimes, durations, totalDuration, mediaPlaylist.targetDuration * 1000L, 0))
-                                } else {
-                                    throw IllegalAccessException()
-                                }
-                            } catch (e: Exception) {
-                                if (e is IllegalAccessException) {
-                                    launch(Dispatchers.Main) {
-                                        val context = getApplication<Application>()
-                                        context.toast(R.string.video_subscribers_only)
-                                        _videoInfo.value = null
-                                    }
-                                }
-                            }
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    val response = playerRepository.loadVideoPlaylist(video.id)
+                    if (response.isSuccessful) {
+                        val playlist = response.body()!!.string()
+                        val qualities = "NAME=\"(.*)\"".toRegex().findAll(playlist).map { it.groupValues[1] }.toMutableList()
+                        val urls = "https://.*\\.m3u8".toRegex().findAll(playlist).map(MatchResult::value).toMutableList()
+                        val audioIndex = qualities.indexOfFirst { it.equals("Audio Only", true) }
+                        qualities.removeAt(audioIndex)
+                        qualities.add(getApplication<Application>().getString(R.string.audio_only))
+                        urls.add(urls.removeAt(audioIndex))
+                        val map = qualities.zip(urls).toMap()
+                        val mediaPlaylist = URL(map.values.elementAt(0)).openStream().use {
+                            PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
+                        }
+                        var totalDuration = 0L
+                        val size = mediaPlaylist.tracks.size
+                        val relativeTimes = ArrayList<Long>(size)
+                        val durations = ArrayList<Long>(size)
+                        var time = 0L
+                        mediaPlaylist.tracks.forEach {
+                            val duration = (it.trackInfo.duration * 1000f).toLong()
+                            durations.add(duration)
+                            totalDuration += duration
+                            relativeTimes.add(time)
+                            time += duration
+                        }
+                        _videoInfo.postValue(VideoDownloadInfo(video, map, relativeTimes, durations, totalDuration, mediaPlaylist.targetDuration * 1000L, 0))
+                    } else {
+                        throw IllegalAccessException()
+                    }
+                } catch (e: Exception) {
+                    if (e is IllegalAccessException) {
+                        launch(Dispatchers.Main) {
+                            val context = getApplication<Application>()
+                            context.toast(R.string.video_subscribers_only)
+                            _videoInfo.value = null
                         }
                     }
+                }
+            }
         }
     }
 

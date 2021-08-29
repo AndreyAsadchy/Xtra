@@ -97,7 +97,7 @@
     <string name="search">Поиск</string>
     <string name="chat_replay_unavailable">Повтор чата недоступен</string>
     <string name="video_subscribers_only">Видео доступно только для подписчиков и не может быть открыто в приложении из-за ограничений со стороны Twitch</string>
-    <string name="player_error">Ошибка воспроизведения. Переподключение</string>
+    <string name="player_error">Ошибка воспроизведения. Переподключение. Отключите Adblock если трансляция не загружается</string>
     <string name="picture_in_picture">Картинка в картинке</string>
     <string name="continue_playback">Продолжить воспроизведение вне приложения</string>
     <string name="source_vod_start">Начало: %s</string>
@@ -223,6 +223,7 @@
     <string name="disable">Отключить</string>
     <string name="ignore_notch">Игнорировать вырез</string>
     <string name="display_beyond_notch">Отображать видео под вырезом для камеры</string>
-    <string name="adblock_desc">Использует API TTV.LOL для загрузки потоков без рекламы</string>
-    <string name="adblock">Используйте Adblocker</string>
+    <string name="adblock_not_working">Не удалось загрузить трансляцию без рекламы</string>
+    <string name="adblock_desc">Отключите если трансляции не загружаются</string>
+    <string name="adblock">Adblock</string>
 </resources>

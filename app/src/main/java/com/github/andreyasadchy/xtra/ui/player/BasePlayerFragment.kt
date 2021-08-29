@@ -75,7 +75,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     open val controllerShowTimeoutMs: Int = 3000
     private var resizeMode = 0
 
-    private lateinit var prefs: SharedPreferences
+    protected lateinit var prefs: SharedPreferences
     private lateinit var userPrefs: SharedPreferences
     protected abstract val channel: Channel
 

@@ -12,6 +12,7 @@ import com.github.andreyasadchy.xtra.model.kraken.stream.Stream
 import com.github.andreyasadchy.xtra.ui.chat.ChatFragment
 import com.github.andreyasadchy.xtra.ui.player.BasePlayerFragment
 import com.github.andreyasadchy.xtra.ui.player.PlayerMode
+import com.github.andreyasadchy.xtra.util.C
 import com.github.andreyasadchy.xtra.util.FragmentUtils
 import com.github.andreyasadchy.xtra.util.TwitchApiHelper
 import com.github.andreyasadchy.xtra.util.disable
@@ -55,7 +56,7 @@ class StreamPlayerFragment : BasePlayerFragment() {
     }
 
     override fun initialize() {
-        viewModel.startStream(stream)
+        viewModel.startStream(stream, prefs.getBoolean(C.AD_BLOCKER, true))
         super.initialize()
         val settings = requireView().findViewById<ImageButton>(R.id.settings)
         viewModel.loaded.observe(viewLifecycleOwner, Observer {

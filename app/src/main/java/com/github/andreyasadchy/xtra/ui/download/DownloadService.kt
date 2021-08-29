@@ -113,7 +113,7 @@ class DownloadService : IntentService(TAG) {
     override fun onHandleIntent(intent: Intent?) {
         request = intent!!.getParcelableExtra(KEY_REQUEST)
         offlineVideo = runBlocking { offlineRepository.getVideoById(request.offlineVideoId) }
-                ?: return //Download was canceled
+            ?: return //Download was canceled
         Log.d(TAG, "Starting download. Id: ${offlineVideo.id}")
         fetch = fetchProvider.get(offlineVideo.id, intent.getBooleanExtra(KEY_WIFI, false))
         val countDownLatch = CountDownLatch(1)
@@ -183,23 +183,17 @@ class DownloadService : IntentService(TAG) {
                     }
                 }
             })
-            val remoteConfig = Firebase.remoteConfig
-            remoteConfig.fetchAndActivate()
-                    .addOnCompleteListener {
-                        GlobalScope.launch {
-                            try {
-                                val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                                val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
-                                val response = playerRepository.loadVideoPlaylist(request.videoId!!, clientId, tokenList)
-                                playlist = URL("https://.*\\.m3u8".toRegex().find(response.body()!!.string())!!.value).openStream().use {
-                                    PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
-                                }
-                                enqueueNext()
-                            } catch (e: Exception) {
-
-                            }
-                        }
+            GlobalScope.launch {
+                try {
+                    val response = playerRepository.loadVideoPlaylist(request.videoId!!)
+                    playlist = URL("https://.*\\.m3u8".toRegex().find(response.body()!!.string())!!.value).openStream().use {
+                        PlaylistParser(it, Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT).parse().mediaPlaylist
                     }
+                    enqueueNext()
+                } catch (e: Exception) {
+
+                }
+            }
         } else {
             fetch.addListener(object : AbstractFetchListener() {
                 override fun onCompleted(download: Download) {
@@ -278,10 +272,12 @@ class DownloadService : IntentService(TAG) {
                 try {
                     for (i in segmentFrom!!..segmentTo!!) {
                         val track = playlist.tracks[i] //TODO encrypt files
-                        tracks.add(TrackData.Builder()
+                        tracks.add(
+                            TrackData.Builder()
                                 .withUri("$path${track.uri}")
                                 .withTrackInfo(TrackInfo(track.trackInfo.duration, track.trackInfo.title))
-                                .build())
+                                .build()
+                        )
                     }
                 } catch (e: UninitializedPropertyAccessException) {
                     GlobalScope.launch {
@@ -295,12 +291,12 @@ class DownloadService : IntentService(TAG) {
                     instance.recordException(e)
                 }
                 val mediaPlaylist = MediaPlaylist.Builder()
-                        .withTargetDuration(playlist.targetDuration)
-                        .withTracks(tracks)
-                        .build()
+                    .withTargetDuration(playlist.targetDuration)
+                    .withTracks(tracks)
+                    .build()
                 val playlist = Playlist.Builder()
-                        .withMediaPlaylist(mediaPlaylist)
-                        .build()
+                    .withMediaPlaylist(mediaPlaylist)
+                    .build()
                 FileOutputStream(offlineVideo.url).use {
                     PlaylistWriter(it, Format.EXT_M3U, Encoding.UTF_8).write(playlist)
                 }

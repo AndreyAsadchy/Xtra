@@ -31,7 +31,6 @@ abstract class HlsPlayerViewModel(
         val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
     private val userPrefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
-    val prefs = context.prefs();
     protected val helper = PlayerHelper()
     val loaded: LiveData<Boolean>
         get() = helper.loaded
@@ -41,10 +40,6 @@ abstract class HlsPlayerViewModel(
 
     override fun changeQuality(index: Int) {
         qualityIndex = index
-    }
-
-    fun useAdBlock() : Boolean{
-        return prefs.getBoolean(C.AD_BLOCKER,true)
     }
 
     protected fun setVideoQuality(index: Int) {

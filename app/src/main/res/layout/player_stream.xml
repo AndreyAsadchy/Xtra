@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <View style="@style/PlayerShadow" />
+    <View
+        style="@style/PlayerShadow" />
 
     <ImageButton
         style="@style/PlayerPlay"/>
@@ -12,11 +13,11 @@
     <ImageButton
         style="@style/PlayerPause"/>
 
-    <ImageButton style="@style/PlayerMinimize" />
+    <ImageButton
+        style="@style/PlayerMinimize" />
 
-    <TextView style="@style/PlayerChannel" />
-
-
+    <TextView
+        style="@style/PlayerChannel" />
 
     <LinearLayout
         style="@style/PlayerTopRightPanel">
@@ -38,6 +39,10 @@
             />
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/restart"
+        style="@style/PlayerRestart" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -86,20 +91,6 @@
 
         <ImageButton
             style="@style/PlayerFullscreenToggle"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp">
-
-        <ImageButton
-            android:id="@+id/restart"
-            style="@style/PlayerRestart" />
 
     </LinearLayout>
 

@@ -1,7 +1,6 @@
 package com.github.andreyasadchy.xtra.ui.player.video
 
 import android.app.Application
-import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.github.andreyasadchy.xtra.R
 import com.github.andreyasadchy.xtra.model.VideoDownloadInfo
@@ -14,18 +13,20 @@ import com.github.andreyasadchy.xtra.repository.TwitchService
 import com.github.andreyasadchy.xtra.ui.player.AudioPlayerService
 import com.github.andreyasadchy.xtra.ui.player.HlsPlayerViewModel
 import com.github.andreyasadchy.xtra.ui.player.PlayerMode
-import com.github.andreyasadchy.xtra.util.RemoteConfigParams
+import com.github.andreyasadchy.xtra.ui.player.stream.StreamPlayerViewModel
 import com.github.andreyasadchy.xtra.util.toast
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.upstream.HttpDataSource
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 
 class VideoPlayerViewModel @Inject constructor(
-        context: Application,
-        private val playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
+    context: Application,
+    private val playerRepository: PlayerRepository,
+    repository: TwitchService
+) : HlsPlayerViewModel(context, repository) {
 
     private lateinit var video: Video
     val videoInfo: VideoDownloadInfo?
@@ -49,29 +50,18 @@ class VideoPlayerViewModel @Inject constructor(
     fun setVideo(video: Video, offset: Double) {
         if (!this::video.isInitialized) {
             this.video = video
-            val remoteConfig = Firebase.remoteConfig
-            remoteConfig.fetchAndActivate()
-                    .addOnCompleteListener {
-                        viewModelScope.launch {
-                            try {
-                                val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                                val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
-                                val response = playerRepository.loadVideoPlaylist(video.id, clientId, tokenList)
-                                if (response.isSuccessful) {
-                                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(response.raw().request().url().toString().toUri())
-                                    play()
-                                    if (offset > 0) {
-                                        player.seekTo(offset.toLong())
-                                    }
-                                } else if (response.code() == 403) {
-                                    val context = getApplication<Application>()
-                                    context.toast(R.string.video_subscribers_only)
-                                }
-                            } catch (e: Exception) {
-
-                            }
-                        }
+            viewModelScope.launch {
+                try {
+                    val url = playerRepository.loadVideoPlaylistUrl(video.id)
+                    mediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(url)
+                    play()
+                    if (offset > 0) {
+                        player.seekTo(offset.toLong())
                     }
+                } catch (e: Exception) {
+
+                }
+            }
         }
     }
 
@@ -115,6 +105,16 @@ class VideoPlayerViewModel @Inject constructor(
             playbackPosition = player.currentPosition
         }
         super.onPause()
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException) {
+        if (error.type == ExoPlaybackException.TYPE_SOURCE &&
+            error.sourceException.let { it is HttpDataSource.InvalidResponseCodeException && it.responseCode == 403 }) {
+            val context = getApplication<Application>()
+            context.toast(R.string.video_subscribers_only)
+        } else {
+            super.onPlayerError(error)
+        }
     }
 
     override fun onCleared() {

@@ -100,7 +100,6 @@
     <string name="search">Buscar</string>
     <string name="chat_replay_unavailable">Chat replay is unavailable</string>
     <string name="video_subscribers_only">Este video solo está disponible para suscriptores y no se puede ver en la aplicación debido a las restricciones de Twitch</string>
-    <string name="player_error">Error de reproductor. Reintentando</string>
     <string name="picture_in_picture">Picture-in-Picture</string>
     <string name="continue_playback">Continuar la reproducción fuera de la aplicación</string>
     <string name="source_vod_start">Comienzo: %s</string>
@@ -164,6 +163,8 @@
     <string name="disable">Desactivado</string>
     <string name="ignore_notch">Ignorar cámara notch</string>
     <string name="display_beyond_notch">Muestre el video más allá del notch</string>
-    <string name="adblock_desc">Utiliza la api de TTV.LOL para cargar transmisiones sin publicidad</string>
-    <string name="adblock">Usar Adblocker</string>
+    <string name="player_error">Player error. Retrying. Disable Adblock if streams are not loading</string>
+    <string name="adblock_not_working">Failed to load ad-free stream</string>
+    <string name="adblock_desc">Disable if streams are not loading</string>
+    <string name="adblock">Adblock</string>
 </resources>

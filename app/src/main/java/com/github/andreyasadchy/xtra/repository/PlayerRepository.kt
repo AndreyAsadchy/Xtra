@@ -17,6 +17,7 @@ import com.github.andreyasadchy.xtra.model.chat.BttvEmotesResponse
 import com.github.andreyasadchy.xtra.model.chat.FfzEmotesResponse
 import com.github.andreyasadchy.xtra.model.chat.RecentEmote
 import com.github.andreyasadchy.xtra.model.chat.SubscriberBadgesResponse
+import com.github.andreyasadchy.xtra.model.gql.playlist.VideoPlaylistTokenResponse
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,16 +39,17 @@ private const val UNDEFINED = "undefined"
 
 @Singleton
 class PlayerRepository @Inject constructor(
-        private val usher: UsherApi,
-        private val misc: MiscApi,
-        private val graphQL: GraphQLApi,
-        private val emotes: EmotesDao,
-        private val recentEmotes: RecentEmotesDao,
-        private val videoPositions: VideoPositionsDao,
-        private val ttvLolApi: TTVLolApi) {
+    private val usher: UsherApi,
+    private val misc: MiscApi,
+    private val graphQL: GraphQLApi,
+    private val emotes: EmotesDao,
+    private val recentEmotes: RecentEmotesDao,
+    private val videoPositions: VideoPositionsDao,
+    private val ttvLolApi: TTVLolApi
+) {
 
-    suspend fun loadStreamPlaylist(channelName: String, clientId: String, tokenList: String, playerType: String): Uri = withContext(Dispatchers.IO) {
-        Log.d(TAG, "Getting stream playlist for channel $channelName. Client id: $clientId. Player type: $playerType")
+    suspend fun loadStreamPlaylistUrl(channelName: String, playerType: String, useAdblock: Boolean): Pair<Uri, Boolean> = withContext(Dispatchers.IO) {
+        Log.d(TAG, "Getting stream playlist for channel $channelName. Player type: $playerType")
 
         //removes "commercial break in progress"
 //        val uniqueId = UUID.randomUUID().toString().replace("-", "").substring(0, 16)
@@ -55,107 +58,65 @@ class PlayerRepository @Inject constructor(
 //        val cookie = "unique_id=$uniqueId; unique_id_durable=$uniqueId; twitch.lohp.countryCode=BY; api_token=twilight.$apiToken; server_session_id=$serverSessionId"
 //        val accessToken = api.getStreamAccessToken(clientId, cookie, channelName, token, playerType)
 
-        val accessTokenJson = getAccessTokenJson(isLive = true, isVod = false, login = channelName, playerType = playerType, vodId = "")
-        val accessTokenHeaders = getAccessTokenHeaders()
-
-        suspend fun loadStream(token: String): Uri {
-            accessTokenHeaders["Authorization"] = token
+        if (useAdblock && ttvLolApi.ping().let { it.isSuccessful && it.body()!!.string() != "0" }) {
+            buildUrl(
+                "https://api.ttv.lol/playlist/$channelName.m3u8%3F", //manually insert "?" everywhere, some problem with encoding, too lazy for a proper solution
+                "allow_source", "true",
+                "allow_audio_only", "true",
+                "type", "any",
+                "p", Random.nextInt(999999).toString(),
+                "fast_bread", "true",
+                "player_backend", "mediaplayer",
+                "supported_codecs", "avc1",
+                "player_version", "1.4.0",
+                "warp", "true"
+            ) to true
+        } else {
+            val accessTokenJson = getAccessTokenJson(isLive = true, isVod = false, login = channelName, playerType = playerType, vodId = "")
+            val accessTokenHeaders = getAccessTokenHeaders()
+            accessTokenHeaders["Authorization"] = UNDEFINED
             val accessToken = graphQL.getStreamAccessToken(accessTokenHeaders, accessTokenJson)
-            val playlistQueryOptions = HashMap<String, String>()
-            playlistQueryOptions["allow_source"] = "true"
-            playlistQueryOptions["allow_audio_only"] = "true"
-            playlistQueryOptions["type"] = "any"
-            playlistQueryOptions["p"] = Random.nextInt(999999).toString()
-            playlistQueryOptions["fast_bread"] = "true" //low latency
-
-            playlistQueryOptions["token"] = accessToken.token
-            playlistQueryOptions["sig"] = accessToken.signature
-//            playlistQueryOptions["server_ads"] = "false"
-//            playlistQueryOptions["show_ads"] = "false"
-            //redundant call, will be sending the same request twice.
-            //better off to build the url manually and return it
-            //but isn't too much of a big deal
-            val playlist = usher.getStreamPlaylist(channelName, playlistQueryOptions)
-            return playlist.raw().request().url().toString().toUri()
+            buildUrl(
+                "https://usher.ttvnw.net/api/channel/hls/$channelName.m3u8?",
+                "allow_source", "true",
+                "allow_audio_only", "true",
+                "type", "any",
+                "p", Random.nextInt(999999).toString(),
+                "fast_bread", "true", //low latency
+                "sig", accessToken.signature,
+                "token", accessToken.token
+            ) to false
         }
-
-//        val shuffled = tokenList.split(",").shuffled()
-//        for (token in shuffled) {
-//            try {
-//                return@withContext loadStream(TwitchApiHelper.addTokenPrefix(token))
-//            } catch (e: HttpException) {
-//                if (e.code() != 401) throw e
-//                Log.e(TAG, "Token $token is expired")
-//            }
-//        }
-        loadStream(UNDEFINED)
     }
 
-    suspend fun adFreeStreamUrl(channelName: String) : Uri{
+    suspend fun loadVideoPlaylistUrl(videoId: String): Uri = withContext(Dispatchers.IO) {
+        val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
+        Log.d(TAG, "Getting video playlist url for video $id")
+        val accessToken = loadVideoPlaylistAccessToken(id)
+        buildUrl(
+            "https://usher.ttvnw.net/vod/$id.m3u8?",
+            "token", accessToken.token,
+            "sig", accessToken.signature,
+            "allow_source", "true",
+            "allow_audio_only", "true",
+            "type", "any",
+            "p", Random.nextInt(999999).toString()
+        )
+    }
 
+    suspend fun loadVideoPlaylist(videoId: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
+        val id = videoId.substring(1)
+        Log.d(TAG, "Getting video playlist for video $id")
+        val accessToken = loadVideoPlaylistAccessToken(id)
         val playlistQueryOptions = HashMap<String, String>()
-        //Not used by TTV.Lol, but might be needed in the future if twitch makes some changes. So I'm keeping it here in case
-//        val accessTokenJson = getAccessTokenJson(isLive = true, isVod = false, login = channelName, playerType = playerType, vodId = "")
-//        val accessTokenHeaders = getAccessTokenHeaders()
-//        accessTokenHeaders["Authorization"] = UNDEFINED
-//        val accessToken = graphQL.getStreamAccessToken(accessTokenHeaders, accessTokenJson)
-//        playlistQueryOptions["token"] = accessToken.token
-//        playlistQueryOptions["sig"] = accessToken.signature
+        playlistQueryOptions["token"] = accessToken.token
+        playlistQueryOptions["sig"] = accessToken.signature
         playlistQueryOptions["allow_source"] = "true"
         playlistQueryOptions["allow_audio_only"] = "true"
         playlistQueryOptions["type"] = "any"
         playlistQueryOptions["p"] = Random.nextInt(999999).toString()
-        playlistQueryOptions["fast_bread"] = "true" //low latency
-
-        playlistQueryOptions["player_backend"] = "mediaplayer"
-        playlistQueryOptions["supported_codecs"] = "avc1"
-        playlistQueryOptions["player_version"] = "1.4.0"
-        playlistQueryOptions["warp"] = "true"
-        val pingResponseBody = ttvLolApi.ping();
-        if(!pingResponseBody.isSuccessful){
-            return Uri.EMPTY
-        }
-        val pingResponseContent = pingResponseBody.body()?.string()
-        if(pingResponseContent!!.contentEquals("0")){
-            return Uri.EMPTY
-        }
-        val params = toParam(playlistQueryOptions)
-        return String.format("https://api.ttv.lol/playlist/%s.m3u8%s%s",channelName,"%3F",params).toUri();
+        usher.getVideoPlaylist(id, playlistQueryOptions)
     }
-
-    suspend fun loadVideoPlaylist(videoId: String, clientId: String, tokenList: String): Response<ResponseBody> = withContext(Dispatchers.IO) {
-        val id = videoId.substring(1) //substring 1 to remove v, should be removed when upgraded to new api
-        Log.d(TAG, "Getting video playlist for video $id. Client id: $clientId")
-
-//        val accessToken = api.getVideoAccessToken(clientId, id, token)
-        val accessTokenJson = getAccessTokenJson(isLive = false, isVod = true, login = "", playerType = "channel_home_live", vodId = id)
-        val accessTokenHeaders = getAccessTokenHeaders()
-
-        suspend fun loadVideo(token: String): Response<ResponseBody> {
-            accessTokenHeaders["Authorization"] = token
-            val accessToken = graphQL.getVideoAccessToken(accessTokenHeaders, accessTokenJson)
-            val playlistQueryOptions = HashMap<String, String>()
-            playlistQueryOptions["token"] = accessToken.token
-            playlistQueryOptions["sig"] = accessToken.signature
-            playlistQueryOptions["allow_source"] = "true"
-            playlistQueryOptions["allow_audio_only"] = "true"
-            playlistQueryOptions["type"] = "any"
-            playlistQueryOptions["p"] = Random.nextInt(999999).toString()
-            return usher.getVideoPlaylist(id, playlistQueryOptions)
-        }
-
-//        val shuffled = tokenList.split(",").shuffled()
-//        for (token in shuffled) {
-//            try {
-//                return@withContext loadVideo(TwitchApiHelper.addTokenPrefix(token))
-//            } catch (e: HttpException) {
-//                if (e.code() != 401) throw e
-//                Log.e(TAG, "Token $token is expired")
-//            }
-//        }
-        loadVideo(UNDEFINED)
-    }
-
 
     suspend fun loadSubscriberBadges(channelId: String): SubscriberBadgesResponse = withContext(Dispatchers.IO) {
         misc.getSubscriberBadges(channelId)
@@ -203,14 +164,6 @@ class PlayerRepository @Inject constructor(
         }
     }
 
-    private fun toParam(map : HashMap<String,String>) : String{
-        var str = ""
-        map.mapValues {
-            (k,v) -> str += String.format("%s=%s",k,v).plus("&")
-        }
-        return str.substring(0,str.length-1)
-    }
-
     private fun getAccessTokenJson(isLive: Boolean, isVod: Boolean, login: String, playerType: String, vodId: String): JsonArray {
         val jsonArray = JsonArray(1)
         val operation = JsonObject().apply {
@@ -251,5 +204,27 @@ class PlayerRepository @Inject constructor(
             put("Sec-Fetch-Site", "same-site")
             put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36")
         }
+    }
+
+    private suspend fun loadVideoPlaylistAccessToken(videoId: String): VideoPlaylistTokenResponse {
+        //        val accessToken = api.getVideoAccessToken(clientId, id, token)
+        val accessTokenJson = getAccessTokenJson(isLive = false, isVod = true, login = "", playerType = "channel_home_live", vodId = videoId)
+        val accessTokenHeaders = getAccessTokenHeaders()
+        accessTokenHeaders["Authorization"] = UNDEFINED
+        return graphQL.getVideoAccessToken(accessTokenHeaders, accessTokenJson)
+    }
+
+    private fun buildUrl(url: String, vararg queryParams: String): Uri {
+        val stringBuilder = StringBuilder(url)
+        stringBuilder.append(queryParams[0])
+            .append("=")
+            .append(queryParams[1])
+        for (i in 2 until queryParams.size step 2) {
+            stringBuilder.append("&")
+                .append(queryParams[i])
+                .append("=")
+                .append(queryParams[i + 1])
+        }
+        return stringBuilder.toString().toUri()
     }
 }

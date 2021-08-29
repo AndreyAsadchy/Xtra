@@ -17,6 +17,7 @@ import com.github.andreyasadchy.xtra.ui.player.AudioPlayerService
 import com.github.andreyasadchy.xtra.ui.player.HlsPlayerViewModel
 import com.github.andreyasadchy.xtra.ui.player.PlayerMode.*
 import com.github.andreyasadchy.xtra.util.RemoteConfigParams
+import com.github.andreyasadchy.xtra.util.shortToast
 import com.github.andreyasadchy.xtra.util.toast
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.firebase.ktx.Firebase
@@ -28,10 +29,10 @@ import javax.inject.Inject
 
 
 class StreamPlayerViewModel @Inject constructor(
-        context: Application,
-        private val playerRepository: PlayerRepository,
-        repository: TwitchService) : HlsPlayerViewModel(context, repository) {
-
+    context: Application,
+    private val playerRepository: PlayerRepository,
+    repository: TwitchService
+) : HlsPlayerViewModel(context, repository) {
 
     private val _stream = MutableLiveData<Stream>()
     val stream: LiveData<Stream>
@@ -42,7 +43,16 @@ class StreamPlayerViewModel @Inject constructor(
             return s.channel.id to s.channel.displayName
         }
 
-    fun startStream(stream: Stream) {
+    private var useAdBlock = false
+
+    private val hlsMediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory)
+        .setAllowChunklessPreparation(true)
+        .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
+        .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
+        .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
+
+    fun startStream(stream: Stream, useAdBlock: Boolean) {
+        this.useAdBlock = useAdBlock
         if (_stream.value == null) {
             _stream.value = stream
             loadStream(stream)
@@ -103,39 +113,26 @@ class StreamPlayerViewModel @Inject constructor(
     private fun loadStream(stream: Stream) {
         val remoteConfig = Firebase.remoteConfig
         remoteConfig.fetchAndActivate()
-                .addOnCompleteListener {
-                    viewModelScope.launch {
-                        try {
-                            val clientId = remoteConfig.getString(RemoteConfigParams.TWITCH_CLIENT_ID_KEY)
-                            val tokenList = remoteConfig.getString(RemoteConfigParams.TWITCH_TOKEN_LIST_KEY)
-                            val playerType = remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY)
-                            val uri : Uri
-                            if(useAdBlock()){
-                                uri = playerRepository.adFreeStreamUrl(stream.channel.name)
-
-                                if(uri.equals(Uri.EMPTY)){
-                                    val context = getApplication<Application>()
-                                    context.toast("TTV.LOL is offline. Disable Adblock to view streams in the meantime")
-                                    return@launch
-                                }
-
-                                httpDataSourceFactory.defaultRequestProperties.set("X-Donate-To","https://ttv.lol/donate")
-                            }else{
-                                uri = playerRepository.loadStreamPlaylist(stream.channel.name, clientId, tokenList, playerType)
+            .addOnCompleteListener {
+                viewModelScope.launch {
+                    try {
+                        val playerType = remoteConfig.getString(RemoteConfigParams.TWITCH_PLAYER_TYPE_KEY)
+                        val result = playerRepository.loadStreamPlaylistUrl(stream.channel.name, playerType, useAdBlock)
+                        if (useAdBlock) {
+                            if (result.second) {
+                                httpDataSourceFactory.defaultRequestProperties.set("X-Donate-To", "https://ttv.lol/donate")
+                            } else {
+                                val context = getApplication<Application>()
+                                context.shortToast(R.string.adblock_not_working)
                             }
-
-                            mediaSource = HlsMediaSource.Factory(dataSourceFactory)
-                                    .setAllowChunklessPreparation(true)
-                                    .setPlaylistParserFactory(DefaultHlsPlaylistParserFactory())
-                                    .setPlaylistTrackerFactory(DefaultHlsPlaylistTracker.FACTORY)
-                                    .setLoadErrorHandlingPolicy(DefaultLoadErrorHandlingPolicy(6))
-                                    .createMediaSource(uri)
-                            play()
-                        } catch (e: Exception) {
-                            val context = getApplication<Application>()
-                            context.toast(R.string.error_stream)
                         }
+                        mediaSource = hlsMediaSourceFactory.createMediaSource(result.first)
+                        play()
+                    } catch (e: Exception) {
+                        val context = getApplication<Application>()
+                        context.toast(R.string.error_stream)
                     }
-        }
+                }
+            }
     }
 }

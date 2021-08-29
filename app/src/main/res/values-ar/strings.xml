@@ -97,7 +97,6 @@
     <string name="search">بحث</string>
     <string name="chat_replay_unavailable">إعادة تشغيل الدردشة غير متاحة</string>
     <string name="video_subscribers_only">هذا الفيديو متاح فقط للمشتركين</string>
-    <string name="player_error">خطأ في المشغل.  إعادة المحاولة</string>
     <string name="picture_in_picture">التشغيل في الخلفية</string>
     <string name="continue_playback">مُتابعة التشغيل خارج التطبيق(في الخلفية)</string>
     <string name="source_vod_start">البداية: %s</string>
@@ -223,6 +222,8 @@
     <string name="disable">Disable</string>
     <string name="ignore_notch">Ignore camera notch</string>
     <string name="display_beyond_notch">Display video beyond the notch/hole-punch</string>
-    <string name="adblock_desc">يستخدم ابإي  ttv.lol لتحميل تدفقات مجانية استخدم بلوك دعايات ماعا</string>
-    <string name="adblock">استخدم Adblocker</string>
+    <string name="player_error">Player error. Retrying. Disable Adblock if streams are not loading</string>
+    <string name="adblock_not_working">Failed to load ad-free stream</string>
+    <string name="adblock_desc">Disable if streams are not loading</string>
+    <string name="adblock">Adblock</string>
 </resources>
