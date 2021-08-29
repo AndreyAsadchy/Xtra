@@ -126,69 +126,6 @@
     <string name="donate_prompt">كم تريد أن تتبرع؟</string>
     <string name="thank_you_so_much">شكراً جزيلاً!!! ❤❤❤</string>
     <string name="animated_emotes">(GIF)الرموز التعبيرية المتحركة</string>
-    <string name="changelog">
-        <b>January 24th, 1.5.6.8</b>
-\n- Fixed stream errors (for now), but you may see more commercials
-        \n\n<b>January 23rd, 1.5.6.7</b>
-\n- Just trying to keep the app alive
-        \n\n<b>January 14th, 1.5.6.6</b>
-\n- Updated API for streams and videos
-\n- Fixed chat sometimes not loading
-        \n\n<b>November 21st, 1.5.6.5</b>
-\n- Updated adblock
-        \n\n<b>November 17th, 1.5.6.4</b>
-\n- Fixed BTTV/FFZ emotes not working
-\n- Updated adblock
-        \n\n<b>November 5th, 1.5.6.2</b>
-\n- Updated adblock
-        \n\n<b>October 28th, 1.5.6.1</b>
-\n- Updated adblock
-        \n\n<b>October 11th, 1.5.6</b>
-\n- <b>Animated emotes no longer cause overheating and high battery drain, so you can safely enable them in the settings</b>
-\n- Some changes to logging in to Twitch. If you couldn\'t login before, try again now
-\n- Fixed streams sometimes not loading, e.g. when returning to app after a while
-\n- Improved readability of text on thumbnails
-\n- Bug fixes and other improvements
-        \n\n<b>September 30th, 1.5.5</b>
-\n- <b>Added a setting to enable/disable displaying video beyond the camera notch/hole-punch (Android 9+). Enabled by default</b>
-\n- Recent emotes now show only those BTTV/FFZ emotes which are enabled on the current channel
-        \n\n<b>September 27th, 1.5.4</b>
-\n- Improved adblock, removed \"Commercial break in progress\" screen
-\n- Improved GIF emotes performance
-\n- Camera notch no longer blocks video
-        \n\n<b>August 31st, 1.5.3</b>
-\n- Fixed wrong video player and thumbnails size which caused them to be stretched. You can still adjust the aspect ratio for landscape mode in the top right corner of video player\'s controls
-\n- Fixed clips not playing without changing quality
-\n- Adjusted video player\'s dragging area to avoid accidental drags when trying to swipe down status bar
-\n- More improvements behind the scenes
-        \n\n<b>May 31st, 1.5.2</b>
-\n- Fixed login not working
-\n- Fixed chat sometimes freezing
-\n- Bug fixes and improvements
-        \n\n<b>May 10th, 1.5.1</b>
-\n- Fixed an error when trying to follow a channel
-\n- Bug fixes and improvements
-        \n\n<b>April 26th, 1.5.0</b>
-\n- Fixed the problem with logging in on some newer devices. For older ones added a new workaround, click the \"Having trouble logging in\" button
-\n- Added ability to see the channels that you follow. Click the dropdown menu and select \"Channels\"
-\n- Added double tap to show/hide chat
-\n- Added viewer count to the stream
-\n- Added compact layout for followed streams which doesn\'t show previews. Can be enabled in the settings
-\n- Removed outdated global BTTV and FFZ emotes, now they will be updating automatically
-\n- Fixed sleep timer not working correctly in audio only mode
-\n- Other bug fixes and stability improvements
-        \n\n<b>January 16th, 1.4.5</b>
-\n- Fixed login error \"Error loading web browser\"
-\n- Fixed when emotes sometimes were cutting text or not showing at all
-\n- Improved rendering of some emotes
-\n- Increased player height in portrait for tablets
-\n- More improvements and bug fixes
-        \n\n<b>January 10th, 1.4.4</b>
-\n- <b>Added support for low-latency streams (significantly reduced stream delay)</b>
-\n- Fixed clips not working
-\n- Fixed audio only setting using too much data
-\n- Stability improvements for picture-in-picture and more
-    </string>
     <string name="chat_settings">إعدادات الدردشة</string>
     <string name="sleep_timer">مؤقت النوم</string>
     <string name="start">بدأ</string>

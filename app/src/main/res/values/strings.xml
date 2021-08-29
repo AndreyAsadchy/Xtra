@@ -131,8 +131,13 @@
     <string name="thank_you_so_much">Thank you so much!!! ❤❤❤</string>
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
-    <string name="changelog">
-        <b>January 24th, 1.5.6.8</b>
+    <string name="changelog" translatable="false">
+        <b>August 29th, 1.6.0</b>
+\n- Added TTV.LOL adblock. Can be disabled in the settings
+\n- Fixed clips not working
+\n- Made the refresh stream button smaller and moved it to the bottom left
+\n- All credits go to /u/Leaguehax for this contribution
+        \n\n<b>January 24th, 1.5.6.8</b>
 \n- Fixed stream errors (for now), but you may see more commercials
         \n\n<b>January 23rd, 1.5.6.7</b>
 \n- Just trying to keep the app alive
