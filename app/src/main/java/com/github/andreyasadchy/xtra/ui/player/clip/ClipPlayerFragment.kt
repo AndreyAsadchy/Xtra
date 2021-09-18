@@ -21,7 +21,6 @@ import com.github.andreyasadchy.xtra.util.FragmentUtils
 import com.github.andreyasadchy.xtra.util.TwitchApiHelper
 import com.github.andreyasadchy.xtra.util.enable
 import com.github.andreyasadchy.xtra.util.gone
-import com.google.android.exoplayer2.PlaybackParameters
 import kotlinx.android.synthetic.main.fragment_player_clip.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

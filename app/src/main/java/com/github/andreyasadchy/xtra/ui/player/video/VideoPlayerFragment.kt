@@ -20,7 +20,6 @@ import com.github.andreyasadchy.xtra.util.DownloadUtils
 import com.github.andreyasadchy.xtra.util.FragmentUtils
 import com.github.andreyasadchy.xtra.util.disable
 import com.github.andreyasadchy.xtra.util.enable
-import com.google.android.exoplayer2.PlaybackParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
