@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -15,15 +16,11 @@ import com.github.andreyasadchy.xtra.XtraApp
 import com.github.andreyasadchy.xtra.ui.common.BaseAndroidViewModel
 import com.github.andreyasadchy.xtra.ui.common.OnQualityChangeListener
 import com.github.andreyasadchy.xtra.ui.player.stream.StreamPlayerViewModel
+import com.github.andreyasadchy.xtra.util.C
 import com.github.andreyasadchy.xtra.util.isNetworkAvailable
 import com.github.andreyasadchy.xtra.util.shortToast
 import com.github.andreyasadchy.xtra.util.toast
-import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -35,6 +32,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
+
+private const val SPEED_TAG = "PlayerViewModel_Speed"
 
 abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(context), Player.EventListener, OnQualityChangeListener {
 
@@ -209,5 +208,19 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     override fun onCleared() {
         player.release()
         timer?.cancel()
+    }
+
+    private val userPrefs = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+
+    init {
+        if (userPrefs.contains(SPEED_TAG)) {
+            @Suppress("LeakingThis")
+            setSpeed(userPrefs.getFloat(SPEED_TAG, 1f), false)
+        }
+    }
+
+    open fun setSpeed(speed: Float, save: Boolean = true) {
+        player.playbackParameters = PlaybackParameters(speed)
+        if (save) userPrefs.edit { putFloat(SPEED_TAG, speed) }
     }
 }

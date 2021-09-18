@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 
 
 @Suppress("PLUGIN_WARNING")
-abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFragment.OnSortOptionChanged, Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment, SleepTimerDialog.OnSleepTimerStartedListener, AlertDialogFragment.OnDialogResultListener {
+abstract class BasePlayerFragment : BaseNetworkFragment(), Injectable, LifecycleListener, SlidingLayout.Listener, FollowFragment, SleepTimerDialog.OnSleepTimerStartedListener, AlertDialogFragment.OnDialogResultListener {
 
     private lateinit var slidingLayout: SlidingLayout
     private lateinit var playerView: CustomPlayerView
