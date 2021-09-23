@@ -1,20 +1,11 @@
 package com.github.andreyasadchy.xtra.ui.chat
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import com.github.andreyasadchy.xtra.model.LoggedIn
 import com.github.andreyasadchy.xtra.model.User
-import com.github.andreyasadchy.xtra.model.chat.BttvEmote
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.Chatter
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.FfzEmote
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
-import com.github.andreyasadchy.xtra.model.chat.SubscriberBadgesResponse
+import com.github.andreyasadchy.xtra.model.chat.*
 import com.github.andreyasadchy.xtra.model.kraken.Channel
 import com.github.andreyasadchy.xtra.repository.PlayerRepository
 import com.github.andreyasadchy.xtra.repository.TwitchService
@@ -28,10 +19,24 @@ import com.github.andreyasadchy.xtra.util.chat.LiveChatThread
 import com.github.andreyasadchy.xtra.util.chat.OnChatMessageReceivedListener
 import com.github.andreyasadchy.xtra.util.nullIfEmpty
 import kotlinx.coroutines.launch
-import java.util.Collections
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.Collection
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.associateBy
+import kotlin.collections.contains
+import kotlin.collections.filter
+import kotlin.collections.find
+import kotlin.collections.forEach
+import kotlin.collections.hashSetOf
+import kotlin.collections.isNotEmpty
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
 import kotlin.collections.set
+import kotlin.collections.sortedWith
 import com.github.andreyasadchy.xtra.model.kraken.user.Emote as TwitchEmote
 
 class ChatViewModel @Inject constructor(
@@ -118,6 +123,21 @@ class ChatViewModel @Inject constructor(
             }
 
             val list = mutableListOf<Emote>()
+            globalStvEmotes.also {
+                if (it != null) {
+                    list.addAll(it)
+                } else {
+                    try {
+                        val emotes = playerRepository.loadGlobalStvEmotes().body()?.emotes
+                        if (emotes != null) {
+                            globalStvEmotes = emotes
+                            list.addAll(emotes)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to load global 7tv emotes", e)
+                    }
+                }
+            }
             globalBttvEmotes.also {
                 if (it != null) {
                     list.addAll(it)
@@ -159,6 +179,12 @@ class ChatViewModel @Inject constructor(
                 channelFfz.body()?.emotes?.let(list::addAll)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to load FFZ emotes for channel $channelName", e)
+            }
+            try {
+                val channelStv = playerRepository.loadStvEmotes(channelName)
+                channelStv.body()?.emotes?.let(list::addAll)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load 7tv emotes for channel $channelName", e)
             }
             val sorted = list.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
             (chat as? LiveChatController)?.addEmotes(sorted)
@@ -269,6 +295,7 @@ class ChatViewModel @Inject constructor(
     companion object {
         private const val TAG = "ChatViewModel"
 
+        private var globalStvEmotes: List<StvEmote>? = null
         private var globalBttvEmotes: List<BttvEmote>? = null
         private var globalFfzEmotes: List<FfzEmote>? = null
     }

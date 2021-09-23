@@ -5,4 +5,4 @@ data class Image(
         var start: Int,
         var end: Int,
         val isEmote: Boolean,
-        val isPng: Boolean = true)
+        val isPng: String = "image/png")

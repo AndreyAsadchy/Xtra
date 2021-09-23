@@ -10,8 +10,8 @@ class BttvEmote(
         override val name: String,
         val imageType: String) : Emote() {
 
-    override val isPng: Boolean
-        get() = imageType.endsWith("png", true)
+    override val isPng: String
+        get() = "image/$imageType"
 
     override val url: String
         get() = "$BTTV_URL$id/2x"

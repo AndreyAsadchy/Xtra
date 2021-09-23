@@ -20,22 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.andreyasadchy.xtra.R
-import com.github.andreyasadchy.xtra.model.chat.BttvEmote
-import com.github.andreyasadchy.xtra.model.chat.ChatMessage
-import com.github.andreyasadchy.xtra.model.chat.Chatter
-import com.github.andreyasadchy.xtra.model.chat.Emote
-import com.github.andreyasadchy.xtra.model.chat.FfzEmote
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
+import com.github.andreyasadchy.xtra.model.chat.*
 import com.github.andreyasadchy.xtra.ui.common.ChatAdapter
-import com.github.andreyasadchy.xtra.util.C
-import com.github.andreyasadchy.xtra.util.convertDpToPixels
-import com.github.andreyasadchy.xtra.util.gone
-import com.github.andreyasadchy.xtra.util.hideKeyboard
-import com.github.andreyasadchy.xtra.util.loadImage
-import com.github.andreyasadchy.xtra.util.prefs
-import com.github.andreyasadchy.xtra.util.showKeyboard
-import com.github.andreyasadchy.xtra.util.toggleVisibility
-import com.github.andreyasadchy.xtra.util.visible
+import com.github.andreyasadchy.xtra.util.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.auto_complete_emotes_list_item.view.*
 import kotlinx.android.synthetic.main.view_chat.view.*
@@ -127,7 +114,7 @@ class ChatView : ConstraintLayout {
 
     fun addEmotes(list: List<Emote>) {
         when (list.firstOrNull()) {
-            is BttvEmote, is FfzEmote -> {
+            is BttvEmote, is FfzEmote, is StvEmote -> {
                 adapter.addEmotes(list)
                 if (messagingEnabled) {
                     autoCompleteList!!.addAll(list)

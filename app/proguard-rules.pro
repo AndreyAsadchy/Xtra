@@ -22,6 +22,10 @@
 -dontwarn com.github.andreyasadchy.xtra.ui.**
 -keep class com.iheartradio.m3u8.** { *; }
 
+-keep public class com.bumptech.glide.integration.webp.WebpImage { *; }
+-keep public class com.bumptech.glide.integration.webp.WebpFrame { *; }
+-keep public class com.bumptech.glide.integration.webp.WebpBitmapFactory { *; }
+
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule {
  <init>(...);

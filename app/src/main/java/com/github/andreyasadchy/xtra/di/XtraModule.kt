@@ -5,10 +5,7 @@ import android.os.Build
 import android.util.Log
 import com.github.andreyasadchy.xtra.BuildConfig
 import com.github.andreyasadchy.xtra.api.*
-import com.github.andreyasadchy.xtra.model.chat.FfzEmotesResponse
-import com.github.andreyasadchy.xtra.model.chat.FfzRoomDeserializer
-import com.github.andreyasadchy.xtra.model.chat.SubscriberBadgeDeserializer
-import com.github.andreyasadchy.xtra.model.chat.SubscriberBadgesResponse
+import com.github.andreyasadchy.xtra.model.chat.*
 import com.github.andreyasadchy.xtra.model.gql.clip.ClipDataDeserializer
 import com.github.andreyasadchy.xtra.model.gql.clip.ClipDataResponse
 import com.github.andreyasadchy.xtra.model.gql.playlist.StreamPlaylistTokenDeserializer
@@ -152,6 +149,7 @@ class XtraModule {
         return GsonConverterFactory.create(GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .registerTypeAdapter(SubscriberBadgesResponse::class.java, SubscriberBadgeDeserializer())
                 .registerTypeAdapter(UserEmotesResponse::class.java, UserEmotesDeserializer())
+                .registerTypeAdapter(StvEmotesResponse::class.java, StvRoomDeserializer())
                 .registerTypeAdapter(FfzEmotesResponse::class.java, FfzRoomDeserializer())
                 .registerTypeAdapter(ClipDataResponse::class.java, ClipDataDeserializer())
                 .registerTypeAdapter(StreamPlaylistTokenResponse::class.java, StreamPlaylistTokenDeserializer())

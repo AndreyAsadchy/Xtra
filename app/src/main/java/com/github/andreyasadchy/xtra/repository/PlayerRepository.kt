@@ -13,10 +13,7 @@ import com.github.andreyasadchy.xtra.db.EmotesDao
 import com.github.andreyasadchy.xtra.db.RecentEmotesDao
 import com.github.andreyasadchy.xtra.db.VideoPositionsDao
 import com.github.andreyasadchy.xtra.model.VideoPosition
-import com.github.andreyasadchy.xtra.model.chat.BttvEmotesResponse
-import com.github.andreyasadchy.xtra.model.chat.FfzEmotesResponse
-import com.github.andreyasadchy.xtra.model.chat.RecentEmote
-import com.github.andreyasadchy.xtra.model.chat.SubscriberBadgesResponse
+import com.github.andreyasadchy.xtra.model.chat.*
 import com.github.andreyasadchy.xtra.model.gql.playlist.VideoPlaylistTokenResponse
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -26,7 +23,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -122,12 +118,20 @@ class PlayerRepository @Inject constructor(
         misc.getSubscriberBadges(channelId)
     }
 
+    suspend fun loadGlobalStvEmotes(): Response<StvEmotesResponse> = withContext(Dispatchers.IO) {
+        misc.getGlobalStvEmotes()
+    }
+
     suspend fun loadGlobalBttvEmotes(): Response<BttvEmotesResponse> = withContext(Dispatchers.IO) {
         misc.getGlobalBttvEmotes()
     }
 
     suspend fun loadGlobalFfzEmotes(): Response<FfzEmotesResponse> = withContext(Dispatchers.IO) {
         misc.getGlobalFfzEmotes()
+    }
+
+    suspend fun loadStvEmotes(channel: String): Response<StvEmotesResponse> = withContext(Dispatchers.IO) {
+        misc.getStvEmotes(channel)
     }
 
     suspend fun loadBttvEmotes(channel: String): Response<BttvEmotesResponse> = withContext(Dispatchers.IO) {
