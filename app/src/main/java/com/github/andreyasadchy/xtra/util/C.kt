@@ -24,4 +24,6 @@ object C {
     const val IGNORE_NOTCH = "ignoreNotch"
     const val LAST_UPDATE_VERSION = "lastUpdateVersion"
     const val AD_BLOCKER = "adblock"
+    const val CHAT_EMOTEQUALITY = "chat_emotequality"
+    const val CHAT_BADGEQUALITY = "chat_badgequality"
 }

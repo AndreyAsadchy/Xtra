@@ -1,5 +1,6 @@
 package com.github.andreyasadchy.xtra.model.chat
 
+import com.github.andreyasadchy.xtra.ui.view.chat.emoteQuality
 import com.github.andreyasadchy.xtra.util.C
 import com.google.gson.annotations.SerializedName
 
@@ -10,5 +11,5 @@ class TwitchEmote(
         var end: Int) : Emote() {
 
     override val url: String
-        get() = "${C.TWITCH_EMOTES_URL}$name/2.0"
+        get() = "${C.TWITCH_EMOTES_URL}$name/$emoteQuality.0"
 }

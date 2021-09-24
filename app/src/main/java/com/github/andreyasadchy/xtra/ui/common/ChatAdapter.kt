@@ -39,6 +39,7 @@ class ChatAdapter(
         private val fragment: Fragment,
         private val emoteSize: Int,
         private val badgeSize: Int,
+        private val badgeQuality: Int,
         private val animateGifs: Boolean) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     var messages: MutableList<ChatMessage>? = null
@@ -71,7 +72,6 @@ class ChatAdapter(
         var badgesCount = 0
         chatMessage.badges?.forEach { (id, version) ->
             val url: String? = when (id) {
-                "admin" -> BADGES_URL + "admin.png"
                 "bits" -> {
                     val count = version.toInt()
                     val color = when {
@@ -83,18 +83,17 @@ class ChatAdapter(
                     }
                     "https://static-cdn.jtvnw.net/bits/dark/static/$color/2" //TODO change theme based on app theme
                 }
-                "broadcaster" -> BADGES_URL + "broadcaster.png"
-                "global_mod" -> BADGES_URL + "globalmod.png"
-                "moderator" -> BADGES_URL + "mod.png"
-                "subscriber" -> chatMessage.subscriberBadge?.imageUrl2x
-                "staff" -> BADGES_URL + "staff.png"
-                "turbo" -> BADGES_URL + "turbo.png"
-                "sub-gifter" -> "https://static-cdn.jtvnw.net/badges/v1/4592e9ea-b4ca-4948-93b8-37ac198c0433/2"
-                "premium" -> "https://static-cdn.jtvnw.net/badges/v1/a1dd5073-19c3-4911-8cb4-c464a7bc1510/2"
-                "partner" -> "https://static-cdn.jtvnw.net/badges/v1/d12a2e27-16f6-41d0-ab77-b780518f00a3/2"
-                "clip-champ" -> "https://static-cdn.jtvnw.net/badges/v1/f38976e0-ffc9-11e7-86d6-7f98b26a9d79/2"
-                "vip" -> "https://static-cdn.jtvnw.net/badges/v1/b817aba4-fad8-49e2-b88a-7cc744dfa6ec/2"
-                "glhf-pledge" -> "https://static-cdn.jtvnw.net/badges/v1/3158e758-3cb4-43c5-94b3-7639810451c5/2"
+                "broadcaster" -> BADGES_URL + "5527c58c-fb7d-422d-b71b-f309dcb85cc1/" + badgeQuality
+                "moderator" -> BADGES_URL + "3267646d-33f0-4b17-b3df-f923a41db1d0/" + badgeQuality
+                "vip" -> BADGES_URL + "b817aba4-fad8-49e2-b88a-7cc744dfa6ec/" + badgeQuality
+                "subscriber" -> when (badgeQuality) {3 -> (chatMessage.subscriberBadge?.imageUrl4x) 2 -> (chatMessage.subscriberBadge?.imageUrl2x) else -> (chatMessage.subscriberBadge?.imageUrl1x)}
+                "sub-gifter" -> BADGES_URL + "f1d8486f-eb2e-4553-b44f-4d614617afc1/" + badgeQuality
+                "staff" -> BADGES_URL + "d97c37bd-a6f5-4c38-8f57-4e4bef88af34/" + badgeQuality
+                "admin" -> BADGES_URL + "9ef7e029-4cdf-4d4d-a0d5-e2b3fb2583fe/" + badgeQuality
+                "global_mod" -> BADGES_URL + "9384c43e-4ce7-4e94-b2a1-b93656896eba/" + badgeQuality
+                "turbo" -> BADGES_URL + "bd444ec6-8f34-4bf9-91f4-af1e3428d80f/" + badgeQuality
+                "premium" -> BADGES_URL + "bbbe0db0-a598-423e-86d0-f9fb98ca1933/" + badgeQuality
+                "partner" -> BADGES_URL + "d12a2e27-16f6-41d0-ab77-b780518f00a3/" + badgeQuality
                 else -> null
             }
             url?.let {
@@ -357,6 +356,6 @@ class ChatAdapter(
     }
 
     private companion object {
-        const val BADGES_URL = "https://static-cdn.jtvnw.net/chat-badges/"
+        const val BADGES_URL = "https://static-cdn.jtvnw.net/badges/v1/"
     }
 }

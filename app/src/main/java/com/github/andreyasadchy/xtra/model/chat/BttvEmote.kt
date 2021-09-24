@@ -1,5 +1,6 @@
 package com.github.andreyasadchy.xtra.model.chat
 
+import com.github.andreyasadchy.xtra.ui.view.chat.emoteQuality
 import com.google.gson.annotations.SerializedName
 
 private const val BTTV_URL = "https://cdn.betterttv.net/emote/"
@@ -14,5 +15,5 @@ class BttvEmote(
         get() = imageType.endsWith("png", true)
 
     override val url: String
-        get() = "$BTTV_URL$id/2x"
+        get() = "$BTTV_URL$id/${emoteQuality}x"
 }

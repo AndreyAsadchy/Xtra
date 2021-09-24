@@ -44,6 +44,7 @@ import com.github.andreyasadchy.xtra.model.kraken.user.Emote as TwitchEmote
 
 const val MAX_ADAPTER_COUNT = 125
 const val MAX_LIST_COUNT = MAX_ADAPTER_COUNT + 1
+var emoteQuality = "3"
 
 class ChatView : ConstraintLayout {
 
@@ -84,7 +85,9 @@ class ChatView : ConstraintLayout {
 
     fun init(fragment: Fragment) {
         this.fragment = fragment
-        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getBoolean(C.ANIMATED_EMOTES, true))
+        emoteQuality = context.prefs().getInt(C.CHAT_EMOTEQUALITY, 3).toString()
+        adapter = ChatAdapter(fragment, context.convertDpToPixels(29.5f), context.convertDpToPixels(18.5f), context.prefs().getInt(C.CHAT_BADGEQUALITY, 3),
+            context.prefs().getBoolean(C.ANIMATED_EMOTES, true))
         recyclerView.let {
             it.adapter = adapter
             it.itemAnimator = null
