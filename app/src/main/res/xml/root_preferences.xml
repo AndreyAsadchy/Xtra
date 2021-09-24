@@ -104,6 +104,12 @@
         app:iconSpaceReserved="false"/>
 
     <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="chat_zerowidth"
+        android:title="zero width emotes"
+        app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="compactStreams"
         android:title="@string/compact_streams_title"

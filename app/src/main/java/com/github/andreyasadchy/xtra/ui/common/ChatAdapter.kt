@@ -39,7 +39,8 @@ class ChatAdapter(
         private val fragment: Fragment,
         private val emoteSize: Int,
         private val badgeSize: Int,
-        private val animateGifs: Boolean) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+        private val animateGifs: Boolean,
+        private val zeroWidth: Boolean) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     var messages: MutableList<ChatMessage>? = null
         set(value) {
@@ -190,7 +191,7 @@ class ChatAdapter(
                     }
                     builder.replace(builderIndex, endIndex, ".")
                     builder.setSpan(ForegroundColorSpan(Color.TRANSPARENT), builderIndex, builderIndex + 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    images.add(Image(emote.url, builderIndex, builderIndex + 1, true, emote.isPng))
+                    images.add(Image(emote.url, builderIndex, builderIndex + 1, true, emote.isPng, emote.zerowidth))
                     emotesFound++
                     2
                 }
@@ -214,7 +215,7 @@ class ChatAdapter(
     override fun getItemCount(): Int = messages?.size ?: 0
 
     private fun loadImages(holder: ViewHolder, images: List<Image>, originalMessage: CharSequence, builder: SpannableStringBuilder) {
-        images.forEach { (url, start, end, isEmote, isPng) ->
+        images.forEach { (url, start, end, isEmote, isPng, zerowidth) ->
             if (isPng || !animateGifs) {
                 GlideApp.with(fragment)
                         .load(url)
@@ -231,7 +232,8 @@ class ChatAdapter(
                                     width = badgeSize
                                     height = badgeSize
                                 }
-                                resource.setBounds(0, 0, width, height)
+                                if (zerowidth && zeroWidth) resource.setBounds(-90, 0, width - 90, height)
+                                else resource.setBounds(0, 0, width, height)
                                 try {
                                     builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
                                 } catch (e: IndexOutOfBoundsException) {
@@ -252,7 +254,8 @@ class ChatAdapter(
                             override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
                                 resource.apply {
                                     val size = calculateEmoteSize(this)
-                                    setBounds(0, 0, size.first, size.second)
+                                    if (zerowidth && zeroWidth) setBounds(-90, 0, size.first - 90, size.second)
+                                    else setBounds(0, 0, size.first, size.second)
                                     setLoopCount(GifDrawable.LOOP_FOREVER)
                                     callback = object : Drawable.Callback {
                                         override fun unscheduleDrawable(who: Drawable, what: Runnable) {

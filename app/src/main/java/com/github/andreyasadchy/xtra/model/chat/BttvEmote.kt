@@ -15,4 +15,7 @@ class BttvEmote(
 
     override val url: String
         get() = "$BTTV_URL$id/2x"
+
+    override val zerowidth: Boolean
+        get() = name == "SoSnowy"||name == "IceCold"||name == "SantaHat"||name == "TopHat"||name == "ReinDeer"||name == "CandyCane"||name == "cvMask"||name == "cvHazmat"
 }
