@@ -24,7 +24,7 @@ class FollowedVideosFragment : BaseVideosFragment<FollowedVideosViewModel>(), Ra
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(requestCode: Int, index: Int, text: CharSequence, tag: Int?) {
         adapter.submitList(null)
         viewModel.sort(if (tag == R.string.upload_date) Sort.TIME else Sort.VIEWS, index, text)
     }

@@ -30,7 +30,6 @@ abstract class HlsPlayerViewModel(
         context: Application,
         val repository: TwitchService) : PlayerViewModel(context), FollowViewModel {
 
-    private val userPrefs = context.getSharedPreferences(C.USER_PREFS, MODE_PRIVATE)
     protected val helper = PlayerHelper()
     val loaded: LiveData<Boolean>
         get() = helper.loaded

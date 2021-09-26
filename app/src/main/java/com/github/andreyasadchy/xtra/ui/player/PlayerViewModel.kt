@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.edit
@@ -76,6 +77,15 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     private var timerEndTime = 0L
     val timerTimeLeft
         get() = timerEndTime - System.currentTimeMillis()
+
+    protected val userPrefs: SharedPreferences = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
+
+    init {
+        val speed = userPrefs.getFloat(SPEED_TAG, 1f)
+        if (speed != 1f) {
+            setSpeed(speed, false)
+        }
+    }
 
     fun setTimer(duration: Long) {
         timer?.let {
@@ -208,15 +218,6 @@ abstract class PlayerViewModel(context: Application) : BaseAndroidViewModel(cont
     override fun onCleared() {
         player.release()
         timer?.cancel()
-    }
-
-    private val userPrefs = context.getSharedPreferences(C.USER_PREFS, Context.MODE_PRIVATE)
-
-    init {
-        if (userPrefs.contains(SPEED_TAG)) {
-            @Suppress("LeakingThis")
-            setSpeed(userPrefs.getFloat(SPEED_TAG, 1f), false)
-        }
     }
 
     open fun setSpeed(speed: Float, save: Boolean = true) {

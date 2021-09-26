@@ -91,7 +91,7 @@ class StreamPlayerFragment : BasePlayerFragment(), RadioButtonDialogFragment.OnS
 //        draggableView?.maximize()
 //    }
 
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(requestCode: Int, index: Int, text: CharSequence, tag: Int?) {
         viewModel.changeQuality(index)
 //            if (index >= viewModel.helper.urls.value!!.lastIndex) {
 //                TODO hide player

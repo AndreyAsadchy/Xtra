@@ -1,17 +1,16 @@
 package com.github.andreyasadchy.xtra.ui.player
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import com.github.andreyasadchy.xtra.R
 import com.github.andreyasadchy.xtra.ui.common.ExpandingBottomSheetDialogFragment
 import com.github.andreyasadchy.xtra.ui.common.RadioButtonDialogFragment
 import com.github.andreyasadchy.xtra.util.FragmentUtils
+import kotlinx.android.synthetic.main.player_settings.*
 
 class PlayerSettingsDialog : ExpandingBottomSheetDialogFragment(), RadioButtonDialogFragment.OnSortOptionChanged {
 
@@ -22,57 +21,73 @@ class PlayerSettingsDialog : ExpandingBottomSheetDialogFragment(), RadioButtonDi
 
     companion object {
 
-        private val SPEEDS = arrayOf(0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
+        private val SPEEDS = listOf(0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
         private val SPEED_LABELS = listOf(R.string.speed0_25, R.string.speed0_5, R.string.speed0_75, R.string.speed1, R.string.speed1_25, R.string.speed1_5, R.string.speed1_75, R.string.speed2)
         private const val QUALITIES = "qualities"
-        private const val QUALITY = "quality"
+        private const val QUALITY_INDEX = "quality"
         private const val SPEED = "speed"
 
-        fun newInstance(qualities: Collection<CharSequence>, quality: Int, speed: Float) : PlayerSettingsDialog {
+        private const val REQUEST_CODE_QUALITY = 0
+        private const val REQUEST_CODE_SPEED = 1
+
+        fun newInstance(qualities: Collection<CharSequence>, qualityIndex: Int, speed: Float): PlayerSettingsDialog {
             return PlayerSettingsDialog().apply {
-                arguments = bundleOf(QUALITIES to ArrayList(qualities), QUALITY to quality, SPEED to speed)
+                arguments = bundleOf(QUALITIES to ArrayList(qualities), QUALITY_INDEX to qualityIndex, SPEED to speed)
             }
         }
     }
 
     private lateinit var listener: PlayerSettingsListener
 
+    private lateinit var qualities: List<CharSequence>
+    private var qualityIndex = 0
+    private var speedIndex = 0
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = parentFragment as PlayerSettingsListener
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.player_settings, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val arguments = requireArguments()
-        val qualities = arguments.getCharSequenceArrayList(QUALITIES)!!
-        val quality = arguments.getInt(QUALITY)
-        val speed = arguments.getFloat(SPEED)
+        qualities = arguments.getCharSequenceArrayList(QUALITIES)!!
+        setSelectedQuality(arguments.getInt(QUALITY_INDEX))
+        setSelectedSpeed(SPEEDS.indexOf(arguments.getFloat(SPEED)))
 
-        return inflater.inflate(R.layout.player_settings, container, false).apply {
-            findViewById<TextView>(R.id.quality).text = qualities[quality]
-            findViewById<TextView>(R.id.speed).text = speed.toString() + "x"
+        selectQuality.setOnClickListener {
+            FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, qualities, qualityIndex, REQUEST_CODE_QUALITY)
+        }
+        selectSpeed.setOnClickListener {
+            FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, SPEED_LABELS, speedIndex, REQUEST_CODE_SPEED)
+        }
+    }
 
-            findViewById<View>(R.id.selectQuality).setOnClickListener {
-                FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, qualities, quality)
+    override fun onChange(requestCode: Int, index: Int, text: CharSequence, tag: Int?) {
+        when (requestCode) {
+            REQUEST_CODE_QUALITY -> {
+                listener.onChangeQuality(index)
+                setSelectedQuality(index)
             }
-
-            findViewById<View>(R.id.selectSpeed).setOnClickListener {
-                FragmentUtils.showRadioButtonDialogFragment(context, childFragmentManager, SPEED_LABELS, SPEEDS.indexOfFirst { it == speed })
+            REQUEST_CODE_SPEED -> {
+                listener.onChangeSpeed(SPEEDS[index])
+                setSelectedSpeed(index)
             }
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
-        val view = requireView()
-        if (tag == null) {
-            listener.onChangeQuality(index)
-            view.findViewById<TextView>(R.id.quality).text = requireArguments().getCharSequenceArrayList(QUALITIES)!![index]
-        } else {
-            val speed = SPEEDS[index]
-            listener.onChangeSpeed(speed)
-            view.findViewById<TextView>(R.id.speed).text = speed.toString() + "x"
-        }
+    private fun setSelectedQuality(index: Int) {
+        quality.text = qualities[index]
+        qualityIndex = index
+    }
+
+    private fun setSelectedSpeed(index: Int) {
+        speedIndex = index
+        speed.text = getString(SPEED_LABELS[index])
     }
 }

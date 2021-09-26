@@ -22,7 +22,7 @@ class TopVideosFragment : BaseVideosFragment<TopVideosViewModel>(), RadioButtonD
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(requestCode: Int, index: Int, text: CharSequence, tag: Int?) {
         val period = when(tag) {
             R.string.today -> Period.DAY
             R.string.this_week -> Period.WEEK

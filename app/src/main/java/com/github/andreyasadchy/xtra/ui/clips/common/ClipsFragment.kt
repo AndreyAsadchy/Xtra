@@ -41,7 +41,7 @@ class ClipsFragment : BaseClipsFragment<ClipsViewModel>() {
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(requestCode: Int, index: Int, text: CharSequence, tag: Int?) {
         var period: Period? = null
         var trending = false
         when (tag) {

@@ -33,7 +33,7 @@ class FollowedClipsFragment : BaseClipsFragment<FollowedClipsViewModel>() {
         sortBar.setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(requireContext(), childFragmentManager, viewModel.sortOptions, viewModel.selectedIndex) }
     }
 
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChange(requestCode: Int, index: Int, text: CharSequence, tag: Int?) {
         adapter.submitList(null)
         viewModel.setTrending(tag == R.string.trending, index, text)
     }

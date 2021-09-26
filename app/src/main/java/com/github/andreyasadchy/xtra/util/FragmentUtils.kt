@@ -12,38 +12,40 @@ object FragmentUtils {
     /**
      * Use this when result should be a string resource id
      */
-    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<Int>, checkedIndex: Int) {
+    fun showRadioButtonDialogFragment(context: Context, fragmentManager: FragmentManager, labels: List<Int>, checkedIndex: Int, requestCode: Int = 0) {
         RadioButtonDialogFragment.newInstance(
-                labels.map(context::getString),
-                labels.toIntArray(),
-                checkedIndex
+            requestCode,
+            labels.map(context::getString),
+            labels.toIntArray(),
+            checkedIndex
         ).show(fragmentManager, null)
     }
 
     /**
      * Use this when result should be an index
      */
-    fun showRadioButtonDialogFragment(fragmentManager: FragmentManager, labels: Collection<CharSequence>, checkedIndex: Int) {
+    fun showRadioButtonDialogFragment(fragmentManager: FragmentManager, labels: Collection<CharSequence>, checkedIndex: Int, requestCode: Int = 0) {
         RadioButtonDialogFragment.newInstance(
-                labels,
-                null,
-                checkedIndex
+            requestCode,
+            labels,
+            null,
+            checkedIndex
         ).show(fragmentManager, null)
     }
 
     fun showUnfollowDialog(context: Context, channelName: String, positiveCallback: () -> Unit) {
         AlertDialog.Builder(context)
-                .setMessage(context.getString(R.string.unfollow, channelName))
-                .setPositiveButton(R.string.yes) { _, _ -> positiveCallback.invoke() }
-                .setNegativeButton(R.string.no) { _, _ -> }
-                .show()
+            .setMessage(context.getString(R.string.unfollow, channelName))
+            .setPositiveButton(R.string.yes) { _, _ -> positiveCallback.invoke() }
+            .setNegativeButton(R.string.no) { _, _ -> }
+            .show()
     }
 
     fun showPlayerSettingsDialog(fragmentManager: FragmentManager, qualities: Collection<CharSequence>, quality: Int, speed: Float) {
         PlayerSettingsDialog.newInstance(
-                qualities,
-                quality,
-                speed
+            qualities,
+            quality,
+            speed
         ).show(fragmentManager, null)
     }
 }

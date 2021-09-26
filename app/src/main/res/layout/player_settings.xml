@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/select_quality"
+            android:text="@string/quality"
             android:textStyle="bold"
             />
 
@@ -38,7 +38,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/select_speed"
+            android:text="@string/playback_speed"
             android:textStyle="bold"
             />
 

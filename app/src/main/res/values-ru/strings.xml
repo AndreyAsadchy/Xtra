@@ -231,5 +231,7 @@
     <string name="adblock_not_working">Не удалось загрузить трансляцию без рекламы</string>
     <string name="adblock_desc">Отключите если трансляции не загружаются</string>
     <string name="adblock">Adblock</string>
-    <string name="select_speed">Select speed</string>
+    <string name="playback_speed">Скорость воспроизведения</string>
+    <string name="quality">Качество</string>
+    <string name="speed1">Обычная</string>
 </resources>
