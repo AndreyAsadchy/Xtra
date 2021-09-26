@@ -235,4 +235,13 @@
     <string name="adblock_not_working">Failed to load ad-free stream</string>
     <string name="adblock_desc">Disable if streams are not loading</string>
     <string name="adblock">Adblock</string>
+    <string name="select_speed">Select speed</string>
+    <string name="speed0.25" translatable="false">0.25x</string>
+    <string name="speed0.5" translatable="false">0.5x</string>
+    <string name="speed0.75" translatable="false">0.75x</string>
+    <string name="speed1" translatable="false">1.0x</string>
+    <string name="speed1.25" translatable="false">1.25x</string>
+    <string name="speed1.5" translatable="false">1.5x</string>
+    <string name="speed1.75" translatable="false">1.75x</string>
+    <string name="speed2" translatable="false">2.0x</string>
 </resources>

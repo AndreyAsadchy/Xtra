@@ -135,4 +135,6 @@ class StreamPlayerViewModel @Inject constructor(
                 }
             }
     }
+
+    override fun setSpeed(speed: Float, save: Boolean) {}
 }

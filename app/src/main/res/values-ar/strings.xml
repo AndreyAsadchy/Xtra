@@ -163,4 +163,5 @@
     <string name="adblock_not_working">Failed to load ad-free stream</string>
     <string name="adblock_desc">Disable if streams are not loading</string>
     <string name="adblock">Adblock</string>
+    <string name="select_speed">Select speed</string>
 </resources>

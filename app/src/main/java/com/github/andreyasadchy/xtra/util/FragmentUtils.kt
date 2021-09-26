@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import com.github.andreyasadchy.xtra.R
 import com.github.andreyasadchy.xtra.ui.common.RadioButtonDialogFragment
+import com.github.andreyasadchy.xtra.ui.player.PlayerSettingsDialog
 
 object FragmentUtils {
 
@@ -36,5 +37,13 @@ object FragmentUtils {
                 .setPositiveButton(R.string.yes) { _, _ -> positiveCallback.invoke() }
                 .setNegativeButton(R.string.no) { _, _ -> }
                 .show()
+    }
+
+    fun showPlayerSettingsDialog(fragmentManager: FragmentManager, qualities: Collection<CharSequence>, quality: Int, speed: Float) {
+        PlayerSettingsDialog.newInstance(
+                qualities,
+                quality,
+                speed
+        ).show(fragmentManager, null)
     }
 }

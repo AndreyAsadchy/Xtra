@@ -9,9 +9,10 @@ import com.github.andreyasadchy.xtra.model.kraken.Channel
 import com.github.andreyasadchy.xtra.model.offline.OfflineVideo
 import com.github.andreyasadchy.xtra.ui.player.BasePlayerFragment
 import com.github.andreyasadchy.xtra.ui.player.PlayerMode
+import com.github.andreyasadchy.xtra.ui.player.PlayerSettingsDialog
 import com.github.andreyasadchy.xtra.util.FragmentUtils
 
-class OfflinePlayerFragment : BasePlayerFragment() {
+class OfflinePlayerFragment : BasePlayerFragment(), PlayerSettingsDialog.PlayerSettingsListener {
 //    override fun play(obj: Parcelable) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
@@ -38,7 +39,9 @@ class OfflinePlayerFragment : BasePlayerFragment() {
     override fun initialize() {
         viewModel.setVideo(requireArguments().getParcelable(KEY_VIDEO)!!)
         super.initialize()
-        requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener { FragmentUtils.showRadioButtonDialogFragment(childFragmentManager, viewModel.qualities, viewModel.qualityIndex) }
+        requireView().findViewById<ImageButton>(R.id.settings).setOnClickListener {
+            FragmentUtils.showPlayerSettingsDialog(childFragmentManager, viewModel.qualities, viewModel.qualityIndex, viewModel.currentPlayer.value!!.playbackParameters.speed)
+        }
     }
 
     override fun onNetworkRestored() {
@@ -53,10 +56,13 @@ class OfflinePlayerFragment : BasePlayerFragment() {
         viewModel.onPause()
     }
 
-    override fun onChange(index: Int, text: CharSequence, tag: Int?) {
+    override fun onChangeQuality(index: Int) {
         viewModel.changeQuality(index)
     }
 
+    override fun onChangeSpeed(speed: Float) {
+        viewModel.setSpeed(speed)
+    }
     companion object {
         private const val KEY_VIDEO = "video"
 
