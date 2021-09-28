@@ -24,4 +24,6 @@ object C {
     const val IGNORE_NOTCH = "ignoreNotch"
     const val LAST_UPDATE_VERSION = "lastUpdateVersion"
     const val AD_BLOCKER = "adblock"
+    const val UI_STATUSBAR = "ui_statusbar"
+    const val UI_NAVBAR = "ui_navbar"
 }

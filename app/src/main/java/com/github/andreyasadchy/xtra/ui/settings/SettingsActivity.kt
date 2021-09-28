@@ -94,6 +94,30 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 true
             }
 
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                findPreference<SwitchPreferenceCompat>(C.UI_STATUSBAR)!!.isEnabled = false
+                findPreference<SwitchPreferenceCompat>(C.UI_STATUSBAR)!!.summary = "Android 5 required"
+                findPreference<SwitchPreferenceCompat>(C.UI_NAVBAR)!!.isEnabled = false
+                findPreference<SwitchPreferenceCompat>(C.UI_NAVBAR)!!.summary = "Android 5 required"
+            } else {
+                findPreference<SwitchPreferenceCompat>(C.UI_STATUSBAR)!!.setOnPreferenceChangeListener { _, _ ->
+                    changed = true
+                    activity.apply {
+                        applyTheme()
+                        recreate()
+                    }
+                    true
+                }
+                findPreference<SwitchPreferenceCompat>(C.UI_NAVBAR)!!.setOnPreferenceChangeListener { _, _ ->
+                    changed = true
+                    activity.apply {
+                        applyTheme()
+                        recreate()
+                    }
+                    true
+                }
+            }
+
             findPreference<SeekBarPreference>("chatWidth")!!.setOnPreferenceChangeListener { _, newValue ->
                 setResult()
                 val chatWidth = DisplayUtils.calculateLandscapeWidthByPercent(activity, newValue as Int)

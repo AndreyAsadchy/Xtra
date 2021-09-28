@@ -9,6 +9,18 @@
         android:title="@string/theme"
         app:iconSpaceReserved="false" />
 
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="ui_statusbar"
+        android:title="statusBarColor"
+        app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="ui_navbar"
+        android:title="navigationBarColor"
+        app:iconSpaceReserved="false"/>
+
     <SeekBarPreference
         android:defaultValue="25"
         android:key="chatWidth"

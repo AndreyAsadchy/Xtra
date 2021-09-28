@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.github.andreyasadchy.xtra.R
 
@@ -39,6 +41,20 @@ fun Activity.applyTheme(): String {
         "1" -> R.style.AmoledTheme
         else -> R.style.LightTheme
     })
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && prefs().getBoolean(C.UI_STATUSBAR, true)) {
+        when (theme) {
+            "0" -> window.statusBarColor = ContextCompat.getColor(this, R.color.primaryDark)
+            "1" -> window.statusBarColor = Color.BLACK
+            else -> window.statusBarColor = ContextCompat.getColor(this, R.color.primaryLight)
+        }
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && prefs().getBoolean(C.UI_NAVBAR, true)) {
+        when (theme) {
+            "0" -> window.navigationBarColor = ContextCompat.getColor(this, R.color.primaryDark)
+            "1" -> window.navigationBarColor = Color.BLACK
+            else -> window.navigationBarColor = ContextCompat.getColor(this, R.color.primaryLight)
+        }
+    }
     return theme
 }
 

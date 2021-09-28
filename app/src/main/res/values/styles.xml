@@ -34,6 +34,8 @@
         <item name="android:dialogTheme">@style/DialogLight</item>
         <item name="alertDialogTheme">@style/DialogLight</item>
         <item name="radioButtonStyle">@style/RadioButton</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
     <style name="BaseAmoledTheme" parent="Theme.AppCompat.NoActionBar" >

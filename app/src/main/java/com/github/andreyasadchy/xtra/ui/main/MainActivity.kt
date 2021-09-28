@@ -125,10 +125,9 @@ class MainActivity : AppCompatActivity(), GamesFragment.OnGameSelectedListener, 
             }
         }
         super.onCreate(savedInstanceState)
+        applyTheme()
         val notFirstLaunch = !prefs.getBoolean(C.FIRST_LAUNCH, true)
-        if (notFirstLaunch) {
-            applyTheme()
-        } else {
+        if (!notFirstLaunch) {
             prefs.edit {
                 putBoolean(C.FIRST_LAUNCH, false)
                 putLong("firstLaunchDate", System.currentTimeMillis())
