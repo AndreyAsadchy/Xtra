@@ -155,7 +155,7 @@ class ChatAdapter(
                     }
                     e.end -= length
                 }
-                copy.forEach { images.add(Image(it.url, index + it.begin, index + it.end + 1, true, "image/png")) }
+                copy.forEach { images.add(Image(it.url, index + it.begin, index + it.end + 1, true, "check")) }
             }
             val split = builder.split(" ")
             var builderIndex = 0
@@ -318,6 +318,73 @@ class ChatAdapter(
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
+            } else if (isPng == "check" && animateGifs) {
+                GlideApp.with(fragment)
+                    .asGif()
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(object : CustomTarget<GifDrawable>() {
+                        override fun onResourceReady(resource: GifDrawable, transition: Transition<in GifDrawable>?) {
+                            resource.apply {
+                                val size = calculateEmoteSize(this)
+                                setBounds(0, 0, size.first, size.second)
+                                setLoopCount(GifDrawable.LOOP_FOREVER)
+                                callback = object : Drawable.Callback {
+                                    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
+                                        holder.textView.removeCallbacks(what)
+                                    }
+
+                                    override fun invalidateDrawable(who: Drawable) {
+                                        holder.textView.invalidate()
+                                    }
+
+                                    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
+                                        holder.textView.postDelayed(what, `when`)
+                                    }
+                                }
+                                start()
+                            }
+                            try {
+                                builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                            } catch (e: IndexOutOfBoundsException) {
+//                                    Crashlytics.logException(e)
+                            }
+                            holder.bind(originalMessage, builder)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            GlideApp.with(fragment)
+                                .load(url)
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                .into(object : CustomTarget<Drawable>() {
+                                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                                        val width: Int
+                                        val height: Int
+                                        if (isEmote) {
+                                            val size = calculateEmoteSize(resource)
+                                            width = size.first
+                                            height = size.second
+                                        } else {
+                                            width = badgeSize
+                                            height = badgeSize
+                                        }
+                                        resource.setBounds(0, 0, width, height)
+                                        try {
+                                            builder.setSpan(ImageSpan(resource), start, end, SPAN_EXCLUSIVE_EXCLUSIVE)
+                                        } catch (e: IndexOutOfBoundsException) {
+//                                    Crashlytics.logException(e)
+                                        }
+                                        holder.bind(originalMessage, builder)
+                                    }
+
+                                    override fun onLoadCleared(placeholder: Drawable?) {
+                                    }
+                                })
                         }
                     })
             } else {

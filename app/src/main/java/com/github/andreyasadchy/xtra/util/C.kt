@@ -17,7 +17,7 @@ object C {
     const val PICTURE_IN_PICTURE = "pictureInPicture"
     const val ASPECT_RATIO_LANDSCAPE = "aspectRatioLandscape"
     const val DOWNLOAD_NETWORK_PREFERENCE = "downloadNetworkPreference"
-    const val TWITCH_EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v1/"
+    const val TWITCH_EMOTES_URL = "https://static-cdn.jtvnw.net/emoticons/v2/"
     const val ANIMATED_EMOTES = "animatedGifEmotes"
     const val SHOW_CHANGELOGS = "showChangelogs"//TODO separate keys for preferences
     const val COMPACT_STREAMS = "compactStreams"
