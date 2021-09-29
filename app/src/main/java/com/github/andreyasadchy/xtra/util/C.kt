@@ -24,4 +24,5 @@ object C {
     const val IGNORE_NOTCH = "ignoreNotch"
     const val LAST_UPDATE_VERSION = "lastUpdateVersion"
     const val AD_BLOCKER = "adblock"
+    const val PLAYER_PAUSE = "player_pause"
 }

@@ -60,6 +60,7 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
     private lateinit var playerAspectRatioToggle: ImageButton
     private lateinit var showChat: ImageButton
     private lateinit var hideChat: ImageButton
+    private lateinit var pause: ImageButton
 
     protected abstract val layoutId: Int
     protected abstract val chatContainerId: Int
@@ -118,6 +119,11 @@ abstract class BasePlayerFragment : BaseNetworkFragment(), RadioButtonDialogFrag
         slidingLayout.maximizedSecondViewVisibility = if (userPrefs.getBoolean(KEY_CHAT_OPENED, true)) View.VISIBLE else View.GONE //TODO
         playerView = view.findViewById(R.id.playerView)
         chatLayout = view.findViewById(chatContainerId)
+        pause = view.findViewById(R.id.exo_pause)
+        if (this is StreamPlayerFragment && !prefs.getBoolean(C.PLAYER_PAUSE, false)) {
+            pause.layoutParams.height = 0
+            pause.layoutParams.width = 0
+        }
         aspectRatioFrameLayout = view.findViewById(R.id.aspectRatioFrameLayout)
         aspectRatioFrameLayout.setAspectRatio(16f / 9f)
         val isNotOfflinePlayer = this !is OfflinePlayerFragment

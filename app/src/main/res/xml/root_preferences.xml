@@ -118,6 +118,12 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="player_pause"
+        android:title="show pause on live streams"
+        app:iconSpaceReserved="false"/>
+
+    <SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="showChangelogs"
         android:title="@string/show_changelogs"
