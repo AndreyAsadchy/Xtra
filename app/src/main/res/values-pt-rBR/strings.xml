@@ -86,9 +86,9 @@
 
     <string name="invalid_time">Tempo inválido</string>
 
-    <string name="from_is_greater">O tempo 'de' deve ser menor que 'até'</string>
+    <string name="from_is_greater">O tempo de deve ser menor que até</string>
 
-    <string name="to_is_lesser">O tempo 'até' deve ser maior que 'de'</string>
+    <string name="to_is_lesser">O tempo até deve ser maior que de</string>
 
     <string name="to_is_longer">Não pode ser maior que a duração do vídeo</string>
 
@@ -424,57 +424,57 @@
 
     <string name="trouble_logging_in">Está tendo problemas para fazer login?</string>
 
-    <string name="login_problem_solution">You can log in using an external browser. After you press \"Autorizar\", a page with an error should appear. Copy the url, return here and click the \"Enter url\" button. Paste the url and click \"Log in\"</string>
+    <string name="login_problem_solution">Você pode fazer login usando um navegador externo. Depois de pressionar \"Autorizar\", uma página com um erro deve aparecer. Copie o url, volte aqui e clique no botão \"Inserir url\". Cole o url e clique em \"Login\"</string>
 
-    <string name="no_browser_found">No browser app found</string>
+    <string name="no_browser_found">Nenhum aplicativo de navegador encontrado</string>
 
-    <string name="browser_workaround">Your system browser is no longer supported. Please click the button below for a workaround</string>
+    <string name="browser_workaround">O navegador do seu sistema não é mais compatível. Clique no botão abaixo para uma solução alternativa</string>
 
-    <string name="error">Error: %s</string>
+    <string name="error">Erro: %s</string>
 
-    <string name="to_enter_url">Enter url</string>
+    <string name="to_enter_url">Insira o url</string>
 
-    <string name="enter_url">Enter url</string>
+    <string name="enter_url">Insira o url</string>
 
-    <string name="invalid_url">Invalid url</string>
+    <string name="invalid_url">Url inválido</string>
 
-    <string name="sort_and_order">Sort by: %1$s. Order: %2$s</string>
+    <string name="sort_and_order">Ordenar por: %1$s. Ordem: %2$s</string>
 
-    <string name="time_followed">Time followed</string>
+    <string name="time_followed">Tempo seguido</string>
 
-    <string name="alphabetically">Alphabetically</string>
+    <string name="alphabetically">Alfabeticamente</string>
 
-    <string name="last_broadcast">Last broadcast</string>
+    <string name="last_broadcast">Última transmissão</string>
 
-    <string name="order">Order</string>
+    <string name="order">Ordem</string>
 
-    <string name="descending">Descending</string>
+    <string name="descending">Decrescente</string>
 
-    <string name="ascending">Ascending</string>
+    <string name="ascending">Crescente</string>
 
-    <string name="compact_streams_title">Compact followed streams</string>
+    <string name="compact_streams_title">Streams seguidos compactos</string>
 
-    <string name="compact_streams_description">Don\'t show stream previews</string>
+    <string name="compact_streams_description">Não mostrar pré-visualizações de stream</string>
 
-    <string name="info">Info</string>
+    <string name="info">Informações</string>
 
-    <string name="enable">Enable</string>
+    <string name="enable">Ativar</string>
 
-    <string name="disable">Disable</string>
+    <string name="disable">Desativar</string>
 
-    <string name="ignore_notch">Ignore camera notch</string>
+    <string name="ignore_notch">Ignorar entalhe da câmera</string>
 
-    <string name="display_beyond_notch">Display video beyond the notch/hole-punch</string>
+    <string name="display_beyond_notch">Exibir vídeo além do entalhe/perfurador</string>
 
-    <string name="adblock_not_working">Failed to load ad-free stream</string>
+    <string name="adblock_not_working">Falha ao carregar stream sem anúncios</string>
 
-    <string name="adblock_desc">Disable if streams are not loading</string>
+    <string name="adblock_desc">Desative se as streams não estiverem carregando</string>
 
     <string name="adblock">Adblock</string>
 
-    <string name="playback_speed">Playback speed</string>
+    <string name="playback_speed">Velocidade de reprodução</string>
 
-    <string name="quality">Quality</string>
+    <string name="quality">Qualidade</string>
 
     <string name="speed0.25" translatable="false">0.25x</string>
 
