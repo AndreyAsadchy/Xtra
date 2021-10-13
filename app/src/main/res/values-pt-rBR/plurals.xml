@@ -6,7 +6,7 @@
 
         <item quantity="one">%s visualização</item>
 
-        <item quantity="other">@string/visualizações</item>
+        <item quantity="other">@string/views</item>
 
     </plurals>
 
@@ -14,7 +14,7 @@
 
         <item quantity="one">%s assistindo</item>
 
-        <item quantity="other">@string/assistindo</item>
+        <item quantity="other">@string/viewers</item>
 
     </plurals>
 
