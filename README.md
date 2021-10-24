@@ -13,7 +13,7 @@ You can find released APKs [here](https://github.com/AndreyAsadchy/Xtra/releases
 
 ## Project status
 
-The app was removed from Google Play in April 2021. At the moment I am not interested in working on the project, but anyone is welcomed to make a contribution or leave a suggestion.
+The app was removed from Google Play in April 2021. At the moment I am not interested in working on the project, but anyone is welcomed to make a contribution or leave a suggestion. You can also post your forked versions on the subreddit, in case I haven't reviewed your pull requests for a while.
 
 ## Issues
 
