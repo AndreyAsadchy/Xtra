@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <plurals name="views">
+
+        <item quantity="one">%s visualização</item>
+
+        <item quantity="other">@string/views</item>
+
+    </plurals>
+
+    <plurals name="viewers">
+
+        <item quantity="one">%s assistindo</item>
+
+        <item quantity="other">@string/viewers</item>
+
+    </plurals>
+
+    <plurals name="hours">
+
+        <item quantity="one">%d hora</item>
+
+        <item quantity="other">%d horas</item>
+
+    </plurals>
+
+    <plurals name="minutes">
+
+        <item quantity="one">%d minuto</item>
+
+        <item quantity="other">%d minutos</item>
+
+    </plurals>
+
+</resources>

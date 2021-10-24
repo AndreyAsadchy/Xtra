@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string name="app_name" translatable="false">Xtra</string>
+
+    <string name="games">Jogos</string>
+
+    <string name="popular">Popular</string>
+
+    <string name="following">Seguindo</string>
+
+    <string name="downloads">Downloads</string>
+
+    <string name="menu">Menu</string>
+
+    <string name="retry">Tentar novamente</string>
+
+    <string name="connection_error">Erro ao conectar ao servidor. Por favor, tente novamente</string>
+
+    <string name="sort">Ordenar</string>
+
+    <string name="upload_date">Data de envio</string>
+
+    <string name="today">Hoje</string>
+
+    <string name="this_week">Esta semana</string>
+
+    <string name="this_month">Este mês</string>
+
+    <string name="all_time">Qualquer data</string>
+
+    <string name="view_count">Contagem de visualizações</string>
+
+    <string name="period">Período</string>
+
+    <string name="apply">Aplicar</string>
+
+    <string name="sort_and_period">Ordenar por: %1$s. Período: %2$s</string>
+
+    <string name="trending">Tendência</string>
+
+    <string name="live">Live</string>
+
+    <string name="videos">Vídeos</string>
+
+    <string name="clips">Clipes</string>
+
+    <string name="scroll_down">Rolar para baixo</string>
+
+    <string name="auto">Automático</string>
+
+    <string name="audio_only">Apenas audio</string>
+
+    <string name="chat_only">Apenas chat</string>
+
+    <string name="select_quality">Selecionar qualidade</string>
+
+    <string name="download">Baixar</string>
+
+    <string name="downloading">Baixando</string>
+
+    <string name="downloaded">Download completo</string>
+
+    <string name="uploaded_date">Enviado %s</string>
+
+    <string name="downloaded_date">Baixado %s</string>
+
+    <string name="welcome">Bem-vindo</string>
+
+    <string name="login_prompt">Faça login na Twitch para ver os canais que você segue</string>
+
+    <string name="log_in">Entrar</string>
+
+    <string name="log_out">Sair</string>
+
+    <string name="skip">Pular</string>
+
+    <string name="specify_time">Especificar tempo</string>
+
+    <string name="from">De:</string>
+
+    <string name="to">Até:</string>
+
+    <string name="duration">Duração: %s</string>
+
+    <string name="invalid_time">Tempo inválido</string>
+
+    <string name="from_is_greater">O tempo de deve ser menor que até</string>
+
+    <string name="to_is_lesser">O tempo até deve ser maior que de</string>
+
+    <string name="to_is_longer">Não pode ser maior que a duração do vídeo</string>
+
+    <string name="delete">Excluir</string>
+
+    <string name="are_you_sure">Tem certeza que deseja excluir este vídeo?</string>
+
+    <string name="token_expired">Sua sessão expirou. Por favor faça login novamente</string>
+
+    <string name="no_connection">Sem conexão à Internet</string>
+
+    <string name="connection_restored">Online novamente</string>
+
+    <string name="follow_tab_login_prompt">Seus canais seguidos serão mostrados aqui</string>
+
+    <string name="downloads_empty">Seus vídeos baixados serão mostrados aqui</string>
+
+    <string name="notification_downloads_channel_title">Downloads</string>
+
+    <string name="notification_downloads_channel_id" translatable="false">xtra_downloads_channel</string>
+
+    <string name="old_notification_downloads_channel_id" translatable="false">xtra_download_channel</string>
+
+    <string name="storage_permission_title">O aplicativo precisa de permissão de armazenamento</string>
+
+    <string name="storage_permission_message">É necessária permissão de armazenamento para baixar vídeos.</string>
+
+    <string name="permission_denied">Permissões necessárias foram negadas</string>
+
+    <string name="nothing_here">Nada aqui</string>
+
+    <string name="watch_live">Assistir Live</string>
+
+    <string name="error_stream">Erro ao carregar stream</string>
+
+    <string name="dark">Escuro</string>
+
+    <string name="amoled">Preto</string>
+
+    <string name="light">Claro</string>
+
+    <string name="choose_theme">Escolha um tema</string>
+
+    <string name="settings">Configurações</string>
+
+    <string name="theme">Tema</string>
+
+    <string name="landscape_chat_width">Largura do chat em modo paisagem</string>
+
+    <string name="percentage_of_screen">% da tela</string>
+
+    <string name="unknown_error">Erro desconhecido</string>
+
+    <string name="portrait_column_count">Contagem de colunas em modo retrato</string>
+
+    <string name="landscape_column_count">Contagem de colunas em modo paisagem</string>
+
+    <string name="download_via_wifi">Baixar usando Wi-Fi</string>
+
+    <string name="always">Sempre</string>
+
+    <string name="just_once">Apenas uma vez</string>
+
+    <string name="download_preference">Rede de download preferida</string>
+
+    <string name="any_network">Em qualquer rede</string>
+
+    <string name="wifi_only">Somente por Wi-Fi</string>
+
+    <string name="ask_every_time">Perguntar toda vez</string>
+
+    <string name="download_size_warning">Vídeos longos podem ter até 10 GB de tamanho. Quer baixar pelo Wi-Fi?</string>
+
+    <string name="internal_storage">Armazenamento interno</string>
+
+    <string name="save_to">Salvar em</string>
+
+    <string name="thank_you">Obrigado!</string>
+
+    <string name="rate_app_message">Se você gosta de usar o Xtra, reserve um momento para avaliá-lo. Não vai demorar mais do que um minuto. Obrigado pelo seu apoio!</string>
+
+    <string name="rate">Avaliar</string>
+
+    <string name="rate_app">Avaliar aplicativo</string>
+
+    <string name="remind_me_later">Lembre-me mais tarde</string>
+
+    <string name="no_thanks">Não, obrigado</string>
+
+    <string name="no_storage_detected">Nenhum armazenamento disponível detectado (provavelmente o telefone está conectado a um computador).</string>
+
+    <string name="rewind">Retroceder</string>
+
+    <string name="forward">Avanço rápido</string>
+
+    <string name="seconds">%s segundos</string>
+
+    <string name="unfollow">Deixar de seguir %s?</string>
+
+    <string name="now_following">Agora você está seguindo %s</string>
+
+    <string name="unfollowed">Deixou de seguir %s</string>
+
+    <string name="yes">Sim</string>
+
+    <string name="no">Não</string>
+
+    <string name="search">Buscar</string>
+
+    <string name="chat_replay_unavailable">A repetição do chat não está disponível</string>
+
+    <string name="video_subscribers_only">Este vídeo está disponível apenas para assinantes e não pode ser visualizado no aplicativo devido às restrições da Twitch</string>
+
+    <string name="player_error">Erro no player. Tentando novamente. Desative o Adblock se as streams não estiverem carregando</string>
+
+    <string name="picture_in_picture">Picture-in-Picture</string>
+
+    <string name="continue_playback">Continuar a reprodução fora do aplicativo</string>
+
+    <string name="source_vod_start">Começo: %s</string>
+
+    <string name="source_vod_end">Final: %s</string>
+
+    <string name="stream_ended">A stream terminou</string>
+
+    <string name="viewers">%s assistindo</string>
+
+    <string name="views">%s visualizações</string>
+
+    <string name="play_services_not_available">O Google Play Services não está disponível. Algumas funções podem não funcionar corretamente</string>
+
+    <string name="download_pending">Pendente</string>
+
+    <string name="downloading_progress">Baixando: %d%%</string>
+
+    <string name="pause">Pausar</string>
+
+    <string name="resume">Continuar</string>
+
+    <string name="error_loading_user">Erro ao carregar o perfil do usuário</string>
+
+    <string name="reply">Responder</string>
+
+    <string name="copy_message">Copiar mensagem</string>
+
+    <string name="view_profile">Ver perfil</string>
+
+    <string name="chat">Chat</string>
+
+    <string name="recent_emotes">Recentes</string>
+
+    <string name="notification_playback_channel_title">Reprodução</string>
+
+    <string name="notification_playback_channel_id" translatable="false">xtra_playback_channel</string>
+
+    <string name="channels">Canais</string>
+
+    <string name="video">Vídeo</string>
+
+    <string name="watch_video">Assista ao vídeo completo</string>
+
+    <string name="new_update">O que há de novo nesta atualização</string>
+
+    <string name="dont_show_changelogs">Não mostrar histórico de atualizações</string>
+
+    <string name="show_changelogs">Mostrar alterações após atualização</string>
+
+    <string name="donate_prompt">Quanto você gostaria de doar?</string>
+
+    <string name="thank_you_so_much">Muito obrigado!!! ❤❤❤</string>
+
+    <string name="support_the_developer">Apoiar o desenvolvedor</string>
+
+    <string name="animated_emotes">Emotes animados</string>
+
+    <string name="changelog" translatable="false">
+
+        <b>August 29th, 1.6.0</b>
+
+\n- Added TTV.LOL adblock. Can be disabled in the settings
+
+\n- Fixed clips not working
+
+\n- Made the refresh stream button smaller and moved it to the bottom left
+
+\n- All credits go to /u/Leaguehax for this contribution
+
+        \n\n<b>January 24th, 1.5.6.8</b>
+
+\n- Fixed stream errors (for now), but you may see more commercials
+
+        \n\n<b>January 23rd, 1.5.6.7</b>
+
+\n- Just trying to keep the app alive
+
+        \n\n<b>January 14th, 1.5.6.6</b>
+
+\n- Updated API for streams and videos
+
+\n- Fixed chat sometimes not loading
+
+        \n\n<b>November 21st, 1.5.6.5</b>
+
+\n- Updated adblock
+
+        \n\n<b>November 17th, 1.5.6.4</b>
+
+\n- Fixed BTTV/FFZ emotes not working
+
+\n- Updated adblock
+
+        \n\n<b>November 5th, 1.5.6.2</b>
+
+\n- Updated adblock
+
+        \n\n<b>October 28th, 1.5.6.1</b>
+
+\n- Updated adblock
+
+        \n\n<b>October 11th, 1.5.6</b>
+
+\n- <b>Animated emotes no longer cause overheating and high battery drain, so you can safely enable them in the settings</b>
+
+\n- Some changes to logging in to Twitch. If you couldn\'t login before, try again now
+
+\n- Fixed streams sometimes not loading, e.g. when returning to app after a while
+
+\n- Improved readability of text on thumbnails
+
+\n- Bug fixes and other improvements
+
+        \n\n<b>September 30th, 1.5.5</b>
+
+\n- <b>Added a setting to enable/disable displaying video beyond the camera notch/hole-punch (Android 9+). Enabled by default</b>
+
+\n- Recent emotes now show only those BTTV/FFZ emotes which are enabled on the current channel
+
+        \n\n<b>September 27th, 1.5.4</b>
+
+\n- Improved adblock, removed \"Commercial break in progress\" screen
+
+\n- Improved GIF emotes performance
+
+\n- Camera notch no longer blocks video
+
+        \n\n<b>August 31st, 1.5.3</b>
+
+\n- Fixed wrong video player and thumbnails size which caused them to be stretched. You can still adjust the aspect ratio for landscape mode in the top right corner of video player\'s controls
+
+\n- Fixed clips not playing without changing quality
+
+\n- Adjusted video player\'s dragging area to avoid accidental drags when trying to swipe down status bar
+
+\n- More improvements behind the scenes
+
+        \n\n<b>May 31st, 1.5.2</b>
+
+\n- Fixed login not working
+
+\n- Fixed chat sometimes freezing
+
+\n- Bug fixes and improvements
+
+        \n\n<b>May 10th, 1.5.1</b>
+
+\n- Fixed an error when trying to follow a channel
+
+\n- Bug fixes and improvements
+
+        \n\n<b>April 26th, 1.5.0</b>
+
+\n- Fixed the problem with logging in on some newer devices. For older ones added a new workaround, click the \"Having trouble logging in\" button
+
+\n- Added ability to see the channels that you follow. Click the dropdown menu and select \"Channels\"
+
+\n- Added double tap to show/hide chat
+
+\n- Added viewer count to the stream
+
+\n- Added compact layout for followed streams which doesn\'t show previews. Can be enabled in the settings
+
+\n- Removed outdated global BTTV and FFZ emotes, now they will be updating automatically
+
+\n- Fixed sleep timer not working correctly in audio only mode
+
+\n- Other bug fixes and stability improvements
+
+        \n\n<b>January 16th, 1.4.5</b>
+
+\n- Fixed login error \"Error loading web browser\"
+
+\n- Fixed when emotes sometimes were cutting text or not showing at all
+
+\n- Improved rendering of some emotes
+
+\n- Increased player height in portrait for tablets
+
+\n- More improvements and bug fixes
+
+        \n\n<b>January 10th, 1.4.4</b>
+
+\n- <b>Added support for low-latency streams (significantly reduced stream delay)</b>
+
+\n- Fixed clips not working
+
+\n- Fixed audio only setting using too much data
+
+\n- Stability improvements for picture-in-picture and more
+
+    </string>
+
+    <string name="chat_settings">Configurações de chat</string>
+
+    <string name="sleep_timer">Temporizador</string>
+
+    <string name="start">Começar</string>
+
+    <string name="set">Definir</string>
+
+    <string name="stop">Parar</string>
+
+    <string name="hours">h</string>
+
+    <string name="minutes">m</string>
+
+    <string name="playback_will_stop">A reprodução irá parar em %s</string>
+
+    <string name="playback_will_stop_hours_minutes">A reprodução irá parar em %1$s %2$s</string>
+
+    <string name="timer_canceled">O cronômetro foi cancelado</string>
+
+    <string name="authorization">Autorização</string>
+
+    <string name="trouble_logging_in">Está tendo problemas para fazer login?</string>
+
+    <string name="login_problem_solution">Você pode fazer login usando um navegador externo. Depois de pressionar \"Autorizar\", uma página com um erro deve aparecer. Copie o url, volte aqui e clique no botão \"Inserir url\". Cole o url e clique em \"Login\"</string>
+
+    <string name="no_browser_found">Nenhum aplicativo de navegador encontrado</string>
+
+    <string name="browser_workaround">O navegador do seu sistema não é mais compatível. Clique no botão abaixo para uma solução alternativa</string>
+
+    <string name="error">Erro: %s</string>
+
+    <string name="to_enter_url">Insira o url</string>
+
+    <string name="enter_url">Insira o url</string>
+
+    <string name="invalid_url">Url inválido</string>
+
+    <string name="sort_and_order">Ordenar por: %1$s. Ordem: %2$s</string>
+
+    <string name="time_followed">Tempo seguido</string>
+
+    <string name="alphabetically">Alfabeticamente</string>
+
+    <string name="last_broadcast">Última transmissão</string>
+
+    <string name="order">Ordem</string>
+
+    <string name="descending">Decrescente</string>
+
+    <string name="ascending">Crescente</string>
+
+    <string name="compact_streams_title">Streams seguidos compactos</string>
+
+    <string name="compact_streams_description">Não mostrar pré-visualizações de stream</string>
+
+    <string name="info">Informações</string>
+
+    <string name="enable">Ativar</string>
+
+    <string name="disable">Desativar</string>
+
+    <string name="ignore_notch">Ignorar entalhe da câmera</string>
+
+    <string name="display_beyond_notch">Exibir vídeo além do entalhe/perfurador</string>
+
+    <string name="adblock_not_working">Falha ao carregar stream sem anúncios</string>
+
+    <string name="adblock_desc">Desative se as streams não estiverem carregando</string>
+
+    <string name="adblock">Adblock</string>
+
+    <string name="playback_speed">Velocidade de reprodução</string>
+
+    <string name="quality">Qualidade</string>
+
+    <string name="speed0.25" translatable="false">0.25x</string>
+
+    <string name="speed0.5" translatable="false">0.5x</string>
+
+    <string name="speed0.75" translatable="false">0.75x</string>
+
+    <string name="speed1">Normal</string>
+
+    <string name="speed1.25" translatable="false">1.25x</string>
+
+    <string name="speed1.5" translatable="false">1.5x</string>
+
+    <string name="speed1.75" translatable="false">1.75x</string>
+
+    <string name="speed2" translatable="false">2.0x</string>
+
+</resources>
