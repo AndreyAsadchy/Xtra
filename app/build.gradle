@@ -26,8 +26,8 @@ android {
     defaultConfig {
         applicationId "com.github.andreyasadchy.xtra"
         minSdkVersion 16
-        versionCode 102
-        versionName "1.6.0"
+        versionCode 103
+        versionName "1.6.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 29
         javaCompileOptions {

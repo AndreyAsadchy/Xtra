@@ -132,7 +132,10 @@
     <string name="support_the_developer">Support the developer</string>
     <string name="animated_emotes">Animated emotes</string>
     <string name="changelog" translatable="false">
-        <b>August 29th, 1.6.0</b>
+        <b>October 25th, 1.6.1</b>
+\n- Added ability to change playback speed on VODs and clips (Juby210)
+\n- Added portuguese translations (RickyM7)
+        \n\n<b>August 29th, 1.6.0</b>
 \n- Added TTV.LOL adblock. Can be disabled in the settings
 \n- Fixed clips not working
 \n- Made the refresh stream button smaller and moved it to the bottom left
