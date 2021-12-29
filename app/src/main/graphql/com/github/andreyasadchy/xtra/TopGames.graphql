@@ -1,0 +1,17 @@
+query TopGames($first: Int, $after: Cursor) {
+    games(first: $first, after: $after) {
+        edges {
+            cursor
+            node {
+                id
+                displayName
+                boxArtURL
+                viewersCount
+                broadcastersCount
+            }
+        }
+        pageInfo {
+            hasNextPage
+        }
+    }
+}

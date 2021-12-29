@@ -1,0 +1,29 @@
+query TopVideos($first: Int, $after: Cursor) {
+    videos(first: $first, after: $after) {
+        edges {
+            cursor
+            node {
+                id
+                broadcastType
+                title
+                createdAt
+                previewThumbnailURL
+                viewCount
+                lengthSeconds
+                owner {
+                    id
+                    login
+                    displayName
+                    profileImageURL(width: 300)
+                }
+                game {
+                    id
+                    displayName
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+        }
+    }
+}

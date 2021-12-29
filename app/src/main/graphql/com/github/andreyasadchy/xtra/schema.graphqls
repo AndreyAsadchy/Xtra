@@ -1,0 +1,155 @@
+type Query {
+  games(first: Int, after: Cursor): Games
+  streams(first: Int, after: Cursor): Streams
+  videos(first: Int, after: Cursor): Videos
+  game(id: ID, name: String, first: Int, after: Cursor): Game
+  user(id: ID, login: String): User
+  video(id: ID): VideoNode
+}
+
+type User {
+  id: String
+  login: String
+  displayName: String
+  profileImageURL(width: Int): String
+  stream: Stream
+  videos(sort: VideoSort, type: BroadcastType, first: Int, after: Cursor): Videos
+  clips(criteria: criteria, first: Int, after: Cursor): Clips
+}
+
+type Stream {
+  viewersCount: Int
+}
+
+type Game {
+  name: String
+  streams(first: Int, after: Cursor): Streams
+  videos(sort: VideoSort, types: [BroadcastType!], first: Int, after: Cursor): Videos
+  clips(criteria: criteria, first: Int, after: Cursor): Clips
+}
+
+type Games {
+  edges: [GameEdges]
+  pageInfo: PageInfo
+}
+
+type GameEdges {
+  cursor: String
+  node: GameNode
+}
+
+type Streams {
+  edges: [StreamEdges]
+  pageInfo: PageInfo
+}
+
+type StreamEdges {
+  cursor: String
+  node: StreamNode
+}
+
+type Videos {
+  edges: [VideoEdges]
+  pageInfo: PageInfo
+}
+
+type VideoEdges {
+  cursor: String
+  node: VideoNode
+}
+
+type Clips {
+  edges: [ClipEdges]
+  pageInfo: PageInfo
+}
+
+type ClipEdges {
+  cursor: String
+  node: ClipNode
+}
+
+type GameNode {
+  id: String
+  displayName: String
+  boxArtURL: String
+  viewersCount: Int
+  broadcastersCount: Int
+}
+
+type StreamNode {
+  id: String
+  broadcaster: broadcaster
+  game: GameNode
+  type: String
+  title: String
+  viewersCount: Int
+  previewImageURL: String
+}
+
+type VideoNode {
+  id: String
+  broadcastType: BroadcastType
+  title: String
+  owner: broadcaster
+  createdAt: String
+  previewThumbnailURL: String
+  viewCount: Int
+  lengthSeconds: Int
+  game: GameNode
+}
+
+type ClipNode {
+  id: String
+  slug: ID!
+  video: VideoNode
+  videoOffsetSeconds: Int
+  broadcaster: broadcaster
+  title: String
+  createdAt: String
+  thumbnailURL: String
+  viewCount: Int
+  durationSeconds: Int
+  game: GameNode
+}
+
+type broadcaster {
+  id: String
+  login: String
+  displayName: String
+  profileImageURL(width: Int): String
+}
+
+enum BroadcastType {
+  ARCHIVE
+  HIGHLIGHT
+  UPLOAD
+  PREMIERE_UPLOAD
+  PAST_PREMIERE
+}
+
+enum VideoSort {
+  TIME
+  VIEWS
+}
+
+input criteria {
+  period: ClipsPeriod
+}
+
+enum ClipsPeriod {
+  LAST_DAY
+  LAST_WEEK
+  LAST_MONTH
+  ALL_TIME
+}
+
+type PageInfo {
+  hasNextPage: Boolean
+  hasPreviousPage: Boolean
+}
+
+scalar Cursor
+
+schema {
+  query: Query
+}

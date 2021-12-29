@@ -1,0 +1,27 @@
+query TopStreams($first: Int, $after: Cursor) {
+    streams(first: $first, after: $after) {
+        edges {
+            cursor
+            node {
+                id
+                type
+                title
+                viewersCount
+                previewImageURL
+                broadcaster {
+                    id
+                    login
+                    displayName
+                    profileImageURL(width: 300)
+                }
+                game {
+                    id
+                    displayName
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+        }
+    }
+}

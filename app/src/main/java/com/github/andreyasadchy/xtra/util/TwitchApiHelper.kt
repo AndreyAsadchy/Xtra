@@ -81,7 +81,7 @@ object TwitchApiHelper {
         }
     }
 
-    fun addTokenPrefix(token: String) = "OAuth $token"
+    fun addTokenPrefix(token: String) = "Bearer $token"
 
     private fun formatCountIfMoreThanAThousand(count: Int): String {
         val divider: Int

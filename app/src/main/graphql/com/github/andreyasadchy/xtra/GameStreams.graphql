@@ -1,0 +1,25 @@
+query GameStreams($id: ID, $name: String, $first: Int, $after: Cursor) {
+    game(id: $id, name: $name) {
+        streams(first: $first, after: $after) {
+            edges {
+                cursor
+                node {
+                    id
+                    type
+                    title
+                    viewersCount
+                    previewImageURL
+                    broadcaster {
+                        id
+                        login
+                        displayName
+                        profileImageURL(width: 300)
+                    }
+                }
+            }
+            pageInfo {
+                hasNextPage
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+query Video($id: ID) {
+    video(id: $id) {
+        id
+        owner {
+            id
+            login
+            displayName
+            profileImageURL(width: 300)
+        }
+    }
+}

@@ -1,0 +1,7 @@
+query Stream($login: String) {
+    user(login: $login) {
+        stream {
+            viewersCount
+        }
+    }
+}

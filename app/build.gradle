@@ -1,8 +1,11 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.firebase.crashlytics'
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("kotlin-android-extensions")
+    id("kotlin-kapt")
+    id("com.google.firebase.crashlytics")
+    id("com.apollographql.apollo3").version("3.0.0-rc01")
+}
 
 //def keystoreProperties = new Properties()
 //keystoreProperties.load(new FileInputStream(project.file("keystore.properties")))
@@ -147,6 +150,8 @@ dependencies {
 
     implementation "androidx.tonyodev.fetch2:xfetch2:$fetch"
     implementation "androidx.tonyodev.fetch2okhttp:xfetch2okhttp:$fetch"
+
+    implementation('com.apollographql.apollo3:apollo-runtime:3.0.0-rc01')
 }
 
 repositories {
@@ -155,6 +160,11 @@ repositories {
 
 androidExtensions {
     experimental = true
+}
+
+apollo {
+    packageName.set("com.github.andreyasadchy.xtra")
+    generateKotlinModels.set(true)
 }
 
 apply plugin: 'com.google.gms.google-services'

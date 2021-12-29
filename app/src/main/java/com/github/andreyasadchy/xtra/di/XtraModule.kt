@@ -55,6 +55,17 @@ class XtraModule {
 
     @Singleton
     @Provides
+    fun providesHelixApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): HelixApi {
+        return Retrofit.Builder()
+                .baseUrl("https://api.twitch.tv/helix/")
+                .client(client)
+                .addConverterFactory(gsonConverterFactory)
+                .build()
+                .create(HelixApi::class.java)
+    }
+
+    @Singleton
+    @Provides
     fun providesKrakenApi(client: OkHttpClient, gsonConverterFactory: GsonConverterFactory): KrakenApi {
         return Retrofit.Builder()
                 .baseUrl("https://api.twitch.tv/kraken/")
@@ -157,6 +168,29 @@ class XtraModule {
                 .registerTypeAdapter(StreamPlaylistTokenResponse::class.java, StreamPlaylistTokenDeserializer())
                 .registerTypeAdapter(VideoPlaylistTokenResponse::class.java, VideoPlaylistTokenDeserializer())
                 .create())
+    }
+
+    @Singleton
+    @Provides
+    fun apolloClient(clientId: String?): ApolloClient {
+        val builder = ApolloClient.Builder()
+            .serverUrl("https://gql.twitch.tv/gql/")
+            .okHttpClient(OkHttpClient.Builder().apply {
+                addInterceptor(AuthorizationInterceptor(clientId))
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+                }
+            }.build())
+        return builder.build()
+    }
+
+    private class AuthorizationInterceptor(val clientId: String?): Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request().newBuilder().apply {
+                clientId?.let { addHeader("Client-ID", it) }
+            }.build()
+            return chain.proceed(request)
+        }
     }
 
     @Singleton
