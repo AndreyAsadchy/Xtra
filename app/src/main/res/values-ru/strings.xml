@@ -6,7 +6,7 @@
     <string name="downloads">Загрузки</string>
     <string name="menu">Меню</string>
     <string name="retry">Повторить попытку</string>
-    <string name="connection_error">Ошибка подключения. Пожалуйста, попробуйте еще раз</string>
+    <string name="connection_error">Ошибка подключения. Пожалуйста, попробуйте ещё раз</string>
     <string name="sort">Сортировать</string>
     <string name="upload_date">По дате загрузки</string>
     <string name="today">Сегодня</string>
@@ -58,10 +58,10 @@
     <string name="nothing_here">Здесь пусто</string>
     <string name="watch_live">Прямой эфир</string>
     <string name="error_stream">Ошибка при загрузке стрима</string>
-    <string name="dark">Темная</string>
-    <string name="amoled">Черная</string>
+    <string name="dark">Тёмная</string>
+    <string name="amoled">Чёрная</string>
     <string name="light">Светлая</string>
-    <string name="choose_theme">Выберите тeму</string>
+    <string name="choose_theme">Выберите тему</string>
     <string name="settings">Настройки</string>
     <string name="theme">Тема</string>
     <string name="landscape_chat_width">Ширина чата в полноэкранном режиме</string>
@@ -85,9 +85,9 @@
     <string name="rate_app">Оценить приложение</string>
     <string name="remind_me_later">Напомнить позже</string>
     <string name="no_thanks">Нет, спасибо</string>
-    <string name="no_storage_detected">Хранилище телефона не доступно (вероятнее всего телефон подключен к компьютеру).</string>
+    <string name="no_storage_detected">Хранилище телефона не доступно (вероятнее всего телефон подключён к компьютеру).</string>
     <string name="rewind">Перемотка назад</string>
-    <string name="forward">Перемотка вперед</string>
+    <string name="forward">Перемотка вперёд</string>
     <string name="seconds">%s секунд</string>
     <string name="unfollow">Отписаться от %s?</string>
     <string name="now_following">Вы подписались на %s</string>
@@ -97,7 +97,7 @@
     <string name="search">Поиск</string>
     <string name="chat_replay_unavailable">Повтор чата недоступен</string>
     <string name="video_subscribers_only">Видео доступно только для подписчиков и не может быть открыто в приложении из-за ограничений со стороны Twitch</string>
-    <string name="player_error">Ошибка воспроизведения. Переподключение. Отключите Adblock если трансляция не загружается</string>
+    <string name="player_error">Ошибка воспроизведения. Переподключение. Отключите Adblock, если трансляция не загружается</string>
     <string name="picture_in_picture">Картинка в картинке</string>
     <string name="continue_playback">Продолжить воспроизведение вне приложения</string>
     <string name="source_vod_start">Начало: %s</string>
@@ -122,7 +122,7 @@
     <string name="watch_video">Смотреть полное видео</string>
     <string name="new_update">Новое обновление</string>
     <string name="dont_show_changelogs">Больше не показывать изменения</string>
-    <string name="show_changelogs">Показывать измения в новых обновлениях</string>
+    <string name="show_changelogs">Показывать изменения в новых обновлениях</string>
     <string name="support_the_developer">Поддержать разработчика</string>
     <string name="donate_prompt">Сколько бы Вы хотели пожертвовать?</string>
     <string name="thank_you_so_much">Огромное спасибо!!! ❤❤❤</string>
@@ -140,7 +140,7 @@
         \n\n<b>23 января, 1.5.6.7</b>
 \n- Просто пытаюсь продлить жизнь приложению
         \n\n<b>14 января, 1.5.6.6</b>
-\n- Обновлен API для стримов и видео
+\n- Обновлён API для стримов и видео
 \n- Исправлено чат иногда не загружался
         \n\n<b>21 ноября, 1.5.6.5</b>
 \n- Обновлена блокировка рекламы
@@ -165,13 +165,13 @@
 \n- Улучшена производительность GIF картинок
 \n- Вырез для камеры на экране больше не блокирует видео
         \n\n<b>31 августа, 1.5.3</b>
-\n- Исправлен некорректный растянутый размер плеера и превью. Вы все еще можете менять соотношение сторон в альбомной ориентации в правом верхнем углу плеера
-\n- Исправлено когда клипы не проигрывались если не поменять качество видео
+\n- Исправлен некорректный растянутый размер плеера и превью. Вы все ещё можете менять соотношение сторон в альбомной ориентации в правом верхнем углу плеера
+\n- Исправлено когда клипы не проигрывались, если не поменять качество видео
 \n- Улучшена область в верхней части плеера для более удобного открытия шторки с уведомлениями
 \n- Другие улучшения
         \n\n<b>31 мая, 1.5.2</b>
 \n- Исправлена проблема с авторизацией
-\n- Исправлено когда чат иногда зависает и перестает обновляться
+\n- Исправлено когда чат иногда зависает и перестаёт обновляться
 \n- Исправления ошибок и улучшения
         \n\n<b>10 мая, 1.5.1</b>
 \n- Исправлена ошибка при попытке подписаться на канал
@@ -231,7 +231,7 @@
     <string name="ignore_notch">Игнорировать вырез</string>
     <string name="display_beyond_notch">Отображать видео под вырезом для камеры</string>
     <string name="adblock_not_working">Не удалось загрузить трансляцию без рекламы</string>
-    <string name="adblock_desc">Отключите если трансляции не загружаются</string>
+    <string name="adblock_desc">Отключите, если трансляции не загружаются</string>
     <string name="adblock">Adblock</string>
     <string name="playback_speed">Скорость воспроизведения</string>
     <string name="quality">Качество</string>
